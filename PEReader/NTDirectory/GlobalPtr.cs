@@ -1,0 +1,15 @@
+﻿using System;
+
+namespace AlphaOmega.Debug.NTDirectory
+{
+	/// <summary>The RVA of the value to be stored in the global pointer register.</summary>
+	public class GlobalPtr : NTDirectoryBase
+	{
+		/// <summary>Create instance of TLS class</summary>
+		/// <param name="root">Data directory</param>
+		public GlobalPtr(PEDirectory root)
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.GLOBALPTR)
+		{
+		}
+	}
+}
