@@ -10,7 +10,7 @@ PE/PE+ reader library.
 	<li>Optional header (IMAGE_OPTIONAL_HEADER)</li>
 	<li>COFF header (IMAGE_COFF_SYMBOLS_HEADER)</li>
 	<li>Sections header (IMAGE_SECTION_HEADER[])</li>
-	<li>Директории:
+	<li>Directories:
 		<ul>
 			<li>Architecture</li>
 			<li>Bound import</li>
@@ -92,13 +92,13 @@ PE/PE+ reader library.
 			<li>Delay Import Descriptor
 				<ul>
 					<li>List of delay load imported libraries</li>
-					<li>List of delay load imported procedures</li>
+					<li>List of delay load imported functions</li>
 				</ul>
 			</li>
 			<li>Exception Table</li>
 			<li>Export Table
 				<ul>
-					<li>List of exported procedures</li>
+					<li>List of exported functions</li>
 				</ul>
 			</li>
 			<li>Global Ptr</li>
@@ -106,7 +106,7 @@ PE/PE+ reader library.
 			<li>Import Table
 				<ul>
 					<li>List of imported libraries</li>
-					<li>List of imported procedures</li>
+					<li>List of imported functions</li>
 				</ul>
 			</li>
 			<li>Load Config Table</li>
@@ -136,7 +136,7 @@ PE/PE+ reader library.
 Few suported structures:
 
 <ul>
-	<li>DOS Headers
+	<li>DOS Header
 		<ul>
 			<li>IMAGE_DOS_HEADER</li>
 		</ul>
