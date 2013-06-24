@@ -248,6 +248,8 @@ namespace AlphaOmega.Debug
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+		/// <summary>Release allocated memory</summary>
+		/// <param name="disposing">Free managed resources</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
 			if(disposing && this._gcHandle.IsAllocated)
