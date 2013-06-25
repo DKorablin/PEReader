@@ -24,15 +24,21 @@ namespace AlphaOmega.Debug
 				return NativeMethods.FreeLibrary(base.handle);
 			}
 		}
-		private Boolean _isDisposed = false;
 		private Boolean _freeOnClose = false;
-		private readonly IntPtr _hModule;
+		private IntPtr? _hModule;
 		/// <summary>Module mapped to memory</summary>
 		public Boolean IsModuleMapped { get { return true; } }
 		/// <summary>Базовый адрес загруженного модуля</summary>
+		/// <exception cref="ObjectDisposedException">Object disposed</exception>
 		public Int64 BaseAddress
 		{
-			get { return this._hModule.ToInt64(); }
+			get
+			{
+				if(this._hModule == null)
+					throw new ObjectDisposedException("_hModule");
+
+				return this._hModule.Value.ToInt64();
+			}
 		}
 		/// <summary>Источник получения PE модуля</summary>
 		public String Source
@@ -118,7 +124,7 @@ namespace AlphaOmega.Debug
 		/// <returns>Получить массив байт с отступа</returns>
 		public Byte[] ReadBytes(UInt32 padding, UInt32 length)
 		{
-			IntPtr target = new IntPtr(this._hModule.ToInt64() + padding);
+			IntPtr target = new IntPtr(this.BaseAddress + padding);
 			Byte[] result = new Byte[length];
 
 			Marshal.Copy(target, result, 0, (Int32)length);
@@ -130,7 +136,7 @@ namespace AlphaOmega.Debug
 		/// <returns>Прочитанная структура</returns>
 		public T PtrToStructure<T>(UInt32 padding) where T : struct
 		{
-			IntPtr target = new IntPtr(this._hModule.ToInt64() + padding);
+			IntPtr target = new IntPtr(this.BaseAddress + padding);
 			return (T)Marshal.PtrToStructure(target, typeof(T));
 		}
 		/// <summary>Получить строку с отпределённого отступа</summary>
@@ -141,17 +147,22 @@ namespace AlphaOmega.Debug
 			return Marshal.PtrToStringAnsi(new IntPtr(this.BaseAddress + padding));
 		}
 		/// <summary>Free HMODULE</summary>
-		/// <exception cref="T:ObjectDisposedException">hModule already disposed</exception>
 		/// <exception cref="T:Win32Exception">Can't unload library</exception>
 		public void Dispose()
 		{
-			if(this._isDisposed)
-				throw new ObjectDisposedException("Win32Loader");
-			else if(this._freeOnClose)
-				if(NativeMethods.FreeLibrary(this._hModule))
-					this._isDisposed = true;
-				else
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		/// <summary>Dispose managed objects</summary>
+		/// <param name="disposing">Dispose managed objects</param>
+		protected virtual void Dispose(Boolean disposing)
+		{
+			if(disposing && this._hModule.HasValue)
+			{
+				if(this._freeOnClose && !NativeMethods.FreeLibrary(this._hModule.Value))
 					throw new Win32Exception();
+				this._hModule = null;
+			}
 		}
 	}
 }

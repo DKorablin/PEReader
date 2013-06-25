@@ -11,8 +11,19 @@ namespace AlphaOmega.Debug
 	[DefaultProperty("Source")]
 	public class StreamLoader : IImageLoader
 	{
+		private BinaryReader _reader;
 		/// <summary>File reader</summary>
-		private BinaryReader Reader { get; set; }
+		/// <exception cref="ObjectDisposedException">Base stream disposed</exception>
+		private BinaryReader Reader
+		{
+			get
+			{
+				if(this._reader == null)
+					throw new ObjectDisposedException("Reader");
+				return this._reader;
+			}
+			set { this._reader = value; }
+		}
 		/// <summary>Modeul Mapped to memory</summary>
 		public Boolean IsModuleMapped { get { return false; } }
 		/// <summary>Base PE file address</summary>
@@ -67,14 +78,10 @@ namespace AlphaOmega.Debug
 		/// <summary>Get bytes from specific padding and specific length</summary>
 		/// <param name="padding">Padding from the beginning of the image</param>
 		/// <param name="length">Length of bytes to read</param>
-		/// <exception cref="ObjectDisposedException">Base stream disposed</exception>
 		/// <exception cref="T:ArgumentOutOfRangeException">padding + length more than size of image</exception>
 		/// <returns>Readed bytes</returns>
 		public virtual Byte[] ReadBytes(UInt32 padding, UInt32 length)
 		{
-			if(this.Reader == null)
-				throw new ObjectDisposedException("Reader");
-
 			Stream stream = this.Reader.BaseStream;
 			if(padding + length > stream.Length)
 				throw new ArgumentOutOfRangeException("padding");
@@ -102,14 +109,10 @@ namespace AlphaOmega.Debug
 		}
 		/// <summary>Get ACSII string from specific padding from the beginning of the image</summary>
 		/// <param name="padding">Padding from the beginning of the image</param>
-		/// <exception cref="ObjectDisposedException">Base stream disposed</exception>
 		/// <exception cref="T:ArgumentOutOfRangeException">padding more than size of image</exception>
 		/// <returns>String from pointer</returns>
 		public virtual String PtrToStringAnsi(UInt32 padding)
 		{
-			if(this.Reader == null)
-				throw new ObjectDisposedException("Reader");
-
 			Stream stream = this.Reader.BaseStream;
 			if(padding > stream.Length)
 				throw new ArgumentOutOfRangeException("padding");
@@ -126,12 +129,13 @@ namespace AlphaOmega.Debug
 			return Encoding.ASCII.GetString(result.ToArray());
 		}
 		/// <summary>Close PE reader</summary>
-		/// <exception cref="ObjectDisposedException">Reader already disposed</exception>
 		public void Dispose()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+		/// <summary>Dispose managed objects</summary>
+		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
 			if(disposing && this.Reader != null)

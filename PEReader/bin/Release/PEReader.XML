@@ -7,12 +7,16 @@
         <member name="T:AlphaOmega.Debug.PEDirectory">
             <summary>NT Directory</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.PEDirectory.#ctor(AlphaOmega.Debug.ImageLoader.IImageLoader)">
+        <member name="M:AlphaOmega.Debug.PEDirectory.#ctor(AlphaOmega.Debug.IImageLoader)">
             <summary>Создание экземпляра класса с указанием пути к PE файлу</summary>
             <param name="loader">PE file loader</param>
         </member>
         <member name="M:AlphaOmega.Debug.PEDirectory.Dispose">
             <summary>Close loader</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.PEDirectory.Dispose(System.Boolean)">
+            <summary>Dispose managed objects</summary>
+            <param name="disposing">Dispose managed objects</param>
         </member>
         <member name="P:AlphaOmega.Debug.PEDirectory.Header">
             <summary>PE/PE+ Headers</summary>
@@ -138,6 +142,16 @@
             <summary>Gets the size of the input value in bits</summary>
             <param name="pInput">The input value</param>
             <returns></returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.NativeMethods.AlignToInt(System.UInt32)">
+            <summary>Align padding to DWORD</summary>
+            <param name="padding">Original padding</param>
+            <returns>Aligned padding</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.NativeMethods.AlignToShort(System.UInt32)">
+            <summary>Align padding to WORD</summary>
+            <param name="padding">Original padding</param>
+            <returns>Aligned padding</returns>
         </member>
         <member name="M:AlphaOmega.Debug.NativeMethods.GetKeyNameText(System.UInt32,System.Text.StringBuilder,System.Int32)">
             <summary>Retrieves a string that represents the name of a key.</summary>
@@ -429,20 +443,10 @@
             <exception cref="T:InvalidOperationException">directory type must be equals to type</exception>
         </member>
         <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.GetSzOrInt(AlphaOmega.Debug.BytesReader,System.UInt32@)">
-            <summary>protected internal</summary>
-            <param name="reader"></param>
-            <param name="padding"></param>
+            <summary>Read integer or string from mapped object</summary>
+            <param name="reader">Resource allocated bytes array</param>
+            <param name="padding">Padding from the beginning</param>
             <returns></returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.AlignToInt(System.UInt32)">
-            <summary>Align padding to DWORD</summary>
-            <param name="padding">Original padding</param>
-            <returns>Aligned padding</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.AlignToShort(System.UInt32)">
-            <summary>Align padding to WORD</summary>
-            <param name="padding">Original padding</param>
-            <returns>Aligned padding</returns>
         </member>
         <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.CreateDataReader">
             <summary>Create data reader for data in directory</summary>
@@ -455,36 +459,36 @@
             <summary>Тип директории</summary>
         </member>
         <member name="T:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt">
-            <summary>Либо индекс либо строка</summary>
+            <summary>String or integer structure</summary>
         </member>
         <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.ToString">
-            <summary>View as string value</summary>
+            <summary>Convert stored value to string</summary>
             <exception cref="T:NotImplementedException">Unknown pointer type specified</exception>
             <returns>String</returns>
         </member>
         <member name="P:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.Index">
-            <summary>Индекс</summary>
+            <summary>Index in resource file</summary>
         </member>
         <member name="P:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.Name">
-            <summary>Строка</summary>
+            <summary>String</summary>
         </member>
         <member name="P:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.IsEmpty">
-            <summary>Значение отсутствует</summary>
+            <summary>Value is empty</summary>
         </member>
         <member name="P:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.Type">
-            <summary>Индекс или строка</summary>
+            <summary>Type of value stored in the structure</summary>
         </member>
         <member name="T:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.SzIntResult">
-            <summary>Результат строкочисловой переменной</summary>
+            <summary>Type of data in structure</summary>
         </member>
         <member name="F:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.SzIntResult.None">
-            <summary>Пусто</summary>
+            <summary>Empty index</summary>
         </member>
         <member name="F:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.SzIntResult.Index">
-            <summary>Индекс</summary>
+            <summary>Index in resource file</summary>
         </member>
         <member name="F:AlphaOmega.Debug.NTDirectory.ResourceBase.SzInt.SzIntResult.Name">
-            <summary>Наименование</summary>
+            <summary>String</summary>
         </member>
         <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMenu.#ctor(AlphaOmega.Debug.NTDirectory.ResourceDirectory)">
             <summary>Create instance of menu resource class</summary>
@@ -628,6 +632,10 @@
             <param name="block">Relocation block</param>
             <param name="sections">Array of sections</param>
         </member>
+        <member name="M:AlphaOmega.Debug.NTDirectory.RelocationBlock.GetEnumerator">
+            <summary>Sections in current relocation block</summary>
+            <returns>Relocation sections</returns>
+        </member>
         <member name="P:AlphaOmega.Debug.NTDirectory.RelocationBlock.Block">
             <summary>Relocation block</summary>
         </member>
@@ -636,8 +644,8 @@
             <param name="index">Relocation section index</param>
             <returns>Section</returns>
         </member>
-        <member name="P:AlphaOmega.Debug.NTDirectory.RelocationBlock.Sections">
-            <summary>Sections array</summary>
+        <member name="P:AlphaOmega.Debug.NTDirectory.RelocationBlock.Count">
+            <summary>Count of sections in the relocation block</summary>
         </member>
         <member name="T:AlphaOmega.Debug.NTDirectory.DelayImport">
             <summary>Delay import class</summary>
@@ -727,39 +735,39 @@
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.FileRow.HashValue">
             <summary>Banana</summary>
         </member>
-        <member name="T:AlphaOmega.Debug.ImageLoader.StreamLoader">
+        <member name="T:AlphaOmega.Debug.StreamLoader">
             <summary>Image loader from file or stream</summary>
         </member>
-        <member name="T:AlphaOmega.Debug.ImageLoader.IImageLoader">
+        <member name="T:AlphaOmega.Debug.IImageLoader">
             <summary>Загрузчик PE файла</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.IImageLoader.PtrToStructure``1(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.IImageLoader.PtrToStructure``1(System.UInt32)">
             <summary>Получить структуру с определённого отступа</summary>
             <typeparam name="T">Структура</typeparam>
             <param name="padding">Отступ от начала файла или RVA</param>
             <returns>Прочитанная структура</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.IImageLoader.ReadBytes(System.UInt32,System.UInt32)">
+        <member name="M:AlphaOmega.Debug.IImageLoader.ReadBytes(System.UInt32,System.UInt32)">
             <summary>Получить массив байт с начала отступа</summary>
             <param name="padding">Отступ от начала файла или RVA</param>
             <param name="length">Читаемый размер</param>
             <returns>Получить массив байт с отступа</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.IImageLoader.PtrToStringAnsi(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.IImageLoader.PtrToStringAnsi(System.UInt32)">
             <summary>Получить строку с отпределённого отступа</summary>
             <param name="padding">Отступ от начала файла или RVA</param>
             <returns>Прочитанная строка</returns>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.IImageLoader.IsModuleMapped">
+        <member name="P:AlphaOmega.Debug.IImageLoader.IsModuleMapped">
             <summary>Модуль загружен в память. Все RVA адреса переписаны в VA.</summary>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.IImageLoader.BaseAddress">
+        <member name="P:AlphaOmega.Debug.IImageLoader.BaseAddress">
             <summary>Базовый адрес загруженного модуля в память</summary>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.IImageLoader.Source">
+        <member name="P:AlphaOmega.Debug.IImageLoader.Source">
             <summary>Источник получения PE файла</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.#ctor(System.IO.Stream,System.String)">
+        <member name="M:AlphaOmega.Debug.StreamLoader.#ctor(System.IO.Stream,System.String)">
             <summary>Read image from stream</summary>
             <param name="input">Stream with image</param>
             <param name="source">Source of image</param>
@@ -767,51 +775,56 @@
             <exception cref="T:ArgumentNullException">souce is null</exception>
             <exception cref="T:ArgumentException">stream must be seakable and readable</exception>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.FromFile(System.String)">
+        <member name="M:AlphaOmega.Debug.StreamLoader.FromFile(System.String)">
             <summary>Read PE image from file</summary>
             <param name="filePath">Path to the file</param>
             <exception cref="T:ArgumentNullException">filePath is null</exception>
             <exception cref="T:FileNotFoundException">filePath not found</exception>
             <returns>PE loader</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.FromMemory(System.Byte[],System.String)">
+        <member name="M:AlphaOmega.Debug.StreamLoader.FromMemory(System.Byte[],System.String)">
             <summary>Read PE image from memory</summary>
             <param name="input">Array of bytes</param>
             <param name="sourceName">Custom source name</param>
             <returns>PE loader</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.ReadBytes(System.UInt32,System.UInt32)">
+        <member name="M:AlphaOmega.Debug.StreamLoader.ReadBytes(System.UInt32,System.UInt32)">
             <summary>Get bytes from specific padding and specific length</summary>
             <param name="padding">Padding from the beginning of the image</param>
             <param name="length">Length of bytes to read</param>
             <exception cref="T:ArgumentOutOfRangeException">padding + length more than size of image</exception>
             <returns>Readed bytes</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.PtrToStructure``1(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.StreamLoader.PtrToStructure``1(System.UInt32)">
             <summary>Get structure from specific padding from the beginning of the image</summary>
             <typeparam name="T">Structure type</typeparam>
             <param name="padding">Padding from the beginning of the image</param>
             <returns>Readed structure from image</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.PtrToStringAnsi(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.StreamLoader.PtrToStringAnsi(System.UInt32)">
             <summary>Get ACSII string from specific padding from the beginning of the image</summary>
             <param name="padding">Padding from the beginning of the image</param>
             <exception cref="T:ArgumentOutOfRangeException">padding more than size of image</exception>
             <returns>String from pointer</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.StreamLoader.Dispose">
+        <member name="M:AlphaOmega.Debug.StreamLoader.Dispose">
             <summary>Close PE reader</summary>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.StreamLoader.Reader">
-            <summary>File reader</summary>
+        <member name="M:AlphaOmega.Debug.StreamLoader.Dispose(System.Boolean)">
+            <summary>Dispose managed objects</summary>
+            <param name="disposing">Dispose managed objects</param>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.StreamLoader.IsModuleMapped">
+        <member name="P:AlphaOmega.Debug.StreamLoader.Reader">
+            <summary>File reader</summary>
+            <exception cref="T:System.ObjectDisposedException">Base stream disposed</exception>
+        </member>
+        <member name="P:AlphaOmega.Debug.StreamLoader.IsModuleMapped">
             <summary>Modeul Mapped to memory</summary>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.StreamLoader.BaseAddress">
+        <member name="P:AlphaOmega.Debug.StreamLoader.BaseAddress">
             <summary>Base PE file address</summary>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.StreamLoader.Source">
+        <member name="P:AlphaOmega.Debug.StreamLoader.Source">
             <summary>File source</summary>
         </member>
         <member name="T:AlphaOmega.Debug.NTDirectory.Security">
@@ -1834,10 +1847,10 @@
         <member name="T:AlphaOmega.Debug.WinNT.DLAttr">
             <summary>Delay Load Attributes</summary>
         </member>
-        <member name="F:AlphaOmega.Debug.WinNT.DLAttr.dlattrVa">
+        <member name="F:AlphaOmega.Debug.WinNT.DLAttr.Va">
             <summary>Virtual Addresses used</summary>
         </member>
-        <member name="F:AlphaOmega.Debug.WinNT.DLAttr.dlattrRva">
+        <member name="F:AlphaOmega.Debug.WinNT.DLAttr.Rva">
             <summary>RVAs are used instead of pointers Having this set indicates a VC7.0 and above delay load descriptor.</summary>
         </member>
         <member name="T:AlphaOmega.Debug.WinNT.IMAGE_REL_BASED">
@@ -3437,7 +3450,7 @@
             <summary>The type of data in the version resource. This member is 1 if the version resource contains text data and 0 if the version resource contains binary data. </summary>
         </member>
         <member name="P:AlphaOmega.Debug.WinNT.Resource.VarFileInfo.ValueLength">
-            <summary>Length of next value</summary>
+            <summary>Size of next value</summary>
             <exception cref="T:NotImplementedException">Only Text data type supported</exception>
         </member>
         <member name="T:AlphaOmega.Debug.WinNT.Resource.StringTable">
@@ -5730,34 +5743,34 @@
         <member name="P:AlphaOmega.Debug.NTDirectory.BoundImport.IsEmpty">
             <summary>Directory is empty</summary>
         </member>
-        <member name="T:AlphaOmega.Debug.ImageLoader.LookupLoader">
+        <member name="T:AlphaOmega.Debug.LookupLoader">
             <summary>Test loader</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.LookupLoader.#ctor(System.String)">
+        <member name="M:AlphaOmega.Debug.LookupLoader.#ctor(System.String)">
             <summary>Create instance of test loader</summary>
             <param name="filePath"></param>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.LookupLoader.PtrToStructure``1(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.LookupLoader.PtrToStructure``1(System.UInt32)">
             <summary>Get structure from specific padding from the beginning of the image</summary>
             <typeparam name="T">Structure type</typeparam>
             <param name="padding">Padding from the beginning of the image</param>
             <returns>Readed structure from image</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.LookupLoader.ReadBytes(System.UInt32,System.UInt32)">
+        <member name="M:AlphaOmega.Debug.LookupLoader.ReadBytes(System.UInt32,System.UInt32)">
             <summary>Get bytes from specific padding and specific length</summary>
             <param name="padding">Padding from the beginning of the image</param>
             <param name="length">Length of bytes to read</param>
             <returns>Readed bytes</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.LookupLoader.PtrToStringAnsi(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.LookupLoader.PtrToStringAnsi(System.UInt32)">
             <summary>Get ACSII string from specific padding from the beginning of the image</summary>
             <param name="padding">Padding from the beginning of the image</param>
             <returns>String from pointer</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.LookupLoader.Dispose">
+        <member name="M:AlphaOmega.Debug.LookupLoader.Dispose">
             <summary>Save to text file all data that was readed</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.LookupLoader.GetFileUniqueName(System.String,System.String,System.UInt32)">
+        <member name="M:AlphaOmega.Debug.LookupLoader.GetFileUniqueName(System.String,System.String,System.UInt32)">
             <summary>Получить уникальное наименование файла</summary>
             <param name="path">Путь с наименованием файла</param>
             /// <param name="extension">Расширение, которое добавляется к файлу</param>
@@ -6898,27 +6911,27 @@
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyRow.Version">
             <summary>Assembly version</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.MemoryLoader.#ctor(System.String)">
+        <member name="M:AlphaOmega.Debug.MemoryLoader.#ctor(System.String)">
             <summary>Create instance of PE/PE+ loader from memory</summary>
             <param name="filePath">Path to the file to load</param>
             <exception cref="T:ArgumentNullException">filePath is empty</exception>
             <exception cref="T:FileNotFoundException">File filePath not found</exception>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.MemoryLoader.ReadBytes(System.UInt32,System.UInt32)">
+        <member name="M:AlphaOmega.Debug.MemoryLoader.ReadBytes(System.UInt32,System.UInt32)">
             <summary>Read array of bytes from memory</summary>
             <param name="padding">Padding from starting value</param>
             <param name="length">Length to read from padding</param>
             <exception cref="T:NotImplementedException">ReadBytes method is not implemented</exception>
             <returns></returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.MemoryLoader.PtrToStructure``1(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.MemoryLoader.PtrToStructure``1(System.UInt32)">
             <summary>Get structure from specific padding from the beginning of the image</summary>
             <typeparam name="T">Structure type</typeparam>
             <param name="padding">Padding from the beginning of the image</param>
             <exception cref="T:NotImplementedException">PtrToStructure method is not implemented</exception>
             <returns>Readed structure from image</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.MemoryLoader.PtrToStringAnsi(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.MemoryLoader.PtrToStringAnsi(System.UInt32)">
             <summary>Get ACSII string from specific padding from the beginning of the image</summary>
             <param name="padding">Padding from the beginning of the image</param>
             <exception cref="T:ArgumentOutOfRangeException">padding more than size of image</exception>
@@ -7448,7 +7461,7 @@
         <member name="T:AlphaOmega.Debug.PEHeader">
             <summary>PE/PE+ Header</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.PEHeader.#ctor(AlphaOmega.Debug.ImageLoader.IImageLoader)">
+        <member name="M:AlphaOmega.Debug.PEHeader.#ctor(AlphaOmega.Debug.IImageLoader)">
             <summary>Create instance of PE header reader</summary>
             <param name="loader">Image loader</param>
             <exception cref="T:ArgumentNullException">loader is null</exception>
@@ -7715,20 +7728,17 @@
         </member>
         <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringAnsi(System.UInt32,System.Int32@)">
             <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Отступ от начала массива</param>
+            <param name="padding">Offset from the beginning of the array</param>
             <param name="length">Результатирующий размер строки</param>
             <exception cref="T:ArgumentOutOfRangeException">Bytes array is smaller than padding</exception>
             <returns>Получаемая строка</returns>
         </member>
         <member name="M:AlphaOmega.Debug.BytesReader.GetBytes(System.UInt32,System.UInt32)">
             <summary>Get bytes from data</summary>
-            <param name="index">Starting index</param>
+            <param name="padding">Offset from the beginning of the array</param>
             <param name="length">Length</param>
             <exception cref="T:ArgumentOutOfRangeException">index>Index and length is larger than bytes array length</exception>
             <returns>Bytes from index</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.Dispose">
-            <summary>Release allocated memory</summary>
         </member>
         <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.Byte[],System.UInt32@)">
             <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
@@ -7771,6 +7781,13 @@
             <typeparam name="T">Структура, которую необходимо преобразовать</typeparam>
             <param name="structure">Структура для преобразования</param>
             <returns>Массив байт</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.BytesReader.Dispose">
+            <summary>Release allocated memory</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.BytesReader.Dispose(System.Boolean)">
+            <summary>Release allocated memory</summary>
+            <param name="disposing">Free managed resources</param>
         </member>
         <member name="P:AlphaOmega.Debug.BytesReader.Bytes">
             <summary>Bytes array</summary>
@@ -8119,10 +8136,10 @@
             <summary>Create instance of Code Manger table class</summary>
             <param name="parent">.NET directory</param>
         </member>
-        <member name="T:AlphaOmega.Debug.ImageLoader.Win32Loader">
+        <member name="T:AlphaOmega.Debug.Win32Loader">
             <summary>HMODULE loader class</summary>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.FromFile(System.String)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.FromFile(System.String)">
             <summary>Load image from file</summary>
             <param name="filePath">Path to file</param>
             <exception cref="T:ArgumentNullException">filePath is null</exception>
@@ -8130,17 +8147,17 @@
             <exception cref="T:Win32Exception">LoadLibrary can't load PE/PE+ image</exception>
             <returns>Loader</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.FromModule(System.Diagnostics.ProcessModule)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.FromModule(System.Diagnostics.ProcessModule)">
             <summary>Load image from HModule</summary>
             <param name="module">Loaded module</param>
             <exception cref="T:ArgumentNullException">module is null</exception>
             <returns>Loader</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.#ctor(System.IntPtr)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.#ctor(System.IntPtr)">
             <summary>Create instance of HMODULE loader class</summary>
             <param name="hModule">HMODULE</param>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.#ctor(System.IntPtr,System.String,System.Boolean)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.#ctor(System.IntPtr,System.String,System.Boolean)">
             <summary>Create instance of HMODULE loader class</summary>
             <param name="hModule">HMODULE</param>
             <param name="source">Source of file</param>
@@ -8148,35 +8165,39 @@
             <exception cref="T:ArgumentNullException">hModule is empty</exception>
             <exception cref="T:ArgumentNullException">source is null</exception>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.ReadBytes(System.UInt32,System.UInt32)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.ReadBytes(System.UInt32,System.UInt32)">
             <summary>Получить массив байт с начала отступа</summary>
             <param name="padding">Отступ от начала файла или RVA</param>
             <param name="length">Читаемый размер</param>
             <returns>Получить массив байт с отступа</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.PtrToStructure``1(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.PtrToStructure``1(System.UInt32)">
             <summary>Получить структуру с определённого отступа</summary>
             <typeparam name="T">Структура</typeparam>
             <param name="padding">Отступ от начала файла или RVA</param>
             <returns>Прочитанная структура</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.PtrToStringAnsi(System.UInt32)">
+        <member name="M:AlphaOmega.Debug.Win32Loader.PtrToStringAnsi(System.UInt32)">
             <summary>Получить строку с отпределённого отступа</summary>
             <param name="padding">Отступ от начала файла или RVA</param>
             <returns>Прочитанная строка</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.ImageLoader.Win32Loader.Dispose">
+        <member name="M:AlphaOmega.Debug.Win32Loader.Dispose">
             <summary>Free HMODULE</summary>
-            <exception cref="T:ObjectDisposedException">hModule already disposed</exception>
             <exception cref="T:Win32Exception">Can't unload library</exception>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.Win32Loader.IsModuleMapped">
+        <member name="M:AlphaOmega.Debug.Win32Loader.Dispose(System.Boolean)">
+            <summary>Dispose managed objects</summary>
+            <param name="disposing">Dispose managed objects</param>
+        </member>
+        <member name="P:AlphaOmega.Debug.Win32Loader.IsModuleMapped">
             <summary>Module mapped to memory</summary>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.Win32Loader.BaseAddress">
+        <member name="P:AlphaOmega.Debug.Win32Loader.BaseAddress">
             <summary>Базовый адрес загруженного модуля</summary>
+            <exception cref="T:System.ObjectDisposedException">Object disposed</exception>
         </member>
-        <member name="P:AlphaOmega.Debug.ImageLoader.Win32Loader.Source">
+        <member name="P:AlphaOmega.Debug.Win32Loader.Source">
             <summary>Источник получения PE модуля</summary>
         </member>
         <member name="T:AlphaOmega.Debug.NTDirectory.LoadConfig">
