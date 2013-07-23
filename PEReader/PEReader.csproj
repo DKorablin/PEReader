@@ -109,11 +109,14 @@
     <Compile Include="CorDirectory\Meta\MetaRowCollection.cs" />
     <Compile Include="CorDirectory\Meta\MetaTable.cs" />
     <Compile Include="CorDirectory\ResourceTable.cs" />
+    <Compile Include="CorDirectory\ResourceTableItem.cs" />
+    <Compile Include="CorDirectory\ResourceTableReader.cs" />
+    <Compile Include="CorDirectory\ResourceTypeCode.cs" />
     <Compile Include="CorDirectory\StrongNameSignature.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="ImageLoader\LookupLoader.cs" />
     <Compile Include="ISectionData.cs" />
-    <Compile Include="BytesReader.cs" />
+    <Compile Include="PinnedBufferReader.cs" />
     <Compile Include="NTDirectory\Architecture.cs" />
     <Compile Include="NTDirectory\DebugPdb2.cs" />
     <Compile Include="NTDirectory\DebugPdb7.cs" />

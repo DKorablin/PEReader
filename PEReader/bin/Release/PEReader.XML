@@ -442,7 +442,7 @@
             <exception cref="T:ArgumentNullException">directory is null</exception>
             <exception cref="T:InvalidOperationException">directory type must be equals to type</exception>
         </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.GetSzOrInt(AlphaOmega.Debug.BytesReader,System.UInt32@)">
+        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceBase.GetSzOrInt(AlphaOmega.Debug.PinnedBufferReader,System.UInt32@)">
             <summary>Read integer or string from mapped object</summary>
             <param name="reader">Resource allocated bytes array</param>
             <param name="padding">Padding from the beginning</param>
@@ -509,7 +509,7 @@
             <exception cref="T:InvalidOperationException">Can't find end of menu marker</exception>
             <returns>Menu items</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMenu.GetPopupMenu(AlphaOmega.Debug.BytesReader,System.UInt32@)">
+        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMenu.GetPopupMenu(AlphaOmega.Debug.PinnedBufferReader,System.UInt32@)">
             <summary>Gets popup menu items from padding</summary>
             <param name="reader">Menu bytes</param>
             <param name="padding">Starting popup menu padding</param>
@@ -521,7 +521,7 @@
             <param name="padding">Отступ от начала меню</param>
             <returns>Элементы меню</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMenu.GetPopupMenuOld(AlphaOmega.Debug.BytesReader,System.UInt32@)">
+        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMenu.GetPopupMenuOld(AlphaOmega.Debug.PinnedBufferReader,System.UInt32@)">
             <summary>Получить всплывающее меню</summary>
             <param name="reader">Allocated bytes in memory</param>
             <param name="padding">Отступ от начала</param>
@@ -714,8 +714,17 @@
             <param name="enumValue">Значение бита, которое надо проверить</param>
             <returns>Бит проставлен</returns>
         </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.BaseMetaRow.ToString(System.Object)">
+            <summary>Отобразить текущий объект ввиде строки</summary>
+            <param name="args">Ключевой объект от наследуемого класса</param>
+            <returns>Строка</returns>
+        </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.BaseMetaRow.Row">
             <summary>Базовый ряд для обработки</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.ModuleRefRow.ToString">
+            <summary>Name</summary>
+            <returns>String</returns>
         </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.ModuleRefRow.Name">
             <summary>
@@ -1138,6 +1147,10 @@
             (Such constraints are stored in the GenericParamConstraint table.)
             </summary>
             <remarks>Conceptually, each row in the GenericParam table is owned by one, and only one, row in either the TypeDef or MethodDef tables.</remarks>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.GenericParamRow.ToString">
+            <summary>Name</summary>
+            <returns>String</returns>
         </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.GenericParamRow.Number">
             <summary>Parameter index</summary>
@@ -5006,6 +5019,10 @@
             However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI.
             </summary>
         </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyOSRow.ToString">
+            <summary>OSVersion</summary>
+            <returns>String</returns>
+        </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyOSRow.OSPlatformId">
             <summary>A 4-byte constant</summary>
         </member>
@@ -5447,7 +5464,7 @@
             <summary>Get version tables</summary>
             <returns>Extended file description</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceVersion.GetVersionTable(AlphaOmega.Debug.BytesReader,AlphaOmega.Debug.NTDirectory.ResourceVersion.VersionTableType,System.UInt32@)">
+        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceVersion.GetVersionTable(AlphaOmega.Debug.PinnedBufferReader,AlphaOmega.Debug.NTDirectory.ResourceVersion.VersionTableType,System.UInt32@)">
             <summary>Gets version table from PE/PE+ resources</summary>
             <param name="reader">Mapped bytes</param>
             <param name="type">Type of version table</param>
@@ -5455,7 +5472,7 @@
             <exception cref="T:NotImplementedException">Unknown table row type</exception>
             <returns>Readed version table</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceVersion.GetBinaryVersionItem(AlphaOmega.Debug.BytesReader,AlphaOmega.Debug.NTDirectory.ResourceVersion.VersionTable,System.UInt32@)">
+        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceVersion.GetBinaryVersionItem(AlphaOmega.Debug.PinnedBufferReader,AlphaOmega.Debug.NTDirectory.ResourceVersion.VersionTable,System.UInt32@)">
             <summary>Получить элемент версии в сохранённый в бинарном виде</summary>
             <param name="reader">Allocated bytes in memory</param>
             <param name="item">Version table</param>
@@ -5676,6 +5693,10 @@
             The methods are typically get_ and set_ methods, already defined on the class,
             and inserted like any other methods into the MethodDef table.
             </summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.PropertyRow.ToString">
+            <summary>Name</summary>
+            <returns>String</returns>
         </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.PropertyRow.Flags">
             <summary>Flags that can be associated with a property.</summary>
@@ -7625,6 +7646,10 @@
             except for the PublicKeyOrToken column, which is defined using the .publickeytoken directive.
             </remarks>
         </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyRefRow.ToString">
+            <summary>Describes an assembly's unique identity in full.</summary>
+            <returns>String representation of the assembly</returns>
+        </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyRefRow.MajorVersion">
             <summary>Major assembly version</summary>
         </member>
@@ -7656,6 +7681,9 @@
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyRefRow.Version">
             <summary>Full assembly version</summary>
         </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.AssemblyRefRow.AssemblyName">
+            <summary>Describes an assembly's unique identity in full.</summary>
+        </member>
         <member name="T:AlphaOmega.Debug.CorDirectory.ManagedNativeHeaer">
             <summary>.NET Managed native header class</summary>
         </member>
@@ -7671,137 +7699,6 @@
         </member>
         <member name="P:AlphaOmega.Debug.NTDirectory.BoundImportReference.ModuleName">
             <summary>Module name</summary>
-        </member>
-        <member name="T:AlphaOmega.Debug.BytesReader">
-            <summary>Reader from memory allocated bytes array</summary>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.#ctor(System.Byte[])">
-            <summary>Create instance of bytesreader class</summary>
-            <param name="bytes">Bytes</param>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.UInt32@)">
-            <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
-            <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="padding">Отступ от начала массива байт и отступ от начала массива + конца структуры</param>
-            <returns>Наложенная структура с данными</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.UInt32)">
-            <summary>Накладывание структуры на массив байт</summary>
-            <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="padding">Отступ от начала массива байт</param>
-            <returns>Наложенная структура с данными</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.UInt32,System.Int32@)">
-            <summary>Накладывание структуры на массив байт</summary>
-            <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="padding">Отступ от начала массива байт</param>
-            <param name="length">Размер полчившегося массива</param>
-            <exception cref="T:ArgumentOutOfRangeException">padding+structure size is out of range of byte array</exception>
-            <returns>Наложенная структура с данными</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringUni(System.UInt32)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Отступ от начала массива</param>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringUni(System.UInt32@)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Отступ от начала массива, который после возврата станет отступом от конца строки</param>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringUni(System.UInt32,System.Int32@)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Отступ от начала массива</param>
-            <param name="length">Результатирующий размер строки</param>
-            <exception cref="T:ArgumentOutOfRangeException">Bytes array is smaller than padding</exception>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringAnsi(System.UInt32)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Отступ от начала массива</param>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringAnsi(System.UInt32@)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Отступ от начала массива, который после возврата станет отступом от конца строки</param>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringAnsi(System.UInt32,System.Int32@)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="padding">Offset from the beginning of the array</param>
-            <param name="length">Результатирующий размер строки</param>
-            <exception cref="T:ArgumentOutOfRangeException">Bytes array is smaller than padding</exception>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.GetBytes(System.UInt32,System.UInt32)">
-            <summary>Get bytes from data</summary>
-            <param name="padding">Offset from the beginning of the array</param>
-            <param name="length">Length</param>
-            <exception cref="T:ArgumentOutOfRangeException">index>Index and length is larger than bytes array length</exception>
-            <returns>Bytes from index</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.Byte[],System.UInt32@)">
-            <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
-            <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="bytes">Массив байт на который наложить структуру</param>
-            <param name="padding">Отступ от начала массива байт и отступ от начала массива + конца структуры</param>
-            <returns>Наложенная структура с данными</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.Byte[],System.UInt32)">
-            <summary>Накладывание структуры на массив байт</summary>
-            <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="bytes">Массив байт на который наложить структуру</param>
-            <param name="padding">Отступ от начала массива байт</param>
-            <returns>Наложенная структура с данными</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStructure``1(System.Byte[],System.UInt32,System.Int32@)">
-            <summary>Накладывание структуры на массив байт</summary>
-            <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="bytes">Массив байт на который наложить структуру</param>
-            <param name="padding">Отступ от начала массива байт</param>
-            <param name="length">Размер полчившегося массива</param>
-            <returns>Наложенная структура с данными</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringUni(System.Byte[],System.UInt32,System.Int32@)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="bytes">Массив байт</param>
-            <param name="padding">Отступ от начала массива</param>
-            <param name="length">Результатирующий размер строки</param>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.BytesToStringAnsi(System.Byte[],System.UInt32,System.Int32@)">
-            <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="bytes">Массив байт</param>
-            <param name="padding">Отступ от начала массива</param>
-            <param name="length">Результатирующий размер строки</param>
-            <returns>Получаемая строка</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.StructureToArray``1(``0)">
-            <summary>Преобразование структуры из памяти в массив байт</summary>
-            <typeparam name="T">Структура, которую необходимо преобразовать</typeparam>
-            <param name="structure">Структура для преобразования</param>
-            <returns>Массив байт</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.Dispose">
-            <summary>Release allocated memory</summary>
-        </member>
-        <member name="M:AlphaOmega.Debug.BytesReader.Dispose(System.Boolean)">
-            <summary>Release allocated memory</summary>
-            <param name="disposing">Free managed resources</param>
-        </member>
-        <member name="P:AlphaOmega.Debug.BytesReader.Bytes">
-            <summary>Bytes array</summary>
-        </member>
-        <member name="P:AlphaOmega.Debug.BytesReader.Handle">
-            <summary>Allocated handle</summary>
-        </member>
-        <member name="P:AlphaOmega.Debug.BytesReader.Item(System.UInt32)">
-            <summary>Read byte from index</summary>
-            <param name="index"></param>
-            <returns></returns>
-        </member>
-        <member name="P:AlphaOmega.Debug.BytesReader.Length">
-            <summary>Length of the array</summary>
         </member>
         <member name="T:AlphaOmega.Debug.CorDirectory.Meta.CorPinvokeMap">
             <summary>Specifies options for a PInvoke call.</summary>
@@ -7895,6 +7792,10 @@
         </member>
         <member name="T:AlphaOmega.Debug.CorDirectory.Meta.Tables.MethodDefRow">
             <summary>Method definition descriptors.</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.MethodDefRow.ToString">
+            <summary>String representation of the Method definition row</summary>
+            <returns>String representation of the current row</returns>
         </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.MethodDefRow.RVA">
             <summary>Method body address</summary>
@@ -8081,6 +7982,10 @@
             <summary>Create instance of resource reader class pointed to resource file on current PE file</summary>
             <returns>Contexts of resource file</returns>
         </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.ManifestResourceRow.ToString">
+            <summary>String representation</summary>
+            <returns>String</returns>
+        </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.ManifestResourceRow.OffsetI">
             <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins.</summary>
         </member>
@@ -8245,7 +8150,7 @@
             <param name="block">Message block from witch read all messages</param>
             <returns>Messages array</returns>
         </member>
-        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMessageTable.GetMessageBlockEntries(AlphaOmega.Debug.BytesReader,AlphaOmega.Debug.WinNT.Resource.MESSAGE_RESOURCE_BLOCK)">
+        <member name="M:AlphaOmega.Debug.NTDirectory.ResourceMessageTable.GetMessageBlockEntries(AlphaOmega.Debug.PinnedBufferReader,AlphaOmega.Debug.WinNT.Resource.MESSAGE_RESOURCE_BLOCK)">
             <summary>Get message block entries from starting address</summary>
             <param name="reader">Mapped bytes</param>
             <param name="block">message block header</param>
@@ -8295,6 +8200,10 @@
             All of the methods gathered together as an Event shall be defined on the class (§I.8.11.4).
             </summary>
         </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.Tables.EventRow.ToString">
+            <summary>Name</summary>
+            <returns>String</returns>
+        </member>
         <member name="P:AlphaOmega.Debug.CorDirectory.Meta.Tables.EventRow.EventFlags">
             <summary>Attributes of an event</summary>
         </member>
@@ -8307,6 +8216,240 @@
             more precisely, a TypeDefOrRef (§II.24.2.6) coded index.
             </summary>
             <remarks>This corresponds to the Type of the Event; it is not the Type that owns this event.</remarks>
+        </member>
+        <member name="T:AlphaOmega.Debug.PinnedBufferReader">
+            <summary>Reader from memory allocated bytes array</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.#ctor(System.Byte[])">
+            <summary>Create instance of bytesreader class</summary>
+            <param name="bytes">Bytes</param>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.UInt32@)">
+            <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
+            <typeparam name="T">Тип накладываемой структуры</typeparam>
+            <param name="padding">Отступ от начала массива байт и отступ от начала массива + конца структуры</param>
+            <returns>Наложенная структура с данными</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.UInt32)">
+            <summary>Накладывание структуры на массив байт</summary>
+            <typeparam name="T">Тип накладываемой структуры</typeparam>
+            <param name="padding">Отступ от начала массива байт</param>
+            <returns>Наложенная структура с данными</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.UInt32,System.Int32@)">
+            <summary>Накладывание структуры на массив байт</summary>
+            <typeparam name="T">Тип накладываемой структуры</typeparam>
+            <param name="padding">Отступ от начала массива байт</param>
+            <param name="length">Размер полчившегося массива</param>
+            <exception cref="T:ArgumentOutOfRangeException">padding+structure size is out of range of byte array</exception>
+            <returns>Наложенная структура с данными</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringUni(System.UInt32)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="padding">Отступ от начала массива</param>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringUni(System.UInt32@)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="padding">Отступ от начала массива, который после возврата станет отступом от конца строки</param>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringUni(System.UInt32,System.Int32@)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="padding">Отступ от начала массива</param>
+            <param name="length">Результатирующий размер строки</param>
+            <exception cref="T:ArgumentOutOfRangeException">Bytes array is smaller than padding</exception>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringAnsi(System.UInt32)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="padding">Отступ от начала массива</param>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringAnsi(System.UInt32@)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="padding">Отступ от начала массива, который после возврата станет отступом от конца строки</param>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringAnsi(System.UInt32,System.Int32@)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="padding">Offset from the beginning of the array</param>
+            <param name="length">Результатирующий размер строки</param>
+            <exception cref="T:ArgumentOutOfRangeException">Bytes array is smaller than padding</exception>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.GetBytes(System.UInt32,System.UInt32)">
+            <summary>Get bytes from data</summary>
+            <param name="padding">Offset from the beginning of the array</param>
+            <param name="length">Length</param>
+            <exception cref="T:ArgumentOutOfRangeException">index>Index and length is larger than bytes array length</exception>
+            <returns>Bytes from index</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.Byte[],System.UInt32@)">
+            <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
+            <typeparam name="T">Тип накладываемой структуры</typeparam>
+            <param name="bytes">Массив байт на который наложить структуру</param>
+            <param name="padding">Отступ от начала массива байт и отступ от начала массива + конца структуры</param>
+            <returns>Наложенная структура с данными</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.Byte[],System.UInt32)">
+            <summary>Накладывание структуры на массив байт</summary>
+            <typeparam name="T">Тип накладываемой структуры</typeparam>
+            <param name="bytes">Массив байт на который наложить структуру</param>
+            <param name="padding">Отступ от начала массива байт</param>
+            <returns>Наложенная структура с данными</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.Byte[],System.UInt32,System.Int32@)">
+            <summary>Накладывание структуры на массив байт</summary>
+            <typeparam name="T">Тип накладываемой структуры</typeparam>
+            <param name="bytes">Массив байт на который наложить структуру</param>
+            <param name="padding">Отступ от начала массива байт</param>
+            <param name="length">Размер полчившегося массива</param>
+            <returns>Наложенная структура с данными</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringUni(System.Byte[],System.UInt32,System.Int32@)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="bytes">Массив байт</param>
+            <param name="padding">Отступ от начала массива</param>
+            <param name="length">Результатирующий размер строки</param>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringAnsi(System.Byte[],System.UInt32,System.Int32@)">
+            <summary>Преобразование массива байт от отступа в строку</summary>
+            <param name="bytes">Массив байт</param>
+            <param name="padding">Отступ от начала массива</param>
+            <param name="length">Результатирующий размер строки</param>
+            <returns>Получаемая строка</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.StructureToArray``1(``0)">
+            <summary>Преобразование структуры из памяти в массив байт</summary>
+            <typeparam name="T">Структура, которую необходимо преобразовать</typeparam>
+            <param name="structure">Структура для преобразования</param>
+            <returns>Массив байт</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.Dispose">
+            <summary>Release allocated memory</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.PinnedBufferReader.Dispose(System.Boolean)">
+            <summary>Release allocated memory</summary>
+            <param name="disposing">Free managed resources</param>
+        </member>
+        <member name="P:AlphaOmega.Debug.PinnedBufferReader.Bytes">
+            <summary>Bytes array</summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.PinnedBufferReader.Handle">
+            <summary>Allocated handle</summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.PinnedBufferReader.Item(System.UInt32)">
+            <summary>Read byte from index</summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AlphaOmega.Debug.PinnedBufferReader.Length">
+            <summary>Length of the array</summary>
+        </member>
+        <member name="T:AlphaOmega.Debug.CorDirectory.ResourceTableReader">
+            <summary>Managed resource table reader</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.ResourceTableReader.GetEnumerator">
+            <summary>Reads all elements from .resource item</summary>
+            <returns>Resource item</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.ResourceTableReader.Dispose">
+            <summary>Close underlying <see cref="T:System.Resources.ResourceReader"/></summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.ResourceTableReader.Name">
+            <summary>.resource name</summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.ResourceTableReader.Reader">
+            <summary>Enumerates .resources files and streams, reading sequential resource name and value pairs.</summary>
+        </member>
+        <member name="T:AlphaOmega.Debug.CorDirectory.ResourceTableItem">
+            <summary>Resource item</summary>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.ResourceTableItem.#ctor(AlphaOmega.Debug.CorDirectory.ResourceTableReader,System.String)">
+            <summary>Create instance of a resource item</summary>
+            <param name="reader">Resource reader</param>
+            <param name="name">Reasource name in the .resource item</param>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.ResourceTableItem.Initialize">
+            <summary>Read resource data from resource stream</summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.ResourceTableItem.Name">
+            <summary>Name of resource item</summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.ResourceTableItem.Type">
+            <summary>Type of resource item</summary>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.ResourceTableItem.Data">
+            <summary>Data of resource item</summary>
+        </member>
+        <member name="T:AlphaOmega.Debug.CorDirectory.ResourceTypeCode">
+            <summary>Default resource type codes</summary>
+            <remarks>Cloe of internal visible <see cref="T:System.Resources.ResourceTypeCode"/></remarks>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Null">
+            <summary>NULL type</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.String">
+            <summary>String</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Boolean">
+            <summary>Boolean</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Char">
+            <summary>Char</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Byte">
+            <summary>Byte</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.SByte">
+            <summary>Single byte</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Int16">
+            <summary>Int16</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.UInt16">
+            <summary>Unsigned Int16</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Int32">
+            <summary>Int32</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.UInt32">
+            <summary>Insigned Int32</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Int64">
+            <summary>Int64</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.UInt64">
+            <summary>Unsigned Int64</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Single">
+            <summary>Single</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Double">
+            <summary>Double</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Decimal">
+            <summary>Decimal</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.DateTime">
+            <summary>DateTime</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.TimeSpan">
+            <summary>TimeSpan</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.LastPrimitive">
+            <summary>Last primitive</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.ByteArray">
+            <summary>Byte array</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.Stream">
+            <summary>Steam</summary>
+        </member>
+        <member name="F:AlphaOmega.Debug.CorDirectory.ResourceTypeCode.StartOfUserTypes">
+            <summary>User type</summary>
         </member>
     </members>
 </doc>

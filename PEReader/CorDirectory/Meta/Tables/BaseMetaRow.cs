@@ -34,5 +34,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			return (flags & enumValue) == enumValue;
 		}
+		/// <summary>Отобразить текущий объект ввиде строки</summary>
+		/// <param name="args">Ключевой объект от наследуемого класса</param>
+		/// <returns>Строка</returns>
+		protected internal String ToString(Object args)
+		{
+			return String.Format("{0} : {{{1}}}", this.GetType().Name, args);
+		}
 	}
 }

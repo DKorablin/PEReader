@@ -96,7 +96,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>value converted to string</returns>
 		public override String ToString()
 		{
-			return String.Format("{0}: {1}", this.Table.TableType, this.Column.Name);
+			return String.Format("{0} : {{{1}: {2}}}", this.GetType().Name, this.Table.TableType, this.Column.Name);
 		}
 	}
 }

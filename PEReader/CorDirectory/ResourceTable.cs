@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory
 {
 	/// <summary>Managed resource table class</summary>
 	[DefaultProperty("Header")]
-	public class ResourceTable : CorDirectoryBase, IEnumerable<ManifestResourceRow>
+	public class ResourceTable : CorDirectoryBase, IEnumerable<ResourceTableReader>
 	{
 		private Cor.ResourceManagerHeader? _header;
 		private Cor.ResourceSetHeader? _set;
@@ -50,11 +50,12 @@ namespace AlphaOmega.Debug.CorDirectory
 		}
 		/// <summary>Get all metadata table rows that contains files in this directory</summary>
 		/// <returns>ManifestResource table rows</returns>
-		public IEnumerator<ManifestResourceRow> GetEnumerator()
+		public IEnumerator<ResourceTableReader> GetEnumerator()
 		{
 			foreach(ManifestResourceRow row in base.Parent.MetaData.StreamTables.ManifestResource)
 				if(row.FileInDirectory)
-					yield return row;
+					yield return row.GetResourceReader();
+				else throw new NotImplementedException();
 		}
 		IEnumerator IEnumerable.GetEnumerator()
 		{

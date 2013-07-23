@@ -24,7 +24,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			get
 			{
 				UInt32 padding = 0;
-				using(BytesReader reader = base.CreateDataReader())
+				using(PinnedBufferReader reader = base.CreateDataReader())
 				{
 					FontEntry result = new FontEntry();
 					ResourceFont.GetFont(reader, ref result, ref padding);
@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT)
 		{
 		}
-		internal static void GetFont<T>(BytesReader reader, ref T result, ref UInt32 padding) where T : FontEntry
+		internal static void GetFont<T>(PinnedBufferReader reader, ref T result, ref UInt32 padding) where T : FontEntry
 		{
 			WinNT.Resource.FONTDIRENTRY font = reader.BytesToStructure<WinNT.Resource.FONTDIRENTRY>(ref padding);
 			String szDeviceName;

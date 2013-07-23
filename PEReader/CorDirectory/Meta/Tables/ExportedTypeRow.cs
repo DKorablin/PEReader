@@ -35,7 +35,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <returns>String</returns>
 		public override String ToString()
 		{
-			return this.TypeNamespace + "." + this.TypeName;
+			String result;
+			if(String.IsNullOrEmpty(this.TypeNamespace))
+				result = this.TypeName;
+			else
+				result = this.TypeNamespace + "." + this.TypeName;
+
+			return base.ToString(result);
 		}
 	}
 }

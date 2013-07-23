@@ -67,7 +67,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Resource menu header</summary>
 		public WinNT.Resource.MENUHEADER Header
 		{
-			get { return BytesReader.BytesToStructure<WinNT.Resource.MENUHEADER>(base.Directory.GetData(), 0); }
+			get { return PinnedBufferReader.BytesToStructure<WinNT.Resource.MENUHEADER>(base.Directory.GetData(), 0); }
 		}
 		/// <summary>Create instance of menu resource class</summary>
 		/// <param name="directory">Resource directory</param>
@@ -106,7 +106,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		private MenuItem[] GetMenu(UInt32 padding)
 		{
 			List<MenuItem> result = new List<MenuItem>();
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				while(padding < reader.Length)
 				{
 					padding = NativeMethods.AlignToInt(padding);
@@ -136,7 +136,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="padding">Starting popup menu padding</param>
 		/// <exception cref="T:InvalidOperationException">Can't find end of menu marker</exception>
 		/// <returns>Readed popup menu items</returns>
-		private MenuPopupItem[] GetPopupMenu(BytesReader reader, ref UInt32 padding)
+		private MenuPopupItem[] GetPopupMenu(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			List<MenuPopupItem> result = new List<MenuPopupItem>();
 			while(padding < reader.Length)
@@ -169,7 +169,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		private MenuItem[] GetMenuOld(UInt32 padding)
 		{
 			List<MenuItem> result = new List<MenuItem>();
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				while(padding < reader.Length)
 				{
 					WinNT.Resource.MENUITEM item = reader.BytesToStructure<WinNT.Resource.MENUITEM>(ref padding);
@@ -194,7 +194,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="padding">Отступ от начала</param>
 		/// <exception cref="T:InvalidOperationException">Cand find end of menu marker</exception>
 		/// <returns>Всплывающее меню</returns>
-		private MenuPopupItem[] GetPopupMenuOld(BytesReader reader, ref UInt32 padding)
+		private MenuPopupItem[] GetPopupMenuOld(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			List<MenuPopupItem> result = new List<MenuPopupItem>();
 			while(padding < reader.Length)

@@ -54,5 +54,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				return this._body;
 			}
 		}
+		/// <summary>String representation of the Method definition row</summary>
+		/// <returns>String representation of the current row</returns>
+		public override String ToString()
+		{
+			return base.ToString(this.Name);
+		}
 	}
 }

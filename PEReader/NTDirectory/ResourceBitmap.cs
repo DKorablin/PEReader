@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Bitmap header</summary>
 		public WinNT.Resource.BITMAPINFOHEADER Header
 		{
-			get { return BytesReader.BytesToStructure<WinNT.Resource.BITMAPINFOHEADER>(base.Directory.GetData(), 0); }
+			get { return PinnedBufferReader.BytesToStructure<WinNT.Resource.BITMAPINFOHEADER>(base.Directory.GetData(), 0); }
 		}
 		/// <summary>Create instance of bitmap resource class</summary>
 		/// <param name="directory">Resource directory</param>

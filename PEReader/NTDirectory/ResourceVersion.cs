@@ -103,7 +103,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				return BytesReader.BytesToStructure<WinNT.Resource.VS_VERSIONINFO>(base.Directory.GetData(), 0);
+				return PinnedBufferReader.BytesToStructure<WinNT.Resource.VS_VERSIONINFO>(base.Directory.GetData(), 0);
 			}
 		}
 		/// <summary>Extended version info</summary>
@@ -117,7 +117,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				{
 					UInt32 padding = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.VS_VERSIONINFO));
 					padding = NativeMethods.AlignToInt(padding);
-					return BytesReader.BytesToStructure<WinNT.Resource.VS_FIXEDFILEINFO>(base.Directory.GetData(), padding);
+					return PinnedBufferReader.BytesToStructure<WinNT.Resource.VS_FIXEDFILEINFO>(base.Directory.GetData(), padding);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		public VersionData[] GetFileInfo()
 		{
 			UInt32 padding = this.HeaderPadding;
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 			{
 				List<VersionData> result = new List<VersionData>();
 
@@ -150,7 +150,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				return result.ToArray();
 			}
 		}
-		private VersionData GetVersionData(BytesReader reader, ref UInt32 padding)
+		private VersionData GetVersionData(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			VersionData result = new VersionData();
 
@@ -180,7 +180,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="padding">Base padding</param>
 		/// <exception cref="T:NotImplementedException">Unknown table row type</exception>
 		/// <returns>Readed version table</returns>
-		private VersionTable GetVersionTable(BytesReader reader, VersionTableType type, ref UInt32 padding)
+		private VersionTable GetVersionTable(PinnedBufferReader reader, VersionTableType type, ref UInt32 padding)
 		{
 			VersionTable result = new VersionTable();
 
@@ -213,7 +213,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="item">Version table</param>
 		/// <param name="padding">Отступ от начала массива</param>
 		/// <returns>Элемент версии</returns>
-		private VersionItem GetBinaryVersionItem(BytesReader reader, VersionTable item, ref UInt32 padding)
+		private VersionItem GetBinaryVersionItem(PinnedBufferReader reader, VersionTable item, ref UInt32 padding)
 		{
 			VersionItem result = new VersionItem();
 
@@ -227,7 +227,7 @@ namespace AlphaOmega.Debug.NTDirectory
 
 			return result;
 		}
-		private VersionItem GetStringVersionItem(BytesReader reader, ref UInt32 padding)
+		private VersionItem GetStringVersionItem(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			VersionItem result = new VersionItem();
 

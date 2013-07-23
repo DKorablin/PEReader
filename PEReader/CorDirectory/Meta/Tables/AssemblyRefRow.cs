@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
@@ -19,7 +20,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		public UInt16 RevisionNumber { get { return base.GetValue<UInt16>(3); } }
 		/// <summary>Assembly flags</summary>
 		/// <remarks>Flags shall have only one bit set, the PublicKey bit (§II.23.1.2). All other bits shall be zero</remarks>
-		public CorAssemblyFlags Flags { get { return (CorAssemblyFlags)base.GetValue<UInt32>(4); } }
+		public AssemblyNameFlags Flags { get { return (AssemblyNameFlags)base.GetValue<UInt32>(4); } }
+		//public CorAssemblyFlags Flags { get { return (CorAssemblyFlags)base.GetValue<UInt32>(4); } }
 		/// <summary>an index into the Blob heap, indicating the public key or token that identifies the author of this Assembly</summary>
 		public Byte[] PublicKeyOrToken { get { return base.GetValue<Byte[]>(5); } }
 		/// <summary>Assembly name</summary>
@@ -31,5 +33,27 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Full assembly version</summary>
 		public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion, this.BuildNumber, this.RevisionNumber); } }
+
+		/// <summary>Describes an assembly's unique identity in full.</summary>
+		public AssemblyName AssemblyName
+		{
+			get
+			{
+				AssemblyName result = new AssemblyName()
+				{
+					Name = this.Name,
+					Version = this.Version,
+					Flags = this.Flags,
+				};
+				result.SetPublicKeyToken(this.PublicKeyOrToken);
+				return result;
+			}
+		}
+		/// <summary>Describes an assembly's unique identity in full.</summary>
+		/// <returns>String representation of the assembly</returns>
+		public override String ToString()
+		{
+			return this.AssemblyName.ToString();
+		}
 	}
 }

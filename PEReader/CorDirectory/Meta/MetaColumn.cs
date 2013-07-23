@@ -55,7 +55,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>String</returns>
 		public override String ToString()
 		{
-			return String.Format("{0}: {1}", this._columnName, this._columnType);
+			return String.Format("{0} : {{{1}: {2}}}", this.GetType().Name, this._columnName, this._columnType);
 		}
 	}
 }

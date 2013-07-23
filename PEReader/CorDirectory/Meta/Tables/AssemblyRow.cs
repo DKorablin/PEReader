@@ -23,7 +23,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Assembly revision number</summary>
 		public UInt16 RevisionNumber { get { return base.GetValue<UInt16>(4); } }
 		/// <summary>MetaData applied to an assembly compilation</summary>
-		public CorAssemblyFlags Flags { get { return (CorAssemblyFlags)base.GetValue<UInt32>(5); } }
+		public AssemblyNameFlags Flags { get { return (AssemblyNameFlags)base.GetValue<UInt32>(5); } }
 		/// <summary>Public key or token</summary>
 		public Byte[] PublicKey { get { return base.GetValue<Byte[]>(6); } }
 		/// <summary>Assembly name</summary>

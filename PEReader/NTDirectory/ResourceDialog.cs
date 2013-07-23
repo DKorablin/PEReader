@@ -130,7 +130,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			UInt32 padding = 0;
 
 			DialogTemplate result = new DialogTemplate();
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 			{
 				WinNT.Resource.DLGTEMPLATEEX template = reader.BytesToStructure<WinNT.Resource.DLGTEMPLATEEX>(0);
 				WinNT.Resource.DLGTEMPLATE templateOld;

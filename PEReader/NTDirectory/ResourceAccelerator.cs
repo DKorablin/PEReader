@@ -18,7 +18,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		public IEnumerator<WinNT.Resource.ACCELTABLEENTRY> GetEnumerator()
 		{
 			UInt32 position = 0;
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				while(position < reader.Length)
 					yield return reader.BytesToStructure<WinNT.Resource.ACCELTABLEENTRY>(ref position);
 		}

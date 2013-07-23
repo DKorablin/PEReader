@@ -5,6 +5,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Contains values that describe the metadata applied to an assembly compilation.</summary>
 	/// <remarks>http://msdn.microsoft.com/en-us/library/ms232517.aspx</remarks>
 	[Flags]
+	[Obsolete("System.Reflection.AssemblyNameFlags", true)]
 	public enum CorAssemblyFlags
 	{
 		/// <summary>Indicates that the assembly reference holds the full, unhashed public key. </summary>

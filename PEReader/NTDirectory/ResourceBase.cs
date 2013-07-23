@@ -97,7 +97,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="reader">Resource allocated bytes array</param>
 		/// <param name="padding">Padding from the beginning</param>
 		/// <returns></returns>
-		protected static SzInt GetSzOrInt(BytesReader reader, ref UInt32 padding)
+		protected static SzInt GetSzOrInt(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			SzInt result = new SzInt();
 			UInt16 flag = reader.BytesToStructure<UInt16>(padding);
@@ -118,9 +118,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create data reader for data in directory</summary>
 		/// <returns>Memory pinned data reader</returns>
-		public BytesReader CreateDataReader()
+		public PinnedBufferReader CreateDataReader()
 		{
-			return new BytesReader(this.Directory.GetData());
+			return new PinnedBufferReader(this.Directory.GetData());
 		}
 	}
 }

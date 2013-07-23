@@ -28,5 +28,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		public Byte ParamCount { get { return this.Type[1]; } }
 		/// <summary>Property type</summary>
 		public Cor.ELEMENT_TYPE ReturnType { get { return (Cor.ELEMENT_TYPE)this.Type[2]; } }
+		/// <summary>Name</summary>
+		/// <returns>String</returns>
+		public override String ToString()
+		{
+			return base.ToString(this.Name);
+		}
 	}
 }

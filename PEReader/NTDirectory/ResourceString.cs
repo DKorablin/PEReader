@@ -18,7 +18,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		public IEnumerator<String> GetEnumerator()
 		{
 			UInt32 padding = 0;
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				while(padding < reader.Length)
 				{
 					UInt16 length = reader.BytesToStructure<UInt16>(ref padding);

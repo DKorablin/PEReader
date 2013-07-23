@@ -8,6 +8,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// <summary>Internal or external resource</summary>
 	public class ManifestResourceRow : BaseMetaRow
 	{
+		private UInt32? _size;
+		private Byte[] _file;
+
 		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins.</summary>
 		internal UInt32 OffsetI { get { return base.GetValue<UInt32>(0); } }
 		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins and size of resource file is skipped.</summary>
@@ -27,13 +30,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get
 			{
-				if(this.FileInDirectory)
-				{
-					ResourceTable dir = this.ResourceDirectory;
-					PEHeader header = dir.Parent.Parent.Header;
+				if(this._size == null)
+					if(this.FileInDirectory)
+					{
+						ResourceTable dir = this.ResourceDirectory;
+						PEHeader header = dir.Parent.Parent.Header;
 
-					return header.PtrToStructure<UInt32>(dir.Directory.VirtualAddress + this.OffsetI);
-				} else throw new NotImplementedException();
+						this._size = header.PtrToStructure<UInt32>(dir.Directory.VirtualAddress + this.OffsetI);
+					} else throw new NotImplementedException();
+				return this._size.Value;
 			}
 		}
 		/// <summary>File contents from managed Resource directory</summary>
@@ -42,17 +47,19 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get
 			{
-				if(this.FileInDirectory)
-				{
-					//if(this.Offset == 0) throw new InvalidOperationException("Offset must points to Resource directory");
+				if(this._file == null)
+					if(this.FileInDirectory)
+					{
+						//if(this.Offset == 0) throw new InvalidOperationException("Offset must points to Resource directory");
 
-					ResourceTable dir = this.ResourceDirectory;
-					PEHeader header = dir.Parent.Parent.Header;
+						ResourceTable dir = this.ResourceDirectory;
+						PEHeader header = dir.Parent.Parent.Header;
 
-					UInt32 padding = dir.Directory.VirtualAddress + this.Offset;
+						UInt32 padding = dir.Directory.VirtualAddress + this.Offset;
 
-					return header.ReadBytes(padding, this.Size);
-				} else throw new NotImplementedException();
+						this._file = header.ReadBytes(padding, this.Size);
+					} else throw new NotImplementedException();
+				return this._file;
 			}
 		}
 		/// <summary>Файл находится в директории с управляемыми ресурсами</summary>
@@ -61,18 +68,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		private ResourceTable ResourceDirectory { get { return base.Row.Table.Root.Parent.Parent.Resources; } }
 		/// <summary>Create instance of resource reader class pointed to resource file on current PE file</summary>
 		/// <returns>Contexts of resource file</returns>
-		public IResourceReader GetResourceReader()
+		public ResourceTableReader GetResourceReader()
 		{
-			Byte[] file = this.File;
-			MemoryStream stream = new MemoryStream(this.File);
-			try
-			{
-				return new ResourceReader(stream);//При вызове методв Dispose, поток закрывается
-			} catch
-			{
-				stream.Dispose();
-				throw;
-			}
+			return new ResourceTableReader(this.Name, this.File);//При вызове методв Dispose, поток закрывается
+		}
+		/// <summary>String representation</summary>
+		/// <returns>String</returns>
+		public override String ToString()
+		{
+			return base.ToString(this.Name);
 		}
 	}
 }

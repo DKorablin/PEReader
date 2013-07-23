@@ -25,5 +25,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Name for the generic parameter.</summary>
 		/// <remarks>This is purely descriptive and is used only by source language compilers and by Reflection</remarks>
 		public String Name { get { return base.GetValue<String>(3); } }
+		/// <summary>Name</summary>
+		/// <returns>String</returns>
+		public override String ToString()
+		{
+			return base.ToString(this.Name);
+		}
 	}
 }

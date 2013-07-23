@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug
 {
 	/// <summary>Reader from memory allocated bytes array</summary>
 	[DefaultProperty("Length")]
-	public class BytesReader : IDisposable
+	public class PinnedBufferReader : IDisposable
 	{
 		#region Fields
 		private GCHandle _gcHandle;
@@ -30,7 +30,7 @@ namespace AlphaOmega.Debug
 		#endregion Properties
 		/// <summary>Create instance of bytesreader class</summary>
 		/// <param name="bytes">Bytes</param>
-		public BytesReader(Byte[] bytes)
+		public PinnedBufferReader(Byte[] bytes)
 		{
 			this._bytes = bytes;
 			this._gcHandle = GCHandle.Alloc(this._bytes, GCHandleType.Pinned);
@@ -177,7 +177,7 @@ namespace AlphaOmega.Debug
 		public static T BytesToStructure<T>(Byte[] bytes, ref UInt32 padding) where T : struct
 		{
 			Int32 length;
-			T result = BytesReader.BytesToStructure<T>(bytes, padding, out length);
+			T result = PinnedBufferReader.BytesToStructure<T>(bytes, padding, out length);
 			padding += (UInt32)length;
 			return result;
 		}
@@ -189,7 +189,7 @@ namespace AlphaOmega.Debug
 		public static T BytesToStructure<T>(Byte[] bytes, UInt32 padding) where T : struct
 		{
 			Int32 length;
-			return BytesReader.BytesToStructure<T>(bytes, padding, out length);
+			return PinnedBufferReader.BytesToStructure<T>(bytes, padding, out length);
 		}
 		/// <summary>Накладывание структуры на массив байт</summary>
 		/// <typeparam name="T">Тип накладываемой структуры</typeparam>
@@ -199,7 +199,7 @@ namespace AlphaOmega.Debug
 		/// <returns>Наложенная структура с данными</returns>
 		public static T BytesToStructure<T>(Byte[] bytes, UInt32 padding, out Int32 length) where T : struct
 		{
-			using(BytesReader reader = new BytesReader(bytes))
+			using(PinnedBufferReader reader = new PinnedBufferReader(bytes))
 				return reader.BytesToStructure<T>(padding, out length);
 		}
 		/// <summary>Преобразование массива байт от отступа в строку</summary>
@@ -209,7 +209,7 @@ namespace AlphaOmega.Debug
 		/// <returns>Получаемая строка</returns>
 		public static String BytesToStringUni(Byte[] bytes, UInt32 padding, out Int32 length)
 		{
-			using(BytesReader reader = new BytesReader(bytes))
+			using(PinnedBufferReader reader = new PinnedBufferReader(bytes))
 				return reader.BytesToStringUni(padding, out length);
 		}
 		/// <summary>Преобразование массива байт от отступа в строку</summary>
@@ -219,7 +219,7 @@ namespace AlphaOmega.Debug
 		/// <returns>Получаемая строка</returns>
 		public static String BytesToStringAnsi(Byte[] bytes, UInt32 padding, out Int32 length)
 		{
-			using(BytesReader reader = new BytesReader(bytes))
+			using(PinnedBufferReader reader = new PinnedBufferReader(bytes))
 				return reader.BytesToStringAnsi(padding, out length);
 		}
 		/// <summary>Преобразование структуры из памяти в массив байт</summary>

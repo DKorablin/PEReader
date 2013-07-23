@@ -18,7 +18,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			public String EntryName;
 		}
 		/// <summary>Each block contains array of messages</summary>
-		public UInt32 NumberOfBlocks { get { return BytesReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0); } }
+		public UInt32 NumberOfBlocks { get { return PinnedBufferReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0); } }
 
 		/// <summary>Create instance of message table resource class</summary>
 		/// <param name="directory">Resource directory</param>
@@ -31,11 +31,11 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <returns>Массив блоков сообщений</returns>
 		public IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks()
 		{
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				return this.GetMessageBlocks(reader);
 		}
 
-		private IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks(BytesReader reader)
+		private IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks(PinnedBufferReader reader)
 		{
 			UInt32 padding = sizeof(UInt32);//Skippng NumberOfBlocks size
 			for(Int32 loop = 0;loop < this.NumberOfBlocks;loop++)
@@ -46,7 +46,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <returns>Messages array</returns>
 		public IEnumerable<ResourceMessageTable.MessageResourceEntry> GetMessageBlockEntries(WinNT.Resource.MESSAGE_RESOURCE_BLOCK block)
 		{
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				return this.GetMessageBlockEntries(reader, block);
 		}
 		/// <summary>Get message block entries from starting address</summary>
@@ -54,7 +54,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="block">message block header</param>
 		/// <exception cref="T:NotImplementedException">Unknown string encoding specified</exception>
 		/// <returns></returns>
-		private IEnumerable<ResourceMessageTable.MessageResourceEntry> GetMessageBlockEntries(BytesReader reader, WinNT.Resource.MESSAGE_RESOURCE_BLOCK block)
+		private IEnumerable<ResourceMessageTable.MessageResourceEntry> GetMessageBlockEntries(PinnedBufferReader reader, WinNT.Resource.MESSAGE_RESOURCE_BLOCK block)
 		{
 			UInt32 padding = block.OffsetToEntries;
 			UInt32 entryId = block.LowId;
@@ -84,7 +84,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <returns>Messages array</returns>
 		public IEnumerator<ResourceMessageTable.MessageResourceEntry> GetEnumerator()
 		{
-			using(BytesReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = base.CreateDataReader())
 				foreach(var block in this.GetMessageBlocks(reader))
 					foreach(var entry in this.GetMessageBlockEntries(reader, block))
 						yield return entry;

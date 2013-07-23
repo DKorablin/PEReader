@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				return BytesReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0);
+				return PinnedBufferReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0);
 			}
 		}
 		/// <summary>Create instance of font directory resource class</summary>
@@ -37,7 +37,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			if(numberOfFonts > 0)
 			{
 				UInt32 padding = sizeof(UInt16);
-				using(BytesReader reader = base.CreateDataReader())
+				using(PinnedBufferReader reader = base.CreateDataReader())
 					for(UInt16 loop = 0;loop < numberOfFonts;loop++)
 					{
 						FontDirEntry entry = new FontDirEntry()
