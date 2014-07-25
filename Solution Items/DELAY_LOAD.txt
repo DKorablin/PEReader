@@ -1,0 +1,259 @@
+C:\Program Files\Microsoft Visual Studio 8\VC>dumpbin /imports "C:\WINDOWS\WinSxS\x86_Microsoft.Tools.VisualCPlusPlus.Runtime-Libraries_6595b64144ccf1df_6.0.9792.0_x-ww_08a6620a\atl.dll"
+Microsoft (R) COFF/PE Dumper Version 8.00.50727.762
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file C:\WINDOWS\WinSxS\x86_Microsoft.Tools.VisualCPlusPlus.Runtime-Libraries_6595b64144ccf1df_6.0.9792.0_x-ww_08a6620a\atl.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    KERNEL32.dll
+              462AB000 Import Address Table
+              462ACFF0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  176 GetVersionExW
+                  303 lstrcpyW
+                   B9 GetACP
+                  1AA InitializeCriticalSection
+                  1C1 LeaveCriticalSection
+                   66 EnterCriticalSection
+                  19D HeapDestroy
+                   55 DeleteCriticalSection
+                  309 lstrlenW
+                  14F GetShortPathNameW
+                  127 GetModuleHandleW
+                  125 GetModuleFileNameW
+                  2FA lstrcatW
+                   B4 FreeLibrary
+                  13E GetProcAddress
+                  1C5 LoadLibraryW
+                   FA GetCurrentThreadId
+                  2D2 WideCharToMultiByte
+                   B6 FreeResource
+                  188 GlobalFree
+                  18B GlobalHandle
+                  1D5 LockResource
+                  1C7 LoadResource
+                   A6 FindResourceW
+                  181 GlobalAlloc
+                   A3 FindResourceA
+                  193 GlobalUnlock
+                  18C GlobalLock
+                   5D DisableThreadLibraryCalls
+                  175 GetVersionExA
+                  199 HeapAlloc
+                  15B GetSystemInfo
+                  2CE WaitForSingleObject
+                  19B HeapCreate
+                  1AD InterlockedDecrement
+                  1B0 InterlockedIncrement
+                  2FD lstrcmpW
+                   AB FlushInstructionCache
+                   F7 GetCurrentProcess
+                  1E4 MultiByteToWideChar
+                  308 lstrlenA
+                  295 SizeofResource
+                  11A GetLastError
+                  1C4 LoadLibraryExW
+                   1B CloseHandle
+                  218 ReadFile
+                  112 GetFileSize
+                   37 CreateFileW
+                  300 lstrcmpiW
+                  306 lstrcpynW
+                   51 DebugBreak
+                  1A2 HeapReAlloc
+                  19F HeapFree
+                  271 SetLastError
+                  2FC lstrcmpA
+                  126 GetModuleHandleA
+                  1F5 OutputDebugStringA
+                  16D GetTickCount
+                  1C8 LocalAlloc
+                  1AE InterlockedExchange
+                  20B RaiseException
+                  1C2 LoadLibraryA
+                  1CC LocalFree
+
+  Section contains the following delay load imports:
+
+    USER32.dll
+              00000000 Characteristics
+              462AFF54 Address of HMODULE
+              462AFD5C Import Address Table
+              462AC658 Import Name Table
+              462ACDFC Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          462A9F3C               0 BeginPaint
+          462A9F4E               0 SetWindowPos
+          462A9F60               0 IsWindow
+          462A9F72               0 RedrawWindow
+          462A9F84               0 GetDesktopWindow
+          462A9F96               0 GetParent
+          462A9F2A               0 GetClientRect
+          462A9FA8               0 CreateAcceleratorTableW
+          462A9F06               0 EndPaint
+          462A9FCC               0 SetCapture
+          462A9FDE               0 InvalidateRect
+          462A9FF0               0 InvalidateRgn
+          462AA002               0 DestroyWindow
+          462AA014               0 GetDlgItem
+          462AA026               0 GetClassNameW
+          462AA038               0 CreateWindowExW
+          462A9D9E               0 DialogBoxIndirectParamW
+          462A9EF4               0 CallWindowProcW
+          462A9EE2               0 GetFocus
+          462A9C90               0 TranslateMessage
+          462A9DF8               0 DefWindowProcW
+          462A9DE6               0 RegisterWindowMessageW
+          462A9DD4               0 CreateDialogIndirectParamA
+          462A9DC2               0 CreateDialogIndirectParamW
+          462A9DB0               0 DialogBoxIndirectParamA
+          462A9F18               0 FillRect
+          462A9D8C               0 GetDC
+          462A9D7A               0 ReleaseDC
+          462A9D68               0 GetClassInfoExW
+          462A9D56               0 LoadCursorW
+          462A9D44               0 wsprintfW
+          462A9D32               0 RegisterClassExW
+          462A9D20               0 GetClassInfoExA
+          462A9D0E               0 LoadCursorA
+          462A9CFC               0 wsprintfA
+          462A9CEA               0 RegisterClassExA
+          462A9CD8               0 CharNextW
+          462A9CC6               0 LoadStringW
+          462A9CB4               0 PeekMessageW
+          462A9CA2               0 MsgWaitForMultipleObjects
+          462A9ED0               0 IsChild
+          462A9EBE               0 SetFocus
+          462A9EAC               0 GetSysColor
+          462A9E9A               0 MessageBoxA
+          462A9E88               0 UnregisterClassW
+          462A9E76               0 SendMessageW
+          462A9E64               0 GetWindowLongW
+          462A9E52               0 GetWindowTextLengthW
+          462A9E40               0 GetWindowTextW
+          462A9E2E               0 SetWindowTextW
+          462A9E1C               0 SetWindowLongW
+          462A9E0A               0 GetWindow
+          462A9C70               0 DispatchMessageW
+          462A9FBA               0 ReleaseCapture
+
+    OLEPRO32.DLL
+              00000000 Characteristics
+              462AFF58 Address of HMODULE
+              462AFD54 Import Address Table
+              462AC650 Import Name Table
+              462ACED8 Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          462AA04A                 Ordinal   253
+
+    ADVAPI32.dll
+              00000000 Characteristics
+              462AFF5C Address of HMODULE
+              462AFCC0 Import Address Table
+              462AC5BC Import Name Table
+              462ACEE0 Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          462AA06A               0 RegDeleteKeyW
+          462AA09C               0 RegDeleteValueW
+          462AA0AE               0 RegCloseKey
+          462AA08A               0 RegCreateKeyExW
+          462AA0D2               0 RegEnumKeyExW
+          462AA0E4               0 RegSetValueExW
+          462AA0C0               0 RegOpenKeyExW
+          462AA108               0 RegEnumValueW
+          462AA0F6               0 RegQueryInfoKeyW
+
+    ole32.dll
+              00000000 Characteristics
+              462AFF60 Address of HMODULE
+              462AFE38 Import Address Table
+              462AC734 Import Name Table
+              462ACF08 Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          462AA1CA               0 OleInitialize
+          462AA26C               0 WriteClassStm
+          462AA25A               0 OleLoadFromStream
+          462AA248               0 CoTaskMemRealloc
+          462AA236               0 OleLockRunning
+          462AA224               0 CoTaskMemAlloc
+          462AA212               0 StringFromCLSID
+          462AA200               0 CLSIDFromString
+          462AA1EE               0 CLSIDFromProgID
+          462AA1DC               0 OleUninitialize
+          462AA27E               0 OleSaveToStream
+          462AA1B8               0 CoRegisterClassObject
+          462AA1A6               0 CoCreateInstance
+          462AA194               0 CoRevokeClassObject
+          462AA182               0 ProgIDFromCLSID
+          462AA170               0 CoTaskMemFree
+          462AA15E               0 CoUnmarshalInterface
+          462AA14C               0 CreateStreamOnHGlobal
+          462AA13A               0 CoMarshalInterface
+          462AA11A               0 CoReleaseMarshalData
+
+    OLEAUT32.dll
+              00000000 Characteristics
+              462AFF64 Address of HMODULE
+              462AFD18 Import Address Table
+              462AC614 Import Name Table
+              462ACF5C Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          462AA2E6                 Ordinal     6
+          462AA340                 Ordinal   162
+          462AA290                 Ordinal   201
+          462AA2F8                 Ordinal   163
+          462AA30A                 Ordinal     4
+          462AA31C                 Ordinal     9
+          462AA32E                 Ordinal     7
+          462AA2D4                 Ordinal   161
+          462AA352                 Ordinal   277
+          462AA364                 Ordinal    12
+          462AA376                 Ordinal   150
+          462AA388                 Ordinal   149
+          462AA2C2                 Ordinal     2
+          462AA2B0                 Ordinal   202
+
+    GDI32.dll
+              00000000 Characteristics
+              462AFF68 Address of HMODULE
+              462AFCE8 Import Address Table
+              462AC5E4 Import Name Table
+              462ACF98 Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          462AA3CC               0 DeleteDC
+          462AA3F0               0 SelectObject
+          462AA44A               0 GetObjectW
+          462AA45C               0 GetStockObject
+          462AA414               0 CreateCompatibleBitmap
+          462AA402               0 CreateCompatibleDC
+          462AA3DE               0 BitBlt
+          462AA39A               0 GetDeviceCaps
+          462AA3BA               0 CreateDCW
+          462AA426               0 DeleteObject
+          462AA438               0 CreateSolidBrush
+
+  Summary
+
+        2000 .data
+        3000 .rdata
+        2000 .reloc
+        3000 .rsrc
+        A000 .text

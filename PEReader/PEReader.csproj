@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5F56B043-3547-49FF-AB37-3B9A1B14FC53}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AlphaOmega.Debug</RootNamespace>
+    <AssemblyName>PEReader</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\AlphaOmega.pfx</AssemblyOriginatorKeyFile>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\PEReader.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CorDirectory\CodeManagerTable.cs" />
+    <Compile Include="CorDirectory\Eat.cs" />
+    <Compile Include="CorDirectory\ManagedNativeHeaer.cs" />
+    <Compile Include="CorDirectory\Meta\CellPointer\CellPointerBase.cs" />
+    <Compile Include="CorDirectory\Meta\MetaCell.cs" />
+    <Compile Include="CorDirectory\Meta\CellPointer\MetaCellCodedToken.cs" />
+    <Compile Include="CorDirectory\Meta\CellPointer\MetaCellPointer.cs" />
+    <Compile Include="CorDirectory\Meta\MetaColumn.cs" />
+    <Compile Include="CorDirectory\Meta\MethodBody.cs" />
+    <Compile Include="CorDirectory\Meta\MethodSection.cs" />
+    <Compile Include="CorDirectory\Meta\StreamHeaderTyped.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\AssemblyOSRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\AssemblyProcessorRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\AssemblyRefOSRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\AssemblyRefProcessorRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\AssemblyRefRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\AssemblyRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ClassLayoutRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ConstantRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\CustomAttributeRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\DeclSecurityRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ENCLogRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ENCMapRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\EventMapRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\EventPtrRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\EventRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ExportedTypeRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\FieldLayoutRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\FieldMarshalRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\FieldPtrRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\FieldRVARow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\FieldRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\BaseMetaRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\BaseMetaTable.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\FileRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\GenericParamConstraintRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\GenericParamRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ImplMapRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\InterfaceImplRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ManifestResourceRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\MemberRefRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\MethodDefRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\MethodImplRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\MethodPtrRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\MethodSemanticsRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\MethodSpecRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ModuleRefRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ModuleRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\NestedClassRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ParamPtrRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\ParamRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\PropertyMapRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\PropertyPtrRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\PropertyRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\StandAloneSigRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\TypeDefRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\TypeRefRow.cs" />
+    <Compile Include="CorDirectory\Meta\Tables\TypeSpecRow.cs" />
+    <Compile Include="CorDirectory\Meta\Types\CorAssemblyFlags.cs" />
+    <Compile Include="CorDirectory\Meta\Types\CorFileFlags.cs" />
+    <Compile Include="CorDirectory\Meta\Types\CorMethodSemanticsAttr.cs" />
+    <Compile Include="CorDirectory\Meta\Types\CorPinvokeMap.cs" />
+    <Compile Include="CorDirectory\Meta\Types\CorSignature.cs" />
+    <Compile Include="CorDirectory\Meta\Types\MetaColumnType.cs" />
+    <Compile Include="CorDirectory\Meta\MetaRow.cs" />
+    <Compile Include="CorDirectory\Meta\MetaRowCollection.cs" />
+    <Compile Include="CorDirectory\Meta\MetaTable.cs" />
+    <Compile Include="CorDirectory\ResourceTable.cs" />
+    <Compile Include="CorDirectory\ResourceTableItem.cs" />
+    <Compile Include="CorDirectory\ResourceTableReader.cs" />
+    <Compile Include="CorDirectory\ResourceTypeCode.cs" />
+    <Compile Include="CorDirectory\StrongNameSignature.cs" />
+    <Compile Include="IDirectory.cs" />
+    <Compile Include="ImageLoader\LookupLoader.cs" />
+    <Compile Include="ISectionData.cs" />
+    <Compile Include="PinnedBufferReader.cs" />
+    <Compile Include="NTDirectory\Architecture.cs" />
+    <Compile Include="NTDirectory\DebugPdb2.cs" />
+    <Compile Include="NTDirectory\DebugPdb7.cs" />
+    <Compile Include="NTDirectory\DelayImport.cs" />
+    <Compile Include="NTDirectory\DelayImportModule.cs" />
+    <Compile Include="NTDirectory\ExceptionTable.cs" />
+    <Compile Include="NTDirectory\GlobalPtr.cs" />
+    <Compile Include="NTDirectory\Iat.cs" />
+    <Compile Include="NTDirectory\Relocation.cs" />
+    <Compile Include="NTDirectory\RelocationBlock.cs" />
+    <Compile Include="NTDirectory\RelocationSection.cs" />
+    <Compile Include="NTDirectory\ResourceAccelerator.cs" />
+    <Compile Include="NTDirectory\ResourceBitmap.cs" />
+    <Compile Include="NTDirectory\ResourceDialog.cs" />
+    <Compile Include="NTDirectory\ResourceBase.cs" />
+    <Compile Include="NTDirectory\ResourceFont.cs" />
+    <Compile Include="NTDirectory\ResourceFontDir.cs" />
+    <Compile Include="NTDirectory\ResourceManifest.cs" />
+    <Compile Include="NTDirectory\ResourceMenu.cs" />
+    <Compile Include="NTDirectory\ResourceMessageTable.cs" />
+    <Compile Include="NTDirectory\ResourceString.cs" />
+    <Compile Include="NTDirectory\ResourceVersion.cs" />
+    <Compile Include="NTDirectory\Tls.cs" />
+    <Compile Include="CorDirectory\Meta\BlobHeap.cs" />
+    <Compile Include="CorDirectory\CorDirectoryBase.cs" />
+    <Compile Include="CorDirectory\Meta\StreamHeader.cs" />
+    <Compile Include="CorDirectory\Meta\StreamTables.cs" />
+    <Compile Include="CorDirectory\Meta\GuidHeap.cs" />
+    <Compile Include="CorDirectory\Meta\StringHeap.cs" />
+    <Compile Include="CorDirectory\Meta\USHeap.cs" />
+    <Compile Include="CorDirectory\VTable.cs" />
+    <Compile Include="PEHeader.cs" />
+    <Compile Include="Cor.cs" />
+    <Compile Include="NTDirectory\BoundImport.cs" />
+    <Compile Include="NTDirectory\ComDescriptor.cs" />
+    <Compile Include="NTDirectory\Debug.cs" />
+    <Compile Include="NTDirectory\Export.cs" />
+    <Compile Include="NTDirectory\NTDirectoryBase.cs" />
+    <Compile Include="NTDirectory\Import.cs" />
+    <Compile Include="NTDirectory\BoundImportReference.cs" />
+    <Compile Include="NTDirectory\ExportFunction.cs" />
+    <Compile Include="NTDirectory\ImportModule.cs" />
+    <Compile Include="NTDirectory\ResourceDirectory.cs" />
+    <Compile Include="NTDirectory\LoadConfig.cs" />
+    <Compile Include="NTDirectory\Resource.cs" />
+    <Compile Include="NTDirectory\Security.cs" />
+    <Compile Include="ImageLoader\IImageLoader.cs" />
+    <Compile Include="ImageLoader\MemoryLoader.cs" />
+    <Compile Include="ImageLoader\StreamLoader.cs" />
+    <Compile Include="ImageLoader\Win32Loader.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="CorDirectory\MetaData.cs" />
+    <Compile Include="PEDirectory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinNT.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\AlphaOmega.pfx">
+      <Link>AlphaOmega.pfx</Link>
+    </None>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,6 @@
+C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\bin\Debug\PEReader.dll.config
+C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\bin\Debug\PEReader.dll
+C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\bin\Debug\PEReader.pdb
+C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\obj\Debug\ResolveAssemblyReference.cache
+C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\obj\Debug\PEReader.dll
+C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\obj\Debug\PEReader.pdb

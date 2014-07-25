@@ -1,0 +1,8 @@
+IL Method OPCodes: System.Reflection.Emit.OpCodes
+http://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes%28v=vs.95%29.aspx
+http://www.codeproject.com/Articles/14058/Parsing-the-IL-of-a-Method-Body
+http://stackoverflow.com/questions/8485988/il-calling-a-method-with-2-array-arguments-using-reflection-emit
+http://en.wikipedia.org/wiki/List_of_CIL_instructions
+http://mrpfister.com/programming/opcodes-msil-and-reflecting-net-code/
+
+MDebug
