@@ -12,6 +12,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>An index into the GenericParam table, specifying to which generic parameter this row refers.</summary>
 		internal MetaCellPointer OwnerI { get { return base.GetValue<MetaCellPointer>(0); } }
+
 		/// <summary>
 		/// An index into the TypeDef, TypeRef, or TypeSpec tables,
 		/// specifying from which class this generic parameter is constrained to derive;

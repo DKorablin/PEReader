@@ -19,6 +19,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>An index into Field or Param table; more precisely, a HasFieldMarshal (§II.24.2.6) coded index.</summary>
 		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(0); } }
+
 		/// <summary>An index into the Blob heap</summary>
 		public Byte[] Native { get { return base.GetValue<Byte[]>(1); } }
 	}

@@ -11,6 +11,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>a 4-byte constant</summary>
 		public UInt32 Processor { get { return base.GetValue<UInt32>(0); } }
+
 		/// <summary>an index into the AssemblyRef table</summary>
 		internal MetaCellPointer AssemblyRefI { get { return base.GetValue<MetaCellPointer>(1); } }
 

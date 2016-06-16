@@ -15,12 +15,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>A 4-byte bit mask of type TypeAttributes.</summary>
 		public FieldAttributes Flags { get { return (FieldAttributes)base.GetValue<UInt16>(0); } }
+
 		/// <summary>Field Name</summary>
 		public String Name { get { return base.GetValue<String>(1); } }
+
 		/// <summary>Banana</summary>
 		public Byte[] Signature { get { return base.GetValue<Byte[]>(2); } }
+
 		/// <summary>First byte of signature</summary>
 		public CorSignature FieldSig { get { return (CorSignature)this.Signature[0]; } }
+
 		/// <summary>Field type</summary>
 		public Cor.ELEMENT_TYPE ReturnType { get { return (Cor.ELEMENT_TYPE)this.Signature[1]; } }
 	}

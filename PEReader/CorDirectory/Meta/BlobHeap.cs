@@ -17,6 +17,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				throw new InvalidOperationException();
 		}
 
+		/// <summary></summary>
+		/// <param name="pointer"></param>
+		/// <returns></returns>
+		protected override Byte[] GetDataByPointer(Int32 pointer)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>Binds the data form stream to byte array</summary>
 		protected override SortedList<Int32,Byte[]> DataBind()
 		{

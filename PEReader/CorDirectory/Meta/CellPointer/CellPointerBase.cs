@@ -7,18 +7,24 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	[DefaultProperty("TableType")]
 	public class CellPointerBase
 	{
+		#region Fields
 		private readonly MetaCell _cell;
 		private readonly UInt32? _rowIndex;
 		private readonly Cor.MetaTableType _tableType;
+		#endregion Fields
 
 		/// <summary>Source cell</summary>
 		public MetaCell Cell { get { return this._cell; } }
+
 		/// <summary>Row index in target table</summary>
 		public UInt32? RowIndex { get { return this._rowIndex; } }
+
 		/// <summary>Target table type</summary>
 		public Cor.MetaTableType TableType { get { return this._tableType; } }
+
 		/// <summary>Target table</summary>
 		public MetaTable TargetTable { get { return this.Cell.Table.Root[this.TableType]; } }
+
 		/// <summary>Target row</summary>
 		public MetaRow TargetRow { get { return this.RowIndex == null ? null : this.TargetTable[this.RowIndex.Value]; } }
 

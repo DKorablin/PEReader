@@ -16,12 +16,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			: this(cell, (rawValue & 0xFFFFFF), (MetaColumnType)(rawValue >> 24))
 		{
 		}
+
 		internal MetaCellCodedToken(MetaCell cell, UInt32 rowIndex, MetaColumnType columnType)
 			: base(cell,
 			(UInt32)rowIndex,
 			(Cor.MetaTableType)columnType)
 		{
 		}
+
 		internal static Int32 ToToken(MetaColumnType column, Int32 index)
 		{
 			if(index < 0)

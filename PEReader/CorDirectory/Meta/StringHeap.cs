@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
@@ -16,52 +17,44 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			if(base.Header.Type != Cor.StreamHeaderType.String)
 				throw new InvalidOperationException();
 		}
-		/*/// <summary>Get string from string heap</summary>
-		/// <param name="index">String index in the heap</param>
-		/// <returns>String from heap</returns>
-		public String this[Int32 index]
+
+		/// <summary>
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+		/// </summary>
+		/// <param name="pointer">Pointer in the heap</param>
+		/// <returns>Data by pointer</returns>
+		protected override String GetDataByPointer(Int32 pointer)
 		{
-			get
-			{
-				return this.GetData()[index];
+			SortedList<Int32, String> data = base.GetData();
+			Int32 key = pointer;
+			String nearestString = null;
+			while(key >= 0 && !data.TryGetValue(key, out nearestString))
+				key--;
 
-				//
-				// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string. Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other. Such an assembly can be read by Asmex if the GetByOffset method of MDHeap is overridded in the MDStringHeap class thus:
-				//
-				//Int32 originalKey = key;
-				//String result = this.Data[key];
+			Int32 diff = pointer - key;
 
-				//while(result == null && key >= 0)
-				//	result = this.Data[--key];// Locate the previous key (there's probably a more efficient way of doing this).
+			//TODO: Here i can add found string to the SortedList<,>
+			String result = nearestString.Substring(diff, nearestString.Length - diff);
+			return result;
+		}
 
-				//if(originalKey != key)
-				//{// re-index into the string
-				//	Int32 diff = originalKey - key;
-				//	result = result.Substring(diff, result.Length - diff);
-				//}
-				//return result;
-			}
-		}*/
 		/// <summary>Binds the data form stream to string array</summary>
 		protected override SortedList<Int32,String> DataBind()
 		{
 			SortedList<Int32, String> result = new SortedList<Int32, String>();
 
-			Int32 ptr = 0;
 			Byte[] bytes = base.Bytes;
-			String str = String.Empty;
+			Int32 ptr = 0;
 
 			for(Int32 loop = 0; loop < bytes.Length; loop++)
 			{
 				if(bytes[loop] == 0)
 				{
+					String str = Encoding.ASCII.GetString(bytes, ptr, loop - ptr);
+
 					result.Add(ptr, str);
 					ptr = loop + 1;
-					str = String.Empty;
-				} else
-				{
-					Char ch = (Char)bytes[loop];
-					str += ch;
 				}
 			}
 			return result;

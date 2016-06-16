@@ -19,8 +19,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// more precisely, a MemberRefParent (§II.24.2.6) coded index.
 		/// </summary>
 		public MetaCellCodedToken Class { get { return base.GetValue<MetaCellCodedToken>(0); } }
+
 		/// <summary>Memeber name</summary>
 		public String Name { get { return base.GetValue<String>(1); } }
+
 		/// <summary>Banana</summary>
 		public Byte[] Signature { get { return base.GetValue<Byte[]>(2); } }
 	}

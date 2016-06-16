@@ -11,6 +11,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// more precisely, a MethodDefOrRef (§II.24.2.6) coded index.
 		/// </summary>
 		public MetaCellCodedToken Method { get { return base.GetValue<MetaCellCodedToken>(0); } }
+
 		/// <summary>Signature of this instantiation</summary>
 		public Byte[] Instantiation { get { return base.GetValue<Byte[]>(1); } }
 	}

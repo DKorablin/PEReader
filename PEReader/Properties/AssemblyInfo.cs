@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Danila Korablin")]
 [assembly: AssemblyProduct("Portable Executable Reader")]
-[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2014")]
+[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

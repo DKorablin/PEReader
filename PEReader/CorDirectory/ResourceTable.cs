@@ -12,8 +12,11 @@ namespace AlphaOmega.Debug.CorDirectory
 	[DefaultProperty("Header")]
 	public class ResourceTable : CorDirectoryBase, IEnumerable<ResourceTableReader>
 	{
+		#region Fields
 		private Cor.ResourceManagerHeader? _header;
 		private Cor.ResourceSetHeader? _set;
+		#endregion Fields
+
 		/// <summary>Managed resource header</summary>
 		public Cor.ResourceManagerHeader Header
 		{
@@ -24,6 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				return this._header.Value;
 			}
 		}
+
 		/// <summary>Resource header</summary>
 		/// <exception cref="T:InvalidOperationException">Managed resource header is invalid</exception>
 		public Cor.ResourceSetHeader RuntimeHeader
@@ -42,12 +46,14 @@ namespace AlphaOmega.Debug.CorDirectory
 				return this._set.Value;
 			}
 		}
+
 		/// <summary>Create instance of managed resource class</summary>
 		/// <param name="parent">NT directory</param>
 		public ResourceTable(ComDescriptor parent)
 			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.Resources)
 		{
 		}
+
 		/// <summary>Get all metadata table rows that contains files in this directory</summary>
 		/// <returns>ManifestResource table rows</returns>
 		public IEnumerator<ResourceTableReader> GetEnumerator()
@@ -55,12 +61,13 @@ namespace AlphaOmega.Debug.CorDirectory
 			foreach(ManifestResourceRow row in base.Parent.MetaData.StreamTables.ManifestResource)
 				if(row.FileInDirectory)
 					yield return row.GetResourceReader();
-				else throw new NotImplementedException();
 		}
+
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}
+
 		/// <summary>Decode 7bit encoded Int</summary>
 		/// <param name="offset">Ofsset from resource_manager header</param>
 		/// <param name="value"></param>

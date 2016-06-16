@@ -97,7 +97,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="reader">Resource allocated bytes array</param>
 		/// <param name="padding">Padding from the beginning</param>
 		/// <returns></returns>
-		protected static SzInt GetSzOrInt(PinnedBufferReader reader, ref UInt32 padding)
+		protected internal static SzInt GetSzOrInt(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			SzInt result = new SzInt();
 			UInt16 flag = reader.BytesToStructure<UInt16>(padding);

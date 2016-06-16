@@ -10,9 +10,23 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private SortedList<Int32, T> _data;
 
 		/// <summary>Gets object by index</summary>
-		/// <param name="index">Index in the heap</param>
+		/// <param name="pointer">Index in the heap</param>
 		/// <returns>Object from heap by index</returns>
-		public virtual T this[Int32 index] { get { return this.GetData()[index]; } }
+		public virtual T this[Int32 pointer]
+		{
+			get
+			{
+				T result;
+				SortedList<Int32, T> data = this.GetData();
+				if(data.TryGetValue(pointer, out result))
+				{
+					return result;
+				} else
+				{
+					return this.GetDataByPointer(pointer);
+				}
+			}
+		}
 
 		/// <summary>heap data</summary>
 		public IEnumerable<T> Data { get { return this.GetData().Values; } }
@@ -27,12 +41,20 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Gets data in the sorted array form</summary>
 		/// <returns>Sorted array from the stream</returns>
-		public virtual SortedList<Int32, T> GetData()
+		protected virtual SortedList<Int32, T> GetData()
 		{
-			if(this._data == null)
-				this._data = this.DataBind();
-			return this._data;
+			return this._data == null
+				? this._data = this.DataBind()
+				: this._data;
 		}
+
+		/// <summary>
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+		/// </summary>
+		/// <param name="pointer">Pointer in the heap</param>
+		/// <returns>Data by pointer</returns>
+		protected abstract T GetDataByPointer(Int32 pointer);
 
 		/// <summary>Bind the stream data to the structured form</summary>
 		/// <returns>Sorted list array</returns>

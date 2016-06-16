@@ -11,8 +11,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>An index into the TypeDef table</summary>
 		internal MetaCellPointer ClassI { get { return base.GetValue<MetaCellPointer>(0); } }
+
 		/// <summary>An index into the MethodDef or MemberRef table; more precisely, a MethodDefOrRef (§II.24.2.6) coded index.</summary>
 		public MetaCellCodedToken MethodBody { get { return base.GetValue<MetaCellCodedToken>(1); } }
+
 		/// <summary>An index into the MethodDef or MemberRef table; more precisely, a MethodDefOrRef (§II.24.2.6) coded index.</summary>
 		public MetaCellCodedToken MethodDeclaration { get { return base.GetValue<MetaCellCodedToken>(2); } }
 

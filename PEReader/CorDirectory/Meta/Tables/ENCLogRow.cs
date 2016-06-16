@@ -10,6 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>Banana</summary>
 		public UInt32 Token { get { return base.GetValue<UInt32>(0); } }
+
 		/// <summary>Banana</summary>
 		public UInt32 FuncCode { get { return base.GetValue<UInt32>(1); } }
 	}

@@ -18,6 +18,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				this._row = value;
 			}
 		}
+
 		/// <summary>Получить значение из колонки ряда по значению</summary>
 		/// <typeparam name="T">Тип данных в колонке</typeparam>
 		/// <param name="columnIndex">Индекс колонки в таблице метаданных</param>
@@ -26,6 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			return (T)this.Row[columnIndex].Value;
 		}
+
 		/// <summary>Проверка на наличие бита дабы уменьшить синтаксис</summary>
 		/// <param name="flags">Флаги</param>
 		/// <param name="enumValue">Значение бита, которое надо проверить</param>
@@ -34,6 +36,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			return (flags & enumValue) == enumValue;
 		}
+
 		/// <summary>Отобразить текущий объект ввиде строки</summary>
 		/// <param name="args">Ключевой объект от наследуемого класса</param>
 		/// <returns>Строка</returns>

@@ -10,6 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>A 4-byte constant.</summary>
 		public UInt32 Offset { get { return base.GetValue<UInt32>(0); } }
+
 		/// <summary>An index into the Field table.</summary>
 		internal MetaCellPointer FieldI { get { return base.GetValue<MetaCellPointer>(1); } }
 

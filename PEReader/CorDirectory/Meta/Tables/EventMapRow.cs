@@ -8,6 +8,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>An index into the TypeDef table</summary>
 		internal MetaCellPointer ParentI { get { return base.GetValue<MetaCellPointer>(0); } }
+
 		/// <summary>An index into the Event table.</summary>
 		internal MetaCellPointer EventListI { get { return base.GetValue<MetaCellPointer>(1); } }
 
@@ -16,6 +17,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new TypeDefRow() { Row = this.ParentI.TargetRow, }; }
 		}
+
 		/// <summary>Rows from Event table.</summary>
 		public IEnumerable<EventRow> EventList
 		{

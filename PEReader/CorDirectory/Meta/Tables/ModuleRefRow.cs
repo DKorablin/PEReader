@@ -10,6 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// (typically, it might name the file used to hold the module).
 		/// </summary>
 		public String Name { get { return base.GetValue<String>(0); } }
+
 		/// <summary>Name</summary>
 		/// <returns>String</returns>
 		public override String ToString()

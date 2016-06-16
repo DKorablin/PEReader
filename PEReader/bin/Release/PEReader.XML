@@ -4924,6 +4924,39 @@
             <exception cref="T:ArgumentOutOfRangeException">columnIndex out of row columns</exception>
             <returns>Table cell</returns>
         </member>
+        <member name="T:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1">
+            <summary>Typed stream header</summary>
+            <typeparam name="T">Type of the stream data</typeparam>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.#ctor(AlphaOmega.Debug.CorDirectory.MetaData,AlphaOmega.Debug.Cor.STREAM_HEADER)">
+            <summary>Create instance of the typed stream header</summary>
+            <param name="loader">MetaData</param>
+            <param name="header">Stream header</param>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.GetData">
+            <summary>Gets data in the sorted array form</summary>
+            <returns>Sorted array from the stream</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.GetDataByPointer(System.Int32)">
+            <summary>
+            The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+            Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+            </summary>
+            <param name="pointer">Pointer in the heap</param>
+            <returns>Data by pointer</returns>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.DataBind">
+            <summary>Bind the stream data to the structured form</summary>
+            <returns>Sorted list array</returns>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.Item(System.Int32)">
+            <summary>Gets object by index</summary>
+            <param name="pointer">Index in the heap</param>
+            <returns>Object from heap by index</returns>
+        </member>
+        <member name="P:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.Data">
+            <summary>heap data</summary>
+        </member>
         <member name="T:AlphaOmega.Debug.NTDirectory.Debug">
             <summary>Debug directory class</summary>
         </member>
@@ -5340,36 +5373,19 @@
         <member name="T:AlphaOmega.Debug.CorDirectory.Meta.StringHeap">
             <summary>String heap class</summary>
         </member>
-        <member name="T:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1">
-            <summary>Typed stream header</summary>
-            <typeparam name="T">Type of the stream data</typeparam>
-        </member>
-        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.#ctor(AlphaOmega.Debug.CorDirectory.MetaData,AlphaOmega.Debug.Cor.STREAM_HEADER)">
-            <summary>Create instance of the typed stream header</summary>
-            <param name="loader">MetaData</param>
-            <param name="header">Stream header</param>
-        </member>
-        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.GetData">
-            <summary>Gets data in the sorted array form</summary>
-            <returns>Sorted array from the stream</returns>
-        </member>
-        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.DataBind">
-            <summary>Bind the stream data to the structured form</summary>
-            <returns>Sorted list array</returns>
-        </member>
-        <member name="P:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.Item(System.Int32)">
-            <summary>Gets object by index</summary>
-            <param name="index">Index in the heap</param>
-            <returns>Object from heap by index</returns>
-        </member>
-        <member name="P:AlphaOmega.Debug.CorDirectory.Meta.StreamHeaderTyped`1.Data">
-            <summary>heap data</summary>
-        </member>
         <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StringHeap.#ctor(AlphaOmega.Debug.CorDirectory.MetaData,AlphaOmega.Debug.Cor.STREAM_HEADER)">
             <summary>Create instance of String heap class</summary>
             <param name="meta">MetaData directory</param>
             <param name="header">.NET stream header</param>
             <exception cref="T:InvalidOperationException">StringHeap class can only read String heap</exception>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StringHeap.GetDataByPointer(System.Int32)">
+            <summary>
+            The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+            Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+            </summary>
+            <param name="pointer">Pointer in the heap</param>
+            <returns>Data by pointer</returns>
         </member>
         <member name="M:AlphaOmega.Debug.CorDirectory.Meta.StringHeap.DataBind">
             <summary>Binds the data form stream to string array</summary>
@@ -7084,6 +7100,14 @@
             <param name="header">.NET stream header</param>
             <exception cref="T:InvalidOperationException">GuidHeap can only read Guid heaps</exception>
         </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.GuidHeap.GetDataByPointer(System.Int32)">
+            <summary>
+            The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+            Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+            </summary>
+            <param name="pointer">Pointer in the heap</param>
+            <returns>Data by pointer</returns>
+        </member>
         <member name="M:AlphaOmega.Debug.CorDirectory.Meta.GuidHeap.DataBind">
             <summary>Binds the data form stream to guid array</summary>
         </member>
@@ -7126,7 +7150,7 @@
         </member>
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.#ctor(System.Byte[])">
             <summary>Create instance of bytesreader class</summary>
-            <param name="bytes">Bytes</param>
+            <param name="buffer">Buffer</param>
         </member>
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.UInt32@)">
             <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
@@ -7192,35 +7216,35 @@
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.Byte[],System.UInt32@)">
             <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
             <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="bytes">Массив байт на который наложить структуру</param>
+            <param name="buffer">Массив байт на который наложить структуру</param>
             <param name="padding">Отступ от начала массива байт и отступ от начала массива + конца структуры</param>
             <returns>Наложенная структура с данными</returns>
         </member>
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.Byte[],System.UInt32)">
             <summary>Накладывание структуры на массив байт</summary>
             <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="bytes">Массив байт на который наложить структуру</param>
+            <param name="buffer">Массив байт на который наложить структуру</param>
             <param name="padding">Отступ от начала массива байт</param>
             <returns>Наложенная структура с данными</returns>
         </member>
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStructure``1(System.Byte[],System.UInt32,System.Int32@)">
             <summary>Накладывание структуры на массив байт</summary>
             <typeparam name="T">Тип накладываемой структуры</typeparam>
-            <param name="bytes">Массив байт на который наложить структуру</param>
+            <param name="buffer">Массив байт на который наложить структуру</param>
             <param name="padding">Отступ от начала массива байт</param>
             <param name="length">Размер полчившегося массива</param>
             <returns>Наложенная структура с данными</returns>
         </member>
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringUni(System.Byte[],System.UInt32,System.Int32@)">
             <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="bytes">Массив байт</param>
+            <param name="buffer">Массив байт</param>
             <param name="padding">Отступ от начала массива</param>
             <param name="length">Результатирующий размер строки</param>
             <returns>Получаемая строка</returns>
         </member>
         <member name="M:AlphaOmega.Debug.PinnedBufferReader.BytesToStringAnsi(System.Byte[],System.UInt32,System.Int32@)">
             <summary>Преобразование массива байт от отступа в строку</summary>
-            <param name="bytes">Массив байт</param>
+            <param name="buffer">Массив байт</param>
             <param name="padding">Отступ от начала массива</param>
             <param name="length">Результатирующий размер строки</param>
             <returns>Получаемая строка</returns>
@@ -7238,19 +7262,19 @@
             <summary>Release allocated memory</summary>
             <param name="disposing">Free managed resources</param>
         </member>
-        <member name="P:AlphaOmega.Debug.PinnedBufferReader.Bytes">
+        <member name="P:AlphaOmega.Debug.PinnedBufferReader.Buffer">
             <summary>Bytes array</summary>
         </member>
         <member name="P:AlphaOmega.Debug.PinnedBufferReader.Handle">
             <summary>Allocated handle</summary>
         </member>
         <member name="P:AlphaOmega.Debug.PinnedBufferReader.Item(System.UInt32)">
-            <summary>Read byte from index</summary>
-            <param name="index"></param>
-            <returns></returns>
+            <summary>Read byte from buffer</summary>
+            <param name="index">Index in the buffer array</param>
+            <returns>One byte from the buffer</returns>
         </member>
         <member name="P:AlphaOmega.Debug.PinnedBufferReader.Length">
-            <summary>Length of the array</summary>
+            <summary>Length of the buffer</summary>
         </member>
         <member name="T:AlphaOmega.Debug.CorDirectory.Meta.MetaRowCollection">
             <summary>MetaTable rows collection</summary>
@@ -7286,6 +7310,11 @@
             <param name="meta">MetaData directory</param>
             <param name="header">.NET stream header</param>
             <exception cref="T:InvalidOperationException">Blob heap can read only UnicodeString and Blob heaps</exception>
+        </member>
+        <member name="M:AlphaOmega.Debug.CorDirectory.Meta.BlobHeap.GetDataByPointer(System.Int32)">
+            <summary></summary>
+            <param name="pointer"></param>
+            <returns></returns>
         </member>
         <member name="M:AlphaOmega.Debug.CorDirectory.Meta.BlobHeap.DataBind">
             <summary>Binds the data form stream to byte array</summary>

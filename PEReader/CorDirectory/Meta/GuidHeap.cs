@@ -17,6 +17,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			if(base.Header.Type != Cor.StreamHeaderType.Guid)
 				throw new InvalidOperationException();
 		}
+
 		/// <summary>Получить Guid по сдвигу.</summary>
 		/// <param name="index">Сдвиг с начала кучи.</param>
 		/// <returns>Guid по сдвигу.</returns>
@@ -24,12 +25,23 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		{
 			get
 			{
-				if(index == 0)
-					return Guid.Empty;
-				else
-					return base[index - 1];
+				return index == 0
+					? Guid.Empty
+					: base[index - 1];
 			}
 		}
+
+		/// <summary>
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+		/// </summary>
+		/// <param name="pointer">Pointer in the heap</param>
+		/// <returns>Data by pointer</returns>
+		protected override Guid GetDataByPointer(Int32 pointer)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>Binds the data form stream to guid array</summary>
 		protected override SortedList<Int32, Guid> DataBind()
 		{

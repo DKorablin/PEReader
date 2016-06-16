@@ -15,6 +15,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				(Cor.MetaTableType)cell.Column.ColumnType)
 		{
 		}
+
 		/// <summary>Получить в итерации ряды с индекса на который указывает текущий указатель</summary>
 		/// <remarks>Метод специфичен для определённых таблиц. Поэтому переносить в базовый класс - бессмысленно</remarks>
 		/// <returns>Target rows array</returns>

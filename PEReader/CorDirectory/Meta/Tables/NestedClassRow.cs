@@ -11,14 +11,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>An index into the TypeDef table</summary>
 		internal MetaCellPointer NestedClassI { get { return base.GetValue<MetaCellPointer>(0); } }
+
 		/// <summary>An index into the TypeDef table</summary>
 		internal MetaCellPointer EnclosingClassI { get { return base.GetValue<MetaCellPointer>(1); } }
+
 
 		/// <summary>Child class row from TypeDef table</summary>
 		public TypeDefRow NestedClass
 		{
 			get { return new TypeDefRow() { Row = this.NestedClassI.TargetRow, }; }
 		}
+
 		/// <summary>Parent class row from TypeDef table</summary>
 		public TypeDefRow EnclosingClass
 		{

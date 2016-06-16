@@ -21,11 +21,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// in implementations where the action is not available, no access to the assembly, type, or method shall be permitted.
 		/// </summary>
 		public UInt16 Action { get { return base.GetValue<UInt16>(0); } }
+
 		/// <summary>
 		/// an index into the TypeDef, MethodDef, or Assembly table;
 		/// more precisely, a HasDeclSecurity (§II.24.2.6) coded index.
 		/// </summary>
 		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(1); } }
+
 		/// <summary>
 		/// The permission set contains the permissions that were requested with an
 		/// Action on a specific Method, Type, or Assembly (see Parent).

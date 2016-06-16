@@ -12,6 +12,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>A 2-byte constant.</summary>
 		public UInt16 PackingSize { get { return base.GetValue<UInt16>(0); } }
+
 		/// <summary>A 4-byte constant</summary>
 		/// <remarks>
 		/// ClassSize of zero does not mean the class has zero size.
@@ -21,6 +22,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// runtime platform.
 		/// </remarks>
 		public UInt32 ClassSize { get { return base.GetValue<UInt32>(1); } }
+
 		/// <summary>An index into the TypeDef table.</summary>
 		internal MetaCellPointer ParentI { get { return base.GetValue<MetaCellPointer>(2); } }
 

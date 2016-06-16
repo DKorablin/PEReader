@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug
 		static void Main(String[] args)
 		{
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";
-			String dll = @"C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Windows.Forms\Flatbed.MDI\Plugins\bin\Plugin.PEImageInfo.dll";
+			String dll = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
 			//String dll = @"C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\DeviceIoControl\DeviceIoControl\bin\Release\DeviceIoControl.dll";
 			//String dll = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
 			//String dll = @"C:\Visual Studio Projects\C++\SeQueL Explorer\bin\ManagedFlatbed.dll";
@@ -423,15 +423,15 @@ namespace AlphaOmega.Debug
 								break;
 							case Cor.StreamHeaderType.Guid:
 								var gHeap = (GuidHeap)header;
-								SortedList<Int32, Guid> guids = gHeap.GetData();
+								Guid[] guids = gHeap.Data.ToArray();
 								break;
 							case Cor.StreamHeaderType.Blob:
 								var bHeap = (BlobHeap)header;
-								SortedList<Int32, Byte[]> bytes = bHeap.GetData();
+								Byte[][] bytes = bHeap.Data.ToArray();
 								break;
 							case Cor.StreamHeaderType.String:
 								var sHeap = (StringHeap)header;
-								SortedList<Int32, String> strings = sHeap.GetData();
+								String[] strings = sHeap.Data.ToArray();
 								break;
 							case Cor.StreamHeaderType.UnicodeSting:
 								var usHeap = (USHeap)header;

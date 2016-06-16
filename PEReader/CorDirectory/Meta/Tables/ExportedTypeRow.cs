@@ -11,6 +11,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>Specifies type attributes.</summary>
 		public TypeAttributes Flags { get { return (TypeAttributes)base.GetValue<UInt32>(0); } }
+
 		/// <summary>
 		/// A 4-byte index into a TypeDef table of another module in this Assembly).
 		/// This column is used as a hint only.
@@ -19,10 +20,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// Ignored and should be zero if Flags has IsTypeForwarder set.
 		/// </summary>
 		public UInt32 TypeDefId { get { return base.GetValue<UInt32>(1); } }
+
 		/// <summary>Type name</summary>
 		public String TypeName { get { return base.GetValue<String>(2); } }
+
 		/// <summary>Type namespace</summary>
 		public String TypeNamespace { get { return base.GetValue<String>(3); } }
+
 		/// <summary>
 		/// This is an index (more precisely, an Implementation (§II.24.2.6) coded index) into either of the following tables:
 		///		File table, where that entry says which module in the current assembly holds the TypeDef
@@ -35,11 +39,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <returns>String</returns>
 		public override String ToString()
 		{
-			String result;
-			if(String.IsNullOrEmpty(this.TypeNamespace))
-				result = this.TypeName;
-			else
-				result = this.TypeNamespace + "." + this.TypeName;
+			String result = String.IsNullOrEmpty(this.TypeNamespace)
+				? this.TypeName
+				: this.TypeNamespace + "." + this.TypeName;
 
 			return base.ToString(result);
 		}
