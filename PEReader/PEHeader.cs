@@ -34,7 +34,7 @@ namespace AlphaOmega.Debug
 			{
 				if(!this._is64Bit.HasValue)
 				{
-					if(this.IsValidPeHeader)
+					if(this.IsValid)
 						this._is64Bit = this.HeaderNT64.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 					else this._is64Bit = false;
 				}
@@ -44,7 +44,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Загруженный PE файл является валидным</summary>
-		public Boolean IsValidPeHeader
+		public Boolean IsValid
 		{
 			get
 			{
@@ -169,7 +169,7 @@ namespace AlphaOmega.Debug
 		/// <exception cref="T:InvalidOperationException">PE image is invalid</exception>
 		public virtual void ValidatePeFile()
 		{
-			if(!this.IsValidPeHeader)
+			if(!this.IsValid)
 				throw new InvalidOperationException("Invalid PE File");
 		}
 

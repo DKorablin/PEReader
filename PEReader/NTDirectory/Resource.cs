@@ -11,7 +11,7 @@ namespace AlphaOmega.Debug.NTDirectory
 	public class Resource : PEDirectoryBase, IEnumerable<ResourceDirectory>
 	{
 		/// <summary>Root resource directory</summary>
-		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? RootResource
+		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? Header
 		{
 			get
 			{
@@ -151,7 +151,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <returns>Resourec directories</returns>
 		public IEnumerator<ResourceDirectory> GetEnumerator()
 		{
-			var root = this.RootResource;
+			var root = this.Header;
 			if(root.HasValue && root.Value.ContainsEntries)
 			{
 				UInt32 sizeOfStruct = ResourceDirectory.DirectoryEntrySize;

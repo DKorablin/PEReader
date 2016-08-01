@@ -109,7 +109,7 @@ namespace AlphaOmega.Debug
 
 			using(PEFile info = new PEFile(StreamLoader.FromFile(dll)))
 			{
-				if(info.Header.IsValidPeHeader)//Проверка на валидность загруженного файла
+				if(info.Header.IsValid)//Проверка на валидность загруженного файла
 				{
 					foreach(var section in info.Header.Sections)
 						Utils.ConsoleWriteMembers(section);

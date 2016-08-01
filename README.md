@@ -1,7 +1,42 @@
-PEReader
+﻿PEReader
 ========
 
 PE/PE+ reader library.
+Usage:
+<pre>
+using(PEFile file = new PEFile(StreamLoader.FromFile(@"C:\Windows\System32\kernel32.dll")))
+{
+	if(file.Header.IsValid)
+	{
+		if(!file.Resource.IsEmpty)
+		{//IMAGE_RESOURCE_DIRECTORY
+			//...
+		}
+
+		if(!file.Export.IsEmpty)
+		{//IMAGE_EXPORT_DIRECTORY
+			//...
+		}
+
+		if(!file.Import.IsEmpty)
+		{//IMAGE_IMPORT_DESCRIPTOR
+			//...
+		}
+
+		if(!file.Crtificate.IsEmpty)
+		{//WIN_CERTIFICATE
+			X509Certificate2 cert = file.Certificate.X509;
+			//...
+		}
+
+		if(file.ComDescriptor != null)
+		{//CLI
+			var metaData = file.ComDescriptor.MetaData;
+			//...
+		}
+	}
+}
+</pre>
 
 <ul>
   <li>DOS header (IMAGE_DOS_HEADER)</li>
