@@ -66,10 +66,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicDllLoader.cs" />
-    <Compile Include="PEFile\Helpers\IMAGE_DOS_HEADER.cs" />
-    <Compile Include="PEFile\Helpers\IMAGE_NT_HEADERS.cs" />
-    <Compile Include="PEFile\PEFile.cs" />
     <Compile Include="PEFile\Utility.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
