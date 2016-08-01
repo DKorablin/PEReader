@@ -1,0 +1,111 @@
+﻿using System;
+<<<<<<< HEAD
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+=======
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+>>>>>>> a19aeac02d80c25d8fd68cb439b59fc58b285e90
+
+namespace AlphaOmega.Debug.CorDirectory.Meta
+{
+	/// <summary>Guid heap class</summary>
+<<<<<<< HEAD
+	public class GuidHeap : StreamHeaderTyped<Guid>
+	{
+		private static UInt32 SizeOfGuid = (UInt32)Marshal.SizeOf(typeof(Guid));
+=======
+	public class GuidHeap : StreamHeader
+	{
+		private SortedList<Int32,Guid> _data;
+>>>>>>> a19aeac02d80c25d8fd68cb439b59fc58b285e90
+
+		/// <summary>Create instance of Guid heap class</summary>
+		/// <param name="meta">MetaData directory</param>
+		/// <param name="header">.NET stream header</param>
+		/// <exception cref="T:InvalidOperationException">GuidHeap can only read Guid heaps</exception>
+		public GuidHeap(MetaData meta, Cor.STREAM_HEADER header)
+			: base(meta, header)
+		{
+			if(base.Header.Type != Cor.StreamHeaderType.Guid)
+				throw new InvalidOperationException();
+		}
+<<<<<<< HEAD
+
+		/// <summary>Получить Guid по сдвигу.</summary>
+		/// <param name="index">Сдвиг с начала кучи.</param>
+		/// <returns>Guid по сдвигу.</returns>
+		public override Guid this[Int32 index]
+		{
+			get
+			{
+				return index == 0
+					? Guid.Empty
+					: base[index - 1];
+			}
+		}
+
+		/// <summary>
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+		/// </summary>
+		/// <param name="pointer">Pointer in the heap</param>
+		/// <returns>Data by pointer</returns>
+		protected override Guid GetDataByPointer(Int32 pointer)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>Binds the data form stream to guid array</summary>
+		protected override SortedList<Int32, Guid> DataBind()
+=======
+		/// <summary>Получить Guid по сдвигу.</summary>
+		/// <param name="index">Сдвиг с начала кучи.</param>
+		/// <returns>Guid по сдвигу.</returns>
+		public Guid this[Int32 index]
+		{
+			get
+			{
+				if(index == 0)
+					return Guid.Empty;
+				else
+					return this.Data[index - 1];
+			}
+		}
+		/// <summary>heap data</summary>
+		public SortedList<Int32,Guid> Data
+		{
+			get
+			{
+				if(this._data == null)
+					this._data = this.GetDataI();
+				return this._data;
+			}
+		}
+		private SortedList<Int32, Guid> GetDataI()
+>>>>>>> a19aeac02d80c25d8fd68cb439b59fc58b285e90
+		{
+			Int32 ptr = 0;
+			Byte[] bytes = base.Bytes;
+
+<<<<<<< HEAD
+			UInt32 sizeOfGuid = GuidHeap.SizeOfGuid;
+=======
+			UInt32 sizeOfGuid = (UInt32)Marshal.SizeOf(typeof(Guid));
+>>>>>>> a19aeac02d80c25d8fd68cb439b59fc58b285e90
+			UInt32 length = base.Header.Size / sizeOfGuid;
+			SortedList<Int32, Guid> result = new SortedList<Int32, Guid>((Int32)length);
+
+			for(Int32 loop = 0;loop < length;loop++)
+			{
+				Byte[] bTemp = new Byte[sizeOfGuid];
+				Array.Copy(bytes, loop * sizeOfGuid, bTemp, 0, sizeOfGuid);
+
+				result.Add(ptr, new Guid(bTemp));
+				ptr = loop;
+			}
+
+			return result;
+		}
+	}
+}
