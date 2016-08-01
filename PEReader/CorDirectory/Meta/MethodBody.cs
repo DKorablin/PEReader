@@ -10,6 +10,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Method body descriptor</summary>
 	public class MethodBody
 	{
+		private static UInt32 SizeOfMethodSection = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodSection));
+		private static UInt32 SizeOfMethodExceptionFat = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionFat));
+		private static UInt32 SizeOfMethodExceptionSmall = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionSmall));
+
 		private readonly MethodDefRow _row;
 		private static Dictionary<Byte, OpCode> _opCodeList;
 		private Cor.CorILMethodHeader? _header;
@@ -102,7 +106,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					//so let's read from the stream until we find the next boundary.
 					padding = NativeMethods.AlignToInt(padding);
 					Cor.CorILMethodSection section = header.PtrToStructure<Cor.CorILMethodSection>(padding);
-					padding += (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodSection));
+					padding += MethodBody.SizeOfMethodSection;
 
 					//I have never seen anything else than an exception handling section...
 					//According to the documentation "Currently, the method data sections
@@ -123,11 +127,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 						if(section.IsFatFormat)
 						{
 							fat[clauseIndex] = header.PtrToStructure<Cor.CorILMethodExceptionFat>(padding);
-							padding += (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionFat));
+							padding += MethodBody.SizeOfMethodExceptionFat;
 						} else
 						{
 							small[clauseIndex] = header.PtrToStructure<Cor.CorILMethodExceptionSmall>(padding);
-							padding += (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionSmall));
+							padding += MethodBody.SizeOfMethodExceptionSmall;
 						}
 					}
 					yield return new MethodSection(section, fat, small);

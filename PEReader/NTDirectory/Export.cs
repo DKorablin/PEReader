@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Export directory class</summary>
 	[DefaultProperty("DllName")]
-	public class Export : NTDirectoryBase
+	public class Export : PEDirectoryBase
 	{
 		/// <summary>Directory is empty</summary>
 		public override Boolean IsEmpty
@@ -36,7 +36,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of Export class</summary>
 		/// <param name="root">Data directory</param>
-		public Export(PEDirectory root)
+		public Export(PEFile root)
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.EXPORT)
 		{
 		}

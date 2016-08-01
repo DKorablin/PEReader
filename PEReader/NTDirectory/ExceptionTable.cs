@@ -5,7 +5,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Exception table class</summary>
 	[DefaultProperty("FirstEntry")]
-	public class ExceptionTable : NTDirectoryBase, IEnumerable<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY>
+	public class ExceptionTable : PEDirectoryBase, IEnumerable<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY>
 	{
 		/// <summary>First entry in exception table directory</summary>
 		public WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY? FirstEntry
@@ -20,7 +20,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of exception table class</summary>
 		/// <param name="parent">Data directory</param>
-		public ExceptionTable(PEDirectory parent)
+		public ExceptionTable(PEFile parent)
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.EXCEPTION)
 		{
 		}

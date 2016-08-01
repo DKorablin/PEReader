@@ -7,7 +7,6 @@ namespace AlphaOmega.Debug
 	/// <summary>NT Directory</summary>
 	public class PEDirectory : IDisposable
 	{//http://code.cheesydesign.com/?p=572 - .NET PE Reader
-
 		#region Fields
 		private PEHeader _header;
 

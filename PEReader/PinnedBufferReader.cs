@@ -24,10 +24,7 @@ namespace AlphaOmega.Debug
 		/// <summary>Read byte from buffer</summary>
 		/// <param name="index">Index in the buffer array</param>
 		/// <returns>One byte from the buffer</returns>
-		public Byte this[UInt32 index]
-		{
-			get { return this.Buffer[index]; }
-		}
+		public Byte this[UInt32 index] { get { return this.Buffer[index]; } }
 
 		/// <summary>Length of the buffer</summary>
 		public Int32 Length { get { return this.Buffer.Length; } }
@@ -84,7 +81,7 @@ namespace AlphaOmega.Debug
 
 			IntPtr ptr = padding == 0
 				? this.Handle
-				: new IntPtr(this._gcPointer.ToInt64() + padding);
+				: new IntPtr(this.Handle.ToInt64() + padding);
 
 			return (T)Marshal.PtrToStructure(ptr, typeof(T));
 		}
@@ -121,7 +118,7 @@ namespace AlphaOmega.Debug
 
 			IntPtr ptr = padding == 0
 				? this.Handle
-				: new IntPtr(this._gcPointer.ToInt64() + padding);
+				: new IntPtr(this.Handle.ToInt64() + padding);
 
 			String result = Marshal.PtrToStringUni(ptr);
 			length = (result.Length + 1) * Marshal.SystemDefaultCharSize;
@@ -136,6 +133,7 @@ namespace AlphaOmega.Debug
 			Int32 length;
 			return this.BytesToStringAnsi(padding, out length);
 		}
+
 		/// <summary>Преобразование массива байт от отступа в строку</summary>
 		/// <param name="padding">Отступ от начала массива, который после возврата станет отступом от конца строки</param>
 		/// <returns>Получаемая строка</returns>
@@ -146,6 +144,7 @@ namespace AlphaOmega.Debug
 			padding += (UInt32)length;
 			return result;
 		}
+
 		/// <summary>Преобразование массива байт от отступа в строку</summary>
 		/// <param name="padding">Offset from the beginning of the array</param>
 		/// <param name="length">Результатирующий размер строки</param>
@@ -158,7 +157,7 @@ namespace AlphaOmega.Debug
 
 			IntPtr ptr = padding == 0
 				? this.Handle
-				: new IntPtr(this._gcPointer.ToInt64() + padding);
+				: new IntPtr(this.Handle.ToInt64() + padding);
 
 			String result = Marshal.PtrToStringAnsi(ptr);
 			length = (result.Length + 1);//ANSII length == 1
@@ -179,6 +178,7 @@ namespace AlphaOmega.Debug
 			Array.Copy(this.Buffer, padding, result, 0, result.Length);
 			return result;
 		}
+
 		/// <summary>Накладывание структуры на массив байт и увеличивание отступа на размер массива</summary>
 		/// <typeparam name="T">Тип накладываемой структуры</typeparam>
 		/// <param name="buffer">Массив байт на который наложить структуру</param>
@@ -191,6 +191,7 @@ namespace AlphaOmega.Debug
 			padding += (UInt32)length;
 			return result;
 		}
+
 		/// <summary>Накладывание структуры на массив байт</summary>
 		/// <typeparam name="T">Тип накладываемой структуры</typeparam>
 		/// <param name="buffer">Массив байт на который наложить структуру</param>
@@ -201,6 +202,7 @@ namespace AlphaOmega.Debug
 			Int32 length;
 			return PinnedBufferReader.BytesToStructure<T>(buffer, padding, out length);
 		}
+
 		/// <summary>Накладывание структуры на массив байт</summary>
 		/// <typeparam name="T">Тип накладываемой структуры</typeparam>
 		/// <param name="buffer">Массив байт на который наложить структуру</param>
@@ -212,6 +214,7 @@ namespace AlphaOmega.Debug
 			using(PinnedBufferReader reader = new PinnedBufferReader(buffer))
 				return reader.BytesToStructure<T>(padding, out length);
 		}
+
 		/// <summary>Преобразование массива байт от отступа в строку</summary>
 		/// <param name="buffer">Массив байт</param>
 		/// <param name="padding">Отступ от начала массива</param>
@@ -222,6 +225,7 @@ namespace AlphaOmega.Debug
 			using(PinnedBufferReader reader = new PinnedBufferReader(buffer))
 				return reader.BytesToStringUni(padding, out length);
 		}
+
 		/// <summary>Преобразование массива байт от отступа в строку</summary>
 		/// <param name="buffer">Массив байт</param>
 		/// <param name="padding">Отступ от начала массива</param>
@@ -232,6 +236,7 @@ namespace AlphaOmega.Debug
 			using(PinnedBufferReader reader = new PinnedBufferReader(buffer))
 				return reader.BytesToStringAnsi(padding, out length);
 		}
+
 		/// <summary>Преобразование структуры из памяти в массив байт</summary>
 		/// <typeparam name="T">Структура, которую необходимо преобразовать</typeparam>
 		/// <param name="structure">Структура для преобразования</param>
@@ -252,12 +257,14 @@ namespace AlphaOmega.Debug
 			}
 			return result;
 		}
+
 		/// <summary>Release allocated memory</summary>
 		public void Dispose()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
 		/// <summary>Release allocated memory</summary>
 		/// <param name="disposing">Free managed resources</param>
 		protected virtual void Dispose(Boolean disposing)

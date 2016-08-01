@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
-using AlphaOmega.Debug.CorDirectory;
 
 namespace AlphaOmega.Debug
 {
@@ -15,8 +13,10 @@ namespace AlphaOmega.Debug
 	{
 		static void Main(String[] args)
 		{
+			String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
+			String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";
-			String dll = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
+			//String dll = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
 			//String dll = @"C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\DeviceIoControl\DeviceIoControl\bin\Release\DeviceIoControl.dll";
 			//String dll = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
 			//String dll = @"C:\Visual Studio Projects\C++\SeQueL Explorer\bin\ManagedFlatbed.dll";
@@ -57,7 +57,9 @@ namespace AlphaOmega.Debug
 				try
 				{
 					//dll = fileName;
-					ReadPeInfo2(dll, true, false);
+
+					ReadObjInfo(obj);
+					//ReadPeInfo2(dll, true, false);
 					
 				} catch(Win32Exception exc)
 				{
@@ -80,20 +82,41 @@ namespace AlphaOmega.Debug
 				}
 			return;
 		}
+
+		static void ReadObjInfo(String obj)
+		{
+			using(ObjFile info = new ObjFile(StreamLoader.FromFile(obj)))
+			{
+				if(info.IsValidObjHeader)//Проверка на валидность загруженного файла
+				{
+					Utils.ConsoleWriteMembers(info.FileHeader);
+
+					foreach(var section in info.Sections)
+						Utils.ConsoleWriteMembers(section);
+
+					foreach(var symbol in info.Symbols)
+					{
+						Utils.ConsoleWriteMembers(symbol);
+					}
+				}
+			}
+		}
+
 		static void ReadPeInfo2(String dll, Boolean showDllName, Boolean pauseOnDir)
 		{
 			if(showDllName)
 				Console.WriteLine("Reading file: {0}", dll);
 
-			using(PEDirectory info = new PEDirectory(StreamLoader.FromFile(dll)))
+			using(PEFile info = new PEFile(StreamLoader.FromFile(dll)))
 			{
-				if(info.Header.IsValidHeader)//Проверка на валидность загруженного файла
+				if(info.Header.IsValidPeHeader)//Проверка на валидность загруженного файла
 				{
 					foreach(var section in info.Header.Sections)
 						Utils.ConsoleWriteMembers(section);
 
-					if(info.Header.SymbolTable.HasValue)
+					if(info.Header.SymbolTable != null)
 						Utils.ConsoleWriteMembers(info.Header.SymbolTable.Value);
+
 					if(!info.Resource.IsEmpty)
 					{
 						Console.WriteLine("===Resources===");
@@ -115,19 +138,19 @@ namespace AlphaOmega.Debug
 										switch(dir.DirectoryEntry.NameType)
 										{
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_VERSION:
-											var version1 = new AlphaOmega.Debug.NTDirectory.ResourceVersion(dir2);
+											var version1 = new AlphaOmega.Debug.NTDirectory.Resources.ResourceVersion(dir2);
 											var strFileInfo = version1.GetFileInfo();
 											Utils.ConsoleWriteMembers(version1.FileInfo.Value);
 											
 											//WinNT.StringFileInfo fInfo = NativeMethods.BytesToStructure<WinNT.StringFileInfo>(bytesV, ptr);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING:
-											var strings = new AlphaOmega.Debug.NTDirectory.ResourceString(dir2);
+											var strings = new AlphaOmega.Debug.NTDirectory.Resources.ResourceString(dir2);
 											foreach(var entry in strings)
 												Utils.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ACCELERATOR:
-											var acc = new AlphaOmega.Debug.NTDirectory.ResourceAccelerator(dir2).ToArray();
+											var acc = new AlphaOmega.Debug.NTDirectory.Resources.ResourceAccelerator(dir2).ToArray();
 											String testAcc=String.Empty;
 											foreach(var a in acc)
 												Utils.ConsoleWriteMembers(a);
@@ -137,22 +160,29 @@ namespace AlphaOmega.Debug
 											String xml = System.Text.Encoding.GetEncoding((Int32)dir2.DataEntry.Value.CodePage).GetString(bytesM);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MESSAGETABLE:
-											var messageTable = new AlphaOmega.Debug.NTDirectory.ResourceMessageTable(dir2);
+											var messageTable = new AlphaOmega.Debug.NTDirectory.Resources.ResourceMessageTable(dir2);
 											foreach(var entry in messageTable)
-												Utils.ConsoleWriteMembers(messageTable);
+												Utils.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU:
-											var resMenu = new AlphaOmega.Debug.NTDirectory.ResourceMenu(dir2);
-											var menu = resMenu.GetMenuTemplate();
-											Utils.ConsoleWriteMembers(menu);
+											var resMenu = new AlphaOmega.Debug.NTDirectory.Resources.ResourceMenu(dir2);
+											foreach(var entry in resMenu.GetMenuTemplate())
+											Utils.ConsoleWriteMembers(entry);
+											break;
+										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR:
+											var resToolbar = new AlphaOmega.Debug.NTDirectory.Resources.ResourceToolBar(dir2);
+											Utils.ConsoleWriteMembers(resToolbar.Header);
+
+											foreach(var entry in resToolbar.GetToolBarTemplate())
+												Utils.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONTDIR:
-											var resFontDir = new AlphaOmega.Debug.NTDirectory.ResourceFontDir(dir2);
+											var resFontDir = new AlphaOmega.Debug.NTDirectory.Resources.ResourceFontDir(dir2);
 											foreach(var fontItem in resFontDir)
 												Utils.ConsoleWriteMembers(fontItem);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT:
-											var resFont = new AlphaOmega.Debug.NTDirectory.ResourceFont(dir2);
+											var resFont = new AlphaOmega.Debug.NTDirectory.Resources.ResourceFont(dir2);
 											Utils.ConsoleWriteMembers(resFont.Font);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_BITMAP:
@@ -163,7 +193,7 @@ namespace AlphaOmega.Debug
 											// http://ebersys.blogspot.com/2009/06/how-to-convert-dib-to-bitmap.html
 											// http://hecgeek.blogspot.com/2007/04/converting-from-dib-to.html
 											// http://objectmix.com/dotnet/101391-dib-bitmap-system-drawing-bitmap.html
-											var resBitmap = new AlphaOmega.Debug.NTDirectory.ResourceBitmap(dir2);
+											var resBitmap = new AlphaOmega.Debug.NTDirectory.Resources.ResourceBitmap(dir2);
 											try
 											{
 												Utils.ConsoleWriteMembers(resBitmap.Header);
@@ -173,8 +203,17 @@ namespace AlphaOmega.Debug
 												Console.ReadKey();
 											}
 											break;
+										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON:
+											var resIcon = new AlphaOmega.Debug.NTDirectory.Resources.ResourceIcon(dir2);
+											Utils.ConsoleWriteMembers(resIcon.Header);
+											break;
+										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT:
+											var dlgInit = new AlphaOmega.Debug.NTDirectory.Resources.ResourceDialogInit(dir2);
+											foreach(var initData in dlgInit)
+												Utils.ConsoleWriteMembers(initData);
+											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DIALOG:
-											var dialog = new AlphaOmega.Debug.NTDirectory.ResourceDialog(dir2);
+											var dialog = new AlphaOmega.Debug.NTDirectory.Resources.ResourceDialog(dir2);
 											try
 											{
 												var template = dialog.GetDialogTemplate();

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Relocation table class</summary>
-	public class Relocation : NTDirectoryBase, IEnumerable<RelocationBlock>
+	public class Relocation : PEDirectoryBase, IEnumerable<RelocationBlock>
 	{
 		/// <summary>Create instance of Relocation table class</summary>
 		/// <param name="parent">Data directory</param>
-		public Relocation(PEDirectory parent)
+		public Relocation(PEFile parent)
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.BASERELOC)
 		{
 		}

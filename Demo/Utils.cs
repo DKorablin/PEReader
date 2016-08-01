@@ -27,10 +27,15 @@ namespace AlphaOmega.Debug
 			
 			StringBuilder result = new StringBuilder();
 			Type objType = obj.GetType();
-			foreach(PropertyInfo prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-				result.AppendFormat("{0}: {1}\t", prop.Name, prop.GetValue(obj, null));
-			foreach(FieldInfo field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public))
-				result.AppendFormat("{0}: {1}\t", field.Name, field.GetValue(obj));
+			if(objType.Assembly.GetName().Name == "mscorlib")
+				result.Append(obj.ToString() + "\t");
+			else
+			{
+				foreach(PropertyInfo prop in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+					result.AppendFormat("{0}: {1}\t", prop.Name, prop.GetValue(obj, null));
+				foreach(FieldInfo field in objType.GetFields(BindingFlags.Instance | BindingFlags.Public))
+					result.AppendFormat("{0}: {1}\t", field.Name, field.GetValue(obj));
+			}
 
 			return result.ToString();
 		}

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Delay import class</summary>
-	public class DelayImport : NTDirectoryBase, IEnumerable<DelayImportModule>
+	public class DelayImport : PEDirectoryBase, IEnumerable<DelayImportModule>
 	{
 		/// <summary>Create instance of delay import class</summary>
 		/// <param name="parent">Data directory</param>
-		public DelayImport(PEDirectory parent)
+		public DelayImport(PEFile parent)
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.DELAY_IMPORT)
 		{
 		}

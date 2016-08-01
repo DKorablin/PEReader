@@ -1,4 +1,0 @@
-C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\obj\Release\ResolveAssemblyReference.cache
-C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\bin\Release\PEReader.dll.config
-C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\bin\Release\PEReader.dll
-C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\PEReader\PEReader\obj\Release\PEReader.dll

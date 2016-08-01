@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Impot Address Table class</summary>
 	[DefaultProperty("Count")]
-	public class Iat : NTDirectoryBase, IEnumerable<UInt64>
+	public class Iat : PEDirectoryBase, IEnumerable<UInt64>
 	{
 		private UInt32 SizeOfStruct {
 
@@ -23,7 +23,7 @@ namespace AlphaOmega.Debug.NTDirectory
 
 		/// <summary>Create instance of IAT class</summary>
 		/// <param name="parent">Data directory</param>
-		public Iat(PEDirectory parent)
+		public Iat(PEFile parent)
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.IAT)
 		{
 		}

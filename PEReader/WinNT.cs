@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.ComponentModel;
+using System.Diagnostics;
 
 namespace AlphaOmega.Debug
 {
@@ -22,6 +22,7 @@ namespace AlphaOmega.Debug
 			/// <summary>NT signature</summary>
 			IMAGE_NT_SIGNATURE = 0x00004550,// PE00
 		}
+
 		/// <summary>The architecture type of the computer. An image file can only be run on the specified computer or a system that emulates the specified computer.</summary>
 		public enum IMAGE_FILE_MACHINE : ushort
 		{
@@ -86,6 +87,7 @@ namespace AlphaOmega.Debug
 			/// <summary>CEE</summary>
 			CEE = 0xC0EE,
 		}
+
 		/// <summary>The state of the image file.</summary>
 		public enum IMAGE_SIGNATURE : ushort
 		{
@@ -100,6 +102,7 @@ namespace AlphaOmega.Debug
 			/// <summary>The file is a ROM image.</summary>
 			IMAGE_ROM_OPTIONAL_HDR_MAGIC = 0x107,
 		}
+
 		/// <summary>The subsystem required to run this image.</summary>
 		public enum IMAGE_SUBSYSTEM : ushort
 		{
@@ -130,6 +133,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Boot application.</summary>
 			WINDOWS_BOOT_APPLICATION = 16,
 		}
+
 		/// <summary>The DLL characteristics of the image.</summary>
 		[Flags]
 		public enum IMAGE_DLLCHARACTERISTICS : ushort
@@ -168,6 +172,7 @@ namespace AlphaOmega.Debug
 			/// <summary>The image is terminal server aware.</summary>
 			TERMINAL_SERVER_AWARE = 0x8000,
 		}
+
 		/// <summary>The format of the debugging information</summary>
 		public enum IMAGE_DEBUG_TYPE : uint
 		{
@@ -196,6 +201,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Reserved.</summary>
 			CLSID = 11,
 		}
+
 		/// <summary>COM+ Header entry point flags.</summary>
 		[Flags]
 		public enum COMIMAGE_FLAGS : uint
@@ -242,6 +248,7 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			TRACKDEBUGDATA = 0x00010000,
 		}
+
 		/// <summary>The characteristics of the image.</summary>
 		[Flags]
 		public enum IMAGE_FILE : ushort
@@ -287,6 +294,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Big endian: the MSB precedes the LSB in memory. This flag is deprecated and should be zero.</summary>
 			BYTES_REVERSED_HI = 0x8000,
 		}
+
 		/// <summary>NT Directory types</summary>
 		public enum IMAGE_DIRECTORY_ENTRY
 		{
@@ -383,6 +391,7 @@ namespace AlphaOmega.Debug
 			/// </remarks>
 			CLR_HEADER = 14,
 		}
+
 		/// <summary>.NET Directory types</summary>
 		public enum COR20_DIRECTORY_ENTRY
 		{
@@ -413,6 +422,7 @@ namespace AlphaOmega.Debug
 			/// <remarks>Pointer to <see cref="T:IMAGE_COR20_METADATA"/> section.</remarks>
 			MetaData = 6,
 		}
+
 		/// <summary>Image section characteristics</summary>
 		[Flags]
 		public enum IMAGE_SCN : uint
@@ -427,7 +437,7 @@ namespace AlphaOmega.Debug
 			TYPE_GROUP = 0x00000004,
 			/// <summary>
 			/// The section should not be padded to the next boundary.
-			/// This flag is obsolete and is replaced by <see cref="T:IMAGE_SCN_ALIGN_1BYTES"/>.
+			/// This flag is obsolete and is replaced by <see cref="T:IMAGE_SCN.ALIGN_1BYTES"/>.
 			/// This is valid only for object files.
 			/// </summary>
 			TYPE_NO_PAD = 0x00000008,
@@ -612,48 +622,67 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			HIGH3ADJ = 11,
 		}
+
 		/// <summary>PE Dos header</summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		public struct IMAGE_DOS_HEADER
 		{
 			/// <summary>Magic number</summary>
 			public Signature4b e_magic;
+
 			/// <summary>Bytes on last page of file</summary>
 			public UInt16 e_cblp;
+
 			/// <summary>Pages in file</summary>
 			public UInt16 e_cp;
+
 			/// <summary>Relocations</summary>
 			public UInt16 e_crlc;
+
 			/// <summary>Size of header in paragraphs</summary>
 			public UInt16 e_cparhdr;
+
 			/// <summary>Minimum extra paragraphs needed</summary>
 			public UInt16 e_minalloc;
+
 			/// <summary>Maximum extra paragraphs needed</summary>
 			public UInt16 e_maxalloc;
+
 			/// <summary>Initial (relative) SS value</summary>
 			public UInt16 e_ss;
+
 			/// <summary>Initial SP value</summary>
 			public UInt16 e_sp;
+
 			/// <summary>Checksum</summary>
 			public UInt16 e_csum;
+
 			/// <summary>Initial IP value</summary>
 			public UInt16 e_ip;
+
 			/// <summary>Initial (relative) CS value</summary>
 			public UInt16 e_cs;
+
 			/// <summary>File address of relocation table</summary>
 			public UInt16 e_lfarlc;
+
 			/// <summary>Overlay number</summary>
 			public UInt16 e_ovno;
+
 			/// <summary>Reserved words</summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 			public UInt16[] e_res1;
+
 			/// <summary>OEM identifier (for e_oeminfo)</summary>
 			public UInt16 e_oemid;
+
 			/// <summary>OEM information; e_oemid specific</summary>
 			public UInt16 e_oeminfo;
+
 			/// <summary>Reserved words</summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
 			public UInt16[] e_res2;
+
 			/// <summary>File address of new exe header</summary>
 			public Int32 e_lfanew;
 
@@ -663,6 +692,74 @@ namespace AlphaOmega.Debug
 			/// <summary>Dos header is valid</summary>
 			public Boolean IsValid { get { return this.e_magic == Signature4b.IMAGE_DOS_SIGNATURE; } }
 		}
+
+		/// <summary>OS/2 .EXE header</summary>
+		/// <remarks>http://research.microsoft.com/en-us/um/redmond/projects/invisible/include/loaders/pe_image.h.htm</remarks>
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		public struct IMAGE_OS2_HEADER
+		{
+			/// <summary>Magic number</summary>
+			UInt16 ne_magic;
+			/// <summary>Version number</summary>
+			Byte ne_ver;
+			/// <summary>Revision number</summary>
+			Byte ne_rev;
+			/// <summary>Offset of Entry Table</summary>
+			UInt16 ne_enttab;
+			/// <summary>Number of bytes in Entry Table</summary>
+			UInt16 ne_cbenttab;
+			/// <summary>Checksum of whole file</summary>
+			Int32 ne_crc;
+			/// <summary>Flag word</summary>
+			UInt16 ne_flags;
+			/// <summary>Automatic data segment number</summary>
+			UInt16 ne_autodata;
+			/// <summary>Initial heap allocation</summary>
+			UInt16 ne_heap;
+			/// <summary>Initial stack allocation</summary>
+			UInt16 ne_stack;
+			/// <summary>Initial CS:IP setting</summary>
+			Int32 ne_csip;
+			/// <summary>Initial SS:SP setting</summary>
+			Int32 ne_sssp;
+			/// <summary>Count of file segments</summary>
+			UInt16 ne_cseg;
+			/// <summary>Entries in Module Reference Table</summary>
+			UInt16 ne_cmod;
+			/// <summary>Size of non-resident name table</summary>
+			UInt16 ne_cbnrestab;
+			/// <summary>Offset of Segment Table</summary>
+			UInt16 ne_segtab;
+			/// <summary>Offset of Resource Table</summary>
+			UInt16 ne_rsrctab;
+			/// <summary>Offset of resident name table</summary>
+			UInt16 ne_restab;
+			/// <summary>Offset of Module Reference Table</summary>
+			UInt16 ne_modtab;
+			/// <summary>Offset of Imported Names Table</summary>
+			UInt16 ne_imptab;
+			/// <summary>Offset of Non-resident Names Table</summary>
+			Int32 ne_nrestab;
+			/// <summary>Count of movable entries</summary>
+			UInt16 ne_cmovent;
+			/// <summary>Segment alignment shift count</summary>
+			UInt16 ne_align;
+			/// <summary>Count of resource segments</summary>
+			UInt16 ne_cres;
+			/// <summary>Target Operating system</summary>
+			Byte ne_exetyp;
+			/// <summary>Other .EXE flags</summary>
+			Byte ne_flagsothers;
+			/// <summary>offset to return thunks</summary>
+			UInt16 ne_pretthunks;
+			/// <summary>offset to segment ref. bytes</summary>
+			UInt16 ne_psegrefbytes;
+			/// <summary>Minimum code swap area size</summary>
+			UInt16 ne_swaparea;
+			/// <summary>Expected Windows version number</summary>
+			UInt16 ne_expver;
+		};
+
 		/// <summary>Represents the COFF header format.</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_FILE_HEADER
@@ -672,9 +769,11 @@ namespace AlphaOmega.Debug
 			/// An image file can only be run on the specified computer or a system that emulates the specified computer.
 			/// </summary>
 			public IMAGE_FILE_MACHINE Machine;
+
 			/// <summary>The number of sections. This indicates the size of the section table, which immediately follows the headers. Note that the Windows loader limits the number of sections to 96.</summary>
 			/// <remarks>The section table immediately follows the IMAGE_NT_HEADERS.</remarks>
 			public UInt16 NumberOfSections;
+
 			/// <summary>
 			/// The low 32 bits of the time stamp of the image.
 			/// This represents the date and time the image was created by the linker.
@@ -687,6 +786,7 @@ namespace AlphaOmega.Debug
 			/// Another useful function for working with this field is gmtime.
 			/// </remarks>
 			public UInt32 TimeDateStamp;
+
 			/// <summary>
 			/// The file offset of the COFF symbol table, described in section 5.4 of the Microsoft specification.
 			/// COFF symbol tables are relatively rare in PE files, as newer debug formats have taken over.
@@ -694,12 +794,14 @@ namespace AlphaOmega.Debug
 			/// COFF symbol tables are almost always found in OBJ files. Set to 0 if no symbol table is present.
 			/// </summary>
 			public UInt32 PointerToSymbolTable;
+
 			/// <summary>
 			/// Number of symbols in the COFF symbol table, if present.
 			/// COFF symbols are a fixed size structure, and this field is needed to find the end of the COFF symbols.
 			/// Immediately following the COFF symbols is a string table used to hold longer symbol names.
 			/// </summary>
 			public UInt32 NumberOfSymbols;
+
 			/// <summary>
 			/// The size of the optional data that follows the <see cref="T:IMAGE_FILE_HEADER"/>.
 			/// In PE files, this data is the IMAGE_OPTIONAL_HEADER.
@@ -709,16 +811,211 @@ namespace AlphaOmega.Debug
 			/// This value should be 0 for object files.
 			/// </summary>
 			public UInt16 SizeOfOptionalHeader;
+
 			/// <summary>
 			/// A set of bit flags indicating attributes of the file.
 			/// Valid values of these flags are the <see cref="T:IMAGE_FILE"/> values defined in WINNT.H.
 			/// </summary>
 			public IMAGE_FILE Characteristics;
+
 			/// <summary>This value is a more accurate indicator of when the file was created than is the file system date/time.</summary>
 			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+
 			/// <summary>File contains COFF symbol table.</summary>
 			public Boolean ContainsSymbolTable { get { return this.PointerToSymbolTable > 0; } }
+
+			/// <summary>OBJ file validation</summary>
+			/// <remarks>OBJ file does not contains DOS or NT file header</remarks>
+			public Boolean IsValid { get { return Enum.IsDefined(typeof(IMAGE_FILE_MACHINE), this.Machine); } }
 		}
+
+		/// <summary>obj symbol table structure</summary>
+		[StructLayout(LayoutKind.Sequential,Pack=1)]
+		[DebuggerDisplay("ShortName={SymbolTabeShortName}")]
+		public struct IMAGE_COFF_SYMBOL
+		{//http://research.microsoft.com/en-us/um/redmond/projects/invisible/include/loaders/pe_image.h.htm
+
+			/// <summary>Short name</summary>
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+			public Char[] ShortName;
+
+			/*union {
+				UINT8   ShortName[8];
+				struct {
+					UINT32   Short;     // if 0, use LongName
+					UINT32   Long;      // offset into string table
+				} Name;
+				PUINT8  LongName[2];
+			} N;*/
+
+			/// <summary>value</summary>
+			public UInt32 Value;
+
+			/// <summary>Section number</summary>
+			public IMAGE_SYM SectionNumber;
+
+			/// <summary>Type</summary>
+			public IMAGE_SYM_TYPE Type;
+
+			/// <summary>Storage class</summary>
+			public IMAGE_SYM_CLASS StorageClass;
+
+			/// <summary>Number of aux symbols</summary>
+			public Byte NumberOfAuxSymbols;
+
+			/// <summary>
+			/// The ASCII name of the section.
+			/// A section name is not guaranteed to be null-terminated.
+			/// If you specify a section name longer than eight characters, the linker truncates it to eight characters in the executable.
+			/// A mechanism exists for allowing longer section names in OBJ files.
+			/// Section names often start with a period, but this is not a requirement.
+			/// Section names with a $ in the name get special treatment from the linker.
+			/// Sections with identical names prior to the $ character are merged.
+			/// The characters following the $ provide an alphabetic ordering for how the merged sections appear in the final section.
+			/// There's quite a bit more to the subject of sections with $ in the name and how they're combined, but the details are outside the scope of this article.
+			/// </summary>
+			public String SymbolTabeShortName { get { return new String(ShortName); } }
+		}
+
+		[StructLayout(LayoutKind.Explicit, Pack = 1)]
+		public struct IMAGE_AUX_SYMBOL
+		{
+			/// <summary></summary>
+			[FieldOffset(0)]
+			public UInt32 TagIndex;
+			/*union {
+				struct {
+					UINT16  Linenumber;             // declaration line number
+					UINT16  Size;                   // size of struct, union, or enum
+				} LnSz;
+			UINT32    TotalSize;
+			} Misc;*/
+			[FieldOffset(4)]
+			public UInt32 TotalSize;
+			/*union {
+				struct {                            // if ISFCN, tag, or .bb
+					UINT32    PointerToLinenumber;
+					UINT32    PointerToNextFunction;
+				} Function;
+				struct {                            // if ISARY, up to 4 dimen.
+					UINT16   Dimension[4];
+				} Array;
+			} FcnAry;*/
+			[FieldOffset(8)]
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+			public UInt16[] Dimention;
+
+			[FieldOffset(16)]
+			public UInt16 TvIndex;
+		}
+
+		/// <summary>Symbols have a section number of the section in which they are defined. Otherwise, section numbers have the following meanings</summary>
+		public enum IMAGE_SYM : short
+		{
+			/// <summary>Symbol is undefined or is common</summary>
+			UNDEFINED = 0,
+			/// <summary>Symbol is an absolute value</summary>
+			ABSOLUTE = -1,
+			/// <summary>Symbol is a special debug item</summary>
+			DEBUG = -2,
+		}
+
+		/// <summary>Type (fundamental) values.</summary>
+		public enum IMAGE_SYM_TYPE : ushort
+		{
+			/// <summary>No type information or unknown base type.</summary>
+			NULL = 0,
+			/// <summary>Used with void pointers and functions.</summary>
+			VOID = 1,
+			/// <summary>A character (signed byte).</summary>
+			CHAR = 2,
+			/// <summary>A 2-byte signed integer.</summary>
+			SHORT = 3,
+			/// <summary>A natural integer type on the target.</summary>
+			INT = 4,
+			/// <summary>A 4-byte signed integer</summary>
+			LONG = 5,
+			/// <summary>A 4-byte floating-point number.</summary>
+			FLOAT = 6,
+			/// <summary>An 8-byte floating-point number.</summary>
+			DOUBLE = 7,
+			/// <summary>A structure.</summary>
+			STRUCT = 8,
+			/// <summary>An union.</summary>
+			UNION = 9,
+			/// <summary>An enumerated type.</summary>
+			ENUM = 10,
+			/// <summary>A member of enumeration (a specific value).</summary>
+			MOE = 11,
+			/// <summary>A byte; unsigned 1-byte integer.</summary>
+			BYTE = 12,
+			/// <summary>A word; unsigned 2-byte integer.</summary>
+			WORD = 13,
+			/// <summary>An unsigned integer of natural size.</summary>
+			UINT = 14,
+			/// <summary>An unsigned 4-byte integer.</summary>
+			DWORD = 15,
+		}
+
+		/// <summary>Storage class tells where and what the symbol represents</summary>
+		public enum IMAGE_SYM_CLASS : byte
+		{
+			// Physical end of function.
+			//END_OF_FUNCTION = (Byte)(-1),
+			/// <summary>No symbol.</summary>
+			NULL = 0,
+			/// <summary>Stack variable.</summary>
+			AUTOMATIC = 1,
+			/// <summary>External symbol.</summary>
+			EXTERNAL = 2,
+			/// <summary>Static.</summary>
+			STATIC = 3,
+			/// <summary>Register variable</summary>
+			REGISTER = 4,
+			/// <summary>External definition</summary>
+			EXTERNAL_DEF = 5,
+			/// <summary>Label</summary>
+			LABEL = 6,
+			/// <summary>Undefined label</summary>
+			UNDEFINED_LABEL = 7,
+			/// <summary>Member of structure</summary>
+			MEMBER_OF_STRUCT = 8,
+			/// <summary>Function argument</summary>
+			ARGUMENT = 9,
+			/// <summary>Structure tag</summary>
+			STRUCT_TAG = 10,
+			/// <summary>Member of union</summary>
+			MEMBER_OF_UNION = 11,
+			/// <summary>Union tag</summary>
+			UNION_TAG = 12,
+			/// <summary>Type definition</summary>
+			TYPE_DEFINITION = 13,
+			/// <summary>Undefined static</summary>
+			UNDEFINED_STATIC = 14,
+			/// <summary>Enumeration tag</summary>
+			ENUM_TAG = 15,
+			/// <summary>Member of enumeration</summary>
+			MEMBER_OF_ENUM = 16,
+			/// <summary>Register parameter</summary>
+			REGISTER_PARAM = 17,
+			/// <summary>Bit field</summary>
+			BIT_FIELD = 18,
+			/// <summary>".bb" or ".eb" - beginning or end of block</summary>
+			BLOCK = 100,
+			/// <summary>".bf" or ".ef" - beginning or end of function</summary>
+			FUNCTION = 101,
+			/// <summary>End of structure</summary>
+			END_OF_STRUCT = 102,
+			/// <summary>File name</summary>
+			FILE = 103,
+			/// <summary>Line number, reformatted as symbol</summary>
+			SECTION = 104,
+			/// <summary>Duplicate tag</summary>
+			WEAK_EXTERNAL = 105,
+			/// <summary>External symbol in dmert public lib</summary>
+			CLR_TOKEN = 106,
+		}
+
 		/// <summary>Represents the COFF symbols header.</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms680301(v=vs.85).aspx</remarks>
 		[StructLayout(LayoutKind.Sequential)]
@@ -726,24 +1023,32 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>The number of symbols.</summary>
 			public UInt32 NumberOfSymbols;
+
 			/// <summary>The virtual address of the first symbol.</summary>
 			public UInt32 LvaToFirstSymbol;
+
 			/// <summary>The number of line-number entries.</summary>
 			public UInt32 NumberOfLinenumbers;
+
 			/// <summary>The virtual address of the first line-number entry.</summary>
 			public UInt32 LvaToFirstLinenumber;
+
 			/// <summary>The relative virtual address of the first byte of code.</summary>
 			public UInt32 RvaToFirstByteOfCode;
+
 			/// <summary>The relative virtual address of the last byte of code.</summary>
 			public UInt32 RvaToLastByteOfCode;
+
 			/// <summary>The relative virtual address of the first byte of data.</summary>
 			public UInt32 RvaToFirstByteOfData;
+
 			/// <summary>The relative virtual address of the last byte of data.</summary>
 			public UInt32 RvaToLastByteOfData;
 		}
 
 		/// <summary>Represents the image section header format.</summary>
 		[StructLayout(LayoutKind.Explicit)]
+		[DebuggerDisplay("Name={Section}")]
 		public struct IMAGE_SECTION_HEADER
 		{
 			/// <summary>
@@ -760,6 +1065,7 @@ namespace AlphaOmega.Debug
 			[FieldOffset(0)]
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
 			public Char[] Name;
+
 			/// <summary>
 			/// Indicates the actual, used size of the section.
 			/// This field may be larger or smaller than the SizeOfRawData field.
@@ -768,9 +1074,11 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			[FieldOffset(8)]
 			public UInt32 VirtualSize;
+
 			/// <summary>In executables, indicates the RVA where the section begins in memory. Should be set to 0 in OBJs.</summary>
 			[FieldOffset(12)]
 			public UInt32 VirtualAddress;
+
 			/// <summary>
 			/// The size (in bytes) of data stored for the section in the executable or OBJ.
 			/// For executables, this must be a multiple of the file alignment given in the PE header.
@@ -778,12 +1086,14 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			[FieldOffset(16)]
 			public UInt32 SizeOfRawData;
+
 			/// <summary>
 			/// The file offset where the data for the section begins.
 			/// For executables, this value must be a multiple of the file alignment given in the PE header.
 			/// </summary>
 			[FieldOffset(20)]
 			public UInt32 PointerToRawData;
+
 			/// <summary>
 			/// The file offset of relocations for this section.
 			/// This is only used in OBJs and set to zero for executables.
@@ -791,30 +1101,35 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			[FieldOffset(24)]
 			public UInt32 PointerToRelocations;
+
 			/// <summary>
 			/// The file offset for COFF-style line numbers for this section.
 			/// Points to an array of IMAGE_LINENUMBER structures if non-zero. Only used when COFF line numbers are emitted.
 			/// </summary>
 			[FieldOffset(28)]
 			public UInt32 PointerToLinenumbers;
+
 			/// <summary>
 			/// The number of relocations pointed to by the PointerToRelocations field.
 			/// Should be 0 in executables.
 			/// </summary>
 			[FieldOffset(32)]
 			public UInt16 NumberOfRelocations;
+
 			/// <summary>
 			/// The number of line numbers pointed to by the NumberOfRelocations field.
 			/// Only used when COFF line numbers are emitted.
 			/// </summary>
 			[FieldOffset(34)]
 			public UInt16 NumberOfLinenumbers;
+
 			/// <summary>
 			/// Flags OR'ed together, indicating the attributes of this section.
 			/// Many of these flags can be set with the linker's /SECTION option.
 			/// </summary>
 			[FieldOffset(36)]
 			public IMAGE_SCN Characteristics;
+
 			/// <summary>
 			/// The ASCII name of the section.
 			/// A section name is not guaranteed to be null-terminated.
@@ -835,25 +1150,35 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>Reserved, must be zero.</summary>
 			public UInt32 Characteristics;
+
 			/// <summary>The time and date that the debug data was created.</summary>
 			public UInt32 TimeDateStamp;
+
 			/// <summary>The major version number of the debugging information format.</summary>
 			public UInt16 MajorVersion;
+
 			/// <summary>The minor version number of the debugging information format.</summary>
 			public UInt16 MinorVersion;
+
 			/// <summary>The format of debugging information. This field enables support of multiple debuggers. For more information, see section 6.1.2, "Debug Type".</summary>
 			public IMAGE_DEBUG_TYPE Type;
+
 			/// <summary>The size of the debug data (not including the debug directory itself).</summary>
 			public UInt32 SizeOfData;
+
 			/// <summary>The address of the debug data when loaded, relative to the image base.</summary>
 			public UInt32 AddressOfRawData;
+
 			/// <summary>The file pointer to the debug data.</summary>
 			public UInt32 PointerToRawData;
+
 			/// <summary>The time and date that the debug data was created.</summary>
 			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+
 			/// <summary>Version number of the debugging information format</summary>
 			public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
 		}
+
 		/// <summary>Native Resource directory</summary>
 		public struct Resource
 		{
@@ -863,25 +1188,35 @@ namespace AlphaOmega.Debug
 			{
 				/// <summary>Unused</summary>
 				public UInt32 Characteristics;
+
 				/// <summary>Unused</summary>
 				public UInt32 TimeDateStamp;
+
 				/// <summary>Major directory version</summary>
 				public UInt16 MajorVersion;
+
 				/// <summary>Minor directory version</summary>
 				public UInt16 MinorVersion;
+
 				/// <summary>Number of subdirectories with names</summary>
 				public UInt16 NumberOfNamedEntries;
+
 				/// <summary>Number of subdirectories with IDs</summary>
 				public UInt16 NumberOfIdEntries;
+
 				/// <summary>Unused</summary>
 				public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+
 				/// <summary>Directory version</summary>
 				public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
+
 				/// <summary>Contains subdirectories</summary>
 				public Boolean ContainsEntries { get { return this.NumberOfEntries > 0; } }
+
 				/// <summary>Number of subdirectories</summary>
 				public UInt16 NumberOfEntries { get { return checked((UInt16)(this.NumberOfIdEntries + this.NumberOfNamedEntries)); } }
 			}
+
 			/// <summary>Resource directory description</summary>
 			/// <remarks>
 			/// Each directory contains the 32-bit Name of the entry and an offset,
@@ -900,21 +1235,29 @@ namespace AlphaOmega.Debug
 			{
 				/// <summary>Directory name offset</summary>
 				public UInt32 NameOffset;
+
 				/// <summary>Directory data offset</summary>
 				public UInt32 OffsetToData;
+
 				/// <summary>Directory name is string</summary>
 				public Boolean IsNameString { get { return (this.NameOffset & 0x80000000) > 0; } }
+
 				/// <summary>Адрес на структуру <see cref="T:IMAGE_RESOURCE_DIRECTORY_STRING"/> или идентификатор папки.</summary>
 				public UInt32 NameAddress { get { return this.NameOffset & 0x7FFFFFFF; } }
+
 				/// <summary>Тип корневой директории</summary>
 				public RESOURCE_DIRECTORY_TYPE NameType { get { return this.IsNameString ? RESOURCE_DIRECTORY_TYPE.Undefined : (RESOURCE_DIRECTORY_TYPE)this.NameAddress; } }
+
 				/// <summary>Entry is directory</summary>
 				public Boolean IsDirectory { get { return (this.OffsetToData & 0x80000000) > 0; } }
+
 				/// <summary>Адрес на <see cref="T:IMAGE_RESOURCE_DIRECTORY"/> или на <see cref="T:WinNT.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
 				public UInt32 DirectoryAddress { get { return this.OffsetToData & 0x7FFFFFFF; } }
+
 				/// <summary>Адрес на структуру <see cref="T:WinNT.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
 				public Boolean IsDataEntry { get { return !this.IsNameString && !this.IsDirectory; } }
 			}
+
 			/// <summary>The following are the predefined resource types.</summary>
 			public enum RESOURCE_DIRECTORY_TYPE
 			{
@@ -972,6 +1315,7 @@ namespace AlphaOmega.Debug
 				/// <summary>MFC CToolBarCtrl</summary>
 				RT_TOOLBAR = 241,
 			}
+
 			/// <summary></summary>
 			/// <remarks>
 			/// Each resource data entry describes a leaf node in the resource directory tree.
@@ -989,16 +1333,22 @@ namespace AlphaOmega.Debug
 				/// Although an RVA is not the same as a file offset, the equivalent file offset can be calculated by subtracting the resource section's RVA from OffsetToData's RVA value, and adding the difference to the offset of the root directory.
 				/// </summary>
 				public UInt32 OffsetToData;
+
 				/// <summary>Size of resource directory</summary>
 				public UInt32 Size;
+
 				/// <summary>
 				/// The CodePage field identifies the code page (a coded character set) used to decode code points (code page values) within the resource data.
 				/// Although any valid code page number can appear in this field (such as 437, which describes the original IBM PC's character set, or 65501, which describes Unicode UTF-8),
 				/// this field often contains 0 (standard Roman alphabet, numerals, punctuation, accented characters).
 				/// </summary>
 				public UInt32 CodePage;
+
 				/// <summary>Reserved. Must be zero.</summary>
 				public UInt32 Reserved;
+
+				/// <summary>CodePage string representation</summary>
+				public String CodePageString { get { return Encoding.GetEncoding((Int32)this.CodePage).EncodingName; } }
 			}
 			/// <summary>Directory name</summary>
 			[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -1012,749 +1362,7 @@ namespace AlphaOmega.Debug
 				/// <summary>NameString может закончится НЕ \0. Поэтому правильно отрезать лишнюю информацию</summary>
 				public String Name { get { return this.NameString.Substring(0, this.Length); } }
 			}
-			/// <summary>Describes the data in an individual accelerator table resource. The structure definition provided here is for explanation only; it is not present in any standard header file.</summary>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct ACCELTABLEENTRY
-			{
-				/// <summary>Describes keyboard accelerator characteristics. This member can have one or more of the following values from Winuser.h. </summary>
-				public AccelFlags fFlags;
-				/// <summary>An ANSI character value or a virtual-key code that identifies the accelerator key. </summary>
-				public UInt16 wAnsi;
-				/// <summary>An identifier for the keyboard accelerator. This is the value passed to the window procedure when the user presses the specified key. </summary>
-				public UInt16 wId;
-				/// <summary>The number of bytes inserted to ensure that the structure is aligned on a DWORD boundary. </summary>
-				public UInt16 padding;
-				/// <summary>Получить строковое представление wAnsi параметра</summary>
-				/// <remarks>Для получения строкового представления используются Win32 вызовы</remarks>
-				/// <exception cref="T:Win32Exception">Can't convert Key code to text key name</exception>
-				/// <returns>Строковое представление параметра</returns>
-				public String StringKey
-				{
-					get
-					{
-						StringBuilder result = new StringBuilder(10);
-						UInt32 key = NativeMethods.MapVirtualKey((UInt32)this.wAnsi, NativeMethods.MAPVK.VK_TO_VSC);
-						if(key == 0 || NativeMethods.GetKeyNameText(key << 16, result, 10) == 0)
-							throw new Win32Exception();
-						return result.ToString();
-					}
-				}
-			}
-			/// <summary>Describes keyboard accelerator characteristics.</summary>
-			[Flags]
-			public enum AccelFlags : short
-			{
-				/// <summary>The accelerator key is a virtual-key code. If this flag is not specified, the accelerator key is assumed to specify an ASCII character code. </summary>
-				FVIRTKEY = 1,
-				/// <summary>A menu item on the menu bar is not highlighted when an accelerator is used. This attribute is obsolete and retained only for backward compatibility with resource files designed for 16-bit Windows.</summary>
-				FNOINVERT = 0x02,
-				/// <summary>The accelerator is activated only if the user presses the SHIFT key. This flag applies only to virtual keys. </summary>
-				FSHIFT = 0x04,
-				/// <summary>The accelerator is activated only if the user presses the CTRL key. This flag applies only to virtual keys. </summary>
-				FCONTROL = 0x08,
-				/// <summary>The accelerator is activated only if the user presses the ALT key. This flag applies only to virtual keys. </summary>
-				FALT = 0x10,
-				/// <summary>The entry is last in an accelerator table. </summary>
-				Last = 0x80,
-			}
-			/// <summary>
-			/// Defines the dimensions and style of a dialog box.
-			/// This structure, always the first in a standard template for a dialog box, also specifies the number of controls in the dialog box and therefore specifies the number of subsequent DLGITEMTEMPLATE structures in the template.
-			/// </summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/ms645394%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct DLGTEMPLATE
-			{
-				/// <summary>
-				/// The style of the dialog box. This member can be a combination of window style values (such as WS_CAPTION and WS_SYSMENU) and dialog box style values (such as DS_CENTER).
-				/// If the style member includes the DS_SETFONT style, the header of the dialog box template contains additional data specifying the font to use for text in the client area and controls of the dialog box. The font data begins on the WORD boundary that follows the title array. The font data specifies a 16-bit point size value and a Unicode font name string. If possible, the system creates a font according to the specified values. Then the system sends a WM_SETFONT message to the dialog box and to each control to provide a handle to the font. If DS_SETFONT is not specified, the dialog box template does not include the font data.
-				/// The DS_SHELLFONT style is not supported in the DLGTEMPLATE header.
-				/// </summary>
-				public WS style;
-				/// <summary>The extended styles for a window. This member is not used to create dialog boxes, but applications that use dialog box templates can use it to create other types of windows.</summary>
-				public WS_EX dwExtendedStyle;
-				/// <summary>The number of items in the dialog box. </summary>
-				public UInt16 cdit;
-				/// <summary>The x-coordinate, in dialog box units, of the upper-left corner of the dialog box.</summary>
-				public Int16 x;
-				/// <summary>The y-coordinate, in dialog box units, of the upper-left corner of the dialog box.</summary>
-				public Int16 y;
-				/// <summary>The width, in dialog box units, of the dialog box.</summary>
-				public Int16 cx;
-				/// <summary>The height, in dialog box units, of the dialog box.</summary>
-				public Int16 cy;
-				/// <summary>В структуре присутсвует информация по шрифту</summary>
-				public Boolean ContainsFont { get { return (this.style & WS.DS_SETFONT) == WS.DS_SETFONT; } }
-			}
-			/// <summary>
-			/// Defines the dimensions and style of a control in a dialog box.
-			/// One or more of these structures are combined with a DLGTEMPLATE structure to form a standard template for a dialog box.
-			/// </summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/ms644997%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct DLGITEMTEMPLATE
-			{
-				/// <summary>The style of the control. This member can be a combination of window style values (such as WS_BORDER) and one or more of the control style values (such as BS_PUSHBUTTON and ES_LEFT).</summary>
-				public WS style;
-				/// <summary>The extended styles for a window. This member is not used to create controls in dialog boxes, but applications that use dialog box templates can use it to create other types of windows. For a list of values, see Extended Window Styles.</summary>
-				public WS_EX dwExtendedStyle;
-				/// <summary>The x-coordinate, in dialog box units, of the upper-left corner of the control. This coordinate is always relative to the upper-left corner of the dialog box's client area.</summary>
-				public Int16 x;
-				/// <summary>The y-coordinate, in dialog box units, of the upper-left corner of the control. This coordinate is always relative to the upper-left corner of the dialog box's client area.</summary>
-				public Int16 y;
-				/// <summary>The width, in dialog box units, of the control.</summary>
-				public Int16 cx;
-				/// <summary>The height, in dialog box units, of the control.</summary>
-				public Int16 cy;
-				/// <summary>The control identifier.</summary>
-				public UInt16 id;
-			}
-			/// <summary>
-			/// An extended dialog box template begins with a DLGTEMPLATEEX header that describes the dialog box and specifies the number of controls in the dialog box.
-			/// For each control in a dialog box, an extended dialog box template has a block of data that uses the DLGITEMTEMPLATEEX format to describe the control.
-			/// The DLGTEMPLATEEX structure is not defined in any standard header file.
-			/// The structure definition is provided here to explain the format of an extended template for a dialog box.
-			/// </summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/ms645398%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct DLGTEMPLATEEX
-			{
-				/// <summary>The version number of the extended dialog box template. This member must be set to 1. </summary>
-				public UInt16 dlgVer;
-				/// <summary>
-				/// Indicates whether a template is an extended dialog box template.
-				/// If signature is 0xFFFF, this is an extended dialog box template.
-				/// In this case, the dlgVer member specifies the template version number.
-				/// If signature is any value other than 0xFFFF, this is a standard dialog box template that uses the DLGTEMPLATE and DLGITEMTEMPLATE structures.
-				/// </summary>
-				public UInt16 signature;
-				/// <summary>The help context identifier for the dialog box window. When the system sends a WM_HELP message, it passes this value in the wContextId member of the HELPINFO structure.</summary>
-				public UInt32 helpID;
-				/// <summary>
-				/// The extended windows styles.
-				/// This member is not used when creating dialog boxes, but applications that use dialog box templates can use it to create other types of windows.
-				/// For a list of values, see Extended Window Styles.
-				/// </summary>
-				public WS_EX exStyle;
-				/// <summary>
-				/// The style of the dialog box. This member can be a combination of window style values and dialog box style values.
-				/// </summary>
-				/// <remarks>
-				/// If style includes the DS_SETFONT or DS_SHELLFONT dialog box style, the DLGTEMPLATEEX header of the extended dialog box template contains four additional members ( pointsize, weight, italic, and typeface) that describe the font to use for the text in the client area and controls of the dialog box. If possible, the system creates a font according to the values specified in these members.
-				/// Then the system sends a WM_SETFONT message to the dialog box and to each control to provide a handle to the font.
-				/// </remarks>
-				public WS style;
-				/// <summary>The number of controls in the dialog box.</summary>
-				public UInt16 cDlgItems;
-				/// <summary>The x-coordinate, in dialog box units, of the upper-left corner of the dialog box.</summary>
-				public Int16 x;
-				/// <summary>The y-coordinate, in dialog box units, of the upper-left corner of the dialog box.</summary>
-				public Int16 y;
-				/// <summary>The width, in dialog box units, of the dialog box.</summary>
-				public Int16 cx;
-				/// <summary>The height, in dialog box units, of the dialog box.</summary>
-				public Int16 cy;
-				/// <summary>Valid template</summary>
-				public Boolean IsValid { get { return this.signature == 0xFFFF; } }
-				/// <summary>В структуре присутсвует информация по шрифту</summary>
-				public Boolean ContainsFont { get { return (this.style & WinNT.Resource.WS.DS_SETFONT) == WinNT.Resource.WS.DS_SETFONT || (this.style & WinNT.Resource.WS.DS_SHELLFONT) == WinNT.Resource.WS.DS_SHELLFONT; } }
-			}
-			/// <summary>
-			/// A block of text used by an extended dialog box template to describe the extended dialog box.
-			/// For a description of the format of an extended dialog box template, see DLGTEMPLATEEX.
-			/// </summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/ms645389%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct DLGITEMTEMPLATEEX
-			{
-				/// <summary>The help context identifier for the control. When the system sends a WM_HELP message, it passes the helpID value in the dwContextId member of the HELPINFO structure.</summary>
-				public UInt32 helpID;
-				/// <summary>
-				/// The extended styles for a window.
-				/// This member is not used to create controls in dialog boxes, but applications that use dialog box templates can use it to create other types of windows.
-				/// </summary>
-				/// <remarks>For a list of values, see Extended Window Styles.</remarks>
-				public WS_EX exStyle;
-				/// <summary>
-				/// The style of the control.
-				/// This member can be a combination of window style values (such as WS_BORDER) and one or more of the control style values (such as BS_PUSHBUTTON and ES_LEFT).
-				/// </summary>
-				public WS style;
-				/// <summary>
-				/// The x-coordinate, in dialog box units, of the upper-left corner of the control.
-				/// This coordinate is always relative to the upper-left corner of the dialog box's client area.
-				/// </summary>
-				public Int16 x;
-				/// <summary>
-				/// The y-coordinate, in dialog box units, of the upper-left corner of the control.
-				/// This coordinate is always relative to the upper-left corner of the dialog box's client area.
-				/// </summary>
-				public Int16 y;
-				/// <summary>The width, in dialog box units, of the control.</summary>
-				public Int16 cx;
-				/// <summary>The height, in dialog box units, of the control.</summary>
-				public Int16 cy;
-				/// <summary>The control identifier.</summary>
-				public UInt32 id;
-			}
-			/// <summary>The following are the window styles. After the window has been created, these styles cannot be modified, except as noted.</summary>
-			[Flags]
-			public enum WS : uint
-			{
-				/// <summary>The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.</summary>
-				WS_OVERLAPPED = 0x00000000,
-				/// <summary>The window has a thin-line border.</summary>
-				WS_BORDER = 0x00800000,
-				/// <summary>The window has a title bar (includes the WS_BORDER style).</summary>
-				WS_CAPTION = 0x00C00000,
-				/// <summary>The window is a child window. A window with this style cannot have a menu bar. This style cannot be used with the WS_POPUP style.</summary>
-				WS_CHILD = 0x40000000,
-				// <summary>Same as the WS_CHILD style.</summary>
-				//WS_CHILDWINDOW = 0x40000000,
-				/// <summary>Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.</summary>
-				WS_CLIPCHILDREN = 0x02000000,
-				/// <summary>Clips child windows relative to each other; that is, when a particular child window receives a WM_PAINT message, the WS_CLIPSIBLINGS style clips all other overlapping child windows out of the region of the child window to be updated. If WS_CLIPSIBLINGS is not specified and child windows overlap, it is possible, when drawing within the client area of a child window, to draw within the client area of a neighboring child window.</summary>
-				WS_CLIPSIBLINGS = 0x04000000,
-				/// <summary>The window is initially disabled. A disabled window cannot receive input from the user. To change this after a window has been created, use the EnableWindow function.</summary>
-				WS_DISABLED = 0x08000000,
-				/// <summary>The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.</summary>
-				WS_DLGFRAME = 0x00400000,
-				/// <summary>
-				/// The window is the first control of a group of controls. The group consists of this first control and all controls defined after it, up to the next control with the WS_GROUP style. The first control in each group usually has the WS_TABSTOP style so that the user can move from group to group. The user can subsequently change the keyboard focus from one control in the group to the next control in the group by using the direction keys.
-				/// You can turn this style on and off to change dialog box navigation. To change this style after a window has been created, use the SetWindowLong function.
-				/// </summary>
-				WS_GROUP = 0x00020000,
-				/// <summary>The window has a horizontal scroll bar.</summary>
-				WS_HSCROLL = 0x00100000,
-				// <summary>The window is initially minimized. Same as the WS_MINIMIZE style.</summary>
-				//WS_ICONIC = 0x20000000,
-				/// <summary>The window is initially maximized.</summary>
-				WS_MAXIMIZE = 0x01000000,
-				/// <summary>The window has a maximize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.</summary>
-				WS_MAXIMIZEBOX = 0x00010000,
-				/// <summary>The window is initially minimized. Same as the WS_ICONIC style.</summary>
-				WS_MINIMIZE = 0x20000000,
-				/// <summary>The window has a minimize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.</summary>
-				WS_MINIMIZEBOX = 0x00020000,
-				/// <summary>The window is an overlapped window. Same as the WS_TILEDWINDOW style.</summary>
-				WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
-				/// <summary>The windows is a pop-up window. This style cannot be used with the WS_CHILD style.</summary>
-				WS_POPUP = 0x80000000,
-				/// <summary>The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.</summary>
-				WS_POPUPWINDOW = WS_POPUP | WS_BORDER | WS_SYSMENU,
-				// <summary>The window has a sizing border. Same as the WS_THICKFRAME style.</summary>
-				//WS_SIZEBOX = 0x00040000,
-				/// <summary>The window has a window menu on its title bar. The WS_CAPTION style must also be specified.</summary>
-				WS_SYSMENU = 0x00080000,
-				/// <summary>
-				/// The window is a control that can receive the keyboard focus when the user presses the TAB key. Pressing the TAB key changes the keyboard focus to the next control with the WS_TABSTOP style.
-				/// You can turn this style on and off to change dialog box navigation. To change this style after a window has been created, use the SetWindowLong function. For user-created windows and modeless dialogs to work with tab stops, alter the message loop to call the IsDialogMessage function.
-				/// </summary>
-				WS_TABSTOP = 0x00010000,
-				/// <summary>The window has a sizing border. Same as the WS_SIZEBOX style.</summary>
-				WS_THICKFRAME = 0x00040000,
-				// <summary>The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.</summary>
-				//WS_TILED = 0x00000000,
-				/// <summary>The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.</summary>
-				WS_TILEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
-				/// <summary>
-				/// The window is initially visible.
-				/// This style can be turned on and off by using the ShowWindow or SetWindowPos function.
-				/// </summary>
-				WS_VISIBLE = 0x10000000,
-				/// <summary>The window has a vertical scroll bar.</summary>
-				WS_VSCROLL = 0x00200000,
-				/// <summary>Indicates that the coordinates of the dialog box are screen coordinates. If this style is not specified, the coordinates are client coordinates.</summary>
-				DS_ABSALIGN = 0x01,
-				/// <summary>
-				/// This style is obsolete and is included for compatibility with 16-bit versions of Windows.
-				/// If you specify this style, the system creates the dialog box with the WS_EX_TOPMOST style.
-				/// This style does not prevent the user from accessing other windows on the desktop.
-				/// </summary>
-				/// <remarks>Do not combine this style with the DS_CONTROL style.</remarks>
-				DS_SYSMODAL = 0x02,
-				/// <summary>
-				/// Applies to 16-bit applications only.
-				/// This style directs edit controls in the dialog box to allocate memory from the application's data segment.
-				/// Otherwise, edit controls allocate storage from a global memory object.
-				/// </summary>
-				DS_LOCALEDIT = 0x20,
-				/// <summary>
-				/// Indicates that the header of the dialog box template (either standard or extended) contains additional data specifying the font to use for text in the client area and controls of the dialog box.
-				/// If possible, the system selects a font according to the specified font data.
-				/// The system passes a handle to the font to the dialog box and to each control by sending them the WM_SETFONT message.
-				/// For descriptions of the format of this font data, see DLGTEMPLATE and DLGTEMPLATEEX.
-				/// </summary>
-				/// <remarks>If neither DS_SETFONT nor DS_SHELLFONT is specified, the dialog box template does not include the font data.</remarks>
-				DS_SETFONT = 0x40,
-				/// <summary>Creates a dialog box with a modal dialog-box frame that can be combined with a title bar and window menu by specifying the WS_CAPTION and WS_SYSMENU styles.</summary>
-				DS_MODALFRAME = 0x80,
-				/// <summary>Suppresses WM_ENTERIDLE messages that the system would otherwise send to the owner of the dialog box while the dialog box is displayed.</summary>
-				DS_NOIDLEMSG = 0x100,
-				/// <summary>
-				/// Causes the system to use the SetForegroundWindow function to bring the dialog box to the foreground.
-				/// This style is useful for modal dialog boxes that require immediate attention from the user regardless of whether the owner window is the foreground window.
-				/// </summary>
-				/// <remarks>
-				/// The system restricts which processes can set the foreground window.
-				/// For more information, see Foreground and Background Windows.
-				/// </remarks>
-				DS_SETFOREGROUND = 0x200,
-				/// <summary>Obsolete. The system automatically applies the three-dimensional look to dialog boxes created by applications.</summary>
-				DS_3DLOOK = 0x0004,
-				/// <summary>
-				/// Causes the dialog box to use the SYSTEM_FIXED_FONT instead of the default SYSTEM_FONT.
-				/// This is a monospace font compatible with the System font in 16-bit versions of Windows earlier than 3.0.
-				/// </summary>
-				DS_FIXEDSYS = 0x0008,
-				/// <summary>Creates the dialog box even if errors occur — for example, if a child window cannot be created or if the system cannot create a special data segment for an edit control.</summary>
-				DS_NOFAILCREATE = 0x0010,
-				/// <summary>
-				/// Creates a dialog box that works well as a child window of another dialog box, much like a page in a property sheet.
-				/// This style allows the user to tab among the control windows of a child dialog box, use its accelerator keys, and so on.
-				/// </summary>
-				DS_CONTROL = 0x0400,
-				/// <summary>
-				/// Centers the dialog box in the working area of the monitor that contains the owner window.
-				/// If no owner window is specified, the dialog box is centered in the working area of a monitor determined by the system.
-				/// The working area is the area not obscured by the taskbar or any appbars.
-				/// </summary>
-				DS_CENTER = 0x0800,
-				/// <summary>Centers the dialog box on the mouse cursor.</summary>
-				DS_CENTERMOUSE = 0x1000,
-				/// <summary>
-				/// Includes a question mark in the title bar of the dialog box.
-				/// When the user clicks the question mark, the cursor changes to a question mark with a pointer.
-				/// If the user then clicks a control in the dialog box, the control receives a WM_HELP message.
-				/// The control should pass the message to the dialog box procedure, which should call the function using the HELP_WM_HELP command.
-				/// The help application displays a pop-up window that typically contains help for the control.
-				/// </summary>
-				/// <remarks>
-				/// Note that DS_CONTEXTHELP is only a placeholder.
-				/// When the dialog box is created, the system checks for DS_CONTEXTHELP and, if it is there, adds WS_EX_CONTEXTHELP to the extended style of the dialog box.
-				/// WS_EX_CONTEXTHELP cannot be used with the WS_MAXIMIZEBOX or WS_MINIMIZEBOX styles.
-				/// </remarks>
-				DS_CONTEXTHELP = 0x2000,
-				/// <summary>
-				/// Indicates that the dialog box should use the system font.
-				/// The typeface member of the extended dialog box template must be set to MS Shell Dlg. Otherwise, this style has no effect.
-				/// It is also recommended that you use the DIALOGEX Resource, rather than the DIALOG Resource.
-				/// For more information, see Dialog Box Fonts.
-				/// </summary>
-				/// <remarks>
-				/// The system selects a font using the font data specified in the pointsize, weight, and italic members.
-				/// The system passes a handle to the font to the dialog box and to each control by sending them the WM_SETFONT message.
-				/// For descriptions of the format of this font data, see DLGTEMPLATEEX.
-				/// If neither DS_SHELLFONT nor DS_SETFONT is specified, the extended dialog box template does not include the font data.
-				/// </remarks>
-				DS_SHELLFONT = DS_SETFONT | DS_FIXEDSYS,
-				/// <summary>Specifies use of pixels, not dialog coordinates.</summary>
-				DS_USEPIXELS = 0x8000,
-			}
-			/// <summary>The following are the extended window styles.</summary>
-			[Flags]
-			public enum WS_EX : uint
-			{
-				/// <summary>The window accepts drag-drop files.</summary>
-				ACCEPTFILES = 0x00000010,
-				/// <summary>Forces a top-level window onto the taskbar when the window is visible.</summary>
-				APPWINDOW = 0x00040000,
-				/// <summary>The window has a border with a sunken edge.</summary>
-				CLIENTEDGE = 0x00000200,
-				/// <summary>
-				/// Paints all descendants of a window in bottom-to-top painting order using double-buffering. For more information, see Remarks.
-				/// This cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.
-				/// </summary>
-				/// <remarks>Windows 2000:  This style is not supported.</remarks>
-				COMPOSITED = 0x02000000,
-				/// <summary>
-				/// The title bar of the window includes a question mark.
-				/// When the user clicks the question mark, the cursor changes to a question mark with a pointer.
-				/// If the user then clicks a child window, the child receives a WM_HELP message.
-				/// The child window should pass the message to the parent window procedure, which should call the WinHelp function using the HELP_WM_HELP command.
-				/// The Help application displays a pop-up window that typically contains help for the child window.
-				/// </summary>
-				/// <remarks>WS_EX_CONTEXTHELP cannot be used with the WS_MAXIMIZEBOX or WS_MINIMIZEBOX styles.</remarks>
-				CONTEXTHELP = 0x00000400,
-				/// <summary>
-				/// The window itself contains child windows that should take part in dialog box navigation.
-				/// If this style is specified, the dialog manager recurses into children of this window when performing navigation operations such as handling the TAB key, an arrow key, or a keyboard mnemonic.
-				/// </summary>
-				CONTROLPARENT = 0x00010000,
-				/// <summary>The window has a double border; the window can, optionally, be created with a title bar by specifying the WS_CAPTION style in the dwStyle parameter.</summary>
-				DLGMODALFRAME = 0x00000001,
-				/// <summary>The window is a layered window. This style cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.</summary>
-				/// <remarks>Windows 8:  The WS_EX_LAYERED style is supported for top-level windows and child windows. Previous Windows versions support WS_EX_LAYERED only for top-level windows.</remarks>
-				LAYERED = 0x00080000,
-				/// <summary>If the shell language is Hebrew, Arabic, or another language that supports reading order alignment, the horizontal origin of the window is on the right edge. Increasing horizontal values advance to the left.</summary>
-				LAYOUTRTL = 0x00400000,
-				/// <summary>The window has generic left-aligned properties. This is the default.</summary>
-				LEFT = 0x00000000,
-				/// <summary>If the shell language is Hebrew, Arabic, or another language that supports reading order alignment, the vertical scroll bar (if present) is to the left of the client area.</summary>
-				/// <remarks>For other languages, the style is ignored.</remarks>
-				LEFTSCROLLBAR = 0x00004000,
-				/// <summary>The window text is displayed using left-to-right reading-order properties. This is the default.</summary>
-				LTRREADING = 0x00000000,
-				/// <summary>The window is a MDI child window.</summary>
-				MDICHILD = 0x00000040,
-				/// <summary>
-				/// A top-level window created with this style does not become the foreground window when the user clicks it.
-				/// The system does not bring this window to the foreground when the user minimizes or closes the foreground window.
-				/// To activate the window, use the SetActiveWindow or SetForegroundWindow function.
-				/// </summary>
-				/// <remarks>The window does not appear on the taskbar by default. To force the window to appear on the taskbar, use the WS_EX_APPWINDOW style.</remarks>
-				NOACTIVATE = 0x08000000,
-				/// <summary>The window does not pass its window layout to its child windows.</summary>
-				NOINHERITLAYOUT = 0x00100000,
-				/// <summary>The child window created with this style does not send the WM_PARENTNOTIFY message to its parent window when it is created or destroyed.</summary>
-				NOPARENTNOTIFY = 0x00000004,
-				/// <summary>The window is an overlapped window.</summary>
-				OVERLAPPEDWINDOW = WINDOWEDGE | CLIENTEDGE,
-				/// <summary>The window is palette window, which is a modeless dialog box that presents an array of commands.</summary>
-				PALETTEWINDOW = WINDOWEDGE | TOOLWINDOW | TOPMOST,
-				/// <summary>
-				/// The window has generic "right-aligned" properties. This depends on the window class.
-				/// This style has an effect only if the shell language is Hebrew, Arabic, or another language that supports reading-order alignment; otherwise, the style is ignored.
-				/// </summary>
-				/// <remarks>
-				/// Using the WS_EX_RIGHT style for static or edit controls has the same effect as using the SS_RIGHT or ES_RIGHT style, respectively.
-				/// Using this style with button controls has the same effect as using BS_RIGHT and BS_RIGHTBUTTON styles.
-				/// </remarks>
-				RIGHT = 0x00001000,
-				/// <summary>The vertical scroll bar (if present) is to the right of the client area. This is the default.</summary>
-				RIGHTSCROLLBAR = 0x00000000,
-				/// <summary>
-				/// If the shell language is Hebrew, Arabic, or another language that supports reading-order alignment, the window text is displayed using right-to-left reading-order properties.
-				/// For other languages, the style is ignored.
-				/// </summary>
-				RTLREADING = 0x00002000,
-				/// <summary>The window has a three-dimensional border style intended to be used for items that do not accept user input.</summary>
-				STATICEDGE = 0x00020000,
-				/// <summary>
-				/// The window is intended to be used as a floating toolbar.
-				/// A tool window has a title bar that is shorter than a normal title bar, and the window title is drawn using a smaller font.
-				/// A tool window does not appear in the taskbar or in the dialog that appears when the user presses ALT+TAB.
-				/// If a tool window has a system menu, its icon is not displayed on the title bar. However, you can display the system menu by right-clicking or by typing ALT+SPACE.
-				/// </summary>
-				TOOLWINDOW = 0x00000080,
-				/// <summary>The window should be placed above all non-topmost windows and should stay above them, even when the window is deactivated.</summary>
-				TOPMOST = 0x00000008,
-				/// <summary>
-				/// The window should not be painted until siblings beneath the window (that were created by the same thread) have been painted.
-				/// The window appears transparent because the bits of underlying sibling windows have already been painted.
-				/// </summary>
-				/// <remarks>To achieve transparency without these restrictions, use the SetWindowRgn function.</remarks>
-				TRANSPARENT = 0x00000020,
-				/// <summary>The window has a border with a raised edge.</summary>
-				WINDOWEDGE = 0x00000100,
-			}
 
-			/// <summary>Contains version information for the menu resource. The structure definition provided here is for explanation only; it is not present in any standard header file.</summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms648018%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 1)]
-			public struct MENUHEADER
-			{
-				/// <summary>The version number of the menu template.</summary>
-				/// <remarks>This member must be equal to zero to indicate that this is an RT_MENU created with a standard menu template.</remarks>
-				public UInt16 wVersion;
-				/// <summary>The size of the menu template header.</summary>
-				/// <remarks>This value is zero for menus you create with a standard menu template.</remarks>
-				public UInt16 cbHeaderSize;
-				/// <summary>Старый формат меню</summary>
-				public Boolean IsOldFormat { get { return wVersion == 0; } }
-				/// <summary>Новый формат меню</summary>
-				public Boolean IsNewFormat { get { return wVersion == 1; } }
-			}
-			/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu.</summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms648024%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct MENUITEM
-			{
-				/// <summary>The type of menu item.</summary>
-				public MF mtOption;
-				//// <summary>A null-terminated Unicode string that contains the text for this menu item. There is no fixed limit on the size of this string.</summary>
-				//public String menuText;
-				// <summary>
-				// A menu separator is a special type of menu item that is inactive but appears as a dividing bar between two active menu items.
-				// Indicate a menu separator by leaving the menuText member empty.
-				// </summary>
-				//public Boolean IsSeparator { get { return String.IsNullOrEmpty(this.menuText); } }
-				/// <summary>
-				/// The structure defines a item that opens a drop-down menu or submenu.
-				/// Subsequent structures define menu items in the corresponding drop-down menu or submenu.
-				/// </summary>
-				public Boolean IsPopUp { get { return (this.mtOption & MF.POPUP) == MF.POPUP; } }
-				/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu.</summary>
-				public Boolean IsFinal { get { return (this.mtOption & MF.END) == MF.END; } }
-			}
-			/// <summary>Defines a menu item in a menu template.</summary>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct MENUITEMPOPUP
-			{
-				/// <summary>The type of menu item.</summary>
-				public MF mtOption;
-				/// <summary>Menu item ID</summary>
-				public UInt16 mtID;
-				/// <summary>
-				/// The structure defines a item that opens a drop-down menu or submenu.
-				/// Subsequent structures define menu items in the corresponding drop-down menu or submenu.
-				/// </summary>
-				public Boolean IsPopUp { get { return (this.mtOption & MF.POPUP) == MF.POPUP; } }
-				/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu.</summary>
-				public Boolean IsFinal { get { return (this.mtOption & MF.END) == MF.END; } }
-			}
-			/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu.</summary>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct MENUITEMEX
-			{
-				/// <summary>The menu item type.</summary>
-				/// <remarks>This member can be a combination of the type (beginning with MFT) values listed with the MENUITEMINFO structure.</remarks>
-				public MFT dwType;
-				/// <summary>The menu item state.</summary>
-				/// <remarks>This member can be a combination of the state (beginning with MFS) values listed with the MENUITEMINFO structure.</remarks>
-				public MFS dwState;
-				/// <summary>
-				/// The menu item identifier.
-				/// This is an application-defined value that identifies the menu item.
-				/// In an extended menu resource, items that open drop-down menus or submenus as well as command items can have identifiers.
-				/// </summary>
-				public UInt32 menuId;
-				/// <summary>
-				/// Specifies whether the menu item is the last item in the menu bar, drop-down menu, submenu, or shortcut menu and whether it is an item that opens a drop-down menu or submenu.
-				/// This member can be zero or more of these values.
-				/// </summary>
-				/// <remarks>For 32-bit applications, this member is a word; for 16-bit applications, it is a byte.</remarks>
-				public MFe bResInfo;
-				/// <summary>
-				/// The structure defines a item that opens a drop-down menu or submenu.
-				/// Subsequent structures define menu items in the corresponding drop-down menu or submenu.
-				/// </summary>
-				public Boolean IsPopUp { get { return (this.bResInfo & MFe.POPUP) == MFe.POPUP; } }
-				/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu.</summary>
-				public Boolean IsFinal { get { return (this.bResInfo & MFe.END) == MFe.END; } }
-			}
-			/// <summary>Menu item type in PE file.</summary>
-			[Flags]
-			public enum MFe : ushort
-			{
-				/// <summary>
-				/// The structure defines a item that opens a drop-down menu or submenu.
-				/// Subsequent structures define menu items in the corresponding drop-down menu or submenu.
-				/// </summary>
-				POPUP = 0x01,
-				/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu.</summary>
-				END = 0x80,
-			}
-			/// <summary>Describes the menu item.</summary>
-			[Flags]
-			public enum MF : ushort
-			{
-				/// <summary>Indicates that the menu item is initially inactive and drawn with a gray effect.</summary>
-				GRAYED = 0x00000001,
-				/// <summary>Indicates that the menu item has a check mark next to it.</summary>
-				CHECKED = 0x00000008,
-				/// <summary>The menu item opens a menu or a submenu; the flag is used internally by the system.</summary>
-				POPUP = 0x00000010,
-				/// <summary>
-				/// Indicates that the menu item is placed in a new column.
-				/// The old and new columns are separated by a bar.
-				/// </summary>
-				MENUBARBREAK = 0x00000020,
-				/// <summary>Indicates that the menu item is placed in a new column.</summary>
-				MENUBREAK = 0x00000040,
-				/// <summary>The menu item is the last on the menu; the flag is used internally by the system.</summary>
-				END = 0x00000080,
-				/// <summary>
-				/// Indicates that the owner window of the menu is responsible for drawing all visual aspects of the menu item, including highlighted, selected, and inactive states.
-				/// This option is not valid for an item in a menu bar.
-				/// </summary>
-				OWNERDRAW = 0x00000100,
-				/// <summary>Indicates that the menu item has a vertical separator to its left.</summary>
-				HELP = 0x00004000,
-			}
-			/// <summary>The menu item state.</summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms647578%28v=vs.85%29.aspx</remarks>
-			[Flags]
-			public enum MFS : int
-			{
-				/// <summary>Checks the menu item.</summary>
-				CHECKED = 0x00000008,
-				/// <summary>Specifies that the menu item is the default.</summary>
-				/// <remarks>A menu can contain only one default menu item, which is displayed in bold.</remarks>
-				DEFAULT = 0x00001000,
-				/// <summary>Disables the menu item and grays it so that it cannot be selected.</summary>
-				/// <remarks>This is equivalent to MFS_GRAYED.</remarks>
-				DISABLED = 0x00000003,
-				// <summary>Disables the menu item and grays it so that it cannot be selected.</summary>
-				// <remarks>This is equivalent to MFS_DISABLED.</remarks>
-				//GRAYED = 0x00000003,
-				/// <summary>Enables the menu item so that it can be selected. This is the default state.</summary>
-				ENABLED = 0x00000000,
-				// <summary>Unchecks the menu item.</summary>
-				//UNCHECKED=0x00000000,
-				// <summary>Removes the highlight from the menu item. This is the default state.</summary>
-				//UNHILITE=0x00000000,
-				/// <summary>Highlights the menu item.</summary>
-				HILITE = 0x00000080,
-			}
-			/// <summary>Menu item types.</summary>
-			[Flags]
-			public enum MFT : int
-			{
-				/// <summary>
-				/// Displays the menu item using a text string.
-				/// The dwTypeData member is the pointer to a null-terminated string, and the cch member is the length of the string.</summary>
-				/// <remarks>MFT_STRING is replaced by MIIM_STRING.</remarks>
-				STRING = 0x00000000,
-				/// <summary>
-				/// Displays the menu item using a bitmap.
-				/// The low-order word of the dwTypeData member is the bitmap handle, and the cch member is ignored.
-				/// </summary>
-				/// <remarks>MFT_BITMAP is replaced by MIIM_BITMAP and hbmpItem. </remarks>
-				BITMAP = 0x00000004,
-				/// <summary>
-				/// Places the menu item on a new line (for a menu bar) or in a new column (for a drop-down menu, submenu, or shortcut menu).
-				/// For a drop-down menu, submenu, or shortcut menu, a vertical line separates the new column from the old.
-				/// </summary>
-				MENUBARBREAK = 0x00000020,
-				/// <summary>
-				/// Places the menu item on a new line (for a menu bar) or in a new column (for a drop-down menu, submenu, or shortcut menu).
-				/// For a drop-down menu, submenu, or shortcut menu, the columns are not separated by a vertical line.
-				/// </summary>
-				MENUBREAK = 0x00000040,
-				/// <summary>
-				/// Assigns responsibility for drawing the menu item to the window that owns the menu.
-				/// The window receives a WM_MEASUREITEM message before the menu is displayed for the first time, and a WM_DRAWITEM message whenever the appearance of the menu item must be updated.
-				/// If this value is specified, the dwTypeData member contains an application-defined value.
-				/// </summary>
-				OWNERDRAW = 0x00000100,
-				/// <summary>Displays selected menu items using a radio-button mark instead of a check mark if the hbmpChecked member is NULL.</summary>
-				RADIOCHECK = 0x00000200,
-				/// <summary>
-				/// Specifies that the menu item is a separator.
-				/// A menu item separator appears as a horizontal dividing line.
-				/// The dwTypeData and cch members are ignored.
-				/// </summary>
-				/// <remarks>This value is valid only in a drop-down menu, submenu, or shortcut menu.</remarks>
-				SEPARATOR = 0x00000800,
-				/// <summary>
-				/// Specifies that menus cascade right-to-left (the default is left-to-right).
-				/// This is used to support right-to-left languages, such as Arabic and Hebrew.
-				/// </summary>
-				RIGHTORDER = 0x00002000,
-				/// <summary>
-				/// Right-justifies the menu item and any subsequent items.
-				/// This value is valid only if the menu item is in a menu bar.
-				/// </summary>
-				RIGHTJUSTIFY = 0x00004000,
-			}
-			/// <summary>The BITMAPINFOHEADER structure contains information about the dimensions and color format of a DIB.</summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/dd183376.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct BITMAPINFOHEADER
-			{
-				/// <summary>The number of bytes required by the structure.</summary>
-				public UInt32 biSize;
-				/// <summary>
-				/// The width of the bitmap, in pixels.</summary>
-				/// <remarks>If biCompression is BI_JPEG or BI_PNG, the biWidth member specifies the width of the decompressed JPEG or PNG image file, respectively.</remarks>
-				public Int32 biWidth;
-				/// <summary>
-				/// The height of the bitmap, in pixels.
-				/// If biHeight is positive, the bitmap is a bottom-up DIB and its origin is the lower-left corner. If biHeight is negative, the bitmap is a top-down DIB and its origin is the upper-left corner.
-				/// </summary>
-				/// <remarks>
-				/// If biHeight is negative, indicating a top-down DIB, biCompression must be either BI_RGB or BI_BITFIELDS. Top-down DIBs cannot be compressed.
-				/// If biCompression is BI_JPEG or BI_PNG, the biHeight member specifies the height of the decompressed JPEG or PNG image file, respectively.
-				/// </remarks>
-				public Int32 biHeight;
-				/// <summary>The number of planes for the target device. This value must be set to 1.</summary>
-				public UInt16 biPlanes;
-				/// <summary>The number of bits-per-pixel. The biBitCount member of the BITMAPINFOHEADER structure determines the number of bits that define each pixel and the maximum number of colors in the bitmap.</summary>
-				public UInt16 biBitCount;
-				/// <summary>The type of compression for a compressed bottom-up bitmap (top-down DIBs cannot be compressed).</summary>
-				public BI biCompression;
-				/// <summary>The size, in bytes, of the image. This may be set to zero for BI_RGB bitmaps.</summary>
-				/// <remarks>If biCompression is BI_JPEG or BI_PNG, biSizeImage indicates the size of the JPEG or PNG image buffer, respectively.</remarks>
-				public UInt32 biSizeImage;
-				/// <summary>
-				/// The horizontal resolution, in pixels-per-meter, of the target device for the bitmap.
-				/// An application can use this value to select a bitmap from a resource group that best matches the characteristics of the current device.
-				/// </summary>
-				public Int32 biXPelsPerMeter;
-				/// <summary>The vertical resolution, in pixels-per-meter, of the target device for the bitmap.</summary>
-				public Int32 biYPelsPerMeter;
-				/// <summary>
-				/// The number of color indexes in the color table that are actually used by the bitmap.
-				/// If this value is zero, the bitmap uses the maximum number of colors corresponding to the value of the biBitCount member for the compression mode specified by biCompression.
-				/// </summary>
-				/// <remarks>
-				/// If biClrUsed is nonzero and the biBitCount member is less than 16, the biClrUsed member specifies the actual number of colors the graphics engine or device driver accesses.
-				/// If biBitCount is 16 or greater, the biClrUsed member specifies the size of the color table used to optimize performance of the system color palettes.
-				/// If biBitCount equals 16 or 32, the optimal color palette starts immediately following the three DWORD masks.
-				/// 
-				/// When the bitmap array immediately follows the BITMAPINFO structure, it is a packed bitmap.
-				/// Packed bitmaps are referenced by a single pointer.
-				/// Packed bitmaps require that the biClrUsed member must be either zero or the actual size of the color table.
-				/// </remarks>
-				public UInt32 biClrUsed;
-				/// <summary>The number of color indexes that are required for displaying the bitmap.</summary>
-				/// <remarks>If this value is zero, all colors are required.</remarks>
-				public UInt32 biClrImportant;
-				/// <summary>Number of colors in palette.</summary>
-				public UInt32 ColorsCount
-				{
-					get
-					{
-						if(this.biClrUsed != 0)
-							return this.biClrUsed;
-						else if(this.biBitCount <= 8)
-							return (UInt32)(1 << this.biBitCount);
-						else return 0;
-					}
-				}
-				/// <summary>Xor Image Size</summary>
-				public Int32 XorImageSize
-				{
-					get
-					{
-						return (Int32)(this.biHeight / 2 *
-						BITMAPINFOHEADER.GetDibRowWidth(this.biWidth * this.biBitCount * this.biPlanes));
-					}
-				}
-				/// <summary>Size of the image mask.</summary>
-				public Int32 MaskImageSize
-				{
-					get { return (Int32)(this.biHeight / 2 * BITMAPINFOHEADER.GetDibRowWidth(this.biWidth)); }
-				}
-				/// <summary>
-				/// Returns the width of a row in a DIB Bitmap given the number of bits.
-				/// DIB Bitmap rows always align on a DWORD boundary.
-				/// </summary>
-				/// <param name="width">Number of bits.</param>
-				/// <returns>Width of a row in bytes.</returns>
-				public static Int32 GetDibRowWidth(Int32 width)
-				{
-					return (Int32)((width + 31) / 32) * 4;
-				}
-			}
-			/// <summary>Bitmap info type.</summary>
-			public enum BI : int
-			{
-				/// <summary>An uncompressed format.</summary>
-				RGB = 0,
-				/// <summary>A run-length encoded (RLE) format for bitmaps with 8 bpp. The compression format is a 2-byte format consisting of a count byte followed by a byte containing a color index.</summary>
-				RLE8 = 1,
-				/// <summary>An RLE format for bitmaps with 4 bpp. The compression format is a 2-byte format consisting of a count byte followed by two word-length color indexes.</summary>
-				RLE4 = 2,
-				/// <summary>Specifies that the bitmap is not compressed and that the color table consists of three DWORD color masks that specify the red, green, and blue components, respectively, of each pixel.</summary>
-				/// <remarks>This is valid when used with 16- and 32-bpp bitmaps.</remarks>
-				BITFIELDS = 3,
-				/// <summary>Indicates that the image is a JPEG image.</summary>
-				JPEG = 4,
-				/// <summary>Indicates that the image is a PNG image.</summary>
-				PNG = 5,
-			}
 			/// <summary>Represents the organization of data in a file-version resource. It is the root structure that contains all other file-version information structures.</summary>
 			/// <remarks>
 			/// This structure is not a true C-language structure because it contains variable-length members.
@@ -1779,6 +1387,7 @@ namespace AlphaOmega.Debug
 				/// <summary>An array of zero or one StringFileInfo structures, and zero or one VarFileInfo structures that are children of the current VS_VERSIONINFO structure.</summary>
 				public UInt16 Children;*/
 			}
+
 			/// <summary>Типы данных в версии</summary>
 			public enum VersionDataType : short
 			{
@@ -1787,165 +1396,7 @@ namespace AlphaOmega.Debug
 				/// <summary>Текстовые данных</summary>
 				Text = 1,
 			}
-			/// <summary>Contains version information for a file. This information is language and code page independent.</summary>
-			[StructLayout(LayoutKind.Sequential, Pack = 2)]
-			public struct VS_FIXEDFILEINFO
-			{
-				/// <summary>Contains the value 0xFEEF04BD. This is used with the szKey member of the VS_VERSIONINFO structure when searching a file for the VS_FIXEDFILEINFO structure.</summary>
-				public UInt32 dwSignature;
-				/// <summary>The binary version number of this structure. The high-order word of this member contains the major version number, and the low-order word contains the minor version number.</summary>
-				public UInt32 dwStructVersion;
-				/// <summary>The most significant 32 bits of the file's binary version number. This member is used with dwFileVersionLS to form a 64-bit value used for numeric comparisons.</summary>
-				public UInt32 dwFileVersionMS;
-				/// <summary>The least significant 32 bits of the file's binary version number. This member is used with dwFileVersionMS to form a 64-bit value used for numeric comparisons.</summary>
-				public UInt32 dwFileVersionLS;
-				/// <summary>The most significant 32 bits of the binary version number of the product with which this file was distributed. This member is used with dwProductVersionLS to form a 64-bit value used for numeric comparisons.</summary>
-				public UInt32 dwProductVersionMS;
-				/// <summary>The least significant 32 bits of the binary version number of the product with which this file was distributed. This member is used with dwProductVersionMS to form a 64-bit value used for numeric comparisons.</summary>
-				public UInt32 dwProductVersionLS;
-				/// <summary>Contains a bitmask that specifies the valid bits in dwFileFlags. A bit is valid only if it was defined when the file was created.</summary>
-				public UInt32 dwFileFlagMask;
-				/// <summary>Contains a bitmask that specifies the Boolean attributes of the file. This member can include one or more of the following values. </summary>
-				public VS_FF dwFileFlags;
-				/// <summary>The operating system for which this file was designed. This member can be one of the following values.</summary>
-				/// <remarks>An application can combine these values to indicate that the file was designed for one operating system running on another. The following dwFileOS values are examples of this, but are not a complete list.</remarks>
-				public VOS dwFileOS;
-				/// <summary>The general type of file. This member can be one of the following values. All other values are reserved.</summary>
-				public VFT dwFileType;
-				/// <summary>The function of the file. The possible values depend on the value of dwFileType. For all values of dwFileType not described in the following list, dwFileSubtype is zero.</summary>
-				/// <remarks>If dwFileType is VFT_DRV, dwFileSubtype can be one of the following values.</remarks>
-				public VFT2 dwFileSubtype;
-				/// <summary>The most significant 32 bits of the file's 64-bit binary creation date and time stamp.</summary>
-				public UInt32 dwFileDateMS;
-				/// <summary>The least significant 32 bits of the file's 64-bit binary creation date and time stamp.</summary>
-				public UInt32 dwFileDateLS;
-				/// <summary>Structure is valid</summary>
-				public Boolean IsValid { get { return this.dwSignature == 0xFEEF04BD; } }
-				/// <summary>File version number</summary>
-				public Version FileVersion
-				{
-					get
-					{
-						return new Version(
-							NativeMethods.HiWord(this.dwFileVersionMS),
-							NativeMethods.LoWord(this.dwFileVersionMS),
-							NativeMethods.HiWord(this.dwFileVersionLS),
-							NativeMethods.LoWord(this.dwFileVersionLS));
-					}
-				}
-				/// <summary>Product version number</summary>
-				public Version ProductVersion
-				{
-					get
-					{
-						return new Version(
-							NativeMethods.HiWord(this.dwProductVersionMS),
-							NativeMethods.LoWord(this.dwProductVersionMS),
-							NativeMethods.HiWord(this.dwProductVersionLS),
-							NativeMethods.LoWord(this.dwProductVersionLS)
-							);
-					}
-				}
-			}
-			/// <summary>Contains a bitmask that specifies the Boolean attributes of the file.</summary>
-			[Flags]
-			public enum VS_FF
-			{
-				/// <summary>The file contains debugging information or is compiled with debugging features enabled.</summary>
-				DEBUG = 0x00000001,
-				/// <summary>The file's version structure was created dynamically; therefore, some of the members in this structure may be empty or incorrect. This flag should never be set in a file's VS_VERSIONINFO data.</summary>
-				INFOINFERRED = 0x00000010,
-				/// <summary>The file has been modified and is not identical to the original shipping file of the same version number.</summary>
-				PATCHED = 0x00000004,
-				/// <summary>The file is a development version, not a commercially released product.</summary>
-				PRERELEASE = 00000002,
-				/// <summary>The file was not built using standard release procedures. If this flag is set, the StringFileInfo structure should contain a PrivateBuild entry.</summary>
-				PRIVATEBUILD = 00000008,
-				/// <summary>The file was built by the original company using standard release procedures but is a variation of the normal file of the same version number. If this flag is set, the StringFileInfo structure should contain a SpecialBuild entry.</summary>
-				SPECIALBUILD = 00000020,
-			}
-			/// <summary>The operating system for which this file was designed.</summary>
-			[Flags]
-			public enum VOS
-			{
-				/// <summary>The file was designed for MS-DOS.</summary>
-				DOS = 0x00010000,
-				/// <summary>The file was designed for Windows NT.</summary>
-				NT = 0x00040000,
-				/// <summary>The file was designed for 16-bit Windows.</summary>
-				WINDOWS16 = 0x00000001,
-				/// <summary>The file was designed for 32-bit Windows.</summary>
-				WINDOWS32 = 0x00000004,
-				/// <summary>The file was designed for 16-bit OS/2.</summary>
-				OS216 = 0x00020000,
-				/// <summary>The file was designed for 32-bit OS/2.</summary>
-				OS232 = 0x00030000,
-				/// <summary>The file was designed for 16-bit Presentation Manager.</summary>
-				PM16 = 0x00000002,
-				/// <summary>The file was designed for 32-bit Presentation Manager.</summary>
-				PM32 = 0x00000003,
-				/// <summary>The operating system for which the file was designed is unknown to the system.</summary>
-				UNKNOWN = 0x00000000,
-				/// <summary>The file was designed for 16-bit Windows running on MS-DOS.</summary>
-				DOS_WINDOWS16 = 0x00010001,
-				/// <summary>The file was designed for 32-bit Windows running on MS-DOS.</summary>
-				DOS_WINDOWS32 = 0x00010004,
-				/// <summary>The file was designed for Windows NT.</summary>
-				NT_WINDOWS32 = 0x00040004,
-				/// <summary>The file was designed for 16-bit Presentation Manager running on 16-bit OS/2.</summary>
-				OS216_PM16 = 0x00020002,
-				/// <summary>The file was designed for 32-bit Presentation Manager running on 32-bit OS/2.</summary>
-				OS232_PM32 = 0x00030003,
-			}
-			/// <summary>The general type of file.</summary>
-			[Flags]
-			public enum VFT
-			{
-				/// <summary>The file contains an application.</summary>
-				APP = 0x00000001,
-				/// <summary>The file contains a DLL.</summary>
-				DLL = 0x00000002,
-				/// <summary>The file contains a device driver. If dwFileType is VFT_DRV, dwFileSubtype contains a more specific description of the driver.</summary>
-				DRV = 0x00000003,
-				/// <summary>The file contains a font. If dwFileType is VFT_FONT, dwFileSubtype contains a more specific description of the font file.</summary>
-				FONT = 0x00000004,
-				/// <summary>The file contains a static-link library.</summary>
-				STATIC_LIB = 0x00000007,
-				/// <summary>The file type is unknown to the system.</summary>
-				UNKNOWN = 0x00000000,
-				/// <summary>The file contains a virtual device.</summary>
-				VXD = 0x00000005,
-			}
-			/// <summary>The function of the file. If dwFileType is VFT_DRV, dwFileSubtype can be one of the following values.</summary>
-			/// <remarks>The possible values depend on the value of dwFileType. For all values of dwFileType not described in the following list, dwFileSubtype is zero.</remarks>
-			[Flags]
-			public enum VFT2
-			{
-				/// <summary>The file contains a communications driver.</summary>
-				DRV_COMM = 0x0000000A,
-				/// <summary>The file contains a display driver.</summary>
-				DRV_DISPLAY = 0x00000004,
-				/// <summary>The file contains an installable driver.</summary>
-				DRV_INSTALLABLE = 0x00000008,
-				/// <summary>The file contains a keyboard driver.</summary>
-				DRV_KEYBOARD = 0x00000002,
-				/// <summary>The file contains a language driver.</summary>
-				DRV_LANGUAGE = 0x00000003,
-				/// <summary>The file contains a mouse driver.</summary>
-				DRV_MOUSE = 0x00000005,
-				/// <summary>The file contains a network driver.</summary>
-				DRV_NETWORK = 0x00000006,
-				/// <summary>The file contains a printer driver.</summary>
-				DRV_PRINTER = 0x00000001,
-				/// <summary>The file contains a sound driver.</summary>
-				DRV_SOUND = 0x00000009,
-				/// <summary>The file contains a system driver.</summary>
-				DRV_SYSTEM = 0x00000007,
-				/// <summary>The file contains a versioned printer driver.</summary>
-				DRV_VERSIONED_PRINTER = 0x0000000C,
-				/// <summary>The driver type is unknown by the system.</summary>
-				UNKNOWN = 0x00000000,
-			}
+
 			/// <summary>Represents the organization of data in a file-version resource. It contains version information that can be displayed for a particular language and code page.</summary>
 			[StructLayout(LayoutKind.Sequential, Pack = 2)]
 			public struct VarFileInfo
@@ -1993,6 +1444,7 @@ namespace AlphaOmega.Debug
 				// <summary>As many zero words as necessary to align the Children member on a 32-bit boundary.</summary>
 				//public UInt16 Padding;
 			}
+
 			/// <summary>
 			/// Represents the organization of data in a file-version resource.
 			/// It contains a string that describes a specific aspect of a file, for example, a file's version, its copyright notices, or its trademarks.
@@ -2030,162 +1482,7 @@ namespace AlphaOmega.Debug
 					}
 				}
 			}
-			/// <summary>Contains information about an individual font in a font resource group.</summary>
-			/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms648014%28v=vs.85%29.aspx</remarks>
-			[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-			public struct FONTDIRENTRY
-			{
-				/// <summary>A user-defined version number for the resource data that tools can use to read and write resource files.</summary>
-				public UInt16 dfVersion;
-				/// <summary>The size of the file, in bytes. </summary>
-				public UInt32 dfSize;
-				/// <summary>The font supplier's copyright information.</summary>
-				[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 60)]
-				public String dfCopyright;
-				/// <summary>The type of font file. </summary>
-				public UInt16 dfType;
-				/// <summary>The point size at which this character set looks best.</summary>
-				public UInt16 dfPoints;
-				/// <summary>The vertical resolution, in dots per inch, at which this character set was digitized.</summary>
-				public UInt16 dfVertRes;
-				/// <summary>The horizontal resolution, in dots per inch, at which this character set was digitized.</summary>
-				public UInt16 dfHorizRes;
-				/// <summary>The distance from the top of a character definition cell to the baseline of the typographical font.</summary>
-				public UInt16 dfAscent;
-				/// <summary>
-				/// The amount of leading inside the bounds set by the dfPixHeight member.
-				/// Accent marks and other diacritical characters can occur in this area.
-				/// </summary>
-				public UInt16 dfInternalLeading;
-				/// <summary>The amount of extra leading that the application adds between rows.</summary>
-				public UInt16 dfExternalLeading;
-				/// <summary>An italic font if not equal to zero.</summary>
-				public Byte dfItalic;
-				/// <summary>An underlined font if not equal to zero.</summary>
-				public Byte dfUnderline;
-				/// <summary>A strikeout font if not equal to zero. </summary>
-				public Byte dfStrikeOut;
-				/// <summary>The weight of the font in the range 0 through 1000. For example, 400 is roman and 700 is bold. If this value is zero, a default weight is used.</summary>
-				public FW dfWeight;
-				/// <summary>The character set of the font.</summary>
-				public CHARSET dfCharSet;
-				/// <summary>
-				/// The width of the grid on which a vector font was digitized.
-				/// For raster fonts, if the member is not equal to zero, it represents the width for all the characters in the bitmap. If the member is equal to zero, the font has variable-width characters.
-				/// </summary>
-				public UInt16 dfPixWidth;
-				/// <summary>The height of the character bitmap for raster fonts or the height of the grid on which a vector font was digitized.</summary>
-				public UInt16 dfPixHeight;
-				/// <summary>The pitch and the family of the font.</summary>
-				public Byte dfPitchAndFamily;
-				/// <summary>
-				/// The average width of characters in the font (generally defined as the width of the letter x).
-				/// This value does not include the overhang required for bold or italic characters.
-				/// </summary>
-				public UInt16 dfAvgWidth;
-				/// <summary>The width of the widest character in the font.</summary>
-				public UInt16 dfMaxWidth;
-				/// <summary>The first character code defined in the font.</summary>
-				public Byte dfFirstChar;
-				/// <summary>The last character code defined in the font.</summary>
-				public Byte dfLastChar;
-				/// <summary>The character to substitute for characters not in the font.</summary>
-				public Byte dfDefaultChar;
-				/// <summary>The character that will be used to define word breaks for text justification.</summary>
-				public Byte dfBreakChar;
-				/// <summary>
-				/// The number of bytes in each row of the bitmap.
-				/// This value is always even so that the rows start on word boundaries.
-				/// For vector fonts, this member has no meaning.
-				/// </summary>
-				public UInt16 dfWidthBytes;
-				/// <summary>
-				/// The offset in the file to a null-terminated string that specifies a device name.
-				/// For a generic font, this value is zero.
-				/// </summary>
-				public UInt32 dfDevice;
-				/// <summary>The offset in the file to a null-terminated string that names the typeface.</summary>
-				public UInt32 dfFace;
-				/// <summary>This member is reserved.</summary>
-				public UInt32 dfReserved;
-				//public Char szDeviceName;
-				//public Char szFaceName;
-				/// <summary>The font is italic</summary>
-				public Boolean IsItalic { get { return this.dfItalic > 0; } }
-				/// <summary>The font is underline</summary>
-				public Boolean IsUnderline { get { return this.dfUnderline > 0; } }
-				/// <summary>The font is strikeout</summary>
-				public Boolean IsStrikeOut { get { return this.dfStrikeOut > 0; } }
-			}
-			/// <summary>Font weight</summary>
-			public enum FW : ushort
-			{
-				/// <summary>Ignore</summary>
-				DONTCARE = 0,
-				/// <summary>Thin</summary>
-				THIN = 100,
-				/// <summary>Extra light</summary>
-				EXTRALIGHT = 200,
-				/// <summary>Light</summary>
-				LIGHT = 300,
-				/// <summary>Normal</summary>
-				NORMAL = 400,
-				/// <summary>Medium</summary>
-				MEDIUM = 500,
-				/// <summary>Semi bold</summary>
-				SEMIBOLD = 600,
-				/// <summary>Bold</summary>
-				BOLD = 700,
-				/// <summary>Extra bold</summary>
-				EXTRABOLD = 800,
-				/// <summary>Heawy</summary>
-				HEAVY = 900,
-			}
-			/// <summary>The character set</summary>
-			public enum CHARSET : byte
-			{
-				/// <summary>ANSI charset</summary>
-				ANSI = 0,
-				/// <summary>
-				/// DEFAULT_CHARSET is set to a value based on the current system locale.
-				/// For example, when the system locale is English (United States), it is set as ANSI_CHARSET.
-				/// </summary>
-				DEFAULT = 1,
-				/// <summary>Symbol charset</summary>
-				SYMBOL = 2,
-				/// <summary>Mac charset</summary>
-				MAC = 77,
-				/// <summary>Shiftjis charset</summary>
-				SHIFTJIS = 128,
-				/// <summary>Hangeul charset</summary>
-				HANGEUL = 129,
-				/// <summary>Johab charset</summary>
-				JOHAB = 130,
-				/// <summary>Gb2312 charset</summary>
-				GB2312 = 134,
-				/// <summary>Chinesebig5 charset</summary>
-				CHINESEBIG5 = 136,
-				/// <summary>Greek charset</summary>
-				GREEK = 161,
-				/// <summary>Turkish charset</summary>
-				TURKISH = 162,
-				/// <summary>Vietnamese charset</summary>
-				VIETNAMESE = 163,
-				/// <summary>Hebrew charset</summary>
-				HEBREW = 177,
-				/// <summary>Arabic charset</summary>
-				ARABIC = 178,
-				/// <summary>Baltic charset</summary>
-				BALTIC = 186,
-				/// <summary>Thai charset</summary>
-				THAI = 222,
-				/// <summary>Easteurope charset</summary>
-				EASTEUROPE = 238,
-				/// <summary>Russian charset</summary>
-				RUSSIAN = 204,
-				/// <summary>The OEM_CHARSET value specifies a character set that is operating-system dependent.</summary>
-				OEM = 255,
-			}
+
 			/// <summary>Contains information about message strings with identifiers in the range indicated by the LowId and HighId members.</summary>
 			[StructLayout(LayoutKind.Sequential)]
 			public struct MESSAGE_RESOURCE_BLOCK
@@ -2199,6 +1496,7 @@ namespace AlphaOmega.Debug
 				/// The MESSAGE_RESOURCE_ENTRY structures contain the message strings.</summary>
 				public UInt32 OffsetToEntries;
 			}
+
 			/// <summary>Contains the error message or message box display text for a message table resource. </summary>
 			[StructLayout(LayoutKind.Sequential)]
 			public struct MESSAGE_RESOURCE_ENTRY
@@ -2214,6 +1512,7 @@ namespace AlphaOmega.Debug
 				//public Byte[] Text;
 				public UInt16 MessageLength { get { return (UInt16)(this.Length - Marshal.SizeOf(this)); } }
 			}
+
 			/// <summary>Type of resource encoding</summary>
 			public enum ResourceEncodingType : short
 			{
@@ -2223,6 +1522,7 @@ namespace AlphaOmega.Debug
 				Unicode = 1,
 			}
 		}
+
 		/// <summary>COM+ 2.0 header structure.</summary>
 		[StructLayout(LayoutKind.Explicit)]
 		public struct IMAGE_COR20_HEADER
@@ -2272,6 +1572,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Version of the runtime required to run this program.</summary>
 			public Version RuntimeVersion { get { return new Version(this.MajorRuntimeVersion, this.MinorRuntimeVersion); } }
 		}
+
 		/// <summary>Import directory header</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_IMPORT_DESCRIPTOR
@@ -2371,6 +1672,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Этот ряд последний.</summary>
 			public Boolean IsLatEntry { get { return (this.UnwindInfoAddress & 0xF) > 0; } }
 		}
+
 		/// <summary>Represents the data directory.</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_DATA_DIRECTORY
@@ -2383,6 +1685,7 @@ namespace AlphaOmega.Debug
 			/// <remarks>Директория проверяется по полю Size. У некоторых директорий поде Size игнорируется. См. документацию.</remarks>
 			public Boolean IsEmpty { get { return this.Size == 0; } }
 		}
+
 		/// <summary>Optional header format</summary>
 		[StructLayout(LayoutKind.Explicit)]
 		public struct IMAGE_OPTIONAL_HEADER32
@@ -2611,20 +1914,26 @@ namespace AlphaOmega.Debug
 			[FieldOffset(96)]
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
 			public IMAGE_DATA_DIRECTORY[] DataDirectory;
+
 			/// <summary>DataDirectories</summary>
 			public IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry]
 			{
 				get { return this.DataDirectory[(Int32)entry]; }
 			}
+
 			/// <summary>Version of the linker used to build this executable</summary>
 			public Version LinkerVersion { get { return new Version(this.MajorLinkerVersion, this.MinorLinkerVersion); } }
+
 			/// <summary>Version number of the required operating system</summary>
 			public Version OperatingSystemVersion { get { return new Version(this.MajorOperatingSystemVersion, this.MinorOperatingSystemVersion); } }
+
 			/// <summary>Version number of this file</summary>
 			public Version ImageVersion { get { return new Version(this.MajorImageVersion, this.MinorImageVersion); } }
+
 			/// <summary>Version of the operating subsystem needed for this executable</summary>
 			public Version SubsystemVersion { get { return new Version(this.MajorSubsystemVersion, this.MinorSubsystemVersion); } }
 		}
+
 		/// <summary>Optional header format</summary>
 		[StructLayout(LayoutKind.Explicit)]
 		public struct IMAGE_OPTIONAL_HEADER64
@@ -2844,20 +2153,26 @@ namespace AlphaOmega.Debug
 			[FieldOffset(112)]
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
 			public IMAGE_DATA_DIRECTORY[] DataDirectory;
+
 			/// <summary>DataDirectories</summary>
 			public IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry]
 			{
 				get { return this.DataDirectory[(Int32)entry]; }
 			}
+
 			/// <summary>Version of the linker used to build this executable</summary>
 			public Version LinkerVersion { get { return new Version(this.MajorLinkerVersion, this.MinorLinkerVersion); } }
+
 			/// <summary>Version number of the required operating system</summary>
 			public Version OperatingSystemVersion { get { return new Version(this.MajorOperatingSystemVersion, this.MinorOperatingSystemVersion); } }
+
 			/// <summary>Version number of this file</summary>
 			public Version ImageVersion { get { return new Version(this.MajorImageVersion, this.MinorImageVersion); } }
+
 			/// <summary>Version of the operating subsystem needed for this executable</summary>
 			public Version SubsystemVersion { get { return new Version(this.MajorSubsystemVersion, this.MinorSubsystemVersion); } }
 		}
+
 		/// <summary>Represents the PE header format.</summary>
 		/// <remarks>The actual structure in Winnt.h is named IMAGE_NT_HEADERS32 and IMAGE_NT_HEADERS is defined as IMAGE_NT_HEADERS32. However, if _WIN64 is defined, then IMAGE_NT_HEADERS is defined as IMAGE_NT_HEADERS64.</remarks>
 		[StructLayout(LayoutKind.Explicit)]
@@ -2882,12 +2197,14 @@ namespace AlphaOmega.Debug
 			{
 				get { return this.Signature == 0x00004550/*"PE\0\0"*/ && (this.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR32_MAGIC/* || this.OptionalHeader.Magic == ImageHlp.ImageSignatureType.IMAGE_NT_OPTIONAL_HDR64_MAGIC*/); }
 			}
+
 			/// <summary>Signature as String</summary>
 			public String SignatureStr
 			{
 				get { return Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)).Replace("\0", "\\0"); }
 			}
 		}
+
 		/// <summary>Represents the PE header format.</summary>
 		/// <remarks>The actual structure in Winnt.h is named IMAGE_NT_HEADERS32 and IMAGE_NT_HEADERS is defined as IMAGE_NT_HEADERS32. However, if _WIN64 is defined, then IMAGE_NT_HEADERS is defined as IMAGE_NT_HEADERS64.</remarks>
 		[StructLayout(LayoutKind.Explicit)]
@@ -2912,72 +2229,94 @@ namespace AlphaOmega.Debug
 			{
 				get { return this.Signature == 0x00004550/*"PE\0\0"*/ && (/*this.OptionalHeader.Magic == ImageHlp.ImageSignatureType.IMAGE_NT_OPTIONAL_HDR32_MAGIC || */this.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC); }
 			}
+
 			/// <summary>Signature as String</summary>
 			public String SignatureStr
 			{
 				get { return Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)).Replace("\0", "\\0"); }
 			}
 		}
+
 		/// <summary>Export Format</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_EXPORT_DIRECTORY
 		{
 			/// <summary>Reserved, must be 0.</summary>
 			public UInt32 ExportFlags;
+
 			/// <summary>The time and date that the export data was created.</summary>
 			public UInt32 TimeDateStamp;
+
 			/// <summary>The major version number.</summary>
 			/// <remarks>The major and minor version numbers can be set by the user.</remarks>
 			public UInt16 MajorVersion;
+
 			/// <summary>The minor version number.</summary>
 			/// /// <remarks>The major and minor version numbers can be set by the user.</remarks>
 			public UInt16 MinorVersion;
+
 			/// <summary>The address of the ASCII string that contains the name of the DLL. This address is relative to the image base.</summary>
 			public UInt32 NameRva;
+
 			/// <summary>
 			/// This field contains the starting ordinal value to be used for this executable's exports.
 			/// Normally, this value is 1, but it's not required to be so.
 			/// When looking up an export by ordinal, the value of this field is subtracted from the ordinal, with the result used as a zero-based index into the Export Address Table (EAT).
 			/// </summary>
 			public UInt32 OrdinalBase;
+
 			/// <summary>The number of entries in the EAT. Note that some entries may be 0, indicating that no code/data is exported with that ordinal value.</summary>
 			public UInt32 NumberOfFunctions;
+
 			/// <summary>The number of entries in the Export Names Table (ENT). This value will always be less than or equal to the NumberOf-Functions field. It will be less when there are symbols exported by ordinal only. It can also be less if there are numeric gaps in the assigned ordinals. This field is also the size of the export ordinal table (below).</summary>
 			public UInt32 NumberOfNames;
+
 			/// <summary>The RVA of the EAT. The EAT is an array of RVAs. Each nonzero RVA in the array corresponds to an exported symbol.</summary>
 			public UInt32 AddressOfFunctions;
+
 			/// <summary>The RVA of the ENT. The ENT is an array of RVAs to ASCII strings. Each ASCII string corresponds to a symbol exported by name. This table is sorted so that the ASCII strings are in order. This allows the loader to do a binary search when looking for an exported symbol. The sorting of the names is binary (like the C++ RTL strcmp function provides), rather than a locale-specific alphabetic ordering.</summary>
 			public UInt32 AddressOfNames;
+
 			/// <summary>The RVA of the export ordinal table. This table is an array of WORDs. This table maps an array index from the ENT into the corresponding export address table entry.</summary>
 			public UInt32 AddressOfNameOrdinals;
+
 			/// <summary>The time and date that the export data was created.</summary>
 			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+
 			/// <summary>Version number</summary>
 			public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
 		}
+
 		/// <summary>Represents the time/date stamp of one imported DLL that has been bound against.</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_BOUND_IMPORT_DESCRIPTOR
 		{
 			/// <summary>Contains the time/date stamp of the imported DLL.</summary>
 			public UInt32 TimeDateStamp;
+
 			/// <summary>Offset to a string with the name of the imported DLL. </summary>
 			public UInt16 OffsetModuleName;
+
 			/// <summary>Number of <see cref="T:IMAGE_BOUND_FORWARDER_REF"/> structures that immediately follow this structure.</summary>
 			public UInt16 NumberOfModuleForwarderRefs;
+
 			/// <summary>Contains the time/date stamp of the imported DLL.</summary>
 			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
 		}
+
 		/// <summary>Forwarded DLL references</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_BOUND_FORWARDER_REF
 		{
 			/// <summary>Contains the time/date stamp of the imported DLL.</summary>
 			public UInt32 TimeDateStamp;
+
 			/// <summary>Offset to a string with the name of the imported DLL.</summary>
 			public UInt16 OffsetModuleName;
+
 			/// <summary>Reserved</summary>
 			public UInt16 Reserved;
+
 			/// <summary>Contains the time/date stamp of the imported DLL.</summary>
 			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
 		}
@@ -2987,11 +2326,14 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>Specifies the length, in bytes, of the signature.</summary>
 			public UInt32 dwLength;
+
 			/// <summary>Specifies the certificate revision.</summary>
 			/// <remarks>The only defined certificate revision is WIN_CERT_REVISION_1_0 (0x0100).</remarks>
 			public WIN_CERT_REVISION wRevision;
+
 			/// <summary>Specifies the type of certificate.</summary>
 			public WIN_CERT_TYPE wCertificateType;   // WIN_CERT_TYPE_xxx
+
 			// <summary>An array of certificates.</summary>
 			// <remarks>The format of this member depends on the value of wCertificateType.</remarks>
 			//public Byte bCertificate;
@@ -3005,23 +2347,28 @@ namespace AlphaOmega.Debug
 			/// Currently, the only flag defined is dlattrRva (1), indicating that the address fields in the structure should be treated as RVAs, rather than virtual addresses.
 			/// </summary>
 			public DLAttr grAttrs;
+
 			/// <summary>An RVA to a string with the name of the imported DLL. This string is passed to LoadLibrary.</summary>
 			public UInt32 rvaDLLName;
+
 			/// <summary>
 			/// An RVA to an HMODULE-sized memory location.
 			/// When the Delayloaded DLL is brought into memory, its HMODULE is stored at this location.
 			/// </summary>
 			public UInt32 rvaHmod;
+
 			/// <summary>
 			/// An RVA to the Import Address Table for this DLL.
 			/// This is the same format as a regular IAT.
 			/// </summary>
 			public UInt32 rvaIAT;
+
 			/// <summary>
 			/// An RVA to the Import Name Table for this DLL.
 			/// This is the same format as a regular INT.
 			/// </summary>
 			public UInt32 rvaINT;
+
 			/// <summary>
 			/// An RVA of the optional bound IAT.
 			/// An RVA to a bound copy of an Import Address Table for this DLL.
@@ -3029,16 +2376,20 @@ namespace AlphaOmega.Debug
 			/// Currently, this copy of the IAT is not actually bound, but this feature may be added in future versions of the BIND program.
 			/// </summary>
 			public UInt32 rvaBoundIAT;
+
 			/// <summary>
 			/// An RVA of the optional copy of the original IAT.
 			/// An RVA to an unbound copy of an Import Address Table for this DLL.
 			/// This is the same format as a regular IAT. Currently always set to 0.
 			/// </summary>
 			public UInt32 rvaUnloadIAT;
+
 			/// <summary>0 if not bound, O.W. date/time stamp of DLL bound to (Old BIND)</summary>
 			public UInt32 dwTimeStamp;
+
 			/// <summary>0 if not bound, O.W. date/time stamp of DLL bound to (Old BIND)</summary>
 			public DateTime? TimeStamp { get { return NativeMethods.ConvertTimeDateStamp(this.dwTimeStamp); } }
+
 			/// <summary>Empty structure</summary>
 			public Boolean IsEmpty { get { return this.rvaDLLName == 0 && this.rvaINT == 0; } }
 		}
@@ -3051,11 +2402,13 @@ namespace AlphaOmega.Debug
 			/// The offset of each relocation that follows is added to this value to form the actual RVA where the relocation needs to be applied.
 			/// </summary>
 			public UInt32 VirtualAddress;
+
 			/// <summary>
 			/// The size of this structure plus all the WORD relocations that follow.
 			/// To determine the number of relocations in this block, subtract the size of an IMAGE_BASE_RELOCATION (8 bytes) from the value of this field, and then divide by 2 (the size of a WORD).
 			/// </summary>
 			public UInt32 SizeOfBlock;
+
 			/// <summary>Relocation type offset</summary>
 			public UInt16 TypeOffest
 			{

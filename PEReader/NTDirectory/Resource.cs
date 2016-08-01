@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using AlphaOmega.Debug.NTDirectory.Resources;
 
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Native resource directory class</summary>
 	[DefaultProperty("RootResource")]
-	public class Resource : NTDirectoryBase, IEnumerable<ResourceDirectory>
+	public class Resource : PEDirectoryBase, IEnumerable<ResourceDirectory>
 	{
 		/// <summary>Root resource directory</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? RootResource
@@ -19,6 +21,14 @@ namespace AlphaOmega.Debug.NTDirectory
 					return base.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(base.Directory.VirtualAddress);
 			}
 		}
+
+		/// <summary>Create instance of resource directory class</summary>
+		/// <param name="parent">Data directory</param>
+		public Resource(PEFile parent)
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.RESOURCE)
+		{
+		}
+
 		/// <summary>Получить информацию о версии PE файла из ресурсов</summary>
 		/// <returns>Информация о версии PE файла</returns>
 		public ResourceVersion GetVersion()
@@ -27,6 +37,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				return new ResourceVersion(directory);
 			return null;
 		}
+
 		/// <summary>Получить манифест из ресурсов PE файла</summary>
 		/// <returns>Манифест</returns>
 		public ResourceManifest GetManifest()
@@ -35,6 +46,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				return new ResourceManifest(directory);
 			return null;
 		}
+
 		/// <summary>Получить все строки из ресурсов</summary>
 		/// <returns>Строки из PE файла</returns>
 		public IEnumerable<ResourceString> GetStrings()
@@ -42,6 +54,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING))
 				yield return new ResourceString(directory);
 		}
+
 		/// <summary>Получить все акселераторы из ресурсов</summary>
 		/// <returns>Акселераторы</returns>
 		public IEnumerable<ResourceAccelerator> GetAccelerators()
@@ -49,6 +62,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ACCELERATOR))
 				yield return new ResourceAccelerator(directory);
 		}
+
 		/// <summary>Get message tables resource classes</summary>
 		/// <returns>Message Table classes</returns>
 		public IEnumerable<ResourceMessageTable> GetMessageTables()
@@ -56,6 +70,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MESSAGETABLE))
 				yield return new ResourceMessageTable(directory);
 		}
+
 		/// <summary>Получить описание ококн в приложении</summary>
 		/// <returns>Список диалогов в приложении</returns>
 		public IEnumerable<ResourceDialog> GetDialogs()
@@ -63,6 +78,15 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DIALOG))
 				yield return new ResourceDialog(directory);
 		}
+
+		/// <summary>Получить инициализационную информацию для окон в MFC приложениях</summary>
+		/// <returns>Список ресурсов с данными инициализации диалогов в MFC приложениях</returns>
+		public IEnumerable<ResourceDialogInit> GetDialogInint()
+		{
+			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT))
+				yield return new ResourceDialogInit(directory);
+		}
+
 		/// <summary>Получить описание меню в приложении</summary>
 		/// <returns>Список меню в приложении</returns>
 		public IEnumerable<ResourceMenu> GetMenus()
@@ -70,6 +94,15 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU))
 				yield return new ResourceMenu(directory);
 		}
+
+		/// <summary>Получить описания всех тулбаров в приложении</summary>
+		/// <returns>Список тулбаров в приложении</returns>
+		public IEnumerable<ResourceToolBar> GetToolBars()
+		{
+			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR))
+				yield return new ResourceToolBar(directory);
+		}
+
 		/// <summary>Получить описание всех картинок в ресурсах</summary>
 		/// <returns>Список всех картинок в ресурсах</returns>
 		public IEnumerable<ResourceBitmap> GetBitmaps()
@@ -77,6 +110,15 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_BITMAP))
 				yield return new ResourceBitmap(directory);
 		}
+
+		/// <summary>Получить описание всех иконок в ресурсах</summary>
+		/// <returns>Список всех иконок в ресурсах</returns>
+		public IEnumerable<ResourceIcon> GetIcons()
+		{
+			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON))
+				yield return new ResourceIcon(directory);
+		}
+
 		/// <summary>Получить описание всех директорий ресурсов</summary>
 		/// <returns>Список всех директорий с ресурсами</returns>
 		public IEnumerable<ResourceFontDir> GetFontDirs()
@@ -84,6 +126,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONTDIR))
 				yield return new ResourceFontDir(directory);
 		}
+
 		/// <summary>Получить шрифты из ресурсов</summary>
 		/// <returns>Список всех шрифтов из ресурсов</returns>
 		public IEnumerable<ResourceFont> GetFonts()
@@ -91,6 +134,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT))
 				yield return new ResourceFont(directory);
 		}
+
 		/// <summary>Получить директории с данными</summary>
 		/// <param name="directoryType">Тип директроии ресурсы из которой получить</param>
 		/// <returns>Директории соответствующий определённой директории</returns>
@@ -102,12 +146,7 @@ namespace AlphaOmega.Debug.NTDirectory
 						foreach(var subDir2 in subDir1)
 							yield return subDir2;
 		}
-		/// <summary>Create instance of resource directory class</summary>
-		/// <param name="parent">Data directory</param>
-		public Resource(PEDirectory parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.RESOURCE)
-		{
-		}
+
 		/// <summary>Get recource directories from image direstory</summary>
 		/// <returns>Resourec directories</returns>
 		public IEnumerator<ResourceDirectory> GetEnumerator()
@@ -126,7 +165,8 @@ namespace AlphaOmega.Debug.NTDirectory
 				}
 			}
 		}
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}

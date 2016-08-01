@@ -7,6 +7,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>MetaData tables</summary>
 	public class StreamTables : StreamHeader
 	{
+		private static UInt32 SizeOfStreamTable = (UInt32)Marshal.SizeOf(typeof(Cor.STREAM_TABLE_HEADER));
 		private UInt32[] _rowsCount;
 		private Cor.STREAM_TABLE_HEADER? _streamTableHeader;
 		private Dictionary<Cor.MetaTableType, MetaTable> _tables;
@@ -303,12 +304,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			}
 		}
 		/// <summary>Tables position</summary>
-		public override UInt32 Position { get { return base.Position + (UInt32)Marshal.SizeOf(typeof(Cor.STREAM_TABLE_HEADER)); ; } }
+		public override UInt32 Position { get { return base.Position + StreamTables.SizeOfStreamTable; ; } }
+
 		/// <summary>Позиция, с которых начинаются данные в таблицах</summary>
 		public UInt32 DataPosition
 		{
 			get { return this.Position + this.StreamTableHeader.PresentTablesCount * sizeof(UInt32); }
 		}
+
 		/// <summary>Create instance of stream tables class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">stream header</param>

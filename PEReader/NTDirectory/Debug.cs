@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Debug directory class</summary>
 	[DefaultProperty("Count")]
-	public class Debug : NTDirectoryBase, IEnumerable<WinNT.IMAGE_DEBUG_DIRECTORY>
+	public class Debug : PEDirectoryBase, IEnumerable<WinNT.IMAGE_DEBUG_DIRECTORY>
 	{//TODO: Необходимо прочитать тип FPO (Если найду такой файл). Спецификация по FPO в 5.1.2. Debug Type (pecoff_v8.docx)
-		private static UInt32 SizeOfStruct = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_DEBUG_DIRECTORY));
+		private static UInt32 SizeOfDebugDirectory = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_DEBUG_DIRECTORY));
 
 		/// <summary>CodeView PDB v2 Header</summary>
 		public DebugPdb2? Pdb2CodeView
@@ -57,13 +58,15 @@ namespace AlphaOmega.Debug.NTDirectory
 			}
 		}
 		/// <summary>Количество массивов в директории</summary>
-		public UInt32 Count { get { return base.IsEmpty ? 0 : base.Directory.Size / Debug.SizeOfStruct; } }
+		public UInt32 Count { get { return base.IsEmpty ? 0 : base.Directory.Size / Debug.SizeOfDebugDirectory; } }
+
 		/// <summary>Create instance of debug directory</summary>
 		/// <param name="root">Data directory</param>
-		public Debug(PEDirectory root)
+		public Debug(PEFile root)
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.DEBUG)
 		{
 		}
+
 		/// <summary>Find debug header by type</summary>
 		/// <param name="type">Type of debug header</param>
 		/// <returns>Found header or null</returns>
@@ -74,6 +77,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					return debug;
 			return null;
 		}
+
 		/// <summary>Get all headers in directory</summary>
 		/// <returns>Debug header</returns>
 		public IEnumerator<WinNT.IMAGE_DEBUG_DIRECTORY> GetEnumerator()
@@ -85,13 +89,13 @@ namespace AlphaOmega.Debug.NTDirectory
 				for(UInt32 loop = 0;loop < count;loop++)
 				{
 					yield return this.Parent.Header.PtrToStructure<WinNT.IMAGE_DEBUG_DIRECTORY>(padding);
-					padding += Debug.SizeOfStruct;
+					padding += Debug.SizeOfDebugDirectory;
 					//(UInt32)(directory.VirtualAddress + (structSize * loop)));
 				}
 			}
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}

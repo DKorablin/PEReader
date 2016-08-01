@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace AlphaOmega.Debug.NTDirectory
@@ -121,9 +123,27 @@ namespace AlphaOmega.Debug.NTDirectory
 			}
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
+		}
+
+		/// <summary>Convert langId to string representation</summary>
+		/// <param name="langId">culture identifier</param>
+		/// <returns></returns>
+		public static String GetLangName(Int32 langId)
+		{
+			switch(langId)
+			{
+			case 0x0000:
+				return "Language Neutral";
+			case 0x0400:
+				return "Process or User Default Language";
+			case 0x0800:
+				return "System Default Language";
+			default:
+				return CultureInfo.GetCultureInfo(langId).DisplayName;
+			}
 		}
 	}
 }

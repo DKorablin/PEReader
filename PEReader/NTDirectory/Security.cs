@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Certificate class</summary>
 	[DefaultProperty("Certificate")]
-	public class Security : NTDirectoryBase
+	public class Security : PEDirectoryBase
 	{
 		/// <summary>PE file contains certificate</summary>
 		public override Boolean IsEmpty
@@ -47,7 +47,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of certificate class</summary>
 		/// <param name="root">Data directory</param>
-		public Security(PEDirectory root)
+		public Security(PEFile root)
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.CERTIFICATE)
 		{
 		}

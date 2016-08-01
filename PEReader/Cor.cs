@@ -263,18 +263,23 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>Flags (CorILMethod_FatFormat shall be set in bits 0:1, see §II.25.4.4)</summary>
 			public CorILMethod Format;
+
 			/// <summary>Size of this header expressed as the count of 4-byte integers occupied (currently 3)</summary>
 			/// <remarks>TODO: This must be 12+4bits from structure start</remarks>
 			public Byte Size;
+
 			/// <summary>Maximum number of items on the operand stack.</summary>
 			public UInt16 MaxStack;
+
 			/// <summary>Size in bytes of the actual method body.</summary>
 			public UInt32 CodeSize;
+
 			/// <summary>
 			/// Meta Data token for a signature describing the layout of the local variables for the method.
 			/// 0 means there are no local variables present.
 			/// </summary>
 			public UInt32 LocalVarSigTok;
+
 			/// <summary>Method header size</summary>
 			public UInt32 HeaderSize
 			{
@@ -369,20 +374,26 @@ namespace AlphaOmega.Debug
 		public struct CorILMethodExceptionSmall
 		{
 			private UInt16 FlagsI;
+
 			/// <summary>Offset in bytes of try block from start of method body.</summary>
 			public UInt16 TryOffset;
+
 			/// <summary>Length in bytes of the try block.</summary>
 			public Byte TryLength;
+
 			/// <summary>Location of the handler for this try block.</summary>
 			public UInt16 HandlerOffset;
+
 			/// <summary>Size of the handler code in bytes.</summary>
 			public Byte HandlerLength;
+
 			/// <summary>
 			/// Meta data token for a type-based exception handler.
 			/// Or
 			/// Offset in method body for filter-based exception handler.
 			/// </summary>
 			public UInt32 ClassTokenOrFilterOffset;
+
 			/// <summary>Type of exception clause</summary>
 			public COR_ILEXCEPTION_CLAUSE Flags { get { return (COR_ILEXCEPTION_CLAUSE)this.FlagsI; } }
 		}
@@ -391,20 +402,26 @@ namespace AlphaOmega.Debug
 		public struct CorILMethodExceptionFat
 		{
 			private UInt32 FlagsI;
+
 			/// <summary>Offset in bytes of try block from start of method body.</summary>
 			public UInt32 TryOffset;
+
 			/// <summary>Length in bytes of the try block.</summary>
 			public UInt32 TryLength;
+
 			/// <summary>Location of the handler for this try block.</summary>
 			public UInt32 HandlerOffset;
+
 			/// <summary>Size of the handler code in bytes.</summary>
 			public UInt32 HandlerLength;
+
 			/// <summary>
 			/// Meta data token for a type-based exception handler.
 			/// Or
 			/// Offset in method body for filter-based exception handler.
 			/// </summary>
 			public UInt32 ClassTokenOrFilterOffset;
+
 			/// <summary>Type of exception clause</summary>
 			public COR_ILEXCEPTION_CLAUSE Flags { get { return (COR_ILEXCEPTION_CLAUSE)this.FlagsI; } }
 		}

@@ -3,7 +3,7 @@
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>The load configuration table address and size.</summary>
-	public class LoadConfig : NTDirectoryBase
+	public class LoadConfig : PEDirectoryBase
 	{
 		/// <summary>PE load configuration directory entry</summary>
 		public WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32? Directory32
@@ -29,7 +29,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of LoadConfig class</summary>
 		/// <param name="parent">Data directory</param>
-		public LoadConfig(PEDirectory parent)
+		public LoadConfig(PEFile parent)
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.LOAD_CONFIG)
 		{
 		}

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using AlphaOmega.Debug.CorDirectory.Meta;
 using AlphaOmega.Debug.NTDirectory;
 using System.ComponentModel;
+using System.Collections;
 
 namespace AlphaOmega.Debug.CorDirectory
 {
@@ -11,6 +12,9 @@ namespace AlphaOmega.Debug.CorDirectory
 	[DefaultProperty("Header")]
 	public class MetaData : CorDirectoryBase, IEnumerable<StreamHeader>
 	{
+		private static UInt32 SizeOfCor20Metadata1 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1));
+		private static UInt32 SizeOfCor20MetaData2 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA2));
+
 		private Cor.IMAGE_COR20_METADATA? _metaData;
 		private Dictionary<Cor.StreamHeaderType, StreamHeader> _streams;
 
@@ -20,6 +24,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.MetaData)
 		{
 		}
+
 		/// <summary>MetaData header</summary>
 		public Cor.IMAGE_COR20_METADATA? Header
 		{
@@ -39,14 +44,11 @@ namespace AlphaOmega.Debug.CorDirectory
 					meta1 = base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA1>(base.Directory.VirtualAddress);
 
 					//Версия блока структуры описания метаданных
-					UInt32 position = base.Directory.VirtualAddress +
-						(UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1));
+					UInt32 position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1;
 					version = this.Parent.Parent.Header.PtrToStringAnsi(position);
 
 					//Второй блок структуры описания метаданных
-					position = base.Directory.VirtualAddress +
-						(UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1))
-						+ meta1.Length;
+					position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1 + meta1.Length;
 					meta2 = this.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA2>(position);
 
 					this._metaData = new Cor.IMAGE_COR20_METADATA
@@ -97,21 +99,25 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			get { return (GuidHeap)this.Streams[Cor.StreamHeaderType.Guid]; }
 		}
+
 		/// <summary>Bloab heap</summary>
 		public BlobHeap BlobHeap
 		{
 			get { return (BlobHeap)this.Streams[Cor.StreamHeaderType.Blob]; }
 		}
+
 		/// <summary>String heap</summary>
 		public StringHeap StringHeap
 		{
 			get { return (StringHeap)this.Streams[Cor.StreamHeaderType.String]; }
 		}
+
 		/// <summary>User String heap</summary>
 		public USHeap USHeap
 		{
 			get { return (USHeap)this.Streams[Cor.StreamHeaderType.UnicodeSting]; }
 		}
+
 		/// <summary>Get array of all heaps in MedaData directory</summary>
 		/// <returns>Heaps in MetaData directory</returns>
 		public IEnumerator<StreamHeader> GetEnumerator()
@@ -119,19 +125,21 @@ namespace AlphaOmega.Debug.CorDirectory
 			foreach(var stream in this.Streams)
 				yield return stream.Value;
 		}
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}
+
 		private IEnumerable<StreamHeader> GetStreams()
 		{
 			var meta = this.Header;
 			if(meta.HasValue)
 			{
 				UInt32 position = base.Directory.VirtualAddress +
-					(UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1)) +
+					MetaData.SizeOfCor20Metadata1 +
 					meta.Value.Length +
-					(UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA2));
+					MetaData.SizeOfCor20MetaData2;
 
 				for(Int32 loop = 0; loop < meta.Value.Streams; loop++)
 				{

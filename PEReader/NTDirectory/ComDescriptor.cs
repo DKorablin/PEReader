@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>.NET directory class</summary>
 	[DefaultProperty("Cor20Header")]
-	public class ComDescriptor : NTDirectoryBase
+	public class ComDescriptor : PEDirectoryBase
 	{
 		private WinNT.IMAGE_COR20_HEADER? _cor20Header;
 		private MetaData _metaData;
@@ -98,7 +98,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of .NET directory</summary>
 		/// <param name="root">Data directory</param>
-		public ComDescriptor(PEDirectory root)
+		public ComDescriptor(PEFile root)
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.CLR_HEADER)
 		{
 		}

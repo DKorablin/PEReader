@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Impot directory</summary>
 	[DefaultProperty("ImportDescriptor")]
-	public class Import : NTDirectoryBase, IEnumerable<ImportModule>
+	public class Import : PEDirectoryBase, IEnumerable<ImportModule>
 	{
 		/// <summary>Первый дескриптор импортируемых функций</summary>
 		public WinNT.IMAGE_IMPORT_DESCRIPTOR? ImportDescriptor
@@ -22,7 +22,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of Import directory class</summary>
 		/// <param name="parent">Data directory</param>
-		public Import(PEDirectory parent)
+		public Import(PEFile parent)
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.IMPORT)
 		{
 		}

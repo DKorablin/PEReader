@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Bound import class</summary>
 	[DefaultProperty("ModuleName")]
-	public class BoundImport : NTDirectoryBase, IEnumerable<BoundImportReference>
+	public class BoundImport : PEDirectoryBase, IEnumerable<BoundImportReference>
 	{
 		/// <summary>Header</summary>
 		public WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR? Descriptor
@@ -41,7 +41,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of bound import class</summary>
 		/// <param name="root">Data directory</param>
-		public BoundImport(PEDirectory root)
+		public BoundImport(PEFile root)
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.BOUND_IMPORT)
 		{
 		}

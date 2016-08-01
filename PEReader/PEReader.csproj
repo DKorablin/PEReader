@@ -40,7 +40,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorDirectory\CodeManagerTable.cs" />
@@ -53,7 +52,6 @@
     <Compile Include="CorDirectory\Meta\MetaColumn.cs" />
     <Compile Include="CorDirectory\Meta\MethodBody.cs" />
     <Compile Include="CorDirectory\Meta\MethodSection.cs" />
-    <Compile Include="CorDirectory\Meta\StreamHeaderTyped.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyOSRow.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyProcessorRow.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyRefOSRow.cs" />

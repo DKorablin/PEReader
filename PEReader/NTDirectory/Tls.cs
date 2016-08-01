@@ -3,7 +3,7 @@
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Thread Local Storage directory</summary>
-	public class Tls : NTDirectoryBase
+	public class Tls : PEDirectoryBase
 	{
 		/// <summary>TLS PE directory</summary>
 		public WinNT.Tls.IMAGE_TLS_DIRECTORY32? TlsDirectory32
@@ -29,7 +29,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Create instance of TLS class</summary>
 		/// <param name="root">Data directory</param>
-		public Tls(PEDirectory root)
+		public Tls(PEFile root)
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.TLS)
 		{
 

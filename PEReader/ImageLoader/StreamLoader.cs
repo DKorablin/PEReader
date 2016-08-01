@@ -12,24 +12,23 @@ namespace AlphaOmega.Debug
 	public class StreamLoader : IImageLoader
 	{
 		private BinaryReader _reader;
+
 		/// <summary>File reader</summary>
-		/// <exception cref="ObjectDisposedException">Base stream disposed</exception>
 		private BinaryReader Reader
 		{
-			get
-			{
-				if(this._reader == null)
-					throw new ObjectDisposedException("Reader");
-				return this._reader;
-			}
+			get { return this._reader; }
 			set { this._reader = value; }
 		}
-		/// <summary>Modeul Mapped to memory</summary>
+
+		/// <summary>Module mapped to memory</summary>
 		public Boolean IsModuleMapped { get { return false; } }
+
 		/// <summary>Base PE file address</summary>
 		public Int64 BaseAddress { get { return 0; } }
-		/// <summary>File source</summary>
+
+		/// <summary>Image source</summary>
 		public String Source { get; private set; }
+
 		/// <summary>Read image from stream</summary>
 		/// <param name="input">Stream with image</param>
 		/// <param name="source">Source of image</param>
@@ -48,10 +47,11 @@ namespace AlphaOmega.Debug
 			this.Source = source;
 			this.Reader = new BinaryReader(input);
 		}
+
 		/// <summary>Read PE image from file</summary>
 		/// <param name="filePath">Path to the file</param>
-		/// <exception cref="T:ArgumentNullException">filePath is null</exception>
-		/// <exception cref="T:FileNotFoundException">filePath not found</exception>
+		/// <exception cref="T:ArgumentNullException">filePath is null or empty string</exception>
+		/// <exception cref="T:FileNotFoundException">file not found</exception>
 		/// <returns>PE loader</returns>
 		public static StreamLoader FromFile(String filePath)
 		{
@@ -63,11 +63,12 @@ namespace AlphaOmega.Debug
 			FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 			return new StreamLoader(stream, filePath);
 		}
+
 		/// <summary>Read PE image from memory</summary>
 		/// <param name="input">Array of bytes</param>
 		/// <param name="sourceName">Custom source name</param>
 		/// <returns>PE loader</returns>
-		public static StreamLoader FromMemory(Byte[] input,String sourceName)
+		public static StreamLoader FromMemory(Byte[] input, String sourceName)
 		{
 			if(input == null || input.Length == 0)
 				throw new ArgumentNullException("input");
@@ -75,6 +76,7 @@ namespace AlphaOmega.Debug
 			MemoryStream stream = new MemoryStream(input, false);
 			return new StreamLoader(stream, sourceName);
 		}
+
 		/// <summary>Get bytes from specific padding and specific length</summary>
 		/// <param name="padding">Padding from the beginning of the image</param>
 		/// <param name="length">Length of bytes to read</param>
@@ -89,6 +91,7 @@ namespace AlphaOmega.Debug
 			stream.Seek(checked((Int64)padding), SeekOrigin.Begin);
 			return this.Reader.ReadBytes((Int32)length);
 		}
+
 		/// <summary>Get structure from specific padding from the beginning of the image</summary>
 		/// <typeparam name="T">Structure type</typeparam>
 		/// <param name="padding">Padding from the beginning of the image</param>
@@ -107,6 +110,7 @@ namespace AlphaOmega.Debug
 				handle.Free();
 			}
 		}
+
 		/// <summary>Get ACSII string from specific padding from the beginning of the image</summary>
 		/// <param name="padding">Padding from the beginning of the image</param>
 		/// <exception cref="T:ArgumentOutOfRangeException">padding more than size of image</exception>
@@ -128,12 +132,14 @@ namespace AlphaOmega.Debug
 			}
 			return Encoding.ASCII.GetString(result.ToArray());
 		}
+
 		/// <summary>Close PE reader</summary>
 		public void Dispose()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
 		/// <summary>Dispose managed objects</summary>
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)

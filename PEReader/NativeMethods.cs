@@ -16,6 +16,7 @@ namespace AlphaOmega.Debug
 		private const Int32 BIT_SIZE_LONG = 64;
 
 		private static DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0);
+
 		/// <summary>Convert an unsigned int to a date by adding seconds to Jan 1, 1970 0:0:0</summary>
 		/// <remarks>http://jasonhaley.com/blog/post/2006/01/07/Get-a-DateTime-from-a-Coff-Headers-TimeDateStamp.aspx</remarks>
 		/// <param name="timeDateStamp">Number of seconds to add to start date</param>
@@ -30,6 +31,7 @@ namespace AlphaOmega.Debug
 				return timeZone.ToLocalTime(NativeMethods.StartDate.AddSeconds((Double)timeDateStamp));
 			}
 		}
+
 		/// <summary>Retrieves the high-order word from the specified 32-bit value.</summary>
 		/// <param name="value">The value to be converted.</param>
 		/// <returns>The return value is the high-order word of the specified value.</returns>
@@ -37,6 +39,7 @@ namespace AlphaOmega.Debug
 		{
 			return (UInt16)((value & 0xFFFF0000) >> 16);
 		}
+
 		/// <summary>Retrieves the low-order word from the specified value.</summary>
 		/// <param name="value">The value to be converted. </param>
 		/// <returns>The return value is the low-order word of the specified value.</returns>
@@ -44,6 +47,7 @@ namespace AlphaOmega.Debug
 		{
 			return (UInt16)(value & 0x0000FFFF);
 		}
+
 		/// <summary>The return value is the high-order byte of the specified value.</summary>
 		/// <param name="value">The value to be converted.</param>
 		/// <returns>The return value is the high-order byte of the specified value.</returns>
@@ -51,6 +55,7 @@ namespace AlphaOmega.Debug
 		{
 			return ((Byte) (((Int16) (value) >> 8) & 0xFF));
 		}
+
 		/// <summary>The return value is the low-order byte of the specified value.</summary>
 		/// <param name="value">The value to be converted. </param>
 		/// <returns>The return value is the low-order byte of the specified value.</returns>
@@ -58,6 +63,7 @@ namespace AlphaOmega.Debug
 		{
 			return ((Byte)value);
 		}
+
 		/// <summary>Makes a 64 bit long from two 32 bit integers</summary>
 		/// <param name="low">The low order value.</param>
 		/// <param name="high">The high order value.</param>
@@ -85,7 +91,6 @@ namespace AlphaOmega.Debug
 			return (Int32)(temp | low);*/
 		}
 
-
 		/// <summary>Makes a 16 bit short from two bytes</summary>
 		/// <param name="low">The low order value.</param>
 		/// <param name="high">The high order value.</param>
@@ -98,6 +103,7 @@ namespace AlphaOmega.Debug
 			temp = high << ((NativeMethods.BIT_SIZE_SHORT) - (temp + 1));
 			return (Int16)(low | temp);
 		}
+
 		/// <summary>Gets the size of the input value in bits</summary>
 		/// <param name="pInput">The input value</param>
 		/// <returns></returns>
@@ -125,6 +131,7 @@ namespace AlphaOmega.Debug
 			}
 			return iRetval;
 		}
+
 		/// <summary>Gets the size of the input value in bits</summary>
 		/// <param name="pInput">The input value</param>
 		/// <returns></returns>
@@ -152,6 +159,7 @@ namespace AlphaOmega.Debug
 			}
 			return iRetval;
 		}
+
 		/// <summary>Gets the size of the input value in bits</summary>
 		/// <param name="pInput">The input value</param>
 		/// <returns></returns>
@@ -179,6 +187,7 @@ namespace AlphaOmega.Debug
 			}
 			return iRetval;
 		}
+
 		/// <summary>Align padding to DWORD</summary>
 		/// <param name="padding">Original padding</param>
 		/// <returns>Aligned padding</returns>
@@ -190,6 +199,7 @@ namespace AlphaOmega.Debug
 			return padding;*/
 			return (UInt32)((padding + 3) & ~3);
 		}
+
 		/// <summary>Align padding to WORD</summary>
 		/// <param name="padding">Original padding</param>
 		/// <returns>Aligned padding</returns>
@@ -197,6 +207,7 @@ namespace AlphaOmega.Debug
 		{
 			return (UInt32)((padding + 1) & ~1);
 		}
+
 		/// <summary>Retrieves a string that represents the name of a key.</summary>
 		/// <param name="lParam">The second parameter of the keyboard message (such as WM_KEYDOWN) to be processed.</param>
 		/// <param name="lpString">The buffer that will receive the key name.</param>
@@ -354,6 +365,7 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008,
 		}
+
 		/// <summary>Loads the specified module into the address space of the calling process. The specified module may cause other modules to be loaded.</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms684179%28v=vs.85%29.aspx</remarks>
 		/// <param name="lpFileName">

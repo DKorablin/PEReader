@@ -7,6 +7,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Guid heap class</summary>
 	public class GuidHeap : StreamHeaderTyped<Guid>
 	{
+		private static UInt32 SizeOfGuid = (UInt32)Marshal.SizeOf(typeof(Guid));
+
 		/// <summary>Create instance of Guid heap class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">.NET stream header</param>
@@ -48,7 +50,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			Int32 ptr = 0;
 			Byte[] bytes = base.Bytes;
 
-			UInt32 sizeOfGuid = (UInt32)Marshal.SizeOf(typeof(Guid));
+			UInt32 sizeOfGuid = GuidHeap.SizeOfGuid;
 			UInt32 length = base.Header.Size / sizeOfGuid;
 			SortedList<Int32, Guid> result = new SortedList<Int32, Guid>((Int32)length);
 
