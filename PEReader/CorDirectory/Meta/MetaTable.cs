@@ -6,68 +6,62 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>MetaTable class</summary>
 	[DefaultProperty("TableType")]
-	public class MetaTable
+	public class MetaTable : ITable, ISectionData
 	{
+		#region Fields
 		private readonly StreamTables _root;
 		private readonly Cor.MetaTableType _tableType;
 		/// <summary>Размер ряда с данными</summary>
 		private UInt32? _rowSize;
 		/// <summary>Отступ от начала блока с таблицами</summary>
 		private readonly UInt32 _padding;
-		private MetaColumn[] _columns;
+		private readonly MetaColumn[] _columns;
 
 		private MetaRow[] _rows;
 		private Byte[] _data;
+		#endregion Fields
 
 		internal StreamTables Root { get { return this._root; } }
+
 		/// <summary>Массив колонок в таблице</summary>
-		public MetaColumn[] Columns
-		{
-			get
-			{
-				if(this._columns == null)
-					this._columns = MetaTable.GetTableDescription(this.TableType);
-				return this._columns;
-			}
-		}
+		public MetaColumn[] Columns { get { return this._columns; } }
+		IColumn[] ITable.Columns { get { return this._columns; } }
+
 		/// <summary>Массив рядов в таблице</summary>
 		private MetaRow[] RowsI
 		{
 			get
 			{
-				if(this._rows == null)
-					this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)];
-				return this._rows;
+				return this._rows == null
+					? this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)]
+					: this._rows;
 			}
 		}
+		IRow[] ITable.Rows { get { return this.RowsI; } }
+
 		/// <summary>Кол-во рядов в таблице</summary>
 		public UInt32 RowsCount { get { return (UInt32)this.RowsI.Length; } }
-		/// <summary>Массив данных в таблице</summary>
-		private Byte[] Data
-		{
-			get
-			{
-				if(this._data == null)
-					this._data = this.Root.Parent.Parent.Parent.Header.ReadBytes(this.Root.DataPosition + this._padding, this.TableSize);
-				return this._data;
-			}
-		}
+
 		/// <summary>Размер ряда</summary>
 		private UInt32 RowSize
 		{
 			get
 			{
-				if(this._rowSize == null)
-					this._rowSize = this.SizeOfColumns();
-				return this._rowSize.Value;
+				return (this._rowSize == null
+					? this._rowSize = this.SizeOfColumns()
+					: this._rowSize).Value;
 			}
 		}
 		/// <summary>Тип таблицы</summary>
 		public Cor.MetaTableType TableType { get { return this._tableType; } }
+		Object ITable.Type { get { return this._tableType; } }
+
 		/// <summary>Размер всей таблицы с данными</summary>
 		public UInt32 TableSize { get { return this.RowSize * (UInt32)this.RowsI.Length; } }
+
 		/// <summary>Rows in table</summary>
 		public MetaRowCollection Rows { get { return new MetaRowCollection(this); } }
+
 		/// <summary>Получить ряд из таблицы</summary>
 		/// <param name="rowIndex">Индекс ряда в таблице</param>
 		/// <exception cref="T:ArgumentOutOfRangeException">rowIndex out of range of table rows</exception>
@@ -84,6 +78,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				return this._rows[rowIndex];
 			}
 		}
+		IRow ITable.this[UInt32 rowIndex] { get { return this[rowIndex]; } }
+
 		/// <summary>Создание экземпляра класса мета-таблицы</summary>
 		/// <param name="root">Корневой поток</param>
 		/// <param name="tableType">Тип таблицы</param>
@@ -97,10 +93,22 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			this._root = root;
 			this._tableType = tableType;
 			this._padding = padding;
+
+			this._columns = MetaTable.GetTableDescription(this.TableType);
 		}
+
+		/// <summary>Gets section data</summary>
+		/// <returns>Byte array</returns>
+		public Byte[] GetData()
+		{
+			return this._data == null
+				? this._data = this.Root.Parent.Parent.Parent.Header.ReadBytes(this.Root.DataPosition + this._padding, this.TableSize)
+				: this._data;
+		}
+
 		private MetaRow GetRow(UInt32 rowIndex)
 		{
-			using(MemoryStream stream = new MemoryStream(this.Data))
+			using(MemoryStream stream = new MemoryStream(this.GetData()))
 			using(BinaryReader reader = new BinaryReader(stream))
 			{
 				reader.BaseStream.Position = this.RowSize * rowIndex;
@@ -112,6 +120,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				return new MetaRow(this, rowIndex, cells);
 			}
 		}
+
 		/// <summary>Получить размер всех колонок в таблице</summary>
 		/// <returns>Размер ряда в таблице</returns>
 		private UInt32 SizeOfColumns()
@@ -121,6 +130,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				result += this.SizeOfColumn(column.ColumnType);
 			return result;
 		}
+
 		/// <summary>Получить размер колонки в таблице</summary>
 		/// <param name="type">Тип колонки</param>
 		/// <returns>Размер колонки</returns>
@@ -156,6 +166,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					return (UInt32)(maxRows < 65536 ? 2 : 4);
 			}
 		}
+
 		internal static MetaColumnType[] GetCodedTokenTypes(MetaColumnType column)
 		{
 			switch(column)
@@ -189,6 +200,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			default: throw new NotSupportedException();
 			}
 		}
+
 		/// <summary>Получить описатель таблицы</summary>
 		/// <param name="table">Таблица для получения колонок</param>
 		/// <exception cref="T:NotSupportedException">Unknown table</exception>
@@ -384,11 +396,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			}
 
 			if(columnType.Length != columnName.Length)
-				throw new InvalidOperationException("Column types and names must be valid");
+				throw new InvalidOperationException("Length of column type and names must be equal");
 
-			MetaColumn[] result;
-			result = new MetaColumn[columnType.Length];
-			for(UInt32 loop = 0; loop < result.Length; loop++)
+			MetaColumn[] result = new MetaColumn[columnType.Length];
+			for(UInt16 loop = 0; loop < result.Length; loop++)
 				result[loop] = new MetaColumn(table, columnType[loop], columnName[loop], loop);
 
 			return result;

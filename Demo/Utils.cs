@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
-using System.Diagnostics;
-using System.IO;
 
 namespace AlphaOmega.Debug
 {
@@ -39,6 +39,7 @@ namespace AlphaOmega.Debug
 
 			return result.ToString();
 		}
+
 		[Conditional("DEBUG")]
 		public static void SaveMetaTableClass(MetaTable table)
 		{
@@ -68,6 +69,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			if(!File.Exists(path))
 				File.WriteAllText(path, result.ToString());
 		}
+
+		//[Conditional("DEBUG")]
 		public static String CteateMetaTableProperty(Cor.MetaTableType tableType)
 		{
 			return String.Format(@"public Tables.BaseMetaTable<Tables.{0}TableRow> {0}

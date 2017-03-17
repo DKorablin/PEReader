@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using AlphaOmega.Debug.CorDirectory.Meta;
 using AlphaOmega.Debug.NTDirectory;
-using System.ComponentModel;
-using System.Collections;
 
 namespace AlphaOmega.Debug.CorDirectory
 {
@@ -66,6 +66,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				}
 			}
 		}
+
 		private Dictionary<Cor.StreamHeaderType, StreamHeader> Streams
 		{
 			get

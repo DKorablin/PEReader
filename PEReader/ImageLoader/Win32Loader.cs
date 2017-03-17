@@ -1,15 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
-using System.Diagnostics;
 
 namespace AlphaOmega.Debug
 {
 	/// <summary>HMODULE loader class</summary>
 	[DefaultProperty("Source")]
+	[DebuggerDisplay("BaseAddress={BaseAddress}")]
 	public class Win32Loader : IImageLoader
 	{
 		internal class HModuleHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -18,14 +19,20 @@ namespace AlphaOmega.Debug
 				: base(true)
 			{
 			}
-			[ReliabilityContract(Consistency.WillNotCorruptState,Cer.MayFail)]
+
+			[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 			protected override Boolean ReleaseHandle()
 			{
 				return NativeMethods.FreeLibrary(base.handle);
 			}
 		}
+
 		private Boolean _freeOnClose = false;
 		private IntPtr? _hModule;
+
+		/// <summary>Required endianness</summary>
+		public EndianHelper.Endian Endianness { get; set; }
+
 		/// <summary>Module mapped to memory</summary>
 		public Boolean IsModuleMapped { get { return true; } }
 		/// <summary>Базовый адрес загруженного модуля</summary>
@@ -40,12 +47,14 @@ namespace AlphaOmega.Debug
 				return this._hModule.Value.ToInt64();
 			}
 		}
+
 		/// <summary>Источник получения PE модуля</summary>
 		public String Source
 		{
 			get;
 			private set;
 		}
+
 		/*public Win32Loader(String filePath)
 		{
 			if(String.IsNullOrEmpty(filePath))
@@ -63,6 +72,7 @@ namespace AlphaOmega.Debug
 			this._freeOnClose = true;
 			this.IsImageLoaded = this._hModule != IntPtr.Zero;
 		}*/
+
 		/// <summary>Load image from file</summary>
 		/// <param name="filePath">Path to file</param>
 		/// <exception cref="T:ArgumentNullException">filePath is null</exception>
@@ -82,6 +92,7 @@ namespace AlphaOmega.Debug
 
 			return new Win32Loader(hModule, filePath, false);
 		}
+
 		/// <summary>Load image from HModule</summary>
 		/// <param name="module">Loaded module</param>
 		/// <exception cref="T:ArgumentNullException">module is null</exception>
@@ -95,12 +106,14 @@ namespace AlphaOmega.Debug
 				module.FileName,
 				false);
 		}
+
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
 		public Win32Loader(IntPtr hModule)
 			: this(hModule, "Memory", false)
 		{
 		}
+
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
 		/// <param name="source">Source of file</param>
@@ -118,6 +131,7 @@ namespace AlphaOmega.Debug
 			this._hModule = hModule;
 			this._freeOnClose = freeOnClode;
 		}
+
 		/// <summary>Получить массив байт с начала отступа</summary>
 		/// <param name="padding">Отступ от начала файла или RVA</param>
 		/// <param name="length">Читаемый размер</param>
@@ -130,6 +144,7 @@ namespace AlphaOmega.Debug
 			Marshal.Copy(target, result, 0, (Int32)length);
 			return result;
 		}
+
 		/// <summary>Получить структуру с определённого отступа</summary>
 		/// <typeparam name="T">Структура</typeparam>
 		/// <param name="padding">Отступ от начала файла или RVA</param>
@@ -139,6 +154,7 @@ namespace AlphaOmega.Debug
 			IntPtr target = new IntPtr(this.BaseAddress + padding);
 			return (T)Marshal.PtrToStructure(target, typeof(T));
 		}
+
 		/// <summary>Получить строку с отпределённого отступа</summary>
 		/// <param name="padding">Отступ от начала файла или RVA</param>
 		/// <returns>Прочитанная строка</returns>
@@ -146,6 +162,7 @@ namespace AlphaOmega.Debug
 		{
 			return Marshal.PtrToStringAnsi(new IntPtr(this.BaseAddress + padding));
 		}
+
 		/// <summary>Free HMODULE</summary>
 		/// <exception cref="T:Win32Exception">Can't unload library</exception>
 		public void Dispose()
@@ -153,6 +170,7 @@ namespace AlphaOmega.Debug
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
 		/// <summary>Dispose managed objects</summary>
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)

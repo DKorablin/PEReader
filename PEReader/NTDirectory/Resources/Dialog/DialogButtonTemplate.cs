@@ -31,8 +31,19 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				if(this.IsGroupBox)
 					return false;
 
-				return (((UInt32)base.Styles) & (UInt32)WinUser.BS.RADIOBUTTON) == (UInt32)WinUser.BS.RADIOBUTTON
-						|| (((UInt32)base.Styles) & (UInt32)WinUser.BS.AUTORADIOBUTTON) == (UInt32)WinUser.BS.AUTORADIOBUTTON;
+				return (((UInt32)base.Styles) & (UInt32)WinUser.BS.RADIOBUTTON) == (UInt32)WinUser.BS.RADIOBUTTON;
+			}
+		}
+
+		/// <summary>Creates a button that is the same as a radio button, except that when the user selects it, the system automatically sets the button's check state to checked and automatically sets the check state for all other buttons in the same group to cleared.</summary>
+		public Boolean IsAutoRadioButton
+		{
+			get
+			{
+				if(this.IsGroupBox)
+					return false;
+
+				return (((UInt32)base.Styles) & (UInt32)WinUser.BS.AUTORADIOBUTTON) == (UInt32)WinUser.BS.AUTORADIOBUTTON;
 			}
 		}
 

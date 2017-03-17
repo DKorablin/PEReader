@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace AlphaOmega.Debug
 {
@@ -10,6 +11,7 @@ namespace AlphaOmega.Debug
 		private WinNT.IMAGE_FILE_HEADER? _fileHeader;
 		private WinNT.IMAGE_SECTION_HEADER[] _sections;
 		private WinNT.IMAGE_COFF_SYMBOL[] _symbols;
+		private String[] _stringTable;
 
 		private IImageLoader Loader { get { return this._loader; } }
 
@@ -26,7 +28,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Загруженный OBJ файл является валидным</summary>
-		public Boolean IsValidObjHeader { get { return this.FileHeader.IsValid; } }
+		public Boolean IsValid { get { return this.FileHeader.IsValid; } }
 
 		/*/// <summary>Represents the COFF symbols header.</summary>
 		public WinNT.IMAGE_COFF_SYMBOLS_HEADER? SymbolTable
@@ -78,26 +80,45 @@ namespace AlphaOmega.Debug
 				{
 					this._sections = new WinNT.IMAGE_SECTION_HEADER[this.FileHeader.NumberOfSections];
 					UInt16 sizeOfOptionalHeader = this.FileHeader.SizeOfOptionalHeader;
-					/*if(this.Is64Bit)
-					{//Оно необязательно. Т.е. FileHeader везде одинаковый
-						result = new WinNT.IMAGE_SECTION_HEADER[this.HeaderNT64.FileHeader.NumberOfSections];
-						sizeOfOptionalHeader=this.HeaderNT64.FileHeader.SizeOfOptionalHeader;
-					}
-					else
-					{
-						result = new WinNT.IMAGE_SECTION_HEADER[this.HeaderNT32.FileHeader.NumberOfSections];
-						sizeOfOptionalHeader=this.HeaderNT32.FileHeader.SizeOfOptionalHeader;
-					}*/
 
-					Int32 sizeHeader = Marshal.SizeOf(typeof(WinNT.IMAGE_SECTION_HEADER));
-					Int32 offset = /*this.HeaderDos.e_lfanew + 4 +*/ Marshal.SizeOf(typeof(WinNT.IMAGE_FILE_HEADER)) + sizeOfOptionalHeader;
+					UInt32 sizeHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_SECTION_HEADER));
+					UInt32 offset = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_FILE_HEADER)) + sizeOfOptionalHeader;
 					for(Int32 loop = 0; loop < this._sections.Length; loop++)
 					{
-						this._sections[loop] = this.Loader.PtrToStructure<WinNT.IMAGE_SECTION_HEADER>((UInt32)offset);
+						this._sections[loop] = this.Loader.PtrToStructure<WinNT.IMAGE_SECTION_HEADER>(offset);
 						offset += sizeHeader;
 					}
 				}
 				return this._sections;
+			}
+		}
+
+		/// <summary>Constant strings</summary>
+		public String[] StringTable
+		{
+			get
+			{
+				if(this._stringTable == null)
+				{
+					// TODO: Need to find offet to the string table
+					UInt32 startOffset = this.FileHeader.PointerToSymbolTable + this.FileHeader.NumberOfSymbols * (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_COFF_SYMBOL));
+					UInt32 sizeOfTable = this.PtrToStructure<UInt32>(startOffset);
+					UInt32 offset = startOffset + sizeof(UInt32);
+
+					List<String> stringTable = new List<String>();
+
+					while(offset < startOffset + sizeOfTable)
+					{
+						String data = this.PtrToStringAnsi(offset);
+						stringTable.Add(data);
+
+						offset += (UInt32)data.Length + 1;/*+ 0x00*/
+					}
+
+					this._stringTable = stringTable.ToArray();
+				}
+
+				return this._stringTable;
 			}
 		}
 
@@ -177,6 +198,7 @@ namespace AlphaOmega.Debug
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
 		/// <summary>Dispose managed objects</summary>
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)

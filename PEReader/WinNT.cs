@@ -830,14 +830,64 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>obj symbol table structure</summary>
-		[StructLayout(LayoutKind.Sequential,Pack=1)]
+		[StructLayout(LayoutKind.Explicit, Size = 18, Pack = 1)]
 		[DebuggerDisplay("ShortName={SymbolTabeShortName}")]
 		public struct IMAGE_COFF_SYMBOL
 		{//http://research.microsoft.com/en-us/um/redmond/projects/invisible/include/loaders/pe_image.h.htm
 
-			/// <summary>Short name</summary>
+			/// <summary>banana banana banana</summary>
+			[StructLayout(LayoutKind.Explicit)]
+			public struct NameStruct
+			{
+				/// <summary>banana banana banana</summary>
+				[FieldOffset(0)]
+				public UInt32 Short;
+
+				/// <summary>banana banana banana</summary>
+				[FieldOffset(4)]
+				public UInt32 Long;
+			}
+
+			/*/// <summary>Short name</summary>
+			[FieldOffset(0)]
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-			public Char[] ShortName;
+			public Char[] ShortName;*/
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(0)]
+			public Byte SN1;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(1)]
+			public Byte SN2;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(2)]
+			public Byte SN3;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(3)]
+			public Byte SN4;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(4)]
+			public Byte SN5;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(5)]
+			public Byte SN6;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(6)]
+			public Byte SN7;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(7)]
+			public Byte SN8;
+
+			/// <summary>banana banana banana</summary>
+			[FieldOffset(0)]
+			public NameStruct Name;
 
 			/*union {
 				UINT8   ShortName[8];
@@ -849,18 +899,23 @@ namespace AlphaOmega.Debug
 			} N;*/
 
 			/// <summary>value</summary>
+			[FieldOffset(8)]
 			public UInt32 Value;
 
 			/// <summary>Section number</summary>
+			[FieldOffset(12)]
 			public IMAGE_SYM SectionNumber;
 
 			/// <summary>Type</summary>
+			[FieldOffset(14)]
 			public IMAGE_SYM_TYPE Type;
 
 			/// <summary>Storage class</summary>
+			[FieldOffset(16)]
 			public IMAGE_SYM_CLASS StorageClass;
 
 			/// <summary>Number of aux symbols</summary>
+			[FieldOffset(17)]
 			public Byte NumberOfAuxSymbols;
 
 			/// <summary>
@@ -874,13 +929,14 @@ namespace AlphaOmega.Debug
 			/// The characters following the $ provide an alphabetic ordering for how the merged sections appear in the final section.
 			/// There's quite a bit more to the subject of sections with $ in the name and how they're combined, but the details are outside the scope of this article.
 			/// </summary>
-			public String SymbolTabeShortName { get { return new String(ShortName); } }
+			public String SymbolTabeShortName { get { return Encoding.ASCII.GetString(new Byte[] { this.SN1, this.SN2, this.SN3, this.SN4, this.SN5, this.SN6, this.SN7, this.SN8, }); } }
 		}
 
+		/// <summary>Banana banana banana</summary>
 		[StructLayout(LayoutKind.Explicit, Pack = 1)]
 		public struct IMAGE_AUX_SYMBOL
 		{
-			/// <summary></summary>
+			/// <summary>Banana banana banana</summary>
 			[FieldOffset(0)]
 			public UInt32 TagIndex;
 			/*union {
@@ -890,6 +946,8 @@ namespace AlphaOmega.Debug
 				} LnSz;
 			UINT32    TotalSize;
 			} Misc;*/
+			
+			/// <summary>Banana banana banana</summary>
 			[FieldOffset(4)]
 			public UInt32 TotalSize;
 			/*union {
@@ -901,10 +959,13 @@ namespace AlphaOmega.Debug
 					UINT16   Dimension[4];
 				} Array;
 			} FcnAry;*/
+
+			/// <summary>Banana banana banana</summary>
 			[FieldOffset(8)]
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 			public UInt16[] Dimention;
 
+			/// <summary>Banana banana banana</summary>
 			[FieldOffset(16)]
 			public UInt16 TvIndex;
 		}

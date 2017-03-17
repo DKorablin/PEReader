@@ -55,13 +55,13 @@ namespace AlphaOmega.Debug
 			}
 		}
 
-		/// <summary>PE Header</summary>
+		/// <summary>NT32 (PE) Header</summary>
 		/// <exception cref="T:InvalidOperationException">Invalid DOS header</exception>
 		public WinNT.IMAGE_NT_HEADERS32 HeaderNT32
 		{
 			get
 			{
-				if(!this._headerNT32.HasValue)
+				if(this._headerNT32 == null)
 				{
 					if(!this.HeaderDos.IsValid)
 						throw new InvalidOperationException("Invalid DOS header");
@@ -72,13 +72,13 @@ namespace AlphaOmega.Debug
 			}
 		}
 
-		/// <summary>PE+ Header</summary>
+		/// <summary>NT64 (PE+) Header</summary>
 		/// <exception cref="T:InvalidOperationException">Invalid DOS header</exception>
 		public WinNT.IMAGE_NT_HEADERS64 HeaderNT64
 		{
 			get
 			{
-				if(!this._headerNT64.HasValue)
+				if(this._headerNT64 == null)
 				{
 					if(!this.HeaderDos.IsValid)
 						throw new InvalidOperationException("Invalid DOS header");
@@ -126,11 +126,11 @@ namespace AlphaOmega.Debug
 						sizeOfOptionalHeader=this.HeaderNT32.FileHeader.SizeOfOptionalHeader;
 					}*/
 
-					Int32 sizeHeader = Marshal.SizeOf(typeof(WinNT.IMAGE_SECTION_HEADER));
-					Int32 offset = this.HeaderDos.e_lfanew + 4 + Marshal.SizeOf(typeof(WinNT.IMAGE_FILE_HEADER)) + sizeOfOptionalHeader;
+					UInt32 sizeHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_SECTION_HEADER));
+					UInt32 offset = (UInt32)(this.HeaderDos.e_lfanew + 4 + Marshal.SizeOf(typeof(WinNT.IMAGE_FILE_HEADER)) + sizeOfOptionalHeader);
 					for(Int32 loop = 0;loop < this._sections.Length;loop++)
 					{
-						this._sections[loop] = this.Loader.PtrToStructure<WinNT.IMAGE_SECTION_HEADER>((UInt32)offset);
+						this._sections[loop] = this.Loader.PtrToStructure<WinNT.IMAGE_SECTION_HEADER>(offset);
 						offset += sizeHeader;
 					}
 				}
@@ -163,6 +163,7 @@ namespace AlphaOmega.Debug
 			if(loader == null)
 				throw new ArgumentNullException("loader");
 			this._loader = loader;
+			this._loader.Endianness = EndianHelper.Endian.Little;
 		}
 
 		/// <summary>Validata PE headers</summary>
@@ -213,7 +214,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Read bytes from image</summary>
 		/// <param name="offset">RVA to start address</param>
-		/// <param name="length">How mutch to read</param>
+		/// <param name="length">How much to read</param>
 		/// <returns>Readed bytes</returns>
 		public Byte[] ReadBytes(UInt32 offset, UInt32 length)
 		{
@@ -252,7 +253,15 @@ namespace AlphaOmega.Debug
 		/// <summary>Close header and loader</summary>
 		public void Dispose()
 		{
-			if(this._loader != null)
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>Dispose managed objects</summary>
+		/// <param name="disposing">Dispose managed objects</param>
+		protected virtual void Dispose(Boolean disposing)
+		{
+			if(disposing && this._loader != null)
 			{
 				this._loader.Dispose();
 				this._loader = null;

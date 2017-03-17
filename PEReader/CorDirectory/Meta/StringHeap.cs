@@ -29,6 +29,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			SortedList<Int32, String> data = base.GetData();
 			Int32 key = pointer;
 			String nearestString = null;
+
+			if(pointer > base.Header.Size)
+				throw new InvalidOperationException(String.Format("Pointer: {0:X} overflowed header. Size: {1:n0}", pointer, base.Header.Size));
+
 			while(key >= 0 && !data.TryGetValue(key, out nearestString))
 				key--;
 

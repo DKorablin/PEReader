@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\AlphaOmega %28NoPwd%29.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\..\..\AlphaOmega %28NoPwd%29.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -61,6 +61,39 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\ImageData\IBaseRow.cs">
+      <Link>CorDirectory\Interface\IBaseRow.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageData\ICell.cs">
+      <Link>CorDirectory\Interface\ICell.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageData\IColumn.cs">
+      <Link>CorDirectory\Interface\IColumn.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageData\IRow.cs">
+      <Link>CorDirectory\Interface\IRow.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageData\IRowPointer.cs">
+      <Link>CorDirectory\Interface\IRowPointer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageData\ITable.cs">
+      <Link>CorDirectory\Interface\ITable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageData\ITables.cs">
+      <Link>CorDirectory\Interface\ITables.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageLoader\EndianHelper.cs">
+      <Link>ImageLoader\EndianHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageLoader\IImageLoader.cs">
+      <Link>ImageLoader\IImageLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageLoader\LookupLoader.cs">
+      <Link>ImageLoader\LookupLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ImageLoader\StreamLoader.cs">
+      <Link>ImageLoader\StreamLoader.cs</Link>
+    </Compile>
     <Compile Include="CommCtrl.cs" />
     <Compile Include="CorDirectory\CodeManagerTable.cs" />
     <Compile Include="CorDirectory\Eat.cs" />
@@ -135,7 +168,6 @@
     <Compile Include="CorDirectory\ResourceTypeCode.cs" />
     <Compile Include="CorDirectory\StrongNameSignature.cs" />
     <Compile Include="IDirectory.cs" />
-    <Compile Include="ImageLoader\LookupLoader.cs" />
     <Compile Include="ISectionData.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogButtonTemplate.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogEditTemplate.cs" />
@@ -147,7 +179,7 @@
     <Compile Include="NTDirectory\Resources\ResourceIcon.cs" />
     <Compile Include="NTDirectory\Resources\ResourceToolBar.cs" />
     <Compile Include="ObjFile.cs" />
-    <Compile Include="PinnedBufferReader.cs" />
+    <Compile Include="ImageLoader\PinnedBufferReader.cs" />
     <Compile Include="NTDirectory\Architecture.cs" />
     <Compile Include="NTDirectory\DebugPdb2.cs" />
     <Compile Include="NTDirectory\DebugPdb7.cs" />
@@ -194,8 +226,6 @@
     <Compile Include="NTDirectory\LoadConfig.cs" />
     <Compile Include="NTDirectory\Resource.cs" />
     <Compile Include="NTDirectory\Security.cs" />
-    <Compile Include="ImageLoader\IImageLoader.cs" />
-    <Compile Include="ImageLoader\StreamLoader.cs" />
     <Compile Include="ImageLoader\Win32Loader.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="CorDirectory\MetaData.cs" />
@@ -210,11 +240,8 @@
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\AlphaOmega %28NoPwd%29.snk">
+    <None Include="..\..\..\..\AlphaOmega %28NoPwd%29.snk">
       <Link>AlphaOmega %28NoPwd%29.snk</Link>
-    </None>
-    <None Include="..\..\..\AlphaOmega.pfx">
-      <Link>AlphaOmega.pfx</Link>
     </None>
     <None Include="app.config" />
   </ItemGroup>

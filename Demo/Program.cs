@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
+using System.Runtime.InteropServices;
 
 namespace AlphaOmega.Debug
 {
@@ -14,10 +15,10 @@ namespace AlphaOmega.Debug
 		static void Main(String[] args)
 		{
 			String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
-			String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
+			//String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";
 			//String dll = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
-			//String dll = @"C:\Visual Studio Projects\C#\Shared.Classes\AlphaOmega.Debug\DeviceIoControl\DeviceIoControl\bin\Release\DeviceIoControl.dll";
+			String dll = @"C:\Windows\SysWOW64\jscript.dll";
 			//String dll = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
 			//String dll = @"C:\Visual Studio Projects\C++\SeQueL Explorer\bin\ManagedFlatbed.dll";
 			//TODO: Не правильно читается MSDOS файл. (Вылетает с ошибкой при поптыке чтения по адресу e_lfanew)
@@ -58,8 +59,8 @@ namespace AlphaOmega.Debug
 				{
 					//dll = fileName;
 
-					ReadObjInfo(obj);
-					//ReadPeInfo2(dll, true, false);
+					//ReadObjInfo(obj);
+					ReadPeInfo2(dll, true, false);
 					
 				} catch(Win32Exception exc)
 				{
@@ -87,7 +88,7 @@ namespace AlphaOmega.Debug
 		{
 			using(ObjFile info = new ObjFile(StreamLoader.FromFile(obj)))
 			{
-				if(info.IsValidObjHeader)//Проверка на валидность загруженного файла
+				if(info.IsValid)//Проверка на валидность загруженного файла
 				{
 					Utils.ConsoleWriteMembers(info.FileHeader);
 
@@ -97,7 +98,12 @@ namespace AlphaOmega.Debug
 					foreach(var symbol in info.Symbols)
 					{
 						Utils.ConsoleWriteMembers(symbol);
+						/*if(symbol.Name.Short == 0 && symbol.Name.Long != 0)
+							Console.WriteLine(info.StringTable[symbol.Name.Long]);*/
 					}
+
+					foreach(var str in info.StringTable)
+						Console.Write(str);
 				}
 			}
 		}

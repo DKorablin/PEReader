@@ -31,10 +31,9 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <returns>Data from directory</returns>
 		public Byte[] GetData()
 		{
-			if(this.IsEmpty)
-				return new Byte[] { };
-			else
-				return this.Parent.Parent.Header.ReadBytes(this.Directory.VirtualAddress, this.Directory.Size);
+			return this.IsEmpty
+				? new Byte[] { }
+				: this.Parent.Parent.Header.ReadBytes(this.Directory.VirtualAddress, this.Directory.Size);
 		}
 	}
 }

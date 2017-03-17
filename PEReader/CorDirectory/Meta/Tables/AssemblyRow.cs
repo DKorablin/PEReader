@@ -41,5 +41,27 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Assembly version</summary>
 		public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion, this.BuildNumber, this.RevisionNumber); } }
+
+		/// <summary>Managed assembly name</summary>
+		public AssemblyName AssemblyName
+		{
+			get
+			{
+				AssemblyName result = new AssemblyName();
+				//result.CodeBase
+				if(this.Locale != null)
+					result.CultureInfo = new System.Globalization.CultureInfo(this.Locale);
+				//result.EscapedCodeBase
+				result.Flags = this.Flags;
+				result.HashAlgorithm = this.HashAlgId;
+				result.Name = this.Name;
+				//result.ProcessorArchitecture
+				result.SetPublicKey(this.PublicKey);
+				//result.SetPublicKeyToken(
+				result.Version = this.Version;
+				//result.VersionCompatibility
+				return result;
+			}
+		}
 	}
 }

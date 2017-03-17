@@ -98,9 +98,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 						padding += sizeof(UInt16);
 					}
 
-					DialogItemTemplate ctrl = new DialogItemTemplate(control, controlEx, itemClass, itemText, extraData);
-
-					result.Controls[loop] = ctrl;
+					result.Controls[loop] = DialogItemTemplate.CreateDialogItem(control, controlEx, itemClass, itemText, extraData);
 
 					/*UInt32 align = (padding - startTemplate) % sizeof(UInt32);
 					if(align > 0)

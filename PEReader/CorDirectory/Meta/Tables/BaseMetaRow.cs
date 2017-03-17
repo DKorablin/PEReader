@@ -23,7 +23,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <typeparam name="T">Тип данных в колонке</typeparam>
 		/// <param name="columnIndex">Индекс колонки в таблице метаданных</param>
 		/// <returns>Значение колонки в таблице метаданных</returns>
-		protected T GetValue<T>(UInt32 columnIndex)
+		protected T GetValue<T>(UInt16 columnIndex)
 		{
 			return (T)this.Row[columnIndex].Value;
 		}

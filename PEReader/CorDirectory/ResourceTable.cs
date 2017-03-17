@@ -22,9 +22,9 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			get
 			{
-				if(this._header == null)
-					this._header = base.Parent.Parent.Header.PtrToStructure<Cor.ResourceManagerHeader>(base.Directory.VirtualAddress);
-				return this._header.Value;
+				return (this._header == null
+					? this._header = base.Parent.Parent.Header.PtrToStructure<Cor.ResourceManagerHeader>(base.Directory.VirtualAddress)
+					: this._header).Value;
 			}
 		}
 

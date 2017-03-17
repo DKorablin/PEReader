@@ -18,6 +18,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		#region Properties
 		/// <summary>.resource name</summary>
 		public String Name { get { return this._name; } }
+
 		/// <summary>This type of resource fragment can be read by default <see cref="System.Resources.ResourceReader"/> class.</summary>
 		public Boolean CanRead
 		{
@@ -36,6 +37,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				return (UInt32)magicNumber == Cor.ResourceManagerHeader.MagicNumberConst;
 			}
 		}
+
 		/// <summary>Enumerates .resources files and streams, reading sequential resource name and value pairs.</summary>
 		public IResourceReader Reader
 		{
@@ -58,6 +60,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				return this._reader;
 			}
 		}
+
 		#endregion Properties
 		internal ResourceTableReader(String name, Byte[] file)
 		{
@@ -69,6 +72,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			this._name = name;
 			this._file = file;
 		}
+
 		internal void GetResourceData(String resourceName, out String resourceType, out Byte[] resourceData)
 		{
 			if(String.IsNullOrEmpty(resourceName))
@@ -78,6 +82,7 @@ namespace AlphaOmega.Debug.CorDirectory
 
 			this._reader.GetResourceData(resourceName, out resourceType, out resourceData);
 		}
+
 		/// <summary>Reads all elements from .resource item</summary>
 		/// <exception cref="InvalidOperationException">This type of resource file cannot be read</exception>
 		/// <returns>Resource item</returns>
@@ -93,10 +98,12 @@ namespace AlphaOmega.Debug.CorDirectory
 				yield return new ResourceTableItem(this, name);
 			}
 		}
+
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}
+
 		/// <summary>Close underlying <see cref="ResourceReader"/></summary>
 		public void Dispose()
 		{
@@ -104,6 +111,8 @@ namespace AlphaOmega.Debug.CorDirectory
 			this._reader = null;
 			if(reader != null)
 				reader.Close();
+
+			GC.SuppressFinalize(this);
 		}
 	}
 }

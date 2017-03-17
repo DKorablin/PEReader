@@ -17,7 +17,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		private CodeManagerTable _codeManagerTable;
 		private Eat _eat;
 		private ManagedNativeHeaer _managedNativeHeaer;
-		#region Fields
+		#endregion Fields
 
 		/// <summary>Заголовок .NET приложения</summary>
 		public WinNT.IMAGE_COR20_HEADER Cor20Header

@@ -15,6 +15,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		#region Properties
 		/// <summary>Name of resource item</summary>
 		public String Name { get { return this._name; } }
+
 		/// <summary>Type of resource item</summary>
 		public String Type
 		{
@@ -25,6 +26,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				return this._type;
 			}
 		}
+
 		/// <summary>Data of resource item</summary>
 		public Byte[] Data
 		{
@@ -49,6 +51,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			this._reader = reader;
 			this._name = name;
 		}
+
 		/// <summary>Create instance of streamed resource item</summary>
 		/// <param name="name">Resource name</param>
 		/// <param name="type">Resource type</param>
@@ -59,6 +62,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			this._type = type;
 			this._data = data;
 		}
+
 		/// <summary>Read resource data from resource stream</summary>
 		private void Initialize()
 		{

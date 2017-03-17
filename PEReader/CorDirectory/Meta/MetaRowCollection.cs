@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
@@ -15,6 +16,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		{
 			this._table = table;
 		}
+
 		/// <summary>Get all rows from table</summary>
 		/// <returns>Rows collection</returns>
 		public IEnumerator<MetaRow> GetEnumerator()
@@ -22,7 +24,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			for(UInt32 rowIndex = 0; rowIndex < this.Table.RowsCount; rowIndex++)
 				yield return this.Table[rowIndex];
 		}
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}
