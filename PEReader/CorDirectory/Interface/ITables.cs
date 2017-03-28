@@ -1,0 +1,1 @@
+C:/Visual Studio Projects/C#/Shared.Classes/AlphaOmega.Debug/FileReader/ImageData/ITables.cs
