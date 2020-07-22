@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using AlphaOmega.Debug.PESection;
 
 namespace AlphaOmega.Debug
-{
+{ 
 	/// <summary>PE/PE+ file description</summary>
 	public class PEFile : IDisposable
 	{//http://code.cheesydesign.com/?p=572 - .NET PE Reader
