@@ -1,7 +1,8 @@
-﻿PEReader
+﻿Portable Executable reader
 ========
 
-PE/PE+ reader library.
+PE/PE+/CLI executable reader assembly.
+
 Usage:
 <pre>
 using(PEFile file = new PEFile(StreamLoader.FromFile(@"C:\Windows\System32\kernel32.dll")))
@@ -158,7 +159,8 @@ using(PEFile file = new PEFile(StreamLoader.FromFile(@"C:\Windows\System32\kerne
 					<li>RT_MANIFEST</li>
 					<li>RT_ACCELERATOR</li>
 					<li>RT_MESSAGETABLE</li>
-					<li>RT_DIALOG (Без преобразования DLU)</li>
+					<li>RT_DIALOG (Without DLU conversion)</li>
+					<li>RT_BITMAP</li>
 					<li>RT_MENU</li>
 					<li>RT_VERSION</li>
 				</ul>
