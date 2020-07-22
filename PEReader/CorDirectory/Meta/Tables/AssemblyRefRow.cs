@@ -52,6 +52,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					Name = this.Name,
 					Version = this.Version,
 					Flags = this.Flags,
+					CultureInfo = this.Locale==null
+						? System.Globalization.CultureInfo.InvariantCulture
+						: new System.Globalization.CultureInfo(this.Locale),
 				};
 				result.SetPublicKeyToken(this.PublicKeyOrToken);
 				return result;

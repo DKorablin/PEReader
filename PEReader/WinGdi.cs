@@ -275,8 +275,21 @@ namespace AlphaOmega.Debug
 			OEM = 255,
 		}
 
+		/// <summary>Test data (not used)</summary>
+		[StructLayout(LayoutKind.Sequential)]
+		public struct GRPICONDIR
+		{
+			/// <summary>Reserved (must be 0)</summary>
+			public UInt16 idReserved;
+			/// <summary>Specifies image type: 1 for icon (.ICO) image, 2 for cursor (.CUR) image. Other values are invalid.</summary>
+			public UInt16 idType;
+			/// <summary>Specifies number of images in the file.</summary>
+			public UInt16 idCount;
+		}
+
 		/// <summary>There exists one GRPICONDIRENTRY for each icon image in the resource, providing details about its size and color depth.</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/ms997538.aspx</remarks>
+		[StructLayout(LayoutKind.Sequential)]
 		public struct GRPICONDIRENTRY
 		{
 			/// <summary>Width, in pixels, of the image</summary>
@@ -287,14 +300,42 @@ namespace AlphaOmega.Debug
 			public Byte bColorCount;
 			/// <summary>Reserved</summary>
 			public Byte bReserved;
+			/// <summary>
+			/// In ICO format: Specifies color planes. Should be 0 or 1.
+			/// In CUR format: Specifies the horizontal coordinates of the hotspot in number of pixels from the left</summary>
+			public UInt16 wPlanes;
+			/// <summary>
+			/// In ICO format: Specifies bits per pixel.
+			/// In CUR format: Specifies the vertical coordinates of the hotspot in number of pixels from the top
+			/// </summary>
+			public UInt16 wBitCount;
+			/// <summary>The dwBytesInRes member indicates the total size of the RT_ICON resource referenced by the nID member</summary>
+			public UInt32 dwBytesInRes;
+			/// <summary>nID is the RT_ICON identifier that can be passed to FindResource, LoadResource and LockResource to obtain a pointer to the ICONIMAGE structure (defined above) for this image</summary>
+			public UInt16 nID;
+		}
+
+		/// <summary>There exists one ICONDIRENTRY for each icon image in the file, providing details about its location in the file, size and color depth</summary>
+		/// <remarks>https://msdn.microsoft.com/en-us/library/ms997538.aspx</remarks>
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ICONDIRENTRY
+		{
+			/// <summary>Width, in pixels, of the image</summary>
+			public Byte bWidth;
+			/// <summary>Height, in pixels, of the image</summary>
+			public Byte bHeight;
+			/// <summary>Number of colors in image (0 if >=8bpp)</summary>
+			public Byte bColorCount;
+			/// <summary>Reserved ( must be 0)</summary>
+			public Byte bReserved;
 			/// <summary>Color Planes</summary>
 			public UInt16 wPlanes;
 			/// <summary>Bits per pixel</summary>
 			public UInt16 wBitCount;
-			/// <summary>how many bytes in this resource?</summary>
+			/// <summary>How many bytes in this resource?</summary>
 			public UInt32 dwBytesInRes;
-			/// <summary>the ID</summary>
-			public UInt16 nID;
+			/// <summary>Where in the file is this image?</summary>
+			public UInt32 dwImageOffset;
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using AlphaOmega.Debug;
 using AlphaOmega.Debug.NTDirectory;
 using System.Collections.Generic;
+using AlphaOmega.Debug.PESection;
 
 namespace AlphaOmega.Debug
 {
@@ -11,6 +12,7 @@ namespace AlphaOmega.Debug
 
 		#region Fields
 		private PEHeader _header;
+		private Sections _sections;
 
 		private Architecture _architecture;
 		private Export _export;
@@ -42,6 +44,17 @@ namespace AlphaOmega.Debug
 				return this.Header.Is64Bit
 					? this.Header.HeaderNT64.OptionalHeader[entry]
 					: this.Header.HeaderNT32.OptionalHeader[entry];
+			}
+		}
+
+		/// <summary>PE file sections</summary>
+		public Sections Sections
+		{
+			get
+			{
+				return this._sections == null
+					? this._sections = new Sections(this)
+					: this._sections;
 			}
 		}
 
@@ -219,26 +232,6 @@ namespace AlphaOmega.Debug
 		public PEFile(IImageLoader loader)
 		{
 			this._header = new PEHeader(loader);
-		}
-
-		/// <summary>Получить массив секций с возможностью получения актуальных данных из секции</summary>
-		/// <returns>Массив секций обрамлённых обёртками</returns>
-		public IEnumerable<NTSection> GetSections()
-		{
-			foreach(WinNT.IMAGE_SECTION_HEADER header in this.Header.Sections)
-				yield return new NTSection(this, header);
-		}
-
-		/// <summary>Получить секцию по наименованию секции</summary>
-		/// <param name="section">Наименование требуемой секции</param>
-		/// <returns>Найденная секция или null</returns>
-		public NTSection GetSection(String section)
-		{
-			foreach(WinNT.IMAGE_SECTION_HEADER header in this.Header.Sections)
-				if(header.Section == section)
-					return new NTSection(this, header);
-
-			return null;
 		}
 
 		/// <summary>Close loader</summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
@@ -37,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					: this._rows;
 			}
 		}
-		IRow[] ITable.Rows { get { return this.RowsI; } }
+		IEnumerable<IRow> ITable.Rows { get { return this.RowsI; } }
 
 		/// <summary>Кол-во рядов в таблице</summary>
 		public UInt32 RowsCount { get { return (UInt32)this.RowsI.Length; } }

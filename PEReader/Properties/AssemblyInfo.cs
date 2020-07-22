@@ -3,12 +3,16 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("PE Reader")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Danila Korablin")]
 [assembly: AssemblyProduct("Portable Executable Reader")]
-[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2016")]
+[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 
 [assembly: ComVisible(false)]
 

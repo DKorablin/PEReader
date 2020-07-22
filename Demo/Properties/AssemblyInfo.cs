@@ -3,7 +3,11 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Portable Executable Info")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("Danila Korablin")]
 [assembly: AssemblyProduct("PE Info")]
 [assembly: AssemblyCopyright("Copyright © Danila Korablin 2012")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
@@ -18,6 +19,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		public ResourceBitmap(ResourceDirectory directory)
 			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_BITMAP)
 		{
+		}
+
+		/// <summary>Convert DIB to GDI stream</summary>
+		/// <returns>Stream for System.Drawing.Bitmap</returns>
+		public Stream GetBitmapStream()
+		{
+			return new DibStream(base.Directory.GetData());
 		}
 	}
 }

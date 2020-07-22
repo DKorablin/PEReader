@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
@@ -7,10 +8,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	[DefaultProperty("Header")]
 	public class ResourceIcon : ResourceBase
 	{
-		/// <summary>Icon header</summary>
-		public WinGdi.GRPICONDIRENTRY Header
+		/// <summary>Icon header(?)</summary>
+		public WinGdi.BITMAPINFOHEADER Header
 		{
-			get { return PinnedBufferReader.BytesToStructure<WinGdi.GRPICONDIRENTRY>(base.Directory.GetData(), 0); }
+			get { return PinnedBufferReader.BytesToStructure<WinGdi.BITMAPINFOHEADER>(base.Directory.GetData(), 0); }
 		}
 
 		/// <summary>Create instance of RT_ICON resource reader class</summary>

@@ -94,16 +94,17 @@ namespace AlphaOmega.Debug.NTDirectory
 			this._root = root;
 			this._parent = parent;
 		}
+
 		/// <summary>Get all data in directory</summary>
 		public Byte[] GetData()
 		{//TODO: Не внедрён VS_VERSIONINFO. Вся информация тут: http://msdn.microsoft.com/en-us/library/ms647001%28v=vs.85%29.aspx
 			//TODO: Не внедрён RT_ICON. Вся информация тут http://www.codeproject.com/Articles/30644/Replacing-ICON-resources-in-EXE-and-DLL-files
 			WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY? dataEntry = this.DataEntry;
-			if(dataEntry.HasValue)
-				return this.Root.Parent.Header.ReadBytes(dataEntry.Value.OffsetToData, dataEntry.Value.Size);
-			else
-				return null;
+			return dataEntry == null
+				? null
+				: this.Root.Parent.Header.ReadBytes(dataEntry.Value.OffsetToData, dataEntry.Value.Size);
 		}
+
 		/// <summary>Получить список всех поддиректорий к текущей директории</summary>
 		/// <returns>Список поддиректорий</returns>
 		public IEnumerator<ResourceDirectory> GetEnumerator()

@@ -7,7 +7,7 @@ using AlphaOmega.Debug.NTDirectory.Resources;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Native resource directory class</summary>
-	[DefaultProperty("RootResource")]
+	[DefaultProperty("Header")]
 	public class Resource : PEDirectoryBase, IEnumerable<ResourceDirectory>
 	{
 		/// <summary>Root resource directory</summary>
@@ -145,6 +145,21 @@ namespace AlphaOmega.Debug.NTDirectory
 					foreach(var subDir1 in directory)//Идентификаторы
 						foreach(var subDir2 in subDir1)
 							yield return subDir2;
+		}
+
+		/// <summary>Получить директорию по адресу</summary>
+		/// <remarks>Действует только с директориями с данными</remarks>
+		/// <param name="directoryAddress">Адрес директории с данными</param>
+		/// <returns>Директорию с данными</returns>
+		public ResourceDirectory GetResource(UInt32 directoryAddress)
+		{
+			foreach(var directory in this)
+				foreach(var subDir1 in directory)//Идентификаторы
+					foreach(var subDir2 in subDir1)
+						if(subDir2.DirectoryEntry.DirectoryAddress == directoryAddress)
+							return subDir2;
+
+			return null;
 		}
 
 		/// <summary>Get recource directories from image direstory</summary>

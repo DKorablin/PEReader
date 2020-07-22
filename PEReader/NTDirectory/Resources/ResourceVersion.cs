@@ -139,17 +139,31 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		/// <summary>Get version tables</summary>
 		/// <returns>Extended file description</returns>
-		public VersionData[] GetFileInfo()
+		public IEnumerable<VersionData> GetFileInfo()
 		{
 			UInt32 padding = this.HeaderPadding;
 			using(PinnedBufferReader reader = base.CreateDataReader())
 			{
-				List<VersionData> result = new List<VersionData>();
-
-				while(padding < reader.Length && result.Count < 2)
-					result.Add(this.GetVersionData(reader, ref padding));
-				return result.ToArray();
+				Int32 index = 0;
+				while(padding < reader.Length && index < 2)
+				{
+					yield return this.GetVersionData(reader, ref padding);
+					index++;
+				}
 			}
+		}
+
+		/// <summary>Get version row by key</summary>
+		/// <param name="key">Resource version key</param>
+		/// <returns>Version description row</returns>
+		public ResourceVersion.VersionItem GetFileInfo(String key)
+		{
+			foreach(VersionData tableType in this.GetFileInfo())
+				foreach(var table in tableType.Items)
+					foreach(var row in table.Items)
+						if(row.szKey == key)
+							return row;
+			return null;
 		}
 
 		private VersionData GetVersionData(PinnedBufferReader reader, ref UInt32 padding)

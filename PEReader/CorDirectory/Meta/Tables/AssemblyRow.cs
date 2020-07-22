@@ -49,8 +49,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			{
 				AssemblyName result = new AssemblyName();
 				//result.CodeBase
-				if(this.Locale != null)
-					result.CultureInfo = new System.Globalization.CultureInfo(this.Locale);
+				result.CultureInfo = this.Locale==null
+					? System.Globalization.CultureInfo.InvariantCulture
+					: new System.Globalization.CultureInfo(this.Locale);
 				//result.EscapedCodeBase
 				result.Flags = this.Flags;
 				result.HashAlgorithm = this.HashAlgId;

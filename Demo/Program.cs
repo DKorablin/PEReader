@@ -7,6 +7,11 @@ using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 using System.Runtime.InteropServices;
+using System.Drawing.Imaging;
+using System.IO;
+using AlphaOmega.Debug.NTDirectory.Resources;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace AlphaOmega.Debug
 {
@@ -14,11 +19,12 @@ namespace AlphaOmega.Debug
 	{
 		static void Main(String[] args)
 		{
-			String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
+			String dll = @"C:\Program Files\Common Files\microsoft shared\Windows Simulator\12.0\SensorsSimulatorDriver.dll";
+			//String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
 			//String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";
 			//String dll = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
-			String dll = @"C:\Windows\SysWOW64\jscript.dll";
+			//String dll = @"C:\Windows\SysWOW64\jscript.dll";
 			//String dll = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
 			//String dll = @"C:\Visual Studio Projects\C++\SeQueL Explorer\bin\ManagedFlatbed.dll";
 			//TODO: Не правильно читается MSDOS файл. (Вылетает с ошибкой при поптыке чтения по адресу e_lfanew)
@@ -117,7 +123,7 @@ namespace AlphaOmega.Debug
 			{
 				if(info.Header.IsValid)//Проверка на валидность загруженного файла
 				{
-					foreach(var section in info.Header.Sections)
+					foreach(var section in info.Sections)
 						Utils.ConsoleWriteMembers(section);
 
 					if(info.Header.SymbolTable != null)
@@ -211,6 +217,26 @@ namespace AlphaOmega.Debug
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON:
 											var resIcon = new AlphaOmega.Debug.NTDirectory.Resources.ResourceIcon(dir2);
+											/*WinGdi.ICONDIR icoHeader = new WinGdi.ICONDIR() { idReserved = 0, idType = 1, idCount = 1 };
+											List<Byte> bytes = new List<Byte>();
+											bytes.AddRange(PinnedBufferReader.StructureToArray<WinGdi.ICONDIR>(icoHeader));
+
+											var resHeader=resIcon.Header;
+											Byte[] payload = resIcon.Directory.GetData().Skip(Marshal.SizeOf(typeof(WinGdi.GRPICONDIRENTRY))).ToArray();
+											WinGdi.ICONDIRENTRY icoEntry = new WinGdi.ICONDIRENTRY()
+											{
+												bWidth = resHeader.bWidth,
+												bHeight = resHeader.bHeight,
+												bColorCount = resHeader.bColorCount,
+												bReserved = resHeader.bReserved,
+												wPlanes = resHeader.wPlanes,
+												wBitCount = resHeader.wBitCount,
+												dwBytesInRes = (UInt32)payload.Length,
+												dwImageOffset = (UInt32)(Marshal.SizeOf(typeof(WinGdi.ICONDIR)) + Marshal.SizeOf(typeof(WinGdi.ICONDIRENTRY))),
+											};
+											bytes.AddRange(PinnedBufferReader.StructureToArray<WinGdi.ICONDIRENTRY>(icoEntry));
+											bytes.AddRange(payload);
+											File.WriteAllBytes(@"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\res\RT_ICON.ico", bytes.ToArray());*/
 											Utils.ConsoleWriteMembers(resIcon.Header);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT:

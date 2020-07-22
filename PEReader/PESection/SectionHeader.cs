@@ -2,12 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace AlphaOmega.Debug.NTDirectory
+namespace AlphaOmega.Debug.PESection
 {
 	/// <summary>Base class of sections header</summary>
 	[DefaultProperty("Header")]
 	[DebuggerDisplay("Header Name={Header}")]
-	public class NTSection : ISectionData
+	public class SectionHeader : ISectionData
 	{
 		private readonly PEFile _parent;
 		private readonly WinNT.IMAGE_SECTION_HEADER _header;
@@ -18,10 +18,13 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Section header descriptor</summary>
 		public WinNT.IMAGE_SECTION_HEADER Header { get { return this._header; } }
 
+		/// <summary>Section name description</summary>
+		public String Description { get { return AlphaOmega.Debug.Resources.Section.GetString(this.Header.Section); } }
+
 		/// <summary>Create instance of section header reader class</summary>
 		/// <param name="parent">PE directory</param>
 		/// <param name="header">sections header descriptor</param>
-		public NTSection(PEFile parent, WinNT.IMAGE_SECTION_HEADER header)
+		public SectionHeader(PEFile parent, WinNT.IMAGE_SECTION_HEADER header)
 		{
 			if(parent == null)
 				throw new ArgumentNullException("parent");
@@ -39,6 +42,13 @@ namespace AlphaOmega.Debug.NTDirectory
 				: this.Header.VirtualSize;
 
 			return this.Parent.Header.ReadBytes(this.Header.VirtualAddress, size);
+		}
+
+		/// <summary>Create data reader for data in section</summary>
+		/// <returns>Memory pinned data reader</returns>
+		public PinnedBufferReader CreateDataReader()
+		{
+			return new PinnedBufferReader(this.GetData());
 		}
 	}
 }

@@ -2540,6 +2540,7 @@ namespace AlphaOmega.Debug
 				/// <summary>Version number</summary>
 				public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
 			}
+
 			/// <summary>Load Configuration Directory Entry</summary>
 			/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms680328%28v=vs.85%29.aspx</remarks>
 			[StructLayout(LayoutKind.Sequential)]
@@ -2602,6 +2603,7 @@ namespace AlphaOmega.Debug
 				public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
 			}
 		}
+
 		/// <summary>Tls headers</summary>
 		public struct Tls
 		{
@@ -2670,6 +2672,7 @@ namespace AlphaOmega.Debug
 				public UInt32 Characteristics;
 			}
 		}
+
 		/// <summary>Debug information headers</summary>
 		public struct Debug
 		{
@@ -2769,13 +2772,13 @@ namespace AlphaOmega.Debug
 				public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.Signature); } }
 			}
 			/*struct IMAGE_DEBUG_MISC
-		{
-			DWORD		DataType;	// type of misc data, see defines
-			DWORD		Length;		// total length of record, rounded to four byte multiple.
-			BOOLEAN		Unicode;	// TRUE if data is unicode string
-			BYTE		Reserved[3];
-			BYTE		Data[1];	// Actual data
-		};*/
+			{
+				DWORD		DataType;	// type of misc data, see defines
+				DWORD		Length;		// total length of record, rounded to four byte multiple.
+				BOOLEAN		Unicode;	// TRUE if data is unicode string
+				BYTE		Reserved[3];
+				BYTE		Data[1];	// Actual data
+			};*/
 			/// <summary>Type of misc data</summary>
 			public enum IMAGE_DEBUG_MISC_TYPE : uint
 			{

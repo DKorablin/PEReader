@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AlphaOmega.Debug</RootNamespace>
     <AssemblyName>PEReader</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\..\AlphaOmega %28NoPwd%29.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,13 +49,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\PEReader.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\PEReader.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
@@ -169,12 +170,15 @@
     <Compile Include="CorDirectory\StrongNameSignature.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="ISectionData.cs" />
+    <Compile Include="NTDirectory\Resources\Bitmap\DibStream.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogButtonTemplate.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogEditTemplate.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogFont.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogItemTemplate.cs" />
     <Compile Include="NTDirectory\Resources\Dialog\DialogTemplate.cs" />
-    <Compile Include="SectionHeader.cs" />
+    <Compile Include="PESection\Sections.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="PESection\SectionHeader.cs" />
     <Compile Include="NTDirectory\Resources\ResourceDialogInit.cs" />
     <Compile Include="NTDirectory\Resources\ResourceIcon.cs" />
     <Compile Include="NTDirectory\Resources\ResourceToolBar.cs" />
@@ -243,7 +247,6 @@
     <None Include="..\..\..\..\AlphaOmega %28NoPwd%29.snk">
       <Link>AlphaOmega %28NoPwd%29.snk</Link>
     </None>
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -262,7 +265,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Section.resx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
