@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug
 {
 	/// <summary>Reader from memory allocated bytes array</summary>
 	[DefaultProperty("Length")]
-	public class PinnedBufferReader : IDisposable
+	internal class PinnedBufferReader : IDisposable
 	{
 		#region Fields
 		private GCHandle _gcHandle;
@@ -79,11 +79,32 @@ namespace AlphaOmega.Debug
 			if(length + padding > this.Buffer.Length)
 				throw new ArgumentOutOfRangeException("padding");
 
+			return (T)this.BytesToStructureI(padding, typeof(T));
+		}
+
+		public Object BytesToStructure2(Type structType, UInt32 padding, UInt32 dataLength, out Byte[] exBytes)
+		{
+			UInt32 structLength = (UInt32)Marshal.SizeOf(structType);
+			Byte[] bytes = new Byte[structLength > dataLength ? structLength : dataLength];//Если брать массив меньше чем структура, то в хвост структуры запишется мусор
+			Array.Copy(this.Buffer, padding, bytes, 0, dataLength);
+			
+			using(PinnedBufferReader reader = new PinnedBufferReader(bytes))
+			{
+				exBytes = structLength < dataLength
+					? reader.GetBytes(structLength, dataLength - structLength)
+					: null;
+				return reader.BytesToStructureI(0, structType);
+			}
+		}
+
+		[EnvironmentPermission(SecurityAction.LinkDemand, Unrestricted = true)]
+		private Object BytesToStructureI(UInt32 padding, Type structType)
+		{
 			IntPtr ptr = padding == 0
 				? this.Handle
 				: new IntPtr(this.Handle.ToInt64() + padding);
 
-			return (T)Marshal.PtrToStructure(ptr, typeof(T));
+			return Marshal.PtrToStructure(ptr, structType);
 		}
 
 		/// <summary>Преобразование массива байт от отступа в строку</summary>

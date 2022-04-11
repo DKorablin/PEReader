@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug
 	{
 		static void Main(String[] args)
 		{
-			String dll = @"C:\Program Files\Common Files\microsoft shared\Windows Simulator\12.0\SensorsSimulatorDriver.dll";
+			String dll = @"C:\Temp\zzz\ConsoleApp2.exe";
 			//String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
 			//String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";

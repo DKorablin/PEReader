@@ -93,6 +93,9 @@
     <Compile Include="..\..\ImageLoader\LookupLoader.cs">
       <Link>ImageLoader\LookupLoader.cs</Link>
     </Compile>
+    <Compile Include="..\..\ImageLoader\PinnedBufferReader.cs">
+      <Link>ImageLoader\PinnedBufferReader.cs</Link>
+    </Compile>
     <Compile Include="..\..\ImageLoader\StreamLoader.cs">
       <Link>ImageLoader\StreamLoader.cs</Link>
     </Compile>
@@ -184,7 +187,6 @@
     <Compile Include="NTDirectory\Resources\ResourceIcon.cs" />
     <Compile Include="NTDirectory\Resources\ResourceToolBar.cs" />
     <Compile Include="ObjFile.cs" />
-    <Compile Include="ImageLoader\PinnedBufferReader.cs" />
     <Compile Include="NTDirectory\Architecture.cs" />
     <Compile Include="NTDirectory\DebugPdb2.cs" />
     <Compile Include="NTDirectory\DebugPdb7.cs" />
