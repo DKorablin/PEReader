@@ -1,13 +1,14 @@
 using System;
 using System.ComponentModel;
 using System.Configuration.Assemblies;
+using System.Globalization;
 using System.Reflection;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>
-	/// The Assembly table is defined using the .assembly directive (§II.6.2);
-	/// its columns are obtained from the respective .hash algorithm, .ver, .publickey, and .culture (§II.6.2.1).
+	/// The Assembly table is defined using the .assembly directive (ï¿½II.6.2);
+	/// its columns are obtained from the respective .hash algorithm, .ver, .publickey, and .culture (ï¿½II.6.2.1).
 	/// </summary>
 	[DefaultProperty("Name")]
 	public class AssemblyRow : BaseMetaRow
@@ -16,16 +17,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		public AssemblyHashAlgorithm HashAlgId { get { return (AssemblyHashAlgorithm)base.GetValue<UInt32>(0); } }
 
 		/// <summary>Assembly major version</summary>
-		public UInt16 MajorVersion { get { return base.GetValue<UInt16>(1); } }
+		internal UInt16 MajorVersion { get { return base.GetValue<UInt16>(1); } }
 
 		/// <summary>Assembly minor version</summary>
-		public UInt16 MinorVersion { get { return base.GetValue<UInt16>(2); } }
+		internal UInt16 MinorVersion { get { return base.GetValue<UInt16>(2); } }
 
 		/// <summary>Assembly build number</summary>
-		public UInt16 BuildNumber { get { return base.GetValue<UInt16>(3); } }
+		internal UInt16 BuildNumber { get { return base.GetValue<UInt16>(3); } }
 
 		/// <summary>Assembly revision number</summary>
-		public UInt16 RevisionNumber { get { return base.GetValue<UInt16>(4); } }
+		internal UInt16 RevisionNumber { get { return base.GetValue<UInt16>(4); } }
 
 		/// <summary>MetaData applied to an assembly compilation</summary>
 		public AssemblyNameFlags Flags { get { return (AssemblyNameFlags)base.GetValue<UInt32>(5); } }
@@ -47,20 +48,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get
 			{
-				AssemblyName result = new AssemblyName();
-				//result.CodeBase
-				result.CultureInfo = this.Locale==null
-					? System.Globalization.CultureInfo.InvariantCulture
-					: new System.Globalization.CultureInfo(this.Locale);
-				//result.EscapedCodeBase
-				result.Flags = this.Flags;
-				result.HashAlgorithm = this.HashAlgId;
-				result.Name = this.Name;
-				//result.ProcessorArchitecture
+				AssemblyName result = new AssemblyName()
+				{
+					Name = this.Name,
+					Version = this.Version,
+					Flags = this.Flags,
+					CultureInfo = this.Locale == null || this.Locale.Length == 0
+						? CultureInfo.InvariantCulture
+						: new CultureInfo(this.Locale),
+					HashAlgorithm = this.HashAlgId,
+				};
 				result.SetPublicKey(this.PublicKey);
-				//result.SetPublicKeyToken(
-				result.Version = this.Version;
-				//result.VersionCompatibility
 				return result;
 			}
 		}

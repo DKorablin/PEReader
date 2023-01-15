@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
@@ -38,6 +39,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			this._rowIndex = rowIndex == 0 ? (UInt32?)null : checked(rowIndex - 1);//TODO: Почему -1? (Код вылетает в Overflow в таблице TypeDef в TypeName=<Module>)
 			this._tableType = tableType;
 		}
+
 		/// <summary>Display type of the class and type of referenced table</summary>
 		/// <returns>String</returns>
 		public override String ToString()

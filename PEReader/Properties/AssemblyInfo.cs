@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("Danila Korablin")]
 [assembly: AssemblyProduct("Portable Executable Reader")]
-[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2020")]
+[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 #if DEBUG

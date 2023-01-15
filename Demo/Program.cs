@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug
 	{
 		static void Main(String[] args)
 		{
-			String dll = @"C:\Temp\zzz\ConsoleApp2.exe";
+			String fileName = @"C:\Visual Studio Projects\Tests\PeReaderSampleApp\bin\Debug\PeReaderSampleApp.exe";
 			//String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
 			//String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";
@@ -60,32 +60,36 @@ namespace AlphaOmega.Debug
 			/*PEFile file = new PEFile(dll);
 			return;*/
 
-			//foreach(String fileName in Directory.GetFiles(@"C:\Program Files\", "*.exe", SearchOption.AllDirectories))
-				try
+			//foreach(String fileName in Directory.GetFiles(@"C:\Visual Studio Projects\C#", "*.*", SearchOption.AllDirectories))
+				switch(Path.GetExtension(fileName.ToLowerInvariant()))
 				{
-					//dll = fileName;
-
-					//ReadObjInfo(obj);
-					ReadPeInfo2(dll, true, false);
-					
-				} catch(Win32Exception exc)
-				{
-					Console.WriteLine("EXCEPTION IN FILE: {0}", dll);
-					Console.WriteLine("===");
-					Console.WriteLine("Message: {0}", exc.Message);
-					Console.WriteLine(exc.StackTrace);
-					Console.WriteLine("===");
-					Console.WriteLine("Do yow want to continue? (Y/N)");
-					/*switch(Console.ReadKey().KeyChar)
+				case ".dll":
+				case ".exe":
+					try
 					{
-					case 'y':
-					case 'Y':
-					default:
-						break;
-					case 'n':
-					case 'N':
-						return;
-					}*/
+						//ReadObjInfo(obj);
+						ReadPeInfo2(fileName, true, false);
+
+					} catch(Win32Exception exc)
+					{
+						Console.WriteLine("EXCEPTION IN FILE: {0}", fileName);
+						Console.WriteLine("===");
+						Console.WriteLine("Message: {0}", exc.Message);
+						Console.WriteLine(exc.StackTrace);
+						Console.WriteLine("===");
+						Console.WriteLine("Do yow want to continue? (Y/N)");
+						/*switch(Console.ReadKey().KeyChar)
+						{
+						case 'y':
+						case 'Y':
+						default:
+							break;
+						case 'n':
+						case 'N':
+							return;
+						}*/
+					}
+					break;
 				}
 			return;
 		}
@@ -455,20 +459,34 @@ namespace AlphaOmega.Debug
 												} else
 													methodLength = ((UInt32)flags >> 2);
 
-												try
+												//try
+												//{
+												foreach(var ilLine in methodRow.Body.GetMethodBody2())
 												{
-													Byte[] methodBody = info.Header.ReadBytes(rva, methodLength);
-													Byte[] methodBody2 = methodRow.Body.GetMethodBody();
-
-													for(Int32 loop = 0; loop < methodLength; loop++)
-														if(methodBody[loop] != methodBody2[loop])
-															throw new ArgumentException("Method not equals");
-												} catch(Exception exc)
-												{
-													Console.WriteLine("!!!Error while reading method body!!!");
-													Console.WriteLine(exc.Message);
-													Console.ReadLine();
+													StringBuilder line = new StringBuilder("IL_" + ilLine.Line.ToString("X").PadLeft(4, '0'));
+													line.Append(": " + ilLine.IL.Name);
+													if(ilLine.Offset != null)
+														line.Append(" " + ilLine.Offset.Value);
+													else if(ilLine.Token != null)
+														line.Append(" [" + ilLine.Token.TableType + "]." + ilLine.Token.RowIndex);
+													else if(ilLine.StrConst != null)
+														line.Append(" " + ilLine.StrConst);
+													Console.WriteLine(line);
 												}
+												Console.ReadKey();
+
+												Byte[] methodBody = info.Header.ReadBytes(rva, methodLength);
+												Byte[] methodBody2 = methodRow.Body.GetMethodBody();
+
+												for(Int32 loop = 0; loop < methodLength; loop++)
+													if(methodBody[loop] != methodBody2[loop])
+														throw new ArgumentException("Methods not equals");
+												//} catch(Exception exc)
+												//{
+												//	Console.WriteLine("!!!Error while reading method body!!!");
+												//	Console.WriteLine(exc.Message);
+												//	Console.ReadLine();
+												//}
 											}
 											break;
 										default:
@@ -506,7 +524,7 @@ namespace AlphaOmega.Debug
 								break;
 							case Cor.StreamHeaderType.UnicodeSting:
 								var usHeap = (USHeap)header;
-								String[] usStrings = usHeap.DataString;
+								Dictionary<Int32,String> usStrings = usHeap.GetDataString().ToDictionary(p => p.Key, p => p.Value);
 								break;
 							}
 						}

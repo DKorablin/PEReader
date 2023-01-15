@@ -15,26 +15,27 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private static UInt32 SizeOfMethodExceptionSmall = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionSmall));
 
 		private readonly MethodDefRow _row;
-		private static Dictionary<Byte, OpCode> _opCodeList;
+		private static Dictionary<Int16, OpCode> _opCodeList;
 		private Cor.CorILMethodHeader? _header;
 		private MethodDefRow Row { get { return this._row; } }
 
-		private static Dictionary<Byte, OpCode> OpCodeList
+		private static Dictionary<Int16, OpCode> OpCodeList
 		{
 			get
 			{
 				if(MethodBody._opCodeList == null)
 				{
-					MethodBody._opCodeList = new Dictionary<Byte, OpCode>();
+					MethodBody._opCodeList = new Dictionary<Int16, OpCode>();
 					foreach(FieldInfo field in typeof(OpCodes).GetFields())
 					{
 						OpCode code = (OpCode)field.GetValue(null);
-						checked { MethodBody._opCodeList.Add((Byte)code.Value, code); }
+						checked { MethodBody._opCodeList.Add((Int16)code.Value, code); }
 					}
 				}
 				return MethodBody._opCodeList;
 			}
 		}
+
 		/// <summary>Method header</summary>
 		public Cor.CorILMethodHeader Header
 		{
@@ -63,13 +64,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		{
 			this._row = row;
 		}
-		/// <summary>Returns the OpCodes represented by a MSIL byte array.</summary>
-		/// <param name="data">MSIL byte array.</param>
-		/// <returns>An array of the OpCodes representing the MSIL code.</returns>
-		private static OpCode[] GetOpCodes(Byte[] data)
-		{
-			return Array.ConvertAll(data, delegate(Byte opCodeByte) { return MethodBody.OpCodeList[opCodeByte]; });
-		}
+
 		/// <summary>Получить тело метода</summary>
 		/// <returns>Массив байт описывающий CIL</returns>
 		public Byte[] GetMethodBody()
@@ -81,11 +76,87 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 			return peHeader.ReadBytes(padding, methodLength);
 		}
-		/// <summary>Get method body as MSIL instructions array</summary>
-		/// <returns>MSIL instructions array</returns>
-		public OpCode[] GetMethodBody2()
+
+		/// <summary>Returns the OpCodes represented by a MSIL byte array.</summary>
+		/// <returns>An array of the OpCodes representing the MSIL code.</returns>
+		public IEnumerable<MethodLine> GetMethodBody2()
 		{
-			return MethodBody.GetOpCodes(this.GetMethodBody());
+			MetaCell cell = this._row.Row.Cells[0];
+			Byte[] data = this.GetMethodBody();
+
+			for(Int32 loop = 0; loop < data.Length; loop++)
+			{
+				OpCode il = MethodBody.OpCodeList[data[loop]];
+				switch(il.Name)
+				{
+				case "prefix1":
+					Int16 value = BitConverter.IsLittleEndian
+						? BitConverter.ToInt16(new Byte[] { data[loop + 1], data[loop] }, 0)
+						: BitConverter.ToInt16(data, loop);
+					il = MethodBody.OpCodeList[value];
+					loop++;
+					break;
+				}
+
+				switch(il.Name)
+				{
+				case "ldfld":
+				case "stfld":
+				case "call":
+				case "newobj":
+					UInt32 rawValue = BitConverter.ToUInt32(data, loop + 1);
+					MetaCellCodedToken token = new MetaCellCodedToken(cell, rawValue);
+					yield return new MethodLine(loop, il, token);
+					loop += 4;
+					break;
+				//case "brfalse": (Вероятно тут не int)
+				case "ldc.i4":
+					Int32 offset = BitConverter.ToInt32(data, loop + 1);
+					offset = (loop + 1) + sizeof(UInt32) + offset;
+					yield return new MethodLine(loop, il, offset);
+					loop += 4;
+					break;
+				case "brtrue.s":
+					Byte offsetS = data[loop + 1];
+					yield return new MethodLine(loop, il, offsetS);
+					loop += 1;
+					break;
+				case "stloc.s":
+				case "ldloc.s":
+				case "ldc.i4.s":
+					Int32 vListIndex = data[loop + 1];
+					yield return new MethodLine(loop, il, vListIndex);
+					loop += 1;
+					break;
+				case "ldstr":
+					Int32 rawValue1 = BitConverter.ToInt32(data, loop + 1);
+					Int32 usOffset = rawValue1 & 0xFFFFFF;
+					String str = cell.Table.Root.Parent.USHeap[usOffset];
+					yield return new MethodLine(loop, il, str);
+					loop += 4;
+					break;
+				case "ldarg.0":
+				case "ldarg.1":
+				case "ldarg.2":
+				case "ldnull":
+				case "ldc.i4.0":
+				case "ldc.i4.1":
+				case "ret":
+				case "nop":
+				case "ceq":
+				case "throw":
+				case "stloc.0":
+				case "stloc.1":
+				case "stloc.2":
+				case "stloc.3":
+				case "conv.u8":
+					//if(il.OpCodeType)
+					yield return new MethodLine(loop, il);
+					break;
+				default:
+					throw new NotImplementedException();
+				}
+			}
 		}
 		/// <summary>Get fat method header sections</summary>
 		/// <returns>Method header sections</returns>

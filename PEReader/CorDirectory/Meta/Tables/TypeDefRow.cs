@@ -12,6 +12,28 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>A 4-byte bit mask of type TypeAttributes (#II.23.1.15) .</summary>
 		public TypeAttributes Flags { get { return (TypeAttributes)base.GetValue<UInt32>(0); } }
 
+		/// <summary>Specifies type visibility information</summary>
+		public TypeAttributes VisibilityMask { get { return this.Flags & TypeAttributes.VisibilityMask; } }
+
+		/// <summary>Specifies class layout information</summary>
+		public TypeAttributes LayoutMask { get { return this.Flags & TypeAttributes.LayoutMask; } }
+
+		/// <summary>Specifies class semantics information; the current class is contextful (else agile)</summary>
+		public TypeAttributes ClassSemanticsMask { get { return this.Flags & TypeAttributes.ClassSemanticsMask; } }
+
+		/// <summary>Used to retrieve string information for native interoperability</summary>
+		public TypeAttributes StringFormatMask { get { return this.Flags & TypeAttributes.StringFormatMask; } }
+
+		/// <summary>Attributes reserved for runtime use</summary>
+		public TypeAttributes ReservedMask { get { return this.Flags & TypeAttributes.ReservedMask; } }
+
+		/// <summary>
+		/// Used to retrieve non-standard encoding information for native interop.
+		/// The meaning of the values of these 2 bits is unspecified.
+		/// Not used in the Microsoft implementation of the .NET Framework.
+		/// </summary>
+		public TypeAttributes CustomFormatMask { get { return this.Flags & TypeAttributes.CustomFormatMask; } }
+
 		/// <summary>Type name</summary>
 		public String TypeName { get { return base.GetValue<String>(1); } }
 
@@ -61,11 +83,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <returns>String</returns>
 		public override String ToString()
 		{
-			String result;
-			if(String.IsNullOrEmpty(this.TypeNamespace))
-				result = this.TypeName;
-			else
-				result = this.TypeNamespace + "." + this.TypeName;
+			String result = String.IsNullOrEmpty(this.TypeNamespace)
+				? this.TypeName
+				: this.TypeNamespace + "." + this.TypeName;
 
 			return base.ToString(result);
 		}

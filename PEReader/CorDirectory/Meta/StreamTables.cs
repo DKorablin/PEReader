@@ -8,7 +8,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	public class StreamTables : StreamHeader
 	{
 		private static UInt32 SizeOfStreamTable = (UInt32)Marshal.SizeOf(typeof(Cor.STREAM_TABLE_HEADER));
-		private UInt32[] _rowsCount;
+		private UInt32[] _totalRowsCount;
 		private Cor.STREAM_TABLE_HEADER? _streamTableHeader;
 		private Dictionary<Cor.MetaTableType, MetaTable> _tables;
 		/// <summary>Таблица с информацией о типе</summary>
@@ -21,12 +21,25 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				if(this._tables == null)
 					DataBind();
 				MetaTable result;
-				if(this._tables.TryGetValue(tableType, out result))
-					return result;
-				else
-					return null;
+
+				return this._tables.TryGetValue(tableType, out result)
+					? result
+					: null;
 			}
 		}
+
+		/// <summary>Получить кол-во рдво во всех таблицах</summary>
+		/// <returns>Кол-во рядов во всех таблицах</returns>
+		public UInt32[] TotalRowsCount
+		{
+			get
+			{
+				return this._totalRowsCount == null
+					? this._totalRowsCount = this.GetRowsCountI()
+					: this._totalRowsCount;
+			}
+		}
+
 		#region Tables
 		/// <summary>Module descriptor.</summary>
 		public Tables.BaseMetaTable<Tables.ModuleRow> Module
@@ -383,23 +396,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			padding += table.TableSize;
 			this._tables.Add(tableType, table);
 		}
-		/// <summary>Получить кол-во рдво во всех таблицах</summary>
-		/// <returns>Кол-во рядов во всех таблицах</returns>
-		public UInt32[] GetRowsCount()
-		{
-			if(this._rowsCount == null)
-				this._rowsCount = this.GetRowsCountI();
-			return this._rowsCount;
-		}
+		
 		/// <summary>Получить кол-во рядов в определённой таблице</summary>
 		/// <param name="tableType">Таблица для которой получить кол-во рядов</param>
 		/// <returns>Кол-во рядов в определённой таблице</returns>
 		public UInt32 GetRowsCount(Cor.MetaTableType tableType)
 		{
-			if(this._rowsCount == null)
-				this._rowsCount = this.GetRowsCount();
-			return this._rowsCount[(Int32)tableType];
+			return this.TotalRowsCount[(Int32)tableType];
 		}
+
 		/// <summary>Код получение списка нераспакованных таблиц</summary>
 		/// <returns>Список нераспакованных таблиц</returns>
 		protected virtual UInt32[] GetRowsCountI()

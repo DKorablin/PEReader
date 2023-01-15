@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>Базовый класс для детализированного описания таблицы в метаданных</summary>
-	public class BaseMetaTable<T> : IEnumerable<T> where T : BaseMetaRow, new()
+	public class BaseMetaTable<R> : IEnumerable<R> where R : BaseMetaRow, new()
 	{
 		#region Fields
 		private readonly MetaTable _table;
@@ -21,7 +21,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Получить детализированный ряд из таблицы метаданных</summary>
 		/// <param name="rowIndex">Индекс ряда из таблицы</param>
 		/// <returns>Детализированный ряд таблицы из метаданных</returns>
-		public T this[UInt32 rowIndex] { get { return new T() { Row = this.Table[rowIndex], }; } }
+		public R this[UInt32 rowIndex] { get { return new R() { Row = this.Table[rowIndex], }; } }
 
 		/// <summary>Создание экземпляра базового класса детализированного описания таблицы в метаданных</summary>
 		/// <param name="stream">Поток</param>
@@ -37,10 +37,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Получить в итерации список всех рядов в таблице метаданных</summary>
 		/// <returns>Ряд метаданных детально описывающий структуру таблицы</returns>
-		public IEnumerator<T> GetEnumerator()
+		public IEnumerator<R> GetEnumerator()
 		{
 			foreach(var row in this.Table.Rows)
-				yield return new T() { Row = row, };
+				yield return new R() { Row = row, };
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

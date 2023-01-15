@@ -63,40 +63,40 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\ImageData\IBaseRow.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\IBaseRow.cs">
       <Link>CorDirectory\Interface\IBaseRow.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageData\ICell.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\ICell.cs">
       <Link>CorDirectory\Interface\ICell.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageData\IColumn.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\IColumn.cs">
       <Link>CorDirectory\Interface\IColumn.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageData\IRow.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\IRow.cs">
       <Link>CorDirectory\Interface\IRow.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageData\IRowPointer.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\IRowPointer.cs">
       <Link>CorDirectory\Interface\IRowPointer.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageData\ITable.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\ITable.cs">
       <Link>CorDirectory\Interface\ITable.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageData\ITables.cs">
+    <Compile Include="..\FileReader.Shared\ImageData\ITables.cs">
       <Link>CorDirectory\Interface\ITables.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageLoader\EndianHelper.cs">
+    <Compile Include="..\FileReader.Shared\ImageLoader\BinaryEndianReader.cs">
+      <Link>ImageLoader\BinaryEndianReader.cs</Link>
+    </Compile>
+    <Compile Include="..\FileReader.Shared\ImageLoader\EndianHelper.cs">
       <Link>ImageLoader\EndianHelper.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageLoader\IImageLoader.cs">
+    <Compile Include="..\FileReader.Shared\ImageLoader\IImageLoader.cs">
       <Link>ImageLoader\IImageLoader.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageLoader\LookupLoader.cs">
-      <Link>ImageLoader\LookupLoader.cs</Link>
-    </Compile>
-    <Compile Include="..\..\ImageLoader\PinnedBufferReader.cs">
+    <Compile Include="..\FileReader.Shared\ImageLoader\PinnedBufferReader.cs">
       <Link>ImageLoader\PinnedBufferReader.cs</Link>
     </Compile>
-    <Compile Include="..\..\ImageLoader\StreamLoader.cs">
+    <Compile Include="..\FileReader.Shared\ImageLoader\StreamLoader.cs">
       <Link>ImageLoader\StreamLoader.cs</Link>
     </Compile>
     <Compile Include="CommCtrl.cs" />
@@ -108,8 +108,9 @@
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellCodedToken.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellPointer.cs" />
     <Compile Include="CorDirectory\Meta\MetaColumn.cs" />
-    <Compile Include="CorDirectory\Meta\MethodBody.cs" />
-    <Compile Include="CorDirectory\Meta\MethodSection.cs" />
+    <Compile Include="CorDirectory\Meta\Method\MethodBody.cs" />
+    <Compile Include="CorDirectory\Meta\Method\MethodLine.cs" />
+    <Compile Include="CorDirectory\Meta\Method\MethodSection.cs" />
     <Compile Include="CorDirectory\Meta\StreamHeaderTyped.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyOSRow.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyProcessorRow.cs" />
@@ -244,9 +245,6 @@
     <Compile Include="WinVer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\..\..\AlphaOmega %28NoPwd%29.snk">
       <Link>AlphaOmega %28NoPwd%29.snk</Link>
     </None>
@@ -271,6 +269,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Section.resx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
