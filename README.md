@@ -1,6 +1,6 @@
 ﻿## Portable Executable reader
 
-![Nuget](https://img.shields.io/nuget/v/AlphaOmega.PEReader)
+[![Nuget](https://img.shields.io/nuget/v/AlphaOmega.PEReader)](https://www.nuget.org/packages/AlphaOmega.PEReader)
 
 PE/PE+/CLI executable reader assembly.
 
