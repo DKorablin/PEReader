@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\..\AlphaOmega %28NoPwd%29.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\..\..\..\AlphaOmega %28NoPwd%29.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -102,7 +102,7 @@
     <Compile Include="CommCtrl.cs" />
     <Compile Include="CorDirectory\CodeManagerTable.cs" />
     <Compile Include="CorDirectory\Eat.cs" />
-    <Compile Include="CorDirectory\ManagedNativeHeaer.cs" />
+    <Compile Include="CorDirectory\ManagedNativeHeader.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\CellPointerBase.cs" />
     <Compile Include="CorDirectory\Meta\MetaCell.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellCodedToken.cs" />
@@ -245,11 +245,6 @@
     <Compile Include="WinVer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\AlphaOmega %28NoPwd%29.snk">
-      <Link>AlphaOmega %28NoPwd%29.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -269,7 +264,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Section.resx" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="..\..\..\..\..\AlphaOmega %28NoPwd%29.snk">
+      <Link>AlphaOmega %28NoPwd%29.snk</Link>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

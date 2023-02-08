@@ -10,10 +10,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(base.IsEmpty || base.Parent.Header.Is64Bit)
-					return null;
-				else
-					return base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY32>(base.Directory.VirtualAddress);
+				return base.IsEmpty || base.Parent.Header.Is64Bit
+					? (WinNT.Tls.IMAGE_TLS_DIRECTORY32?)null
+					: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY32>(base.Directory.VirtualAddress);
 			}
 		}
 		/// <summary>TLS PE+ directory</summary>
@@ -21,10 +20,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(base.IsEmpty || !base.Parent.Header.Is64Bit)
-					return null;
-				else
-					return base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY64>(base.Directory.VirtualAddress);
+				return base.IsEmpty || !base.Parent.Header.Is64Bit
+					? (WinNT.Tls.IMAGE_TLS_DIRECTORY64?)null
+					: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY64>(base.Directory.VirtualAddress);
 			}
 		}
 		/// <summary>Create instance of TLS class</summary>

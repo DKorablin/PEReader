@@ -5,7 +5,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Coded Token class</summary>
 	public class MetaCellCodedToken : CellPointerBase
 	{
-		/// <summary>Number of bits in coded token tag for a coded token that refers to n tables.</summary>
+		/// <summary>Number of bits in coded token tag for a coded token that refers to n tables</summary>
 		/// <remarks>values 5-17 are not used :I</remarks>
 		internal static readonly Int32[] CodedTokenBits = new Int32[] { 0, 1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, };
 
@@ -27,7 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		internal static Int32 ToToken(MetaColumnType column, Int32 index)
 		{
 			if(index < 0)
-				throw new IndexOutOfRangeException(String.Format("Invalid coded token index ({0})", index));
+				throw new IndexOutOfRangeException($"Invalid coded token index ({index})");
 				//return -1;
 			Int32 result = (Int32)column << 24 | index;
 			/*MetaColumnType revColumn = (MetaColumnType)(result >> 24);

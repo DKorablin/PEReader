@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <summary>.resource name</summary>
 		public String Name { get { return this._name; } }
 
-		/// <summary>This type of resource fragment can be read by default <see cref="System.Resources.ResourceReader"/> class.</summary>
+		/// <summary>This type of resource fragment can be read by default <see cref="System.Resources.ResourceReader"/> class</summary>
 		public Boolean CanRead
 		{
 			get
@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			}
 		}
 
-		/// <summary>Enumerates .resources files and streams, reading sequential resource name and value pairs.</summary>
+		/// <summary>Enumerates .resources files and streams, reading sequential resource name and value pairs</summary>
 		public IResourceReader Reader
 		{
 			get
@@ -64,21 +64,19 @@ namespace AlphaOmega.Debug.CorDirectory
 		#endregion Properties
 		internal ResourceTableReader(String name, Byte[] file)
 		{
-			if(String.IsNullOrEmpty(name))
-				throw new ArgumentNullException("name");
-			if(file == null || file.Length==0)
-				throw new ArgumentNullException("file");
+			if(file == null || file.Length == 0)
+				throw new ArgumentNullException(nameof(file));
 
-			this._name = name;
+			this._name = name ?? throw new ArgumentNullException(nameof(name));
 			this._file = file;
 		}
 
 		internal void GetResourceData(String resourceName, out String resourceType, out Byte[] resourceData)
 		{
 			if(String.IsNullOrEmpty(resourceName))
-				throw new ArgumentNullException("resourceName");
+				throw new ArgumentNullException(nameof(resourceName));
 			if(this._reader == null)
-				throw new ArgumentNullException("_reader");
+				throw new ArgumentNullException(nameof(_reader));
 
 			this._reader.GetResourceData(resourceName, out resourceType, out resourceData);
 		}
@@ -88,8 +86,8 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <returns>Resource item</returns>
 		public IEnumerator<ResourceTableItem> GetEnumerator()
 		{
-			if(!this.CanRead)
-				throw new InvalidOperationException(String.Format("This type of resource {0} cannot be read.", this.Name));
+			if(this.CanRead == false)
+				throw new InvalidOperationException($"This type of resource {this.Name} cannot be read");
 
 			IDictionaryEnumerator enumerator = this.Reader.GetEnumerator();
 			while(enumerator.MoveNext())

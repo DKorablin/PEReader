@@ -17,7 +17,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			get
 			{
 				return this.Header.IsEmpty
-					? String.Empty
+					? null
 					: this.Directory.Parent.Header.PtrToStringAnsi(this.Header.Name);//Marshal.PtrToStringAnsi(new IntPtr(this.Directory.Info.HModule.ToInt64() + this.Descriptor.Name));
 			}
 		}
@@ -39,11 +39,9 @@ namespace AlphaOmega.Debug.NTDirectory
 				UInt32 sizeOfUInt = sizeof(UInt32);
 				while(true)
 				{
-					UInt32 position;
-					if(this.Header.Characteristics == 0)
-						position = this.Header.FirstThunk + sizeOfUInt * count++;
-					else
-						position = this.Header.Characteristics + sizeOfUInt * count++;
+					UInt32 position = this.Header.Characteristics == 0
+						? this.Header.FirstThunk + sizeOfUInt * count++
+						: this.Header.Characteristics + sizeOfUInt * count++;
 					UInt32 thunkRef = this.Directory.Parent.Header.PtrToStructure<UInt32>(position);
 					if(thunkRef == 0)
 						break;
@@ -94,11 +92,9 @@ namespace AlphaOmega.Debug.NTDirectory
 			{
 				if(!isRva)
 				{
-					UInt64 imageBase;
-					if(header.Is64Bit)
-						imageBase = header.HeaderNT64.OptionalHeader.ImageBase;
-					else
-						imageBase = header.HeaderNT32.OptionalHeader.ImageBase;
+					UInt64 imageBase=header.Is64Bit
+						? header.HeaderNT64.OptionalHeader.ImageBase
+						: header.HeaderNT32.OptionalHeader.ImageBase;
 
 					forwarderString -= imageBase;
 				}

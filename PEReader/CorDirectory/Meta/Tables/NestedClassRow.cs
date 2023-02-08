@@ -2,7 +2,7 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>NestedClass is defined as lexically "inside" the text of its enclosing Type.</summary>
+	/// <summary>NestedClass is defined as lexically "inside" the text of its enclosing Type</summary>
 	/// <remarks>
 	/// The NestedClass table records which Type definitions are nested within which other Type definition.
 	/// In a typical high-level language, the nested class is defined as lexically "inside" the text of its enclosing Type

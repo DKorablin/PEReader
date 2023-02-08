@@ -20,9 +20,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				throw new InvalidOperationException();
 		}
 
-		/// <summary>Получить Guid по сдвигу.</summary>
-		/// <param name="index">Сдвиг с начала кучи.</param>
-		/// <returns>Guid по сдвигу.</returns>
+		/// <summary>Get Guid from offset</summary>
+		/// <param name="index">Offset from beggining of the heap</param>
+		/// <returns>Guid</returns>
 		public override Guid this[Int32 index]
 		{
 			get
@@ -35,7 +35,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>
 		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
-		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
+		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other
 		/// </summary>
 		/// <param name="pointer">Pointer in the heap</param>
 		/// <returns>Data by pointer</returns>

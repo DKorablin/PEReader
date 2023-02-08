@@ -72,7 +72,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			get
 			{
 				if(this._rows.Length <= rowIndex)
-					throw new ArgumentOutOfRangeException("rowIndex");
+					throw new ArgumentOutOfRangeException(nameof(rowIndex));
 
 				if(this._rows[rowIndex] == null)
 					this._rows[rowIndex] = this.GetRow(rowIndex);
@@ -88,10 +88,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <exception cref="T:ArgumentNullException">root is null</exception>
 		public MetaTable(StreamTables root, Cor.MetaTableType tableType, UInt32 padding)
 		{
-			if(root == null)
-				throw new ArgumentNullException("root");
-
-			this._root = root;
+			this._root = root ?? throw new ArgumentNullException(nameof(root));
 			this._tableType = tableType;
 			this._padding = padding;
 

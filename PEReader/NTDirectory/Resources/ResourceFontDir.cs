@@ -12,11 +12,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Font dir info</summary>
 		public class FontDirEntry : ResourceFont.FontEntry
 		{
-			/// <summary>A unique ordinal identifier for an individual font in a font resource group.</summary>
+			/// <summary>A unique ordinal identifier for an individual font in a font resource group</summary>
 			public UInt16 fontOrdinal;
 		}
 
-		/// <summary>Получить кол-во шрифтов в директории</summary>
+		/// <summary>Gets number of fons in directory</summary>
 		public UInt16 NumberOfFonts
 		{
 			get

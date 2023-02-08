@@ -83,8 +83,10 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <exception cref="T:InvalidOperationException">directory type must be equals to type</exception>
 		public ResourceBase(ResourceDirectory directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE type)
 		{
-			if(directory == null) throw new ArgumentNullException("directory");
-			else if(directory.DataEntry == null || directory.Parent == null || directory.Parent.Parent == null
+			if(directory == null)
+				throw new ArgumentNullException(nameof(directory));
+			
+			if(directory.DataEntry == null || directory.Parent == null || directory.Parent.Parent == null
 				|| directory.Parent.Parent.DirectoryEntry.NameType != type)
 				throw new InvalidOperationException("Expecting " + type.ToString());
 			else

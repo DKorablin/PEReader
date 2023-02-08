@@ -29,7 +29,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		internal BaseMetaTable(StreamTables stream, Cor.MetaTableType type)
 		{
 			if(stream == null)
-				throw new ArgumentNullException("stream");
+				throw new ArgumentNullException(nameof(stream));
 
 			this._tableType = type;
 			this._table = stream[this._tableType];

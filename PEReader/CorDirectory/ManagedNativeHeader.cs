@@ -1,15 +1,14 @@
-﻿using System;
-using AlphaOmega.Debug.NTDirectory;
+﻿using AlphaOmega.Debug.NTDirectory;
 
 namespace AlphaOmega.Debug.CorDirectory
 {
 	/// <summary>.NET Managed native header class</summary>
-	public class ManagedNativeHeaer : CorDirectoryBase
+	public class ManagedNativeHeader : CorDirectoryBase
 	{
 		/// <summary>Create instance of Managed native header class</summary>
 		/// <param name="parent">.NET directory</param>
-		public ManagedNativeHeaer(ComDescriptor parent)
-			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.ManagedNativeHeaer)
+		public ManagedNativeHeader(ComDescriptor parent)
+			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.ManagedNativeHeader)
 		{
 		}
 	}

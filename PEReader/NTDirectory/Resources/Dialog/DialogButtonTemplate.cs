@@ -5,7 +5,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	/// <summary>Win32 API dialog button resource control template</summary>
 	public class DialogButtonTemplate : DialogItemTemplate
 	{
-		/// <summary>Creates a rectangle in which other controls can be grouped. Any text associated with this style is displayed in the rectangle's upper left corner.</summary>
+		/// <summary>Creates a rectangle in which other controls can be grouped</summary>
+		/// <remarks>Any text associated with this style is displayed in the rectangle's upper left corner</remarks>
 		public Boolean IsGroupBox
 		{
 			get
@@ -14,7 +15,12 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			}
 		}
 
-		/// <summary>Creates a small, empty check box with text. By default, the text is displayed to the right of the check box. To display the text to the left of the check box, combine this flag with the BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style).</summary>
+		/// <summary>
+		/// Creates a small, empty check box with text</summary>
+		/// <remarks>
+		/// By default, the text is displayed to the right of the check box.
+		/// To display the text to the left of the check box, combine this flag with the BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style)
+		/// </remarks>
 		public Boolean IsCheckBox
 		{
 			get
@@ -23,7 +29,12 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			}
 		}
 
-		/// <summary>Creates a small circle with text. By default, the text is displayed to the right of the circle. To display the text to the left of the circle, combine this flag with the BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style). Use radio buttons for groups of related, but mutually exclusive choices.</summary>
+		/// <summary>Creates a small circle with text</summary>
+		/// <remarks>
+		/// By default, the text is displayed to the right of the circle.
+		/// To display the text to the left of the circle, combine this flag with the BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style).
+		/// Use radio buttons for groups of related, but mutually exclusive choices
+		/// </remarks>
 		public Boolean IsRadioButton
 		{
 			get
@@ -35,7 +46,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			}
 		}
 
-		/// <summary>Creates a button that is the same as a radio button, except that when the user selects it, the system automatically sets the button's check state to checked and automatically sets the check state for all other buttons in the same group to cleared.</summary>
+		/// <summary>Creates a button that is the same as a radio button, except that when the user selects it, the system automatically sets the button's check state to checked and automatically sets the check state for all other buttons in the same group to cleared</summary>
 		public Boolean IsAutoRadioButton
 		{
 			get
@@ -47,13 +58,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			}
 		}
 
-		/// <summary>Creates a push button that posts a WM_COMMAND message to the owner window when the user selects the button.</summary>
+		/// <summary>Creates a push button that posts a WM_COMMAND message to the owner window when the user selects the button</summary>
 		public Boolean IsButton
 		{
 			get { return !this.IsGroupBox && !this.IsCheckBox && !this.IsRadioButton; }
 		}
 
-		/// <summary>Specifies that the button is two-dimensional; it does not use the default shading to create a 3-D image. </summary>
+		/// <summary>Specifies that the button is two-dimensional; it does not use the default shading to create a 3-D image</summary>
 		public Boolean IsFlat
 		{
 			get { return (((UInt32)base.Styles) & (UInt32)WinUser.BS.FLAT) == (UInt32)WinUser.BS.FLAT; }

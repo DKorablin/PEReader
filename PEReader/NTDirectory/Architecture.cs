@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AlphaOmega.Debug.NTDirectory
+﻿namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Architecture class</summary>
 	public class Architecture : PEDirectoryBase

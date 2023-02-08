@@ -65,8 +65,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			this._row = row;
 		}
 
-		/// <summary>Получить тело метода</summary>
-		/// <returns>Массив байт описывающий CIL</returns>
+		/// <summary>Gets method body</summary>
+		/// <returns>Byte array describes CIL</returns>
 		public Byte[] GetMethodBody()
 		{
 			PEHeader peHeader = this.Row.Row.Table.Root.Parent.Parent.Parent.Header;
@@ -77,8 +77,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			return peHeader.ReadBytes(padding, methodLength);
 		}
 
-		/// <summary>Returns the OpCodes represented by a MSIL byte array.</summary>
-		/// <returns>An array of the OpCodes representing the MSIL code.</returns>
+		/// <summary>Returns the OpCodes represented by a MSIL byte array</summary>
+		/// <returns>An array of the OpCodes representing the MSIL code</returns>
 		public IEnumerable<MethodLine> GetMethodBody2()
 		{
 			MetaCell cell = this._row.Row.Cells[0];

@@ -2,7 +2,7 @@
 
 namespace AlphaOmega.Debug.NTDirectory
 {
-	/// <summary>The RVA of the value to be stored in the global pointer register.</summary>
+	/// <summary>The RVA of the value to be stored in the global pointer register</summary>
 	public class GlobalPtr : PEDirectoryBase
 	{
 		/// <summary>Create instance of TLS class</summary>

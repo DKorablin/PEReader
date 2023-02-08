@@ -11,6 +11,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		public WinNT.IMAGE_REL_BASED Type { get { return this._type; } }
 		/// <summary>Offset</summary>
 		public Int32 Offset { get { return this._offset; } }
+
 		/// <summary>Create instance of relocation section</summary>
 		/// <param name="section">Offset from beggining of directory</param>
 		public RelocationSection(UInt16 section)

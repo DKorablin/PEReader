@@ -20,12 +20,11 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			get
 			{
-				if(!base.IsEmpty)
-				{
-					UInt32 position = base.Directory.VirtualAddress;
-					return base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_VTABLE>(position);
-				} else
+				if(base.IsEmpty)
 					return null;
+
+				UInt32 position = base.Directory.VirtualAddress;
+				return base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_VTABLE>(position);
 			}
 		}
 		/// <summary>Create instance of VTable class</summary>

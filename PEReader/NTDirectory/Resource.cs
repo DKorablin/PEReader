@@ -15,10 +15,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(base.Directory.IsEmpty)
-					return null;
-				else
-					return base.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(base.Directory.VirtualAddress);
+				return base.Directory.IsEmpty
+					? (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null
+					: base.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(base.Directory.VirtualAddress);
 			}
 		}
 

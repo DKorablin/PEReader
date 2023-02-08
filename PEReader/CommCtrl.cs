@@ -22,7 +22,7 @@ namespace AlphaOmega.Debug
 			//public UInt16[] items;
 		}
 
-		/// <summary>Contains information about a button in a toolbar.</summary>
+		/// <summary>Contains information about a button in a toolbar</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/windows/desktop/bb760476(v=vs.85).aspx</remarks>
 		public struct TBBUTTON
 		{
@@ -40,7 +40,7 @@ namespace AlphaOmega.Debug
 			public TBSTATE fsState;
 			/// <summary>Button style. This member can be a combination of the button style values listed in Toolbar Control and Button Styles. </summary>
 			public TBSTYLE fsStyle;
-			/// <summary>Application-defined value.</summary>
+			/// <summary>Application-defined value</summary>
 			public UInt32 dwData;
 			/// <summary>Zero-based index of the button string, or a pointer to a string buffer that contains text for the button. </summary>
 			public String iString;
@@ -53,23 +53,23 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>The button has the TBSTYLE_CHECK style and is being clicked</summary>
 			CHECKED = 1,
-			/// <summary>Version 4.70. The button's text is cut off and an ellipsis is displayed.</summary>
+			/// <summary>Version 4.70. The button's text is cut off and an ellipsis is displayed</summary>
 			ELLIPSES = 0x40,
-			/// <summary>The button accepts user input. A button that does not have this state is grayed.</summary>
+			/// <summary>The button accepts user input. A button that does not have this state is grayed</summary>
 			ENABLED = 4,
-			/// <summary>The button is not visible and cannot receive user input.</summary>
+			/// <summary>The button is not visible and cannot receive user input</summary>
 			HIDDEN = 8,
-			/// <summary>The button is grayed.</summary>
+			/// <summary>The button is grayed</summary>
 			INDETERMINATE = 16,
-			/// <summary>Version 4.71. The button is marked. The interpretation of a marked item is dependent upon the application.</summary>
+			/// <summary>Version 4.71. The button is marked. The interpretation of a marked item is dependent upon the application</summary>
 			MARKED = 0x0080,
-			/// <summary>The button is being clicked.</summary>
+			/// <summary>The button is being clicked</summary>
 			PRESSED = 2,
-			/// <summary>The button is followed by a line break. The button must also have the TBSTATE_ENABLED state.</summary>
+			/// <summary>The button is followed by a line break. The button must also have the TBSTATE_ENABLED state</summary>
 			WRAP = 32,
 		}
 
-		/// <summary>The following window styles are specific to toolbars. They are combined with other window styles when the toolbar is created.</summary>
+		/// <summary>The following window styles are specific to toolbars. They are combined with other window styles when the toolbar is created</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/windows/desktop/bb760439(v=vs.85).aspx</remarks>
 		[Flags]
 		public enum TBSTYLE : ushort
@@ -80,7 +80,7 @@ namespace AlphaOmega.Debug
 			/// Note that the CCS_ADJUSTABLE style must be specified to enable toolbar buttons to be dragged.
 			/// </summary>
 			ALTDRAG = 1024,
-			/// <summary>Version 4.70. Generates NM_CUSTOMDRAW notification codes when the toolbar processes WM_ERASEBKGND messages.</summary>
+			/// <summary>Version 4.70. Generates NM_CUSTOMDRAW notification codes when the toolbar processes WM_ERASEBKGND messages</summary>
 			CUSTOMERASE = 8192,
 			/// <summary>
 			/// Version 4.70. Creates a flat toolbar.
@@ -94,9 +94,9 @@ namespace AlphaOmega.Debug
 			/// Otherwise, this style is identical to TBSTYLE_FLAT. To prevent repainting problems, this style should be set before the toolbar control becomes visible.
 			/// </summary>
 			LIST = 4096,
-			/// <summary>Version 4.71. Generates TBN_GETOBJECT notification codes to request drop target objects when the cursor passes over toolbar buttons.</summary>
+			/// <summary>Version 4.71. Generates TBN_GETOBJECT notification codes to request drop target objects when the cursor passes over toolbar buttons</summary>
 			REGISTERDROP = 0x4000,
-			/// <summary>Creates a tooltip control that an application can use to display descriptive text for the buttons in the toolbar.</summary>
+			/// <summary>Creates a tooltip control that an application can use to display descriptive text for the buttons in the toolbar</summary>
 			TOOLTIPS = 256,
 			/// <summary>
 			/// Version 4.71. Creates a transparent toolbar.

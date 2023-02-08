@@ -12,10 +12,12 @@ namespace AlphaOmega.Debug.NTDirectory
 
 		/// <summary>Relocation block</summary>
 		public WinNT.IMAGE_BASE_RELOCATION Block { get { return this._block; } }
+
 		/// <summary>Get relocation section by index</summary>
 		/// <param name="index">Relocation section index</param>
 		/// <returns>Section</returns>
 		public RelocationSection this[Int32 index] { get { return this._sections[index]; } }
+
 		/// <summary>Count of sections in the relocation block</summary>
 		public Int32 Count { get { return this._sections.Length; } }
 

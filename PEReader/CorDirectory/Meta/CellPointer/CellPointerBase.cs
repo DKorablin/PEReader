@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
@@ -44,7 +43,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>String</returns>
 		public override String ToString()
 		{
-			return String.Format("{0}: {{{1}}}", this.GetType().Name, this.TableType);
+			return $"{this.GetType().Name}: {{{this.TableType}}}";
 		}
 	}
 }

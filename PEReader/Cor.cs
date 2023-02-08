@@ -13,15 +13,15 @@ namespace AlphaOmega.Debug
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct IMAGE_COR20_METADATA1
 		{
-			/// <summary>Magic signature for physical metadata : 0x424A5342.</summary>
+			/// <summary>Magic signature for physical metadata : 0x424A5342</summary>
 			public UInt32 Signature;
-			/// <summary>Major version, 1 (ignore on read).</summary>
+			/// <summary>Major version, 1 (ignore on read)</summary>
 			public UInt16 MajorVersion;
-			/// <summary>Minor version, 1 (ignore on read).</summary>
+			/// <summary>Minor version, 1 (ignore on read)</summary>
 			public UInt16 MinorVersion;
-			/// <summary>Reserved, always 0.</summary>
+			/// <summary>Reserved, always 0</summary>
 			public UInt32 Reserved;
-			/// <summary>Length of version string in bytes, say  m (&lt;= 255), rounded up to a multiple of four.</summary>
+			/// <summary>Length of version string in bytes, say  m (&lt;= 255), rounded up to a multiple of four</summary>
 			public UInt32 Length;
 			/// <summary>MetaData signature is valid</summary>
 			public Boolean IsValid { get { return this.Signature == 0x424A5342; } }
@@ -29,11 +29,11 @@ namespace AlphaOmega.Debug
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct IMAGE_COR20_METADATA2
 		{
-			/// <summary>Reserved, always 0.</summary>
+			/// <summary>Reserved, always 0</summary>
 			public UInt16 Flags;
-			/// <summary>Number of streams, say n.</summary>
+			/// <summary>Number of streams, say n</summary>
 			public UInt16 Streams;
-			/*/// <summary>Array of n StreamHdr structures.</summary>
+			/*/// <summary>Array of n StreamHdr structures</summary>
 			public UInt32 StreamHeaders;*/
 		}
 		/// <summary>
@@ -43,23 +43,23 @@ namespace AlphaOmega.Debug
 		/// </summary>
 		public struct IMAGE_COR20_METADATA
 		{
-			/// <summary>Magic signature for physical metadata : 0x424A5342.</summary>
+			/// <summary>Magic signature for physical metadata : 0x424A5342</summary>
 			public UInt32 Signature;
-			/// <summary>Major version, 1 (ignore on read).</summary>
+			/// <summary>Major version, 1 (ignore on read)</summary>
 			public UInt16 MajorVersion;
-			/// <summary>Minor version, 1 (ignore on read).</summary>
+			/// <summary>Minor version, 1 (ignore on read)</summary>
 			public UInt16 MinorVersion;
-			/// <summary>Reserved, always 0.</summary>
+			/// <summary>Reserved, always 0</summary>
 			public UInt32 Reserved;
-			/// <summary>Length of version string in bytes, say  m (&lt;= 255), rounded up to a multiple of four.</summary>
+			/// <summary>Length of version string in bytes, say  m (&lt;= 255), rounded up to a multiple of four</summary>
 			public UInt32 Length;
-			/// <summary>UTF8-encoded version string of length m (see below).</summary>
+			/// <summary>UTF8-encoded version string of length m (see below)</summary>
 			public String Version;
-			/// <summary>Reserved, always 0.</summary>
+			/// <summary>Reserved, always 0</summary>
 			public UInt16 Flags;
-			/// <summary>Number of streams, say n.</summary>
+			/// <summary>Number of streams, say n</summary>
 			public UInt16 Streams;
-			/*/// <summary>Array of n StreamHdr structures.</summary>
+			/*/// <summary>Array of n StreamHdr structures</summary>
 			public UInt32 StreamHeaders;*/
 			/// <summary>MetaData header valid</summary>
 			public Boolean IsValid { get { return this.Signature == 0x424A5342; } }
@@ -85,11 +85,11 @@ namespace AlphaOmega.Debug
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IMAGE_COR20_VTABLE
 		{
-			/// <summary>RVA of VTable.</summary>
+			/// <summary>RVA of VTable</summary>
 			public UInt32 VirtualAddress;
-			/// <summary>Number of entries in VTable.</summary>
+			/// <summary>Number of entries in VTable</summary>
 			public UInt16 Size;
-			/// <summary>Type of the entries.</summary>
+			/// <summary>Type of the entries</summary>
 			public COR_VTABLE Type;
 		}
 		/// <summary>Managed resources header</summary>
@@ -124,16 +124,16 @@ namespace AlphaOmega.Debug
 			/// <summary>Number of types</summary>
 			public UInt32 NumberOfTypes;
 		}
-		/// <summary>Type of the entries.</summary>
+		/// <summary>Type of the entries</summary>
 		public enum COR_VTABLE
 		{
-			/// <summary>Vtable slots are 32 bits.</summary>
+			/// <summary>Vtable slots are 32 bits</summary>
 			_32BIT = 0x01,
-			/// <summary>Vtable slots are 64 bits.</summary>
+			/// <summary>Vtable slots are 64 bits</summary>
 			_64BIT = 0x02,
-			/// <summary>Transition from unmanaged to managed code.</summary>
+			/// <summary>Transition from unmanaged to managed code</summary>
 			FROM_UNMANAGED = 0x04,
-			/// <summary>Call most derived method described by the token (only valid for virtual methods).</summary>
+			/// <summary>Call most derived method described by the token (only valid for virtual methods)</summary>
 			CALL_MOST_DERIVED = 0x10,
 		}
 		/// <summary>Stream types</summary>
@@ -152,12 +152,12 @@ namespace AlphaOmega.Debug
 			/// <summary>#-</summary>
 			StreamTableUnoptimized,
 		}
-		/// <summary>A stream header gives the names, and the position and length of a particular table or heap.</summary>
+		/// <summary>A stream header gives the names, and the position and length of a particular table or heap</summary>
 		public struct STREAM_HEADER
 		{
-			/// <summary>Memory offset to start of this stream from start of the metadata root.</summary>
+			/// <summary>Memory offset to start of this stream from start of the metadata root</summary>
 			public UInt32 Offset;
-			/// <summary>Size of this stream in bytes, shall be a multiple of 4.</summary>
+			/// <summary>Size of this stream in bytes, shall be a multiple of 4</summary>
 			public UInt32 Size;
 			/// <summary>
 			/// Name of the stream as null-terminated variable length array of ASCII characters, padded to the next 4-byte boundary with \0 characters.
@@ -194,7 +194,7 @@ namespace AlphaOmega.Debug
 		[StructLayout(LayoutKind.Sequential)]
 		public struct STREAM_TABLE_HEADER
 		{
-			/// <summary>Кол-во таблиц. В коде Daniel Pistelli было 64, а на самом деле, их 46.</summary>
+			/// <summary>Number of tables</summary>
 			public const Int32 TablesCount = 64;
 			/// <summary>Reserved, always 0</summary>
 			public UInt32 Reserved1;
@@ -202,13 +202,13 @@ namespace AlphaOmega.Debug
 			public Byte MajorVersion;
 			/// <summary>Minor version of table schemata; shall be 0</summary>
 			public Byte MinorVersion;
-			/// <summary>Bit vector for heap sizes.</summary>
+			/// <summary>Bit vector for heap sizes</summary>
 			public Byte HeapSizes;
 			/// <summary>Reserved, always 1</summary>
 			public Byte Reserved2;
-			/// <summary>Bit vector of present tables, let n be the number of bits that are 1.</summary>
+			/// <summary>Bit vector of present tables, let n be the number of bits that are 1</summary>
 			public UInt64 Valid;
-			/// <summary>Bit vector of sorted tables.</summary>
+			/// <summary>Bit vector of sorted tables</summary>
 			public UInt64 Sorted;
 			/// <summary>Version of table schemata</summary>
 			public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
@@ -240,7 +240,7 @@ namespace AlphaOmega.Debug
 			/*public UInt32[] Rows;
 			public UInt32 Tables;*/
 		}
-		/// <summary>Flags for method header.</summary>
+		/// <summary>Flags for method header</summary>
 		/// <remarks>
 		/// The first byte of a method header can also contain the following flags,
 		/// valid only for the Fat format, that indicate how the method is to be executed.
@@ -248,13 +248,13 @@ namespace AlphaOmega.Debug
 		[Flags]
 		public enum CorILMethod : byte
 		{
-			/// <summary>Method header is fat.</summary>
+			/// <summary>Method header is fat</summary>
 			FatFormat = 0x3,
-			/// <summary>Method header is tiny.</summary>
+			/// <summary>Method header is tiny</summary>
 			TinyFormat = 0x2,
-			/// <summary>More sections follow after this header (§II.25.4.5).</summary>
+			/// <summary>More sections follow after this header (§II.25.4.5)</summary>
 			MoreSects = 0x8,
-			/// <summary>Call default constructor on all local variables.</summary>
+			/// <summary>Call default constructor on all local variables</summary>
 			InitLocals = 0x10,
 		}
 		/// <summary>IL method header descriptor</summary>
@@ -268,10 +268,10 @@ namespace AlphaOmega.Debug
 			/// <remarks>TODO: This must be 12+4bits from structure start</remarks>
 			public Byte Size;
 
-			/// <summary>Maximum number of items on the operand stack.</summary>
+			/// <summary>Maximum number of items on the operand stack</summary>
 			public UInt16 MaxStack;
 
-			/// <summary>Size in bytes of the actual method body.</summary>
+			/// <summary>Size in bytes of the actual method body</summary>
 			public UInt32 CodeSize;
 
 			/// <summary>
@@ -298,19 +298,19 @@ namespace AlphaOmega.Debug
 		[Flags]
 		public enum CorILMethod_Sect : byte
 		{
-			/// <summary>Exception handling data.</summary>
+			/// <summary>Exception handling data</summary>
 			EHTable = 0x1,
-			/// <summary>Reserved, shall be 0.</summary>
+			/// <summary>Reserved, shall be 0</summary>
 			OptILTable = 0x2,
 			/// <summary>
 			/// Data format is of the fat variety, meaning there is a 3 - byte length least - significant byte first format.
 			/// If not set, the header is small with a 1 - byte length.
 			/// </summary>
 			FatFormat = 0x40,
-			/// <summary>Another data section occurs after this current section.</summary>
+			/// <summary>Another data section occurs after this current section</summary>
 			MoreSects = 0x80,
 		}
-		/// <summary>Currently, the method data sections are only used for exception tables (§II.19).</summary>
+		/// <summary>Currently, the method data sections are only used for exception tables (§II.19)</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CorILMethodSection
 		{
@@ -334,36 +334,36 @@ namespace AlphaOmega.Debug
 					return (UInt32)dataSize;
 				}
 			}
-			/// <summary>Section in Fat format.</summary>
+			/// <summary>Section in Fat format</summary>
 			public Boolean IsFatFormat
 			{
 				get { return (this.Kind & CorILMethod_Sect.FatFormat) == CorILMethod_Sect.FatFormat; }
 			}
-			/// <summary>More sections follow after this one.</summary>
+			/// <summary>More sections follow after this one</summary>
 			public Boolean HasMoreSections
 			{
 				get { return (this.Kind & CorILMethod_Sect.MoreSects) == CorILMethod_Sect.MoreSects; }
 			}
 		}
-		/// <summary>Type of exception-handling clause.</summary>
+		/// <summary>Type of exception-handling clause</summary>
 		[Flags]
 		public enum COR_ILEXCEPTION_CLAUSE : ushort
 		{
-			/// <summary>A typed exception clause.</summary>
+			/// <summary>A typed exception clause</summary>
 			/// <remarks>
 			/// If the clause is a typed exception clause
 			/// then read the token of the exception that will be handled by it.
 			/// </remarks>
 			EXCEPTION = 0x0000,
-			/// <summary>An exception filter and handler clause.</summary>
+			/// <summary>An exception filter and handler clause</summary>
 			/// <remarks>
 			/// If the clause is a filter clause then read the offset of the filter.
 			/// (e.g.: VB.NET can generate such filter for the "Catch exc As Exception When value = True" code).
 			/// </remarks>
 			FILTER = 0x0001,
-			/// <summary>A finally clause.</summary>
+			/// <summary>A finally clause</summary>
 			FINALLY = 0x0002,
-			/// <summary>Fault clause (finally that is called on exception only).</summary>
+			/// <summary>Fault clause (finally that is called on exception only)</summary>
 			FAULT = 0x0004,
 		}
 		/// <summary>
@@ -375,16 +375,16 @@ namespace AlphaOmega.Debug
 		{
 			private UInt16 FlagsI;
 
-			/// <summary>Offset in bytes of try block from start of method body.</summary>
+			/// <summary>Offset in bytes of try block from start of method body</summary>
 			public UInt16 TryOffset;
 
-			/// <summary>Length in bytes of the try block.</summary>
+			/// <summary>Length in bytes of the try block</summary>
 			public Byte TryLength;
 
-			/// <summary>Location of the handler for this try block.</summary>
+			/// <summary>Location of the handler for this try block</summary>
 			public UInt16 HandlerOffset;
 
-			/// <summary>Size of the handler code in bytes.</summary>
+			/// <summary>Size of the handler code in bytes</summary>
 			public Byte HandlerLength;
 
 			/// <summary>
@@ -403,16 +403,16 @@ namespace AlphaOmega.Debug
 		{
 			private UInt32 FlagsI;
 
-			/// <summary>Offset in bytes of try block from start of method body.</summary>
+			/// <summary>Offset in bytes of try block from start of method body</summary>
 			public UInt32 TryOffset;
 
-			/// <summary>Length in bytes of the try block.</summary>
+			/// <summary>Length in bytes of the try block</summary>
 			public UInt32 TryLength;
 
-			/// <summary>Location of the handler for this try block.</summary>
+			/// <summary>Location of the handler for this try block</summary>
 			public UInt32 HandlerOffset;
 
-			/// <summary>Size of the handler code in bytes.</summary>
+			/// <summary>Size of the handler code in bytes</summary>
 			public UInt32 HandlerLength;
 
 			/// <summary>
@@ -425,11 +425,11 @@ namespace AlphaOmega.Debug
 			/// <summary>Type of exception clause</summary>
 			public COR_ILEXCEPTION_CLAUSE Flags { get { return (COR_ILEXCEPTION_CLAUSE)this.FlagsI; } }
 		}
-		/// <summary>Specifies a common language runtime Type, a type modifier, or information about a type in a metadata type signature.</summary>
+		/// <summary>Specifies a common language runtime Type, a type modifier, or information about a type in a metadata type signature</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/ms232600%28v=vs.110%29.aspx</remarks>
 		public enum ELEMENT_TYPE
 		{
-			/// <summary>Marks end of a list.</summary>
+			/// <summary>Marks end of a list</summary>
 			END = 0x00,
 			/// <summary>A void type. <see cref="System.Void"/></summary>
 			VOID = 0x01,
@@ -459,76 +459,76 @@ namespace AlphaOmega.Debug
 			R8 = 0x0d,
 			/// <summary>A System.String type. <see cref="System.String"/></summary>
 			STRING = 0x0e,
-			/// <summary>A pointer type modifier.</summary>
-			/// <remarks>Unmanaged pointer, followed by the Type element.</remarks>
+			/// <summary>A pointer type modifier</summary>
+			/// <remarks>Unmanaged pointer, followed by the Type element</remarks>
 			PTR = 0x0f,
-			/// <summary>A reference type modifier.</summary>
-			/// <remarks>Managed pointer, followed by the Type element.</remarks>
+			/// <summary>A reference type modifier</summary>
+			/// <remarks>Managed pointer, followed by the Type element</remarks>
 			BYREF = 0x10,
-			/// <summary>A value type modifier.</summary>
-			/// <remarks>A value type modifier, followed by TypeDef or TypeRef token.</remarks>
+			/// <summary>A value type modifier</summary>
+			/// <remarks>A value type modifier, followed by TypeDef or TypeRef token</remarks>
 			VALUETYPE = 0x11,
-			/// <summary>A class type modifier.</summary>
-			/// <remarks>A class type modifier, followed by TypeDef or TypeRef token.</remarks>
+			/// <summary>A class type modifier</summary>
+			/// <remarks>A class type modifier, followed by TypeDef or TypeRef token</remarks>
 			CLASS = 0x12,
-			/// <summary>A class variable type modifier.</summary>
-			/// <remarks>Generic parameter in a generic type definition, represented as number.</remarks>
+			/// <summary>A class variable type modifier</summary>
+			/// <remarks>Generic parameter in a generic type definition, represented as number</remarks>
 			VAR = 0x13,
-			/// <summary>A multi-dimensional array type modifier.</summary>
+			/// <summary>A multi-dimensional array type modifier</summary>
 			ARRAY = 0x14,
-			/// <summary>A type modifier for generic types.</summary>
+			/// <summary>A type modifier for generic types</summary>
 			/// <remarks>Generic type instantiation. Followed by type type-arg-count type-1 ... type-n</remarks>
 			GENERICINST = 0x15,
-			/// <summary>A typed reference.</summary>
+			/// <summary>A typed reference</summary>
 			TYPEDBYREF = 0x16,
 
 			/// <summary>Size of a native integer. <see cref="System.IntPtr"/></summary>
 			I = 0x18,
 			/// <summary>Size of an unsigned native integer. <see cref="System.UIntPtr"/></summary>
 			U = 0x19,
-			/// <summary>A pointer to a function.</summary>
-			/// <remarks>Followed by full method signature.</remarks>
+			/// <summary>A pointer to a function</summary>
+			/// <remarks>Followed by full method signature</remarks>
 			FNPTR = 0x1B,
 			/// <summary>A System.Object type. <see cref="System.Object"/></summary>
 			OBJECT = 0x1C,
-			/// <summary>A single-dimensional, zero lower-bound array type modifier.</summary>
+			/// <summary>A single-dimensional, zero lower-bound array type modifier</summary>
 			SZARRAY = 0x1D,
-			/// <summary>A method variable type modifier.</summary>
+			/// <summary>A method variable type modifier</summary>
 			/// <remarks>Generic parameter in a generic method definition, represented as number</remarks>
 			MVAR = 0x1E,
 
-			/// <summary>A C language required modifier.</summary>
+			/// <summary>A C language required modifier</summary>
 			/// <remarks>Required modifier, followed by a TypeDef or TypeRef token</remarks>
 			CMOD_REQ = 0x1F,
-			/// <summary>A C language optional modifier.</summary>
+			/// <summary>A C language optional modifier</summary>
 			/// <remarks>Optional modifier, followed by a TypeDef or TypeRef token</remarks>
 			CMOD_OPT = 0x20,
 
 			/// <summary>Implemented within the CLI</summary>
-			/// <remarks>Used internally.</remarks>
+			/// <remarks>Used internally</remarks>
 			INTERNAL = 0x21,
-			/// <summary>An invalid type.</summary>
+			/// <summary>An invalid type</summary>
 			MAX = 0x22,
 
 			/// <summary>ORed with following element types</summary>
-			/// <remarks>Used internally.</remarks>
+			/// <remarks>Used internally</remarks>
 			MODIFIER = 0x40,
-			/// <summary>A type modifier that is a sentinel for a list of a variable number of parameters.</summary>
-			/// <remarks>Sentinel for vararg method signature.</remarks>
+			/// <summary>A type modifier that is a sentinel for a list of a variable number of parameters</summary>
+			/// <remarks>Sentinel for vararg method signature</remarks>
 			SENTINEL = 0x01 | ELEMENT_TYPE.MODIFIER,
-			/// <summary>Denotes a local variable that points at a pinned object.</summary>
-			/// <remarks>Used internally.</remarks>
+			/// <summary>Denotes a local variable that points at a pinned object</summary>
+			/// <remarks>Used internally</remarks>
 			PINNED = 0x05 | ELEMENT_TYPE.MODIFIER,
 
 			/// <summary>Indicates an argument of type <see cref="System.Type"/></summary>
 			TYPE = 0x50,
-			/// <summary>Used in custom attributes to specify a boxed object (Ecma-335: #II.23.3).</summary>
+			/// <summary>Used in custom attributes to specify a boxed object (Ecma-335: #II.23.3)</summary>
 			BOXED = 0x51,
 			/// <summary>Reserved</summary>
 			RESERVED1 = 0x52,
-			/// <summary>Used in custom attributes to indicate a FIELD(Ecma-335: #II.22.10, II.23.3).</summary>
+			/// <summary>Used in custom attributes to indicate a FIELD(Ecma-335: #II.22.10, II.23.3)</summary>
 			FIELD = 0x53,
-			/// <summary>Used in custom attributes to indicate a PROPERTY (Ecma-335: #II.22.10, II.23.3).</summary>
+			/// <summary>Used in custom attributes to indicate a PROPERTY (Ecma-335: #II.22.10, II.23.3)</summary>
 			PROPERTY = 0x54,
 			/// <summary>Used in custom attributes to specify an enum (Ecma-335: #II.23.3)</summary>
 			ENUM = 0x55,
@@ -536,9 +536,9 @@ namespace AlphaOmega.Debug
 		/// <summary>MetaData Table Types</summary>
 		public enum MetaTableType : int
 		{
-			/// <summary>The rows in the Module table result from .module directives in the Assembly.</summary>
+			/// <summary>The rows in the Module table result from .module directives in the Assembly</summary>
 			Module = 0,
-			/// <summary>Class reference descriptors.</summary>
+			/// <summary>Class reference descriptors</summary>
 			TypeRef = 1,
 			/// <summary>
 			/// The first row of the TypeDef table represents the pseudo class that acts as parent for functions and variables 
@@ -548,13 +548,13 @@ namespace AlphaOmega.Debug
 			/// GenericParam table.
 			/// </summary>
 			TypeDef = 2,
-			/// <summary>A class-to-fields lookup table, whitch does not exist on optimized metadata (#~ stream).</summary>
+			/// <summary>A class-to-fields lookup table, whitch does not exist on optimized metadata (#~ stream)</summary>
 			FieldPtr = 3,
 			/// <summary>
 			/// Each row in the Field table results from a top-level .field directive, or a .field directive inside a Type.
 			/// </summary>
 			Field = 4,
-			/// <summary>A class-to-methods lookup table, whitch does not exists on optimized metadata (#~ stream).</summary>
+			/// <summary>A class-to-methods lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 			MethodPtr = 5,
 			/// <summary>
 			/// Conceptually, every row in the MethodDef table is owned by one, and only one, row in the TypeDef table.
@@ -562,7 +562,7 @@ namespace AlphaOmega.Debug
 			/// the image for the PE file is emitted and points to the COR_ILMETHOD structure for the body of the method.
 			/// </summary>
 			MethodDef = 6,
-			/// <summary>A method-to-parameters lookup table, whitch does not exists on optimized metadata (#~ stream).</summary>
+			/// <summary>A method-to-parameters lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 			ParamPtr = 7,
 			/// <summary>
 			/// Conceptually, every row in the Param table is owned by one, and only one, row in the MethodDef table.
@@ -570,7 +570,7 @@ namespace AlphaOmega.Debug
 			/// attribute attached to a method.
 			/// </summary>
 			Param = 8,
-			/// <summary>Interface implementation descriptors.</summary>
+			/// <summary>Interface implementation descriptors</summary>
 			InterfaceImpl = 9,
 			/// <summary>
 			/// Combines two sorts of references, to Methods and to Fields of a class, known as 'MethodRef' and 'FieldRef', respectively.
@@ -579,7 +579,7 @@ namespace AlphaOmega.Debug
 			/// signature, even when it is defined in the same module as the call site.) 
 			/// </summary>
 			MemberRef = 10,
-			/// <summary>Used to store compile-time, constant values for fields, parameters, and properties.</summary>
+			/// <summary>Used to store compile-time, constant values for fields, parameters, and properties</summary>
 			Constant = 11,
 			/// <summary>
 			/// Stores data that can be used to instantiate a Custom Attribute (more precisely, an 
@@ -605,7 +605,7 @@ namespace AlphaOmega.Debug
 			/// (Normally, the CLI is free to reorder and/or insert gaps between the fields defined for a class or value type.)
 			/// </summary>
 			ClassLayout = 15,
-			/// <summary>A row in the FieldLayout table is created if the .field directive for the parent field has specified a field offset.</summary>
+			/// <summary>A row in the FieldLayout table is created if the .field directive for the parent field has specified a field offset</summary>
 			FieldLayout = 16,
 			/// <summary>
 			/// Signatures are stored in the metadata Blob heap.  In most cases, they are indexed by a column in some table —
@@ -619,17 +619,17 @@ namespace AlphaOmega.Debug
 			/// This is not an intermidate lookup table, and it does not exist in optimized metadata.
 			/// </summary>
 			EventMap = 18,
-			/// <summary>An event map-to-events lookup table, whitch does not exists on optimized metadata (#~ stream).</summary>
+			/// <summary>An event map-to-events lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 			EventPtr = 19,
-			/// <summary>The EventMap and Event tables result from putting the .event directive on a class.</summary>
+			/// <summary>The EventMap and Event tables result from putting the .event directive on a class</summary>
 			Event = 20,
-			/// <summary>The PropertyMap and Property tables result from putting the .property directive on a class.</summary>
+			/// <summary>The PropertyMap and Property tables result from putting the .property directive on a class</summary>
 			PropertyMap = 21,
-			/// <summary>A property map-to-properties lookup table, whitch does not exists on optimized metadata (#~ stream).</summary>
+			/// <summary>A property map-to-properties lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 			PropertyPtr = 22,
-			/// <summary>Does a little more than group together existing rows from other tables.</summary>
+			/// <summary>Does a little more than group together existing rows from other tables</summary>
 			Property = 23,
-			/// <summary>The rows of the MethodSemantics table are filled by .property and .event directives.</summary>
+			/// <summary>The rows of the MethodSemantics table are filled by .property and .event directives</summary>
 			MethodSemantics = 24,
 			/// <summary>
 			/// s let a compiler override the default inheritance rules provided by the CLI. Their original use 
@@ -639,7 +639,7 @@ namespace AlphaOmega.Debug
 			/// ILAsm uses the .override directive to specify the rows of the MethodImpl table.
 			/// </summary>
 			MethodImpl = 25,
-			/// <summary>The rows in the ModuleRef table result from .module extern directives in the Assembly.</summary>
+			/// <summary>The rows in the ModuleRef table result from .module extern directives in the Assembly</summary>
 			ModuleRef = 26,
 			/// <summary>
 			/// The TypeSpec table has just one column, which indexes the specification of a Type, stored in the Blob heap.
@@ -653,7 +653,7 @@ namespace AlphaOmega.Debug
 			TypeSpec = 27,
 			/// <summary>
 			/// Holds information about unmanaged methods that can be reached from managed code, 
-			/// using PInvoke dispatch. 
+			/// using PInvoke dispatch.
 			/// A row is entered in the ImplMap table for each parent Method (§15.5) that is defined with a .pinvokeimpl
 			/// interoperation attribute specifying the MappingFlags, ImportName, and ImportScope.
 			/// </summary>
@@ -675,35 +675,39 @@ namespace AlphaOmega.Debug
 			/// This table does not exist in optimized metadata (#~ stream).
 			/// </summary>
 			ENCMap = 31,
-			/// <summary>The current assembly descriptor, whitch sould appear only in the prime moduel metadata.</summary>
+			/// <summary>The current assembly descriptor, whitch sould appear only in the prime moduel metadata</summary>
 			Assembly = 32,
 			/// <summary>
 			/// These records should not be emitted into any PE file.
-			/// However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI.
+			/// However, if present in a PE file, they should be treated as-if their fields were zero.
+			/// They should be ignored by the CLI
 			/// </summary>
 			AssemblyProcessor = 33,
 			/// <summary>
 			/// These records should not be emitted into any PE file.
-			/// However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI.
+			/// However, if present in a PE file, they should be treated as-if their fields were zero.
+			/// They should be ignored by the CLI
 			/// </summary>
 			AssemblyOS = 34,
 			/// <summary>
 			/// The table is defined by the .assembly extern directive (§6.3). Its columns are filled using directives 
 			/// similar to those of the Assembly table except for the PublicKeyOrToken column, which is defined using the 
-			/// .publickeytoken directive.
+			/// .publickeytoken directive
 			/// </summary>
 			AssemblyRef = 35,
 			/// <summary>
 			/// These records should not be emitted into any PE file.
-			/// However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI.
+			/// However, if present in a PE file, they should be treated as-if their fields were zero.
+			/// They should be ignored by the CLI
 			/// </summary>
 			AssemblyRefProcessor = 36,
 			/// <summary>
 			/// These records should not be emitted into any PE file.
-			/// However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI.
+			/// However, if present in a PE file, they should be treated as-if their fields were zero.
+			/// They should be ignored by the CLI
 			/// </summary>
 			AssemblyRefOS = 37,
-			/// <summary>The rows of the File table result from .file directives in an Assembly.</summary>
+			/// <summary>The rows of the File table result from .file directives in an Assembly</summary>
 			File = 38,
 			/// <summary>
 			/// Holds a row for each type:
@@ -717,29 +721,29 @@ namespace AlphaOmega.Debug
 			/// IsTypeForwarder set and Implementation is an AssemblyRef indicating the Assembly the type may now be found in.
 			/// </summary>
 			ExportedType = 39,
-			/// <summary>The rows in the table result from .mresource directives on the Assembly.</summary>
+			/// <summary>The rows in the table result from .mresource directives on the Assembly</summary>
 			ManifestResource = 40,
-			/// <summary>NestedClass is defined as lexically 'inside' the text of its enclosing Type.</summary>
+			/// <summary>NestedClass is defined as lexically 'inside' the text of its enclosing Type</summary>
 			NestedClass = 41,
 			/// <summary>
 			/// Stores the generic parameters used in generic type definitions and generic method definitions.
 			/// These generic parameters can be constrained (i.e., generic arguments shall extend some class 
 			/// and/or implement certain interfaces) or unconstrained.  (Such constraints are stored in the GenericParamConstraint table.)
 			/// Conceptually, each row in the GenericParam table is owned by one, and only one, row in either the TypeDef or 
-			/// MethodDef tables.
+			/// MethodDef tables
 			/// </summary>
 			GenericParam = 42,
 			/// <summary>
 			/// Records the signature of an instantiated generic method.
 			/// Each unique instantiation of a generic method (i.e., a combination of Method and Instantiation)
-			/// shall be represented by a single row in the table.
+			/// shall be represented by a single row in the table
 			/// </summary>
 			MethodSpec = 43,
 			/// <summary>
 			/// Records the constraints for each generic parameter.
 			/// Each generic parameter can be constrained to derive from zero or one class.
 			/// Each generic parameter can be constrained to implement zero or more interfaces.
-			/// Conceptually, each row in the GenericParamConstraint table is owned by a row in the GenericParam table.
+			/// Conceptually, each row in the GenericParamConstraint table is owned by a row in the GenericParam table
 			/// </summary>
 			GenericParamConstraint = 44,
 		}

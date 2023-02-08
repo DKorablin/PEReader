@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug
 	{
 		static void Main(String[] args)
 		{
-			String fileName = @"C:\Visual Studio Projects\Tests\PeReaderSampleApp\bin\Debug\PeReaderSampleApp.exe";
+			String fileName = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\symsrv.yes";
 			//String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
 			//String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
 			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";

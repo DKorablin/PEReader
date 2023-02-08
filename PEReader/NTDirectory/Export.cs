@@ -13,10 +13,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Directory is empty</summary>
 		public override Boolean IsEmpty
 		{
-			get
-			{
-				return base.IsEmpty || this.Header.Value.NumberOfNames == 0;
-			}
+			get { return base.IsEmpty || this.Header.Value.NumberOfNames == 0; }
 		}
 
 		/// <summary>Директория экспортируемых функций</summary>
@@ -24,9 +21,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(base.IsEmpty) return null;
-				else
-					return this.Parent.Header.PtrToStructure<WinNT.IMAGE_EXPORT_DIRECTORY>(base.Directory.VirtualAddress);
+				return base.IsEmpty
+					? (WinNT.IMAGE_EXPORT_DIRECTORY?)null
+					: this.Parent.Header.PtrToStructure<WinNT.IMAGE_EXPORT_DIRECTORY>(base.Directory.VirtualAddress);
 			}
 		}
 

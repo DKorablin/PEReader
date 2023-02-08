@@ -2,16 +2,16 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>The ImplMap table holds information about unmanaged methods that can be reached from managed code, using PInvoke dispatch.</summary>
+	/// <summary>The ImplMap table holds information about unmanaged methods that can be reached from managed code, using PInvoke dispatch</summary>
 	public class ImplMapRow : BaseMetaRow
 	{
-		/// <summary>a 2-byte bitmask of type PInvokeAttributes, §23.1.8</summary>
+		/// <summary>a 2-byte bitmask of type PInvokeAttributes, Â§23.1.8</summary>
 		public CorPinvokeMap MappingFlags { get { return (CorPinvokeMap)base.GetValue<UInt16>(0); } }
 
 		/// <summary>
 		/// an index into the Field or MethodDef table; more precisely,
-		/// a MemberForwarded (§II.24.2.6) coded index).
-		/// However, it only ever indexes the MethodDef table, since Field export is not supported.
+		/// a MemberForwarded (Â§II.24.2.6) coded index).
+		/// However, it only ever indexes the MethodDef table, since Field export is not supported
 		/// </summary>
 		public MetaCellCodedToken MemberForwarded { get { return base.GetValue<MetaCellCodedToken>(1); } }
 

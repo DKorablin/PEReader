@@ -17,7 +17,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Pointer into the AssemblyRef table</summary>
 		public AssemblyRefRow AssemblyRef
-		{//TODO: Не проверено. Пока ещё не нашёл ни одного файла с данными в такой таблице
+		{//TODO: Not tested. I don't find any file with data in this table
 			get { return new AssemblyRefRow() { Row = this.AssemblyRefI.TargetRow, }; }
 		}
 	}

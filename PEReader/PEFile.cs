@@ -1,11 +1,9 @@
 ﻿using System;
-using AlphaOmega.Debug;
 using AlphaOmega.Debug.NTDirectory;
-using System.Collections.Generic;
 using AlphaOmega.Debug.PESection;
 
 namespace AlphaOmega.Debug
-{ 
+{
 	/// <summary>PE/PE+ file description</summary>
 	public class PEFile : IDisposable
 	{//http://code.cheesydesign.com/?p=572 - .NET PE Reader
@@ -50,68 +48,38 @@ namespace AlphaOmega.Debug
 		/// <summary>PE file sections</summary>
 		public Sections Sections
 		{
-			get
-			{
-				return this._sections == null
-					? this._sections = new Sections(this)
-					: this._sections;
-			}
+			get { return this._sections ?? (this._sections = new Sections(this)); }
 		}
 
 		/// <summary>Architecture directory</summary>
 		public Architecture Architecture
 		{
-			get
-			{
-				return this._architecture == null
-					? this._architecture = new Architecture(this)
-					: this._architecture;
-			}
+			get { return this._architecture ?? (this._architecture = new Architecture(this)); }
 		}
 
 		/// <summary>Получить информацию о экспортируемых функциях в PE файле</summary>
 		public Export Export
 		{
-			get
-			{
-				return this._export == null
-					? this._export = new Export(this)
-					: this._export;
-			}
+			get { return this._export ?? (this._export = new Export(this)); }
 		}
 
 		/// <summary>Получить информацию о ипортируемых функциях PE файлом</summary>
 		public Import Import
 		{
-			get
-			{
-				return this._import == null
-					? this._import = new Import(this)
-					: this._import;
-			}
+			get { return this._import ?? (this._import = new Import(this)); }
 		}
 
 		/// <summary>Получить информацию о зашитой информации для дебаггера</summary>
 		/// <returns>Информация для дебаггера</returns>
 		public NTDirectory.Debug Debug
 		{
-			get
-			{
-				return this._debug == null
-					? this._debug = new NTDirectory.Debug(this)
-					: this._debug;
-			}
+			get { return this._debug ?? (this._debug = new NTDirectory.Debug(this)); }
 		}
 
 		/// <summary>Получить информацию по ресурсам</summary>
 		public Resource Resource
 		{
-			get
-			{
-				return this._resource == null
-					? this._resource = new Resource(this)
-					: this._resource;
-			}
+			get { return this._resource ?? (this._resource = new Resource(this)); }
 		}
 
 		/// <summary>.NET Directory</summary>
@@ -131,99 +99,54 @@ namespace AlphaOmega.Debug
 		/// <summary>Load config directory</summary>
 		public LoadConfig LoadConfig
 		{
-			get
-			{
-				return this._loadConfig == null
-					? this._loadConfig = new LoadConfig(this)
-					: this._loadConfig;
-			}
+			get { return this._loadConfig ?? (this._loadConfig = new LoadConfig(this)); }
 		}
 
 		/// <summary>Certificate directory</summary>
 		public Security Certificate
 		{
-			get
-			{
-				return this._certificate == null
-					? this._certificate = new Security(this)
-					: this._certificate;
-			}
+			get { return this._certificate ?? (this._certificate = new Security(this)); }
 		}
 
 		/// <summary>Boundimport directory</summary>
 		public BoundImport BoundImport
 		{
-			get
-			{
-				return this._boundImport == null
-					? this._boundImport = new BoundImport(this)
-					: this._boundImport;
-			}
+			get { return this._boundImport ?? (this._boundImport = new BoundImport(this)); }
 		}
 
 		/// <summary>Relocation directory</summary>
 		public Relocation Relocations
 		{
-			get
-			{
-				return this._relocations == null
-					? this._relocations = new Relocation(this)
-					: this._relocations;
-			}
+			get { return this._relocations ?? (this._relocations = new Relocation(this)); }
 		}
 
 		/// <summary>Delay import modules directory</summary>
 		public DelayImport DelayImport
 		{
-			get
-			{
-				return this._delayImport == null
-					? this._delayImport = new DelayImport(this)
-					: this._delayImport;
-			}
+			get { return this._delayImport ?? (this._delayImport = new DelayImport(this)); }
 		}
 
 		/// <summary>Global pointer directory</summary>
 		public GlobalPtr GlobalPtr
 		{
-			get
-			{
-				return this._globalPtr == null
-					? this._globalPtr = new GlobalPtr(this)
-					: this._globalPtr;
-			}
+			get { return this._globalPtr ?? (this._globalPtr = new GlobalPtr(this)); }
 		}
 
 		/// <summary>Exception table directory</summary>
 		public ExceptionTable ExceptionTable
 		{
-			get
-			{
-				return this._exceptionTable == null
-					? this._exceptionTable = new ExceptionTable(this)
-					: this._exceptionTable;
-			}
+			get { return this._exceptionTable ?? (this._exceptionTable = new ExceptionTable(this)); }
 		}
 
 		/// <summary>Import Address Table directory</summary>
 		public Iat Iat
 		{
-			get
-			{
-				return this._iat == null
-					? this._iat = new Iat(this)
-					: this._iat;
-			}
+			get { return this._iat ?? (this._iat = new Iat(this)); }
 		}
 		/// <summary>Thread local storage directory</summary>
 		public Tls Tls
 		{
-			get
-			{
-				return this._tls == null
-					? this._tls = new Tls(this)
-					: this._tls;
-			}
+			get { return this._tls ?? (this._tls = new Tls(this)); }
 		}
 		#endregion Properties
 

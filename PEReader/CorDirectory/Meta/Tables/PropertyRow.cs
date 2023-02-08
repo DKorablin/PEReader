@@ -11,7 +11,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// </summary>
 	public class PropertyRow : BaseMetaRow
 	{
-		/// <summary>Flags that can be associated with a property.</summary>
+		/// <summary>Flags that can be associated with a property</summary>
 		public PropertyAttributes Flags { get { return (PropertyAttributes)base.GetValue<UInt16>(0); } }
 
 		/// <summary>Property name</summary>
@@ -20,7 +20,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Signature</summary>
 		/// <remarks>
 		/// The name of this column is misleading.
-		/// It does not index a TypeDef or TypeRef table — instead it indexes the signature in the Blob heap of the Property.
+		/// It does not index a TypeDef or TypeRef table - instead it indexes the signature in the Blob heap of the Property.
 		/// </remarks>
 		public Byte[] Type { get { return base.GetValue<Byte[]>(2); } }
 

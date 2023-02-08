@@ -28,10 +28,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <exception cref="T:ArgumentNullException">parent directory is null</exception>
 		public PEDirectoryBase(PEFile parent, WinNT.IMAGE_DIRECTORY_ENTRY directory)
 		{
-			if(parent == null)
-				throw new ArgumentNullException("parent");
-
-			this._parent = parent;
+			this._parent = parent ?? throw new ArgumentNullException(nameof(parent));
 			this._directory = directory;
 		}
 
@@ -41,11 +38,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			if(this.IsEmpty)
 				return new Byte[] { };
-			else
-			{
-				WinNT.IMAGE_DATA_DIRECTORY directory = this.Directory;
-				return this.Parent.Header.ReadBytes(directory.VirtualAddress, directory.Size);
-			}
+
+			WinNT.IMAGE_DATA_DIRECTORY directory = this.Directory;
+			return this.Parent.Header.ReadBytes(directory.VirtualAddress, directory.Size);
 		}
 	}
 }

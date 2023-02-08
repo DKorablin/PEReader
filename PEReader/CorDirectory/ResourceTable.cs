@@ -22,9 +22,8 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			get
 			{
-				return (this._header == null
-					? this._header = base.Parent.Parent.Header.PtrToStructure<Cor.ResourceManagerHeader>(base.Directory.VirtualAddress)
-					: this._header).Value;
+				return this._header ??
+					(this._header = base.Parent.Parent.Header.PtrToStructure<Cor.ResourceManagerHeader>(base.Directory.VirtualAddress)).Value;
 			}
 		}
 
@@ -36,8 +35,8 @@ namespace AlphaOmega.Debug.CorDirectory
 			{
 				if(this._set == null)
 				{
-					if(!this.Header.IsValid)
-						throw new InvalidOperationException("Magic invalid");
+					if(this.Header.IsValid == false)
+						throw new InvalidOperationException("Invalid magic");
 
 					UInt32 offset = base.Directory.VirtualAddress + (UInt32)Marshal.SizeOf(typeof(Cor.ResourceManagerHeader))
 						+ this.Header.SizeOfReaderType;

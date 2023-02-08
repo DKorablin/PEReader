@@ -53,7 +53,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				if(columnIndex < this._cells.Length)
 					return this._cells[columnIndex];
 				else
-					throw new ArgumentOutOfRangeException("columnIndex");
+					throw new ArgumentOutOfRangeException(nameof(columnIndex));
 			}
 		}
 		ICell IRow.this[UInt16 columnIndex] { get { return this[columnIndex]; } }
@@ -68,12 +68,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			get
 			{
 				if(String.IsNullOrEmpty(columnName))
-					throw new ArgumentNullException("columnName");
+					throw new ArgumentNullException(nameof(columnName));
 
 				foreach(MetaColumn column in this.Table.Columns)
 					if(column.Name == columnName)
 						return this[column.Index];
-				throw new ArgumentOutOfRangeException(String.Format("Column '{0}' not found in current table", columnName));
+				throw new ArgumentOutOfRangeException($"Column '{columnName}' not found in current table");
 			}
 		}
 		ICell IRow.this[String columnName] { get { return this[columnName]; } }

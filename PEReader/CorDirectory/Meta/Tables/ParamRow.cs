@@ -10,9 +10,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// <remarks>Conceptually, every row in the Param table is owned by one, and only one, row in the MethodDef table.</remarks>
 	public class ParamRow : BaseMetaRow
 	{
-		/// <summary>Flags that can be associated with parameter.</summary>
+		/// <summary>Flags that can be associated with parameter</summary>
 		public ParameterAttributes Flags { get { return (ParameterAttributes)base.GetValue<UInt16>(0); } }
-		/// <summary>Parameter index in method definition.</summary>
+		/// <summary>Parameter index in method definition</summary>
 		public UInt16 Sequence { get { return base.GetValue<UInt16>(1); } }
 		/// <summary>Parameter name</summary>
 		public String Name { get { return base.GetValue<String>(2); } }

@@ -12,22 +12,21 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>PE file contains certificate</summary>
 		public override Boolean IsEmpty
 		{
-			get
-			{
-				return base.IsEmpty || base.Parent.Header.Loader.IsModuleMapped;
-			}
+			get { return base.IsEmpty || base.Parent.Header.Loader.IsModuleMapped; }
 		}
+
 		/// <summary>Certificate header</summary>
 		/// <exception cref="T:ArgumentOutOfRangeException">Directory VA out of file size</exception>
 		public WinNT.WIN_CERTIFICATE? Certificate
 		{
 			get
 			{
-				if(this.IsEmpty)
-					return null;//TODO: Читается только из физического файла. Т.к. сертификат находится в файле. И ссылка идёт на VA, а не на RVA.
-				else return base.Parent.Header.Loader.PtrToStructure<WinNT.WIN_CERTIFICATE>(base.Directory.VirtualAddress);
+				return this.IsEmpty
+					? (WinNT.WIN_CERTIFICATE?)null//TODO: Читается только из физического файла. Т.к. сертификат находится в файле. И ссылка идёт на VA, а не на RVA.
+					: base.Parent.Header.Loader.PtrToStructure<WinNT.WIN_CERTIFICATE>(base.Directory.VirtualAddress);
 			}
 		}
+
 		/// <summary>X.509 certificate</summary>
 		public X509Certificate2 X509
 		{

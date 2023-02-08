@@ -13,7 +13,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// </remarks>
 	public class FieldRow : BaseMetaRow
 	{
-		/// <summary>A 4-byte bit mask of type TypeAttributes.</summary>
+		/// <summary>A 4-byte bit mask of type TypeAttributes</summary>
 		public FieldAttributes Flags { get { return (FieldAttributes)base.GetValue<UInt16>(0); } }
 
 		/// <summary>Field Name</summary>

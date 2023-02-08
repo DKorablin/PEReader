@@ -33,10 +33,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(this.DirectoryEntry.IsDirectory)
-				{
-					return this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.DirectoryAddress);
-				} else return null;
+				return this.DirectoryEntry.IsDirectory
+					? this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.DirectoryAddress)
+					: (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null;
 			}
 		}
 		/// <summary>Наименование директории</summary>
@@ -68,12 +67,11 @@ namespace AlphaOmega.Debug.NTDirectory
 			{
 				if(!this.DirectoryEntry.IsDirectory && !this.DirectoryEntry.IsNameString)
 				{
-					if(!this._dataEntry.HasValue)
+					if(this._dataEntry == null)
 						this._dataEntry = this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.DirectoryAddress);
 					return this._dataEntry.Value;
 				} else
 					return null;
-
 			}
 		}
 		#endregion Properties

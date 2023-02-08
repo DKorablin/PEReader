@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// shall extend some class and/or implement certain interfaces) or unconstrained.
 	/// (Such constraints are stored in the GenericParamConstraint table.)
 	/// </summary>
-	/// <remarks>Conceptually, each row in the GenericParam table is owned by one, and only one, row in either the TypeDef or MethodDef tables.</remarks>
+	/// <remarks>Conceptually, each row in the GenericParam table is owned by one, and only one, row in either the TypeDef or MethodDef tables</remarks>
 	public class GenericParamRow : BaseMetaRow
 	{
 		/// <summary>Parameter index</summary>
@@ -21,12 +21,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>
 		/// An index into the TypeDef or MethodDef table, specifying the Type or Method
-		/// to which this generic parameter applies; more precisely, a TypeOrMethodDef (§II.24.2.6) coded index.
+		/// to which this generic parameter applies; more precisely, a TypeOrMethodDef (Â§II.24.2.6) coded index
 		/// </summary>
 		public MetaCellCodedToken Owner { get { return base.GetValue<MetaCellCodedToken>(2); } }
 
-		/// <summary>Name for the generic parameter.</summary>
-		/// <remarks>This is purely descriptive and is used only by source language compilers and by Reflection</remarks>
+		/// <summary>Name for the generic parameter</summary>
+		/// <remarks>This is purely descriptive and is used only by source language compilers and by reflection</remarks>
 		public String Name { get { return base.GetValue<String>(3); } }
 
 		/// <summary>Name</summary>

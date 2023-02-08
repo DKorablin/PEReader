@@ -14,10 +14,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(base.IsEmpty)
-					return null;
-				else
-					return base.Parent.Header.PtrToStructure<WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR>(base.Directory.VirtualAddress);
+				return base.IsEmpty
+					? (WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR?)null
+					: base.Parent.Header.PtrToStructure<WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR>(base.Directory.VirtualAddress);
 			}
 		}
 		/// <summary>Module name whitch this image is bounded</summary>
@@ -26,9 +25,9 @@ namespace AlphaOmega.Debug.NTDirectory
 			get
 			{
 				var descriptor = this.Descriptor;
-				if(descriptor.HasValue)
-					return base.Parent.Header.PtrToStringAnsi(base.Directory.VirtualAddress + descriptor.Value.OffsetModuleName);
-				else return null;
+				return descriptor == null
+					? null
+					: base.Parent.Header.PtrToStringAnsi(base.Directory.VirtualAddress + descriptor.Value.OffsetModuleName);
 			}
 		}
 		/// <summary>Directory is empty</summary>
@@ -50,24 +49,24 @@ namespace AlphaOmega.Debug.NTDirectory
 		public IEnumerator<BoundImportReference> GetEnumerator()
 		{
 			WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR? descriptor = this.Descriptor;
-			if(descriptor.HasValue)
+			if(descriptor == null)
+				yield break;
+
+			if(descriptor.Value.NumberOfModuleForwarderRefs > 0)
 			{
-				if(descriptor.Value.NumberOfModuleForwarderRefs > 0)
+				var directory = base.Directory;
+				UInt32 sizeOfStruct = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_BOUND_FORWARDER_REF));
+
+				UInt32 padding = directory.VirtualAddress + (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR));
+				for(Int32 loop = 0; loop < descriptor.Value.NumberOfModuleForwarderRefs; loop++)
 				{
-					var directory = base.Directory;
-					UInt32 sizeOfStruct = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_BOUND_FORWARDER_REF));
+					//UInt32 padding = checked((UInt32)(directory.VirtualAddress + descriptorSize + (sizeOfStruct * loop)));
+					WinNT.IMAGE_BOUND_FORWARDER_REF ffdRef = this.Parent.Header.PtrToStructure<WinNT.IMAGE_BOUND_FORWARDER_REF>(padding);
+					padding += sizeOfStruct;
 
-					UInt32 padding = directory.VirtualAddress + (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR));
-					for(Int32 loop = 0;loop < descriptor.Value.NumberOfModuleForwarderRefs;loop++)
-					{
-						//UInt32 padding = checked((UInt32)(directory.VirtualAddress + descriptorSize + (sizeOfStruct * loop)));
-						WinNT.IMAGE_BOUND_FORWARDER_REF ffdRef = this.Parent.Header.PtrToStructure<WinNT.IMAGE_BOUND_FORWARDER_REF>(padding);
-						padding += sizeOfStruct;
+					String moduleName = this.Parent.Header.PtrToStringAnsi(base.Directory.VirtualAddress + ffdRef.OffsetModuleName);
 
-						String moduleName = this.Parent.Header.PtrToStringAnsi(base.Directory.VirtualAddress + ffdRef.OffsetModuleName);
-
-						yield return new BoundImportReference() { FfwdRef = ffdRef, ModuleName = moduleName, };
-					}
+					yield return new BoundImportReference() { FfwdRef = ffdRef, ModuleName = moduleName, };
 				}
 			}
 		}

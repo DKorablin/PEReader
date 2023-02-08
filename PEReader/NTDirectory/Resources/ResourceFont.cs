@@ -11,13 +11,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		[DefaultProperty("szFaceName")]
 		public class FontEntry
 		{
-			/// <summary>Contains information about an individual font in a font resource group.</summary>
+			/// <summary>Contains information about an individual font in a font resource group</summary>
 			public WinGdi.FONTDIRENTRY Font;
 
-			/// <summary>The name of the device if this font file is designated for a specific device.</summary>
+			/// <summary>The name of the device if this font file is designated for a specific device</summary>
 			public String szDeviceName;
 
-			/// <summary>The typeface name of the font.</summary>
+			/// <summary>The typeface name of the font</summary>
 			public String szFaceName;
 		}
 
@@ -49,15 +49,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			String szDeviceName;
 			String szFaceName;
 
-			if(font.dfDevice > 0 && font.dfDevice<reader.Length)
-				szDeviceName = reader.BytesToStringAnsi(font.dfDevice);
-			else
-				szDeviceName = reader.BytesToStringAnsi(ref padding);
+			szDeviceName = font.dfDevice > 0 && font.dfDevice < reader.Length
+				? reader.BytesToStringAnsi(font.dfDevice)
+				: reader.BytesToStringAnsi(ref padding);
 
-			if(font.dfFace > 0 && font.dfFace < reader.Length)
-				szFaceName = reader.BytesToStringAnsi(font.dfFace);
-			else
-				szFaceName = reader.BytesToStringAnsi(ref padding);
+			szFaceName = font.dfFace > 0 && font.dfFace < reader.Length
+				? reader.BytesToStringAnsi(font.dfFace)
+				: reader.BytesToStringAnsi(ref padding);
 
 			result.Font = font;
 			result.szDeviceName = szDeviceName;

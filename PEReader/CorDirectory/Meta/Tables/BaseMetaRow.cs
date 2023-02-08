@@ -14,7 +14,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			set
 			{
 				if(value == null)
-					throw new ArgumentNullException("value");
+					throw new ArgumentNullException(nameof(value));
 				this._row = value;
 			}
 		}
@@ -45,7 +45,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <returns>Строка</returns>
 		protected internal String ToString(Object args)
 		{
-			return String.Format("{0} : {{{1}}}", this.GetType().Name, args);
+			return $"{this.GetType().Name} : {{{args}}}";
 		}
 
 		/// <summary>Compare two rows by table type and index fields</summary>

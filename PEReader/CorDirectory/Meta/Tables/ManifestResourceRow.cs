@@ -11,22 +11,22 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		private Byte[] _file;
 		#endregion Fields
 
-		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins.</summary>
+		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins</summary>
 		internal UInt32 OffsetI { get { return base.GetValue<UInt32>(0); } }
 
-		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins and size of resource file is skipped.</summary>
+		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins and size of resource file is skipped</summary>
 		public UInt32 Offset { get { return this.OffsetI + sizeof(UInt32); } }
 
-		/// <summary>Resource flags.</summary>
+		/// <summary>Resource flags</summary>
 		public ResourceAttributes Flags { get { return (ResourceAttributes)base.GetValue<UInt32>(1); } }
 
 		/// <summary>Manifest resource name</summary>
 		public String Name { get { return base.GetValue<String>(2); } }
 
-		/// <summary>The Implementation specifies which file holds this resource.</summary>
+		/// <summary>The Implementation specifies which file holds this resource</summary>
 		/// <remarks>
 		/// An index into a File table, a AssemblyRef table, or null;
-		/// more precisely, an Implementation (§II.24.2.6) coded index.
+		/// more precisely, an Implementation (В§II.24.2.6) coded index.
 		/// </remarks>
 		public MetaCellCodedToken Implementation { get { return base.GetValue<MetaCellCodedToken>(3); } }
 
@@ -70,7 +70,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				return this._file;
 			}
 		}
-		/// <summary>Файл находится в директории с управляемыми ресурсами</summary>
+		/// <summary>File located in directory with managed resources</summary>
 		internal Boolean FileInDirectory { get { return this.Implementation.TargetRow == null; } }
 
 		/// <summary>Managed resource directory</summary>
@@ -80,7 +80,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <returns>Contexts of resource file</returns>
 		public ResourceTableReader GetResourceReader()
 		{
-			return new ResourceTableReader(this.Name, this.File);//При вызове методв Dispose, поток закрывается
+			return new ResourceTableReader(this.Name, this.File);//While calling Dispose method - stream is closed
 		}
 
 		/// <summary>String representation</summary>

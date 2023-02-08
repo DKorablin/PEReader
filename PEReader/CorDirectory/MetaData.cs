@@ -32,38 +32,35 @@ namespace AlphaOmega.Debug.CorDirectory
 			{
 				if(this._metaData.HasValue)
 					return this._metaData.Value;
-				else
+				if(base.IsEmpty)
+					return null;
+
+				Cor.IMAGE_COR20_METADATA1 meta1;
+				Cor.IMAGE_COR20_METADATA2 meta2;
+				String version;
+				//Первый блок структуры описания метаданных
+				meta1 = base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA1>(base.Directory.VirtualAddress);
+
+				//Версия блока структуры описания метаданных
+				UInt32 position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1;
+				version = this.Parent.Parent.Header.PtrToStringAnsi(position);
+
+				//Второй блок структуры описания метаданных
+				position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1 + meta1.Length;
+				meta2 = this.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA2>(position);
+
+				this._metaData = new Cor.IMAGE_COR20_METADATA
 				{
-					if(base.IsEmpty)
-						return null;
-
-					Cor.IMAGE_COR20_METADATA1 meta1;
-					Cor.IMAGE_COR20_METADATA2 meta2;
-					String version;
-					//Первый блок структуры описания метаданных
-					meta1 = base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA1>(base.Directory.VirtualAddress);
-
-					//Версия блока структуры описания метаданных
-					UInt32 position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1;
-					version = this.Parent.Parent.Header.PtrToStringAnsi(position);
-
-					//Второй блок структуры описания метаданных
-					position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1 + meta1.Length;
-					meta2 = this.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA2>(position);
-
-					this._metaData = new Cor.IMAGE_COR20_METADATA
-					{
-						Signature = meta1.Signature,
-						MajorVersion = meta1.MajorVersion,
-						MinorVersion = meta1.MinorVersion,
-						Reserved = meta1.Reserved,
-						Length = meta1.Length,
-						Version = version,
-						Flags = meta2.Flags,
-						Streams = meta2.Streams,
-					};
-					return this._metaData.Value;
-				}
+					Signature = meta1.Signature,
+					MajorVersion = meta1.MajorVersion,
+					MinorVersion = meta1.MinorVersion,
+					Reserved = meta1.Reserved,
+					Length = meta1.Length,
+					Version = version,
+					Flags = meta2.Flags,
+					Streams = meta2.Streams,
+				};
+				return this._metaData.Value;
 			}
 		}
 
@@ -134,44 +131,44 @@ namespace AlphaOmega.Debug.CorDirectory
 
 		private IEnumerable<StreamHeader> GetStreams()
 		{
-			var meta = this.Header;
-			if(meta.HasValue)
+			Cor.IMAGE_COR20_METADATA? meta = this.Header;
+			if(meta == null)
+				yield break;
+
+			UInt32 position = base.Directory.VirtualAddress +
+				MetaData.SizeOfCor20Metadata1 +
+				meta.Value.Length +
+				MetaData.SizeOfCor20MetaData2;
+
+			for(Int32 loop = 0; loop < meta.Value.Streams; loop++)
 			{
-				UInt32 position = base.Directory.VirtualAddress +
-					MetaData.SizeOfCor20Metadata1 +
-					meta.Value.Length +
-					MetaData.SizeOfCor20MetaData2;
-
-				for(Int32 loop = 0; loop < meta.Value.Streams; loop++)
+				Cor.STREAM_HEADER header = base.Parent.Parent.Header.PtrToStructure<Cor.STREAM_HEADER>(position);
+				switch(header.Type)
 				{
-					Cor.STREAM_HEADER header = base.Parent.Parent.Header.PtrToStructure<Cor.STREAM_HEADER>(position);
-					switch(header.Type)
-					{
-					case Cor.StreamHeaderType.StreamTable:
-					case Cor.StreamHeaderType.StreamTableUnoptimized://TODO: Не проверено. Пока ещё не нашёл ни одного файла с таким заголовком
-						yield return new StreamTables(this, header);
-						break;
-					case Cor.StreamHeaderType.Guid:
-						yield return new GuidHeap(this, header);
-						break;
-					case Cor.StreamHeaderType.Blob:
-						yield return new BlobHeap(this, header);
-						break;
-					case Cor.StreamHeaderType.String:
-						yield return new StringHeap(this, header);
-						break;
-					case Cor.StreamHeaderType.UnicodeSting:
-						yield return new USHeap(this, header);
-						break;
-					default:
-						yield return new StreamHeader(this, header);
-						break;
-					}
-
-					Int32 length = header.Name.Length + 1;
-					Int32 padding = ((length % 4) != 0) ? (4 - (length % 4)) : 0;
-					position += sizeof(UInt32) * 2 + (UInt32)length + (UInt32)padding;
+				case Cor.StreamHeaderType.StreamTable:
+				case Cor.StreamHeaderType.StreamTableUnoptimized://TODO: Не проверено. Пока ещё не нашёл ни одного файла с таким заголовком
+					yield return new StreamTables(this, header);
+					break;
+				case Cor.StreamHeaderType.Guid:
+					yield return new GuidHeap(this, header);
+					break;
+				case Cor.StreamHeaderType.Blob:
+					yield return new BlobHeap(this, header);
+					break;
+				case Cor.StreamHeaderType.String:
+					yield return new StringHeap(this, header);
+					break;
+				case Cor.StreamHeaderType.UnicodeSting:
+					yield return new USHeap(this, header);
+					break;
+				default:
+					yield return new StreamHeader(this, header);
+					break;
 				}
+
+				Int32 length = header.Name.Length + 1;
+				Int32 padding = ((length % 4) != 0) ? (4 - (length % 4)) : 0;
+				position += sizeof(UInt32) * 2 + (UInt32)length + (UInt32)padding;
 			}
 		}
 	}

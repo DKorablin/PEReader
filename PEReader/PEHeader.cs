@@ -16,42 +16,41 @@ namespace AlphaOmega.Debug
 		/// <summary>PE/PE+ loader interface</summary>
 		public IImageLoader Loader { get { return this._loader; } }
 
-		/// <summary>DOS заголовок PE файла.</summary>
+		/// <summary>DOS заголовок PE файла</summary>
 		public WinNT.IMAGE_DOS_HEADER HeaderDos
 		{
 			get
 			{
-				if(this._headerDOS == null)
-					this._headerDOS = this.Loader.PtrToStructure<WinNT.IMAGE_DOS_HEADER>(0);
-				return this._headerDOS.Value;
+				return this._headerDOS ?? (this._headerDOS = this.Loader.PtrToStructure<WinNT.IMAGE_DOS_HEADER>(0)).Value;
 			}
 		}
 
-		/// <summary>Загружаемый PE файл является PE+.</summary>
+		/// <summary>Загружаемый PE файл является PE+</summary>
 		public Boolean Is64Bit
 		{
 			get
 			{
-				if(!this._is64Bit.HasValue)
-				{
-					if(this.IsValid)
-						this._is64Bit = this.HeaderNT64.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
-					else this._is64Bit = false;
-				}
+				if(this._is64Bit == null)
+					this._is64Bit = this.IsValid
+						? this.HeaderNT64.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC
+						: false;
 				return this._is64Bit.Value;
 			}
 			private set { this._is64Bit = value; }
 		}
 
-		/// <summary>Загруженный PE файл является валидным</summary>
+		/// <summary>Loaded file contains valid DOS header</summary>
 		public Boolean IsValid
 		{
 			get
 			{
-				if(this.HeaderDos.IsValid)
-					return this.HeaderNT64.IsValid || this.HeaderNT32.IsValid;
-				else
+				try
+				{
+					return this.HeaderDos.IsValid && (this.HeaderNT64.IsValid || this.HeaderNT32.IsValid);
+				} catch(ArgumentOutOfRangeException)//TODO: Think about bypass exception handling here...
+				{//File is invalid and we can't reader DOS header. See: StreamLoader.ReadBytes for details
 					return false;
+				}
 			}
 		}
 
@@ -63,7 +62,7 @@ namespace AlphaOmega.Debug
 			{
 				if(this._headerNT32 == null)
 				{
-					if(!this.HeaderDos.IsValid)
+					if(this.HeaderDos.IsValid == false)
 						throw new InvalidOperationException("Invalid DOS header");
 
 					this._headerNT32 = this.Loader.PtrToStructure<WinNT.IMAGE_NT_HEADERS32>((UInt32)this.HeaderDos.e_lfanew);
@@ -80,7 +79,7 @@ namespace AlphaOmega.Debug
 			{
 				if(this._headerNT64 == null)
 				{
-					if(!this.HeaderDos.IsValid)
+					if(this.HeaderDos.IsValid == false)
 						throw new InvalidOperationException("Invalid DOS header");
 
 					this._headerNT64 = this.Loader.PtrToStructure<WinNT.IMAGE_NT_HEADERS64>((UInt32)this.HeaderDos.e_lfanew);
@@ -89,20 +88,18 @@ namespace AlphaOmega.Debug
 			}
 		}
 
-		/// <summary>Represents the COFF symbols header.</summary>
+		/// <summary>Represents the COFF symbols header</summary>
 		public WinNT.IMAGE_COFF_SYMBOLS_HEADER? SymbolTable
 		{
 			get
 			{
-				WinNT.IMAGE_FILE_HEADER fileHeader;
-				if(this.Is64Bit)
-					fileHeader = this.HeaderNT64.FileHeader;
-				else
-					fileHeader = this.HeaderNT32.FileHeader;
-				if(fileHeader.ContainsSymbolTable)
-					return this.Loader.PtrToStructure<WinNT.IMAGE_COFF_SYMBOLS_HEADER>(fileHeader.PointerToSymbolTable);
-				else
-					return null;
+				WinNT.IMAGE_FILE_HEADER fileHeader=this.Is64Bit
+					? this.HeaderNT64.FileHeader
+					: this.HeaderNT32.FileHeader;
+
+				return fileHeader.ContainsSymbolTable
+					? this.Loader.PtrToStructure<WinNT.IMAGE_COFF_SYMBOLS_HEADER>(fileHeader.PointerToSymbolTable)
+					: (WinNT.IMAGE_COFF_SYMBOLS_HEADER?)null;
 			}
 		}
 
@@ -138,16 +135,14 @@ namespace AlphaOmega.Debug
 			}
 		}
 
-		/// <summary>Entry size of a PE image</summary>
+		/// <summary>Entry size of PE image</summary>
 		public UInt64 ImageSize
 		{
 			get
 			{
-				UInt64 result;
-				if(this.Is64Bit)
-					result = this.HeaderNT64.OptionalHeader.SizeOfHeaders;
-				else
-					result = this.HeaderNT32.OptionalHeader.SizeOfHeaders;
+				UInt64 result = this.Is64Bit
+					? this.HeaderNT64.OptionalHeader.SizeOfHeaders
+					: this.HeaderNT32.OptionalHeader.SizeOfHeaders;
 
 				foreach(WinNT.IMAGE_SECTION_HEADER section in this.Sections)
 					result += section.SizeOfRawData;
@@ -160,9 +155,7 @@ namespace AlphaOmega.Debug
 		/// <exception cref="T:ArgumentNullException">loader is null</exception>
 		public PEHeader(IImageLoader loader)
 		{
-			if(loader == null)
-				throw new ArgumentNullException("loader");
-			this._loader = loader;
+			this._loader = loader?? throw new ArgumentNullException(nameof(loader));
 			this._loader.Endianness = EndianHelper.Endian.Little;
 		}
 

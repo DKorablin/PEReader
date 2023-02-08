@@ -8,12 +8,7 @@ namespace AlphaOmega.Debug
 
 		public static ResourceManager Section
 		{
-			get
-			{
-				return _section == null
-					? _section = new ResourceManager("AlphaOmega.Debug.Section", typeof(Resources).Assembly)
-					: _section;
-			}
+			get { return _section ?? (_section = new ResourceManager("AlphaOmega.Debug.Section", typeof(Resources).Assembly)); }
 		}
 	}
 }

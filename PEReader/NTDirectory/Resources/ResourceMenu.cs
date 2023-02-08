@@ -16,10 +16,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			/// <summary>Help ID</summary>
 			public UInt32 dwHelpId;
 
-			/// <summary>Defines a menu item in a menu template.</summary>
+			/// <summary>Defines a menu item in a menu template</summary>
 			public WinUser.MENUITEM? Item;
 
-			/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu.</summary>
+			/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu</summary>
 			public WinUser.MENUITEMEX? ItemEx;
 
 			/// <summary>Menu item title</summary>
@@ -31,14 +31,14 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			/// <summary>Extended template</summary>
 			public Boolean IsExMenu { get { return this.ItemEx.HasValue; } }
 
-			/// <summary>Specifies that the menu item is a separator.</summary>
+			/// <summary>Specifies that the menu item is a separator</summary>
 			public Boolean IsSeparator
 			{
 				get
 				{
-					if(this.IsExMenu)
-						return (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR;
-					else return String.IsNullOrEmpty(this.Title);
+					return this.IsExMenu
+						? (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR
+						: String.IsNullOrEmpty(this.Title);
 				}
 			}
 		}
@@ -49,10 +49,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			/// <summary>Help ID</summary>
 			public UInt32 dwHelpId;
 
-			/// <summary>Defines a menu item in a menu template.</summary>
+			/// <summary>Defines a menu item in a menu template</summary>
 			public WinUser.MENUITEMPOPUP? Item;
 
-			/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu.</summary>
+			/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu</summary>
 			public WinUser.MENUITEMEX? ItemEx;
 
 			/// <summary>Menu item title</summary>
@@ -64,15 +64,14 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			/// <summary>Extended template</summary>
 			public Boolean IsExMenu { get { return this.ItemEx.HasValue; } }
 
-			/// <summary>Specifies that the menu item is a separator.</summary>
+			/// <summary>Specifies that the menu item is a separator</summary>
 			public Boolean IsSepearator
 			{
 				get
 				{
-					if(this.IsExMenu)
-						return (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR;
-					else
-						return this.Item.Value.mtID == 0 && String.IsNullOrEmpty(this.Title);
+					return this.IsExMenu
+						? (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR
+						: this.Item.Value.mtID == 0 && String.IsNullOrEmpty(this.Title);
 				}
 			}
 		}

@@ -43,13 +43,8 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <param name="name">Reasource name in the .resource item</param>
 		internal ResourceTableItem(ResourceTableReader reader, String name)
 		{
-			if(reader == null)
-				throw new ArgumentNullException("reader");
-			if(String.IsNullOrEmpty(name))
-				throw new ArgumentNullException("name");
-
-			this._reader = reader;
-			this._name = name;
+			this._reader = reader ?? throw new ArgumentNullException(nameof(reader));
+			this._name = name ?? throw new ArgumentNullException(nameof(name));
 		}
 
 		/// <summary>Create instance of streamed resource item</summary>

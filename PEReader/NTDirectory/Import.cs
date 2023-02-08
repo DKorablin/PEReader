@@ -14,7 +14,7 @@ namespace AlphaOmega.Debug.NTDirectory
 	{
 		private static readonly UInt32 SizeOfHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_IMPORT_DESCRIPTOR));
 
-		/// <summary>Первый дескриптор импортируемых функций</summary>
+		/// <summary>First descriptor of import functions</summary>
 		public WinNT.IMAGE_IMPORT_DESCRIPTOR? Header
 		{
 			get

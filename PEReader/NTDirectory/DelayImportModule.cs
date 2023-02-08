@@ -36,15 +36,14 @@ namespace AlphaOmega.Debug.NTDirectory
 				return this.Directory.Parent.Header.PtrToStringAnsi((UInt32)rvaDllName);
 			}
 		}
-		/// <summary>Базовый адрес PE файла.</summary>
+		/// <summary>Base address of PE file</summary>
 		private UInt64 ImageBase
 		{
 			get
 			{
-				if(this.Directory.Parent.Header.Is64Bit)
-					return this.Directory.Parent.Header.HeaderNT64.OptionalHeader.ImageBase;
-				else
-					return this.Directory.Parent.Header.HeaderNT32.OptionalHeader.ImageBase;
+				return this.Directory.Parent.Header.Is64Bit
+					? this.Directory.Parent.Header.HeaderNT64.OptionalHeader.ImageBase
+					: this.Directory.Parent.Header.HeaderNT32.OptionalHeader.ImageBase;
 			}
 		}
 		/// <summary>Create instance of delay import module description class</summary>

@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.NTDirectory
 	{
 		/// <summary>PDB v2 Info</summary>
 		public readonly WinNT.Debug.CV_INFO_PDB20 Info;
-		/// <summary>Null-terminated name of the PDB file. It can also contain full or partial path to the file.</summary>
+		/// <summary>Null-terminated name of the PDB file. It can also contain full or partial path to the file</summary>
 		public readonly String PdbFileName;
 		/// <summary>Create instance of CodeView PDB v2 class</summary>
 		/// <param name="info">CodeView v2 Info</param>

@@ -26,10 +26,7 @@ namespace AlphaOmega.Debug.PESection
 		/// <param name="header">sections header descriptor</param>
 		public SectionHeader(PEFile parent, WinNT.IMAGE_SECTION_HEADER header)
 		{
-			if(parent == null)
-				throw new ArgumentNullException("parent");
-
-			this._parent = parent;
+			this._parent = parent?? throw new ArgumentNullException(nameof(parent));
 			this._header = header;
 		}
 

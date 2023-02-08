@@ -12,10 +12,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				if(base.IsEmpty)
-					return null;
-				else
-					return base.Parent.Header.PtrToStructure<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY>(base.Directory.VirtualAddress);
+				return base.IsEmpty
+					? (WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY?)null
+					: base.Parent.Header.PtrToStructure<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY>(base.Directory.VirtualAddress);
 			}
 		}
 		/// <summary>Create instance of exception table class</summary>

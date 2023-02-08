@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>
 		/// an index into a Module, ModuleRef, AssemblyRef or TypeRef table, or null;
-		/// more precisely, a ResolutionScope (§II.24.2.6) coded index.
+		/// more precisely, a ResolutionScope (§II.24.2.6) coded index
 		/// </summary>
 		public MetaCellCodedToken ResolutionScope { get { return base.GetValue<MetaCellCodedToken>(0); } }
 

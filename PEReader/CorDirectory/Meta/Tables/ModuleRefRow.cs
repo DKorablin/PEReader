@@ -2,7 +2,7 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>The rows in the ModuleRef table result from .module extern directives in the Assembly (§II.6.5).</summary>
+	/// <summary>The rows in the ModuleRef table result from .module extern directives in the Assembly (Â§II.6.5)</summary>
 	public class ModuleRefRow : BaseMetaRow
 	{
 		/// <summary>

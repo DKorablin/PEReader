@@ -16,10 +16,7 @@ namespace AlphaOmega.Debug.PESection
 		/// <param name="parent">PE directory</param>
 		public Sections(PEFile parent)
 		{
-			if(parent == null)
-				throw new ArgumentNullException("parent");
-
-			this._parent = parent;
+			this._parent = parent ?? throw new ArgumentNullException(nameof(parent));
 		}
 
 		/// <summary>Получить секцию по наименованию секции</summary>

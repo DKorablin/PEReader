@@ -40,15 +40,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="reader">Image reader pointed to cell value</param>
 		public MetaCell(MetaTable table, MetaColumn column, UInt32 rowIndex, BinaryReader reader)
 		{
-			if(table == null)
-				throw new ArgumentNullException("table");
-			if(column == null)
-				throw new ArgumentNullException("column");
 			if(reader == null)
-				throw new ArgumentNullException("reader");
+				throw new ArgumentNullException(nameof(reader));
 
-			this._table = table;
-			this._column = column;
+			this._table = table ?? throw new ArgumentNullException(nameof(table));
+			this._column = column ?? throw new ArgumentNullException(nameof(column));
 			this._rowIndex = rowIndex;
 
 			switch(this.Column.ColumnType)

@@ -7,13 +7,13 @@ using System.Reflection;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>
-	/// The Assembly table is defined using the .assembly directive (�II.6.2);
-	/// its columns are obtained from the respective .hash algorithm, .ver, .publickey, and .culture (�II.6.2.1).
+	/// The Assembly table is defined using the .assembly directive (§II.6.2);
+	/// its columns are obtained from the respective .hash algorithm, .ver, .publickey, and .culture (§II.6.2.1)
 	/// </summary>
 	[DefaultProperty("Name")]
 	public class AssemblyRow : BaseMetaRow
 	{
-		/// <summary>Specifies all the hash algorithms used for hashing files and for generating the strong name.</summary>
+		/// <summary>Specifies all the hash algorithms used for hashing files and for generating the strong name</summary>
 		public AssemblyHashAlgorithm HashAlgId { get { return (AssemblyHashAlgorithm)base.GetValue<UInt32>(0); } }
 
 		/// <summary>Assembly major version</summary>

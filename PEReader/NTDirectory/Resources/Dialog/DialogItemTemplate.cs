@@ -63,7 +63,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Control item extended data</summary>
 		public readonly Byte[] ExtraData;
 
-		/// <summary>The window is initially disabled. A disabled window cannot receive input from the user. To change this after a window has been created, use the EnableWindow function.</summary>
+		/// <summary>
+		/// The window is initially disabled.
+		/// A disabled window cannot receive input from the user.
+		/// To change this after a window has been created, use the EnableWindow function
+		/// </summary>
 		public Boolean IsDisabled
 		{
 			get { return (this.Styles & WinUser.WS.WS_DISABLED) == WinUser.WS.WS_DISABLED; }

@@ -62,7 +62,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			}
 		}
 
-		/// <summary>Describes an assembly's unique identity in full.</summary>
+		/// <summary>Describes an assembly's unique identity in full</summary>
 		/// <returns>String representation of the assembly</returns>
 		public override String ToString()
 		{

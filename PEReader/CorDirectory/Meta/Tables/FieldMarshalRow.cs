@@ -13,11 +13,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// Note that FieldMarshal information is used only by code paths that arbitrate operation with unmanaged code.
 	/// In order to execute such paths, the caller, on most platforms,
 	/// would be installed with elevated security permission.
-	/// Once it invokes unmanaged code, it lies outside the regime that the CLI can check — it is simply trusted not to violate the type system.
+	/// Once it invokes unmanaged code, it lies outside the regime that the CLI can check ï¿½ it is simply trusted not to violate the type system.
 	/// </remarks>
 	public class FieldMarshalRow : BaseMetaRow
 	{
-		/// <summary>An index into Field or Param table; more precisely, a HasFieldMarshal (§II.24.2.6) coded index.</summary>
+		/// <summary>An index into Field or Param table; more precisely, a HasFieldMarshal (Â§II.24.2.6) coded index</summary>
 		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(0); } }
 
 		/// <summary>An index into the Blob heap</summary>

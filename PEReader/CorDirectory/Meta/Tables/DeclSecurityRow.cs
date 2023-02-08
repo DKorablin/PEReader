@@ -15,16 +15,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>
 		/// Action is a 2-byte representation of Security Actions (see System.Security.SecurityAction in Partition IV).
-		/// The values 0 – 0xFF are reserved for future standards use.
-		/// Values 0x20 – 0x7F and 0x100 – 0x07FF are for uses where the action can be ignored if it is not understood or supported.
-		/// Values 0x80 – 0xFF and 0x0800 – 0xFFFF are for uses where the action shall be implemented for secure operation;
+		/// The values 0 - 0xFF are reserved for future standards use.
+		/// Values 0x20 - 0x7F and 0x100 - 0x07FF are for uses where the action can be ignored if it is not understood or supported.
+		/// Values 0x80 - 0xFF and 0x0800 - 0xFFFF are for uses where the action shall be implemented for secure operation;
 		/// in implementations where the action is not available, no access to the assembly, type, or method shall be permitted.
 		/// </summary>
 		public UInt16 Action { get { return base.GetValue<UInt16>(0); } }
 
 		/// <summary>
 		/// an index into the TypeDef, MethodDef, or Assembly table;
-		/// more precisely, a HasDeclSecurity (§II.24.2.6) coded index.
+		/// more precisely, a HasDeclSecurity (Â§II.24.2.6) coded index.
 		/// </summary>
 		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(1); } }
 
@@ -40,7 +40,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		///     A compressed unsigned integer containing the number of attributes encoded in the blob.
 		///     An array of attributes each containing the following:
 		///         A String, which is the fully-qualified type name of the attribute. (Strings are encoded as a compressed unsigned integer to indicate the size followed by an array of UTF8 characters.)
-		///         A set of properties, encoded as the named arguments to a custom attribute would be (as in §II.23.3, beginning with NumNamed).
+		///         A set of properties, encoded as the named arguments to a custom attribute would be (as in Â§II.23.3, beginning with NumNamed).
 		/// </remarks>
 		public Byte[] PermissionSet { get { return base.GetValue<Byte[]>(2); } }
 	}

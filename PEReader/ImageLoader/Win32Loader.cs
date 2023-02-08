@@ -17,8 +17,7 @@ namespace AlphaOmega.Debug
 		{
 			private HModuleHandle()
 				: base(true)
-			{
-			}
+			{ }
 
 			[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 			protected override Boolean ReleaseHandle()
@@ -42,25 +41,21 @@ namespace AlphaOmega.Debug
 			get
 			{
 				if(this._hModule == null)
-					throw new ObjectDisposedException("_hModule");
+					throw new ObjectDisposedException(nameof(_hModule));
 
 				return this._hModule.Value.ToInt64();
 			}
 		}
 
-		/// <summary>Источник получения PE модуля</summary>
-		public String Source
-		{
-			get;
-			private set;
-		}
+		/// <summary>Source of receiving PE module</summary>
+		public String Source { get; private set; }
 
 		/*public Win32Loader(String filePath)
 		{
 			if(String.IsNullOrEmpty(filePath))
-				throw new ArgumentNullException("filePath");
+				throw new ArgumentNullException(nameof(filePath));
 			else if(!File.Exists(filePath))
-				throw new FileNotFoundException(String.Format("File {0} not found", filePath));
+				throw new FileNotFoundException("File not found", filePath);
 
 			this.Source = filePath;
 			//TODO: DLL: C:\WINDOWS\System32\Mpegc32f.dll не читаейтся через LoadLibraryEx
@@ -82,9 +77,9 @@ namespace AlphaOmega.Debug
 		public static Win32Loader FromFile(String filePath)
 		{
 			if(String.IsNullOrEmpty(filePath))
-				throw new ArgumentNullException("filePath");
+				throw new ArgumentNullException(nameof(filePath));
 			else if(!File.Exists(filePath))
-				throw new FileNotFoundException(String.Format("File {0} not found", filePath));
+				throw new FileNotFoundException("File not found", filePath);
 
 			IntPtr hModule = NativeMethods.LoadLibraryEx(filePath, IntPtr.Zero, NativeMethods.LoadLibraryFlags.DONT_RESOLVE_DLL_REFERENCES);
 			if(hModule == IntPtr.Zero)
@@ -100,11 +95,9 @@ namespace AlphaOmega.Debug
 		public static Win32Loader FromModule(ProcessModule module)
 		{
 			if(module == null)
-				throw new ArgumentNullException("module");
+				throw new ArgumentNullException(nameof(module));
 
-			return new Win32Loader(module.BaseAddress,
-				module.FileName,
-				false);
+			return new Win32Loader(module.BaseAddress, module.FileName, false);
 		}
 
 		/// <summary>Create instance of HMODULE loader class</summary>
@@ -123,11 +116,9 @@ namespace AlphaOmega.Debug
 		public Win32Loader(IntPtr hModule, String source, Boolean freeOnClode)
 		{
 			if(hModule == IntPtr.Zero)
-				throw new ArgumentNullException("hModule");
-			if(String.IsNullOrEmpty(source))
-				throw new ArgumentNullException("source");
+				throw new ArgumentNullException(nameof(hModule));
 
-			this.Source = source;
+			this.Source = source?? throw new ArgumentNullException(nameof(source));
 			this._hModule = hModule;
 			this._freeOnClose = freeOnClode;
 		}
@@ -175,7 +166,7 @@ namespace AlphaOmega.Debug
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
-			if(disposing && this._hModule.HasValue)
+			if(disposing && this._hModule != null)
 			{
 				if(this._freeOnClose && !NativeMethods.FreeLibrary(this._hModule.Value))
 					throw new Win32Exception();
