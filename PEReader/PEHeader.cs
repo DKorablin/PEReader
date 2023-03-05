@@ -155,7 +155,7 @@ namespace AlphaOmega.Debug
 		/// <exception cref="T:ArgumentNullException">loader is null</exception>
 		public PEHeader(IImageLoader loader)
 		{
-			this._loader = loader?? throw new ArgumentNullException(nameof(loader));
+			this._loader = loader ?? throw new ArgumentNullException(nameof(loader));
 			this._loader.Endianness = EndianHelper.Endian.Little;
 		}
 

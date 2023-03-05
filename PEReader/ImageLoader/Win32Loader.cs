@@ -47,9 +47,6 @@ namespace AlphaOmega.Debug
 			}
 		}
 
-		/// <summary>Source of receiving PE module</summary>
-		public String Source { get; private set; }
-
 		/*public Win32Loader(String filePath)
 		{
 			if(String.IsNullOrEmpty(filePath))
@@ -85,7 +82,7 @@ namespace AlphaOmega.Debug
 			if(hModule == IntPtr.Zero)
 				throw new Win32Exception();
 
-			return new Win32Loader(hModule, filePath, false);
+			return new Win32Loader(hModule, false);
 		}
 
 		/// <summary>Load image from HModule</summary>
@@ -97,28 +94,25 @@ namespace AlphaOmega.Debug
 			if(module == null)
 				throw new ArgumentNullException(nameof(module));
 
-			return new Win32Loader(module.BaseAddress, module.FileName, false);
+			return new Win32Loader(module.BaseAddress, false);
 		}
 
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
 		public Win32Loader(IntPtr hModule)
-			: this(hModule, "Memory", false)
+			: this(hModule, false)
 		{
 		}
 
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
-		/// <param name="source">Source of file</param>
 		/// <param name="freeOnClode">Close HMODULE after exit</param>
 		/// <exception cref="T:ArgumentNullException">hModule is empty</exception>
 		/// <exception cref="T:ArgumentNullException">source is null</exception>
-		public Win32Loader(IntPtr hModule, String source, Boolean freeOnClode)
+		public Win32Loader(IntPtr hModule, Boolean freeOnClode)
 		{
 			if(hModule == IntPtr.Zero)
 				throw new ArgumentNullException(nameof(hModule));
-
-			this.Source = source?? throw new ArgumentNullException(nameof(source));
 			this._hModule = hModule;
 			this._freeOnClose = freeOnClode;
 		}

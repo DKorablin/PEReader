@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Configuration.Assemblies;
 using System.Globalization;
 using System.Reflection;
 
@@ -14,7 +13,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class AssemblyRow : BaseMetaRow
 	{
 		/// <summary>Specifies all the hash algorithms used for hashing files and for generating the strong name</summary>
-		public AssemblyHashAlgorithm HashAlgId { get { return (AssemblyHashAlgorithm)base.GetValue<UInt32>(0); } }
+		public System.Configuration.Assemblies.AssemblyHashAlgorithm HashAlgId { get { return (System.Configuration.Assemblies.AssemblyHashAlgorithm)base.GetValue<UInt32>(0); } }
 
 		/// <summary>Assembly major version</summary>
 		internal UInt16 MajorVersion { get { return base.GetValue<UInt16>(1); } }

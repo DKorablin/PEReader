@@ -123,7 +123,7 @@ namespace AlphaOmega.Debug
 			if(showDllName)
 				Console.WriteLine("Reading file: {0}", dll);
 
-			using(PEFile info = new PEFile(StreamLoader.FromFile(dll)))
+			using(PEFile info = new PEFile(dll, StreamLoader.FromFile(dll)))
 			{
 				if(info.Header.IsValid)//Проверка на валидность загруженного файла
 				{

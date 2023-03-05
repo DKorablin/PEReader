@@ -6,9 +6,10 @@ namespace AlphaOmega.Debug
 {
 	/// <summary>PE/PE+ file description</summary>
 	public class PEFile : IDisposable
-	{//http://code.cheesydesign.com/?p=572 - .NET PE Reader
+	{
 
 		#region Fields
+		private readonly String _source;
 		private PEHeader _header;
 		private Sections _sections;
 
@@ -29,6 +30,8 @@ namespace AlphaOmega.Debug
 		private Tls _tls;
 		#endregion Fields
 		#region Properties
+		/// <summary>File source</summary>
+		public String Source { get { return this._source; } }
 		/// <summary>PE/PE+ Headers</summary>
 		public PEHeader Header { get { return this._header; } }
 
@@ -150,10 +153,12 @@ namespace AlphaOmega.Debug
 		}
 		#endregion Properties
 
-		/// <summary>Создание экземпляра класса с указанием пути к PE файлу</summary>
+		/// <summary>Create instance and specify image loader instance</summary>
+		/// <param name="source">Source of the module</param>
 		/// <param name="loader">PE file loader</param>
-		public PEFile(IImageLoader loader)
+		public PEFile(String source, IImageLoader loader)
 		{
+			this._source = source ?? throw new ArgumentNullException(nameof(source));
 			this._header = new PEHeader(loader);
 		}
 
