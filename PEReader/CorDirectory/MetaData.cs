@@ -84,10 +84,11 @@ namespace AlphaOmega.Debug.CorDirectory
 			get
 			{
 
-				if(this.Streams.ContainsKey(Cor.StreamHeaderType.StreamTable))
-					return (StreamTables)this.Streams[Cor.StreamHeaderType.StreamTable];
-				else if(this.Streams.ContainsKey(Cor.StreamHeaderType.StreamTableUnoptimized))
-					return (StreamTables)this.Streams[Cor.StreamHeaderType.StreamTableUnoptimized];
+				StreamHeader result;
+				if(this.Streams.TryGetValue(Cor.StreamHeaderType.StreamTable, out result))
+					return (StreamTables)result;
+				else if(this.Streams.TryGetValue(Cor.StreamHeaderType.StreamTableUnoptimized, out result))
+					return (StreamTables)result;
 				else
 					return null;
 			}
@@ -95,25 +96,49 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <summary>Guid heap</summary>
 		public GuidHeap GuidHeap
 		{
-			get { return (GuidHeap)this.Streams[Cor.StreamHeaderType.Guid]; }
+			get
+			{
+				StreamHeader result;
+				return this.Streams.TryGetValue(Cor.StreamHeaderType.Guid, out result)
+					? (GuidHeap)result
+					: null;
+			}
 		}
 
 		/// <summary>Bloab heap</summary>
 		public BlobHeap BlobHeap
 		{
-			get { return (BlobHeap)this.Streams[Cor.StreamHeaderType.Blob]; }
+			get
+			{
+				StreamHeader result;
+				return this.Streams.TryGetValue(Cor.StreamHeaderType.Blob, out result)
+					? (BlobHeap)result
+					: null;
+			}
 		}
 
 		/// <summary>String heap</summary>
 		public StringHeap StringHeap
 		{
-			get { return (StringHeap)this.Streams[Cor.StreamHeaderType.String]; }
+			get
+			{
+				StreamHeader result;
+				return this.Streams.TryGetValue(Cor.StreamHeaderType.String, out result)
+					? (StringHeap)result
+					: null;
+			}
 		}
 
 		/// <summary>User String heap</summary>
 		public USHeap USHeap
 		{
-			get { return (USHeap)this.Streams[Cor.StreamHeaderType.UnicodeSting]; }
+			get
+			{
+				StreamHeader result;
+				return this.Streams.TryGetValue(Cor.StreamHeaderType.UnicodeSting, out result)
+					? (USHeap)result
+					: null;
+			}
 		}
 
 		/// <summary>Get array of all heaps in MedaData directory</summary>

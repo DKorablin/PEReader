@@ -84,7 +84,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				return ((result & 0x3F) << 8) | bytes[position + 1];
 			} else
 			{
-				padding = 3;
+				padding = 4;
 				return ((result & 0x3F) << 24)
 				| (bytes[position + 1] << 16)
 				| (bytes[position + 2] << 8)
