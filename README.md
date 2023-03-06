@@ -5,6 +5,7 @@
 PE/PE+/CLI executable reader assembly. Compatible with .NET Framework 2.0 & .NET Standart 2.1
 
 Usage:
+
     String filePath=@"C:\Windows\System32\kernel32.dll";
     using(PEFile file = new PEFile(filePath, StreamLoader.FromFile(filePath)))
     {
