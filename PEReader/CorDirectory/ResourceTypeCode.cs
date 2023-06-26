@@ -3,7 +3,7 @@
 namespace AlphaOmega.Debug.CorDirectory
 {
 	/// <summary>Default resource type codes</summary>
-	/// <remarks>Cloe of internal visible <see cref="System.Resources.ResourceTypeCode"/></remarks>
+	/// <remarks>Cloe of internal visible System.Resources.ResourceTypeCode</remarks>
 	public enum ResourceTypeCode
 	{
 		/// <summary>NULL type</summary>
