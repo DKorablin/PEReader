@@ -40,7 +40,7 @@ jobs:
     - name: Deploy release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "*/PEReader.dll"
+        artifacts: "/home/runner/work/PEReader/bin/netstandard2.0/PEReader.dll"
         tag: Auto
         artifactErrorsFailBuild: true
         generateReleaseNotes: true
