@@ -31,7 +31,7 @@ jobs:
     - name: Deploy release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: */PEReader.dll
+        artifacts: "*/PEReader.dll"
         tag: Auto
         artifactErrorsFailBuild: true
         generateReleaseNotes: true
