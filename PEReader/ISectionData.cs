@@ -2,11 +2,11 @@
 
 namespace AlphaOmega.Debug
 {
-	/// <summary>Получение данных из секции</summary>
+	/// <summary>Data from andy PE section</summary>
 	public interface ISectionData
 	{
-		/// <summary>Получить все данные в виде массива байт из секции PE файла</summary>
-		/// <returns>Массив байт в секции</returns>
+		/// <summary>Get all payload from PE section as Byte array</summary>
+		/// <returns>Byte array from section</returns>
 		Byte[] GetData();
 	}
 }

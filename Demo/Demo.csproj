@@ -6,9 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
 		<Deterministic>false</Deterministic>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PEReader\PEReader.csproj" />

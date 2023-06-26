@@ -659,7 +659,7 @@ namespace AlphaOmega.Debug
 			HIGH3ADJ = 11,
 		}
 
-		/// <summary>PE Dos header</summary>
+		/// <summary>PE COFF header</summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		public struct IMAGE_DOS_HEADER
 		{
@@ -1238,7 +1238,21 @@ namespace AlphaOmega.Debug
 			/// The characters following the $ provide an alphabetic ordering for how the merged sections appear in the final section.
 			/// There's quite a bit more to the subject of sections with $ in the name and how they're combined, but the details are outside the scope of this article
 			/// </remarks>
-			public String Section { get { return new String(Name); } }
+			public String Section
+			{
+				get
+				{
+					StringBuilder result = new StringBuilder();
+					foreach(Char c in Name)
+						if(c == '\0')
+							continue;
+						else if(Char.IsControl(c))
+							result.Append("\\" + Convert.ToInt32(c).ToString("x"));
+						else
+							result.Append(c);
+					return result.ToString();
+				}
+			}
 		}
 
 		/// <summary>Represents the debug directory format</summary>

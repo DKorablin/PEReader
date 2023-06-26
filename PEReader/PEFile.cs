@@ -60,26 +60,29 @@ namespace AlphaOmega.Debug
 			get { return this._architecture ?? (this._architecture = new Architecture(this)); }
 		}
 
-		/// <summary>Получить информацию о экспортируемых функциях в PE файле</summary>
+		/// <summary>Get all exported functions from PE file</summary>
+		/// <remarks>Export directory</remarks>
 		public Export Export
 		{
 			get { return this._export ?? (this._export = new Export(this)); }
 		}
 
-		/// <summary>Получить информацию о ипортируемых функциях PE файлом</summary>
+		/// <summary>Get all Imported functions from PE file</summary>
+		/// <returns>Import directory</returns>
 		public Import Import
 		{
 			get { return this._import ?? (this._import = new Import(this)); }
 		}
 
-		/// <summary>Получить информацию о зашитой информации для дебаггера</summary>
-		/// <returns>Информация для дебаггера</returns>
+		/// <summary>Get detailed information for debugginig</summary>
+		/// <returns>Debugging directory</returns>
 		public NTDirectory.Debug Debug
 		{
 			get { return this._debug ?? (this._debug = new NTDirectory.Debug(this)); }
 		}
 
-		/// <summary>Получить информацию по ресурсам</summary>
+		/// <summary>Get resources from PE file</summary>
+		/// <returns>Resource directory</returns>
 		public Resource Resource
 		{
 			get { return this._resource ?? (this._resource = new Resource(this)); }

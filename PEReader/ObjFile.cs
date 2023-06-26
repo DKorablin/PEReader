@@ -21,7 +21,7 @@ namespace AlphaOmega.Debug
 			get { return this._fileHeader ?? (this._fileHeader = this.Loader.PtrToStructure<WinNT.IMAGE_FILE_HEADER>(0)).Value; }
 		}
 
-		/// <summary>Загруженный OBJ файл является валидным</summary>
+		/// <summary>Checking if OBJ file is valid</summary>
 		public Boolean IsValid { get { return this.FileHeader.IsValid; } }
 
 		/*/// <summary>Represents the COFF symbols header</summary>
@@ -36,7 +36,7 @@ namespace AlphaOmega.Debug
 			}
 		}*/
 
-		/// <summary>obj symbol table structure</summary>
+		/// <summary>OBJ symbol table structure</summary>
 		public WinNT.IMAGE_COFF_SYMBOL[] Symbols
 		{
 			get

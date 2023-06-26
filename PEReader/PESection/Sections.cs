@@ -19,9 +19,9 @@ namespace AlphaOmega.Debug.PESection
 			this._parent = parent ?? throw new ArgumentNullException(nameof(parent));
 		}
 
-		/// <summary>Получить секцию по наименованию секции</summary>
-		/// <param name="section">Наименование требуемой секции</param>
-		/// <returns>Найденная секция или null</returns>
+		/// <summary>Get section by name</summary>
+		/// <param name="section">Name of required section</param>
+		/// <returns>Found section header or null of section not found</returns>
 		public SectionHeader GetSection(String section)
 		{
 			foreach(WinNT.IMAGE_SECTION_HEADER header in this.Parent.Header.Sections)
@@ -31,8 +31,8 @@ namespace AlphaOmega.Debug.PESection
 			return null;
 		}
 
-		/// <summary>Получить массив секций с возможностью получения актуальных данных из секции</summary>
-		/// <returns>Массив секций обрамлённых обёртками</returns>
+		/// <summary>Get all sections with opportunity to read data from each section</summary>
+		/// <returns>Sections array with wrappers</returns>
 		public IEnumerator<SectionHeader> GetEnumerator()
 		{
 			foreach(WinNT.IMAGE_SECTION_HEADER header in this.Parent.Header.Sections)

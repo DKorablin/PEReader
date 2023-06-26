@@ -4,56 +4,60 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug
 {
 	/// <summary>Version management functions, types, and definitions</summary>
-	/// <remarks>Include file for VER.DLL.  This library is designed to allow version stamping of Windows executable files and of special .VER files for DOS executable files</remarks>
+	/// <remarks>
+	/// Include file for VER.DLL.
+	/// This library is designed to allow version stamping of Windows executable files and of special .VER files for DOS executable files
+	/// </remarks>
 	public struct WinVer
 	{
-		/// <summary>Contains version information for a file. This information is language and code page independent</summary>
+		/// <summary>Contains version information for a file</summary>
+		/// <remarks>This information is language and code page independent</remarks>
 		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct VS_FIXEDFILEINFO
 		{
 			/// <summary>Contains the value 0xFEEF04BD</summary>
 			/// <remarks>This is used with the szKey member of the VS_VERSIONINFO structure when searching a file for the VS_FIXEDFILEINFO structure</remarks>
 			public UInt32 dwSignature;
-			
+
 			/// <summary>The binary version number of this structure</summary>
 			/// <remarks>The high-order word of this member contains the major version number, and the low-order word contains the minor version number</remarks>
 			public UInt32 dwStructVersion;
-			
+
 			/// <summary>The most significant 32 bits of the file's binary version number</summary>
 			/// <remarks>This member is used with dwFileVersionLS to form a 64-bit value used for numeric comparisons</remarks>
 			public UInt32 dwFileVersionMS;
-			
+
 			/// <summary>The least significant 32 bits of the file's binary version number</summary>
 			/// <remarks>This member is used with dwFileVersionMS to form a 64-bit value used for numeric comparisons</remarks>
 			public UInt32 dwFileVersionLS;
-			
+
 			/// <summary>The most significant 32 bits of the binary version number of the product with which this file was distributed</summary>
 			/// <remarks>This member is used with dwProductVersionLS to form a 64-bit value used for numeric comparisons</remarks>
 			public UInt32 dwProductVersionMS;
-			
+
 			/// <summary>The least significant 32 bits of the binary version number of the product with which this file was distributed</summary>
 			/// <remarks>This member is used with dwProductVersionMS to form a 64-bit value used for numeric comparisons</remarks>
 			public UInt32 dwProductVersionLS;
-			
+
 			/// <summary>Contains a bitmask that specifies the valid bits in dwFileFlags</summary>
 			/// <remarks>A bit is valid only if it was defined when the file was created</remarks>
 			public UInt32 dwFileFlagMask;
-			
+
 			/// <summary>Contains a bitmask that specifies the Boolean attributes of the file</summary>
 			/// <remarks>This member can include one or more of the following values</remarks>
 			public VS_FF dwFileFlags;
-			
+
 			/// <summary>The operating system for which this file was designed</summary>
 			/// <remarks>
 			/// An application can combine these values to indicate that the file was designed for one operating system running on another.
 			/// The following dwFileOS values are examples of this, but are not a complete list
 			/// </remarks>
 			public VOS dwFileOS;
-			
+
 			/// <summary>The general type of file</summary>
-			/// <remarks>This member can be one of the following values. All other values are reserved</remarks>
+			/// <remarks>All other values are reserved</remarks>
 			public VFT dwFileType;
-			
+
 			/// <summary>The function of the file</summary>
 			/// <remarks>
 			/// The possible values depend on the value of dwFileType.
@@ -61,16 +65,16 @@ namespace AlphaOmega.Debug
 			/// If dwFileType is VFT_DRV, dwFileSubtype can be one of the following values
 			/// </remarks>
 			public VFT2 dwFileSubtype;
-			
+
 			/// <summary>The most significant 32 bits of the file's 64-bit binary creation date and time stamp</summary>
 			public UInt32 dwFileDateMS;
-			
+
 			/// <summary>The least significant 32 bits of the file's 64-bit binary creation date and time stamp</summary>
 			public UInt32 dwFileDateLS;
-			
+
 			/// <summary>Structure is valid</summary>
 			public Boolean IsValid { get { return this.dwSignature == 0xFEEF04BD; } }
-			
+
 			/// <summary>File version number</summary>
 			public Version FileVersion
 			{
@@ -83,7 +87,7 @@ namespace AlphaOmega.Debug
 						NativeMethods.LoWord(this.dwFileVersionLS));
 				}
 			}
-			
+
 			/// <summary>Product version number</summary>
 			public Version ProductVersion
 			{

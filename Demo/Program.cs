@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
-using System.Runtime.InteropServices;
-using System.Drawing.Imaging;
-using System.IO;
-using AlphaOmega.Debug.NTDirectory.Resources;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace AlphaOmega.Debug
 {
@@ -19,10 +15,14 @@ namespace AlphaOmega.Debug
 	{
 		static void Main(String[] args)
 		{
-			String fileName = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\symsrv.yes";
+#if NETCOREAPP
+			//.NET Core Error: No data is available for encoding 1252. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+			//String dll = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\symsrv.yes";
 			//String obj = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
 			//String dll = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_U.exe";
-			//String dll = @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe";
+			//String dll = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.exe";
 			//String dll = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
 			//String dll = @"C:\Windows\SysWOW64\jscript.dll";
 			//String dll = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
@@ -60,19 +60,19 @@ namespace AlphaOmega.Debug
 			/*PEFile file = new PEFile(dll);
 			return;*/
 
-			//foreach(String fileName in Directory.GetFiles(@"C:\Visual Studio Projects\C#", "*.*", SearchOption.AllDirectories))
-				switch(Path.GetExtension(fileName.ToLowerInvariant()))
+			foreach(String dll in Directory.GetFiles(@"C:\Visual Studio Projects\C#", "*.*", SearchOption.AllDirectories))
+			switch(Path.GetExtension(dll.ToLowerInvariant()))
 				{
 				case ".dll":
 				case ".exe":
 					try
 					{
 						//ReadObjInfo(obj);
-						ReadPeInfo2(fileName, true, false);
+						ReadPeInfo2(dll, true, false);
 
 					} catch(Win32Exception exc)
 					{
-						Console.WriteLine("EXCEPTION IN FILE: {0}", fileName);
+						Console.WriteLine("EXCEPTION IN FILE: {0}", dll);
 						Console.WriteLine("===");
 						Console.WriteLine("Message: {0}", exc.Message);
 						Console.WriteLine(exc.StackTrace);
@@ -127,8 +127,18 @@ namespace AlphaOmega.Debug
 			{
 				if(info.Header.IsValid)//Проверка на валидность загруженного файла
 				{
+					WinNT.IMAGE_FILE_HEADER fileHeader = info.Header.Is64Bit
+					? info.Header.HeaderNT64.FileHeader
+					: info.Header.HeaderNT32.FileHeader;
+					Utils.ConsoleWriteMembers(fileHeader);
+
 					foreach(var section in info.Sections)
+					{
+						if(section.Header.Section != null && section.Description == null)
+							Console.WriteLine($"Unknown section name: {section.Header.Section}");
+
 						Utils.ConsoleWriteMembers(section);
+					}
 
 					if(info.Header.SymbolTable != null)
 						Utils.ConsoleWriteMembers(info.Header.SymbolTable.Value);

@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug
 		/// <summary>PE/PE+ loader interface</summary>
 		public IImageLoader Loader { get { return this._loader; } }
 
-		/// <summary>DOS заголовок PE файла</summary>
+		/// <summary>PE COFF header</summary>
 		public WinNT.IMAGE_DOS_HEADER HeaderDos
 		{
 			get
@@ -25,7 +25,7 @@ namespace AlphaOmega.Debug
 			}
 		}
 
-		/// <summary>Загружаемый PE файл является PE+</summary>
+		/// <summary>This PE file is extended PE+ file</summary>
 		public Boolean Is64Bit
 		{
 			get
@@ -113,7 +113,7 @@ namespace AlphaOmega.Debug
 					this._sections = new WinNT.IMAGE_SECTION_HEADER[this.HeaderNT32.FileHeader.NumberOfSections];
 					UInt16 sizeOfOptionalHeader = this.HeaderNT32.FileHeader.SizeOfOptionalHeader;
 					/*if(this.Is64Bit)
-					{//Оно необязательно. Т.е. FileHeader везде одинаковый
+					{//It's optional. I.e. FileHeader everywhere the same
 						result = new WinNT.IMAGE_SECTION_HEADER[this.HeaderNT64.FileHeader.NumberOfSections];
 						sizeOfOptionalHeader=this.HeaderNT64.FileHeader.SizeOfOptionalHeader;
 					}

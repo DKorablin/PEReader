@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.PESection
 {
 	/// <summary>Base class of sections header</summary>
 	[DefaultProperty("Header")]
-	[DebuggerDisplay("Header Name={Header}")]
+	[DebuggerDisplay("Header {Header}")]
 	public class SectionHeader : ISectionData
 	{
 		private readonly PEFile _parent;
@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug.PESection
 		public WinNT.IMAGE_SECTION_HEADER Header { get { return this._header; } }
 
 		/// <summary>Section name description</summary>
-		public String Description { get { return AlphaOmega.Debug.Resources.Section.GetString(this.Header.Section); } }
+		public String Description { get { return Resources.Section.GetString(this.Header.Section); } }
 
 		/// <summary>Create instance of section header reader class</summary>
 		/// <param name="parent">PE directory</param>

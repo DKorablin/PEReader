@@ -4,12 +4,12 @@ using System.Text;
 
 namespace AlphaOmega.Debug
 {
-	/// <summary>Структуры .NET Framework</summary>
-	/// <remarks>Описание в CorHdr.h</remarks>
+	/// <summary>.NET Framework structures</summary>
+	/// <remarks>Descriptions from CorHdr.h</remarks>
 	public struct Cor
 	{
 		#region IMAGE_COR20_METADATA
-		/// <summary>Метаданные .NET сборки</summary>
+		/// <summary>.NET assembly metadata header</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct IMAGE_COR20_METADATA1
 		{
@@ -26,6 +26,7 @@ namespace AlphaOmega.Debug
 			/// <summary>MetaData signature is valid</summary>
 			public Boolean IsValid { get { return this.Signature == 0x424A5342; } }
 		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct IMAGE_COR20_METADATA2
 		{
@@ -36,6 +37,7 @@ namespace AlphaOmega.Debug
 			/*/// <summary>Array of n StreamHdr structures</summary>
 			public UInt32 StreamHeaders;*/
 		}
+
 		/// <summary>
 		/// The root of the physical metadata starts with a magic signature,
 		/// several bytes of version and other miscellaneous information,
@@ -69,6 +71,7 @@ namespace AlphaOmega.Debug
 			public Version StructVersion { get { return new Version(this.MajorVersion, this.MinorVersion); } }
 		}
 		#endregion IMAGE_COR20_METADATA
+
 		/// <summary>
 		/// Each entry in this array describes a contiguous array of v-table slots of the specified size.
 		/// Each slot starts out initialized to the metadata token value for the method they need to call.
@@ -92,6 +95,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Type of the entries</summary>
 			public COR_VTABLE Type;
 		}
+
 		/// <summary>Managed resources header</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ResourceManagerHeader
@@ -113,6 +117,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Magin number as string</summary>
 			public String MagicNumberStr { get { return BitConverter.ToString(BitConverter.GetBytes(this.MagicNumber)); } }
 		}
+
 		/// <summary>Managed resources header</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ResourceSetHeader
@@ -124,6 +129,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Number of types</summary>
 			public UInt32 NumberOfTypes;
 		}
+
 		/// <summary>Type of the entries</summary>
 		public enum COR_VTABLE
 		{
@@ -136,6 +142,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Call most derived method described by the token (only valid for virtual methods)</summary>
 			CALL_MOST_DERIVED = 0x10,
 		}
+
 		/// <summary>Stream types</summary>
 		public enum StreamHeaderType
 		{
@@ -152,6 +159,7 @@ namespace AlphaOmega.Debug
 			/// <summary>#-</summary>
 			StreamTableUnoptimized,
 		}
+
 		/// <summary>A stream header gives the names, and the position and length of a particular table or heap</summary>
 		public struct STREAM_HEADER
 		{
@@ -190,6 +198,7 @@ namespace AlphaOmega.Debug
 				}
 			}
 		}
+
 		/// <summary>.NET Stream table header</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct STREAM_TABLE_HEADER
@@ -240,6 +249,7 @@ namespace AlphaOmega.Debug
 			/*public UInt32[] Rows;
 			public UInt32 Tables;*/
 		}
+
 		/// <summary>Flags for method header</summary>
 		/// <remarks>
 		/// The first byte of a method header can also contain the following flags,
@@ -257,6 +267,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Call default constructor on all local variables</summary>
 			InitLocals = 0x10,
 		}
+
 		/// <summary>IL method header descriptor</summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct CorILMethodHeader
@@ -294,6 +305,7 @@ namespace AlphaOmega.Debug
 			}
 			//public Byte HeaderSize { get { return (Byte)(this.Format2 >> 4 * 4); } }
 		}
+
 		/// <summary>Fat method section descriptor</summary>
 		[Flags]
 		public enum CorILMethod_Sect : byte
@@ -310,6 +322,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Another data section occurs after this current section</summary>
 			MoreSects = 0x80,
 		}
+
 		/// <summary>Currently, the method data sections are only used for exception tables (§II.19)</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CorILMethodSection
@@ -345,6 +358,7 @@ namespace AlphaOmega.Debug
 				get { return (this.Kind & CorILMethod_Sect.MoreSects) == CorILMethod_Sect.MoreSects; }
 			}
 		}
+
 		/// <summary>Type of exception-handling clause</summary>
 		[Flags]
 		public enum COR_ILEXCEPTION_CLAUSE : ushort
@@ -366,6 +380,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Fault clause (finally that is called on exception only)</summary>
 			FAULT = 0x0004,
 		}
+
 		/// <summary>
 		/// The small form of the exception clause should be used whenever the code sizes
 		/// for the try block and the handler code are both smaller than 256 bytes and both their offsets are smaller than 65536.
@@ -397,6 +412,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Type of exception clause</summary>
 			public COR_ILEXCEPTION_CLAUSE Flags { get { return (COR_ILEXCEPTION_CLAUSE)this.FlagsI; } }
 		}
+
 		/// <summary>Fat exception clause header section</summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct CorILMethodExceptionFat
@@ -425,6 +441,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Type of exception clause</summary>
 			public COR_ILEXCEPTION_CLAUSE Flags { get { return (COR_ILEXCEPTION_CLAUSE)this.FlagsI; } }
 		}
+
 		/// <summary>Specifies a common language runtime Type, a type modifier, or information about a type in a metadata type signature</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/ms232600%28v=vs.110%29.aspx</remarks>
 		public enum ELEMENT_TYPE
@@ -533,6 +550,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Used in custom attributes to specify an enum (Ecma-335: #II.23.3)</summary>
 			ENUM = 0x55,
 		}
+
 		/// <summary>MetaData Table Types</summary>
 		public enum MetaTableType : int
 		{

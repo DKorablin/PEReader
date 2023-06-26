@@ -2,12 +2,13 @@
 
 namespace AlphaOmega.Debug
 {
-	/// <summary>Интерфейс директории в PE файле</summary>
+	/// <summary>Directory from PE file</summary>
 	public interface IDirectory
 	{
-		/// <summary>Директория пустая</summary>
+		/// <summary>Directory is empty</summary>
 		Boolean IsEmpty { get; }
-		/// <summary>Описатель директории</summary>
+
+		/// <summary>Directory descriptor</summary>
 		WinNT.IMAGE_DATA_DIRECTORY Directory { get; }
 	}
 }

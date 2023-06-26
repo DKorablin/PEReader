@@ -112,16 +112,19 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name=".bss" xml:space="preserve">
     <value>Uninitialized data (free format)</value>
   </data>
   <data name=".cormeta" xml:space="preserve">
     <value>CLR metadata that indicates that the object file contains managed code</value>
+  </data>
+  <data name=".CRT" xml:space="preserve">
+    <value>Some code introduced static initializers or terminators, but the CRT or its equivalent (which needs to run the static initializers or terminators) isn't run when the application starts.</value>
   </data>
   <data name=".data" xml:space="preserve">
     <value>Initialized data (free format)</value>
@@ -137,6 +140,15 @@
   </data>
   <data name=".debug$T" xml:space="preserve">
     <value>Debug types (object only)</value>
+  </data>
+  <data name=".detourc" xml:space="preserve">
+    <value>Detours is a software package for monitoring and instrumenting API calls on Windows</value>
+  </data>
+  <data name=".detourd" xml:space="preserve">
+    <value>Detours is a software package for monitoring and instrumenting API calls on Windows</value>
+  </data>
+  <data name=".didat" xml:space="preserve">
+    <value>Delayload import table</value>
   </data>
   <data name=".drective" xml:space="preserve">
     <value>Linker options</value>
@@ -158,6 +170,9 @@
   </data>
   <data name=".reloc" xml:space="preserve">
     <value>Image relocations</value>
+  </data>
+  <data name=".rodata" xml:space="preserve">
+    <value>Read-only data that typically contribute to a non-writable segment in the process image (ELF)</value>
   </data>
   <data name=".rsrc" xml:space="preserve">
     <value>Resource directory</value>
@@ -188,5 +203,8 @@
   </data>
   <data name=".xdata" xml:space="preserve">
     <value>Exception information (free format)</value>
+  </data>
+  <data name="rodata1" xml:space="preserve">
+    <value>Read-only data that typically contribute to a non-writable segment in the process image (ELF)</value>
   </data>
 </root>

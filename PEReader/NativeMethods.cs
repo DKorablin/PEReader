@@ -26,8 +26,8 @@ namespace AlphaOmega.Debug
 			if(timeDateStamp == 0)
 				return null;
 
-			TimeZone timeZone = TimeZone.CurrentTimeZone;
-			return timeZone.ToLocalTime(NativeMethods.StartDate.AddSeconds((Double)timeDateStamp));
+			DateTime utcTime = NativeMethods.StartDate.AddSeconds((Double)timeDateStamp);
+			return TimeZoneInfo.ConvertTimeFromUtc(utcTime, TimeZoneInfo.Local);
 		}
 
 		/// <summary>Retrieves the high-order word from the specified 32-bit value</summary>
