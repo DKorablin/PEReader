@@ -24,8 +24,17 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore  PEReader.sln
+    - name: Decode SNK
+      id: sign_key_file
+      uses: timheuer/base64-to-file@v1
+      with:
+        fileName: 'AlphaOmega (NoPwd).snk'
+        encodedString: ${{ secrets.ALPHAOMEGA }}
     - name: Build
       run: dotnet build  PEReader.sln --configuration Release --no-restore
+      env:
+        signAssembly: true
+        AssemblyOriginatorKeyFile: ${{ steps.sign_key_file.outputs.filePath }}
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
     - name: Deploy release
