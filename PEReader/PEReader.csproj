@@ -21,7 +21,7 @@
   </PropertyGroup>
 <PropertyGroup>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <SignAssembly>True</SignAssembly>
+    <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\..\..\AlphaOmega (NoPwd).snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
   <ItemGroup>
