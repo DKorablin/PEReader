@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore  PEReader.sln
     - name: Build
       run: dotnet build  PEReader.sln --no-restore
     - name: Test
