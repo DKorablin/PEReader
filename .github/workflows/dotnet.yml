@@ -28,3 +28,5 @@ jobs:
       run: dotnet build  PEReader.sln --no-restore
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
+    - name: Deploy release
+      uses: softprops/action-gh-release@v1
