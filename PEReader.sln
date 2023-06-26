@@ -1,9 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{3A7DE130-3542-442A-82F1-4905210E625D}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", "{3A7DE130-3542-442A-82F1-4905210E625D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEReader", "PEReader\PEReader.csproj", "{5F56B043-3547-49FF-AB37-3B9A1B14FC53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PEReader", "PEReader\PEReader.csproj", "{5F56B043-3547-49FF-AB37-3B9A1B14FC53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D63502B-B211-4233-84A1-EF2F0BCCDD3D}
 	EndGlobalSection
 EndGlobal
