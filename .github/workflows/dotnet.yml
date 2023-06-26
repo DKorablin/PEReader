@@ -25,10 +25,13 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore  PEReader.sln
     - name: Build
-      run: dotnet build  PEReader.sln --no-restore
+      run: dotnet build  PEReader.sln --configuration Release --no-restore
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
     - name: Deploy release
       uses: ncipollo/release-action@v1
       with:
+        artifacts: */PEReader.dll
         tag: Auto
+        artifactErrorsFailBuild: true
+        generateReleaseNotes: true
