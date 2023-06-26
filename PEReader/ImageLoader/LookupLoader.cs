@@ -6,6 +6,7 @@ namespace AlphaOmega.Debug
 	/// <summary>Test loader</summary>
 	public class LookupLoader : StreamLoader, IDisposable
 	{
+		private readonly String _filePath;
 		private Byte[] _map;
 		private static readonly String[] _arr = new String[]
 		{
@@ -17,8 +18,9 @@ namespace AlphaOmega.Debug
 		/// <summary>Create instance of test loader</summary>
 		/// <param name="filePath"></param>
 		public LookupLoader(String filePath)
-			: base(new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), filePath)
+			: base(new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 		{
+			this._filePath = filePath;
 			this._map = new Byte[new FileInfo(filePath).Length];
 		}
 		
@@ -64,7 +66,7 @@ namespace AlphaOmega.Debug
 		public new void Dispose()
 		{
 			File.WriteAllText(
-				LookupLoader.GetFileUniqueName(this.Source, ".log", 0),
+				LookupLoader.GetFileUniqueName(this._filePath, ".log", 0),
 				String.Join(String.Empty, Array.ConvertAll(_map, delegate(Byte b) { return _arr[b]; })));
 
 			base.Dispose();
