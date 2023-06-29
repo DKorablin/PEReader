@@ -4,15 +4,15 @@
     <OutputType>Library</OutputType>
     <RootNamespace>AlphaOmega.Debug</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyTitle>Portable Executable Reader</AssemblyTitle>
+    <AssemblyTitle>PEReader</AssemblyTitle>
     <Company>Danila Korablin</Company>
-    <Product>PEReader</Product>
+    <Product>Portable Executable Reader</Product>
     <Copyright>Copyright © Danila Korablin 2012-2023</Copyright>
     <Configuration>Debug</Configuration>
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Deterministic>false</Deterministic>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\..\bin\</OutputPath>
