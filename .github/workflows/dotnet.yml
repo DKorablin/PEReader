@@ -20,33 +20,31 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore  PEReader.sln
+      run: dotnet restore PEReader.sln
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Decode SNK
       id: sign_key_file
       uses: timheuer/base64-to-file@v1
       with:
         fileName: 'AlphaOmega (NoPwd).snk'
         encodedString: ${{ secrets.SIGN_KEY }}
-    - name: Update GitVersion in AssemblyInfo files
-      run: dotnet gitversion /updateassemblyinfo
     - name: Build
-      run: dotnet build  PEReader.sln --configuration Release --no-restore
+      run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:AssemblyVersion=${{ steps.tag_version.outputs.new_tag }}
       env:
         signAssembly: true
         AssemblyOriginatorKeyFile: ${{ steps.sign_key_file.outputs.filePath }}
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v6.1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Deploy GitHub release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: ${{github.workspace}}/../bin/netstandard2.0/PEReader.dll
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
-        artifactErrorsFailBuild: true
-        generateReleaseNotes: true
+#    - name: Deploy GitHub release
+#      uses: ncipollo/release-action@v1
+#      with:
+#        artifacts: ${{github.workspace}}/../bin/netstandard2.0/PEReader.dll
+#        tag: ${{ steps.tag_version.outputs.new_tag }}
+#        name: Auto ${{ steps.tag_version.outputs.new_tag }}
+#        body: ${{ steps.tag_version.outputs.changelog }}
+#        artifactErrorsFailBuild: true
+#        generateReleaseNotes: true
