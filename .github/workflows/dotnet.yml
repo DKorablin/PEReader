@@ -27,6 +27,8 @@ jobs:
       with:
         fileName: 'AlphaOmega (NoPwd).snk'
         encodedString: ${{ secrets.SIGN_KEY }}
+    - name: Update GitVersion in AssemblyInfo files
+      run: dotnet gitversion /updateassemblyinfo
     - name: Build
       run: dotnet build  PEReader.sln --configuration Release --no-restore
       env:
