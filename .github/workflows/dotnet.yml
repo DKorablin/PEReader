@@ -35,7 +35,7 @@ jobs:
     - name: Build
       run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:AssemblyVersion=${{ steps.tag_version.outputs.new_version }}
       env:
-        signAssembly: true
+        SignAssembly: true
         AssemblyOriginatorKeyFile: ${{ steps.sign_key_file.outputs.filePath }}
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
