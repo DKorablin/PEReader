@@ -33,7 +33,7 @@ jobs:
         fileName: 'AlphaOmega (NoPwd).snk'
         encodedString: ${{ secrets.SIGN_KEY }}
     - name: Build
-      run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:AssemblyVersion=${{ steps.tag_version.outputs.new_tag }}
+      run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:AssemblyVersion=${{ steps.tag_version.outputs.new_version }}
       env:
         signAssembly: true
         AssemblyOriginatorKeyFile: ${{ steps.sign_key_file.outputs.filePath }}
