@@ -1,7 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET Standard
+name: Buid, Test & Deploy
 
 on:
   push:
@@ -29,7 +26,7 @@ jobs:
       uses: timheuer/base64-to-file@v1
       with:
         fileName: 'AlphaOmega (NoPwd).snk'
-        encodedString: ${{ secrets.ALPHAOMEGA }}
+        encodedString: ${{ secrets.SIGN_KEY }}
     - name: Build
       run: dotnet build  PEReader.sln --configuration Release --no-restore
       env:
@@ -37,10 +34,16 @@ jobs:
         AssemblyOriginatorKeyFile: ${{ steps.sign_key_file.outputs.filePath }}
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
-    - name: Deploy release
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy GitHub release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "/home/runner/work/PEReader/bin/netstandard2.0/PEReader.dll"
-        tag: Auto
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        version: ${{ steps.tag_version.outputs.changelog }}
         artifactErrorsFailBuild: true
         generateReleaseNotes: true
