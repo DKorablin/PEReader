@@ -44,6 +44,6 @@ jobs:
       with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
         name: Release ${{ steps.tag_version.outputs.new_tag }}
-        version: ${{ steps.tag_version.outputs.changelog }}
+        body: ${{ steps.tag_version.outputs.changelog }}
         artifactErrorsFailBuild: true
         generateReleaseNotes: true
