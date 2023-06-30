@@ -43,7 +43,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Auto
-        path: ${{github.workspace}}/../bin/netstandard2.0/release.zip
+        working-directory: ${{github.workspace}}/../bin/netstandard2.0
+        path: release.zip
         if-no-files-found: error
     - name: Deploy GitHub
       uses: ncipollo/release-action@v1
