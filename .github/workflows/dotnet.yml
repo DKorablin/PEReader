@@ -33,7 +33,7 @@ jobs:
         fileName: 'Signature.snk'
         encodedString: ${{ secrets.SIGN_KEY }}
     - name: Build
-      run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:DebugType=none /p:OutputPath="..\bin\" /p:AssemblyVersion=${{ steps.tag_version.outputs.new_version }} /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
+      run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:DebugType=none /p:OutputPath=..\bin\ /p:AssemblyVersion=${{ steps.tag_version.outputs.new_version }} /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
     - name: Zip artifact
