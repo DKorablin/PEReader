@@ -36,15 +36,15 @@ jobs:
       run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:DebugType=none /p:OutputPath="../bin/" /p:DocumentationFile="../bin/PEReader.xml" /p:AssemblyVersion=${{ steps.tag_version.outputs.new_version }} /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
     - name: Test
       run: dotnet test PEReader.sln --no-build --verbosity normal
-    - name: Zip artifact
-      run: zip -qq -r release.zip *.*
-      working-directory: ${{github.workspace}}/bin
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Auto
-        path: ${{github.workspace}}/bin/release.zip
+        name: PEReader
+        path: ${{github.workspace}}/bin/*
         if-no-files-found: error
+    - name: Zip artifact
+      run: zip -qq -r release.zip *.*
+      working-directory: ${{github.workspace}}/bin
     - name: Deploy GitHub
       uses: ncipollo/release-action@v1
       with:
