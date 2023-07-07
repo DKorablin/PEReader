@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 #if !NETSTANDARD
 [assembly: AssemblyCompany("Danila Korablin")]
-[assembly: AssemblyCopyright("Copyright © Danila Korablin 2016-2023")]
+[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2023")]
 [assembly: AssemblyProduct("Portable Executable Reader")]
 [assembly: AssemblyTitle("PE Reader")]
 #if DEBUG
