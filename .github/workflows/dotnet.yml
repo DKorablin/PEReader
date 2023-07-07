@@ -56,7 +56,7 @@ jobs:
       uses: mathieudutour/github-tag-action@v6.1
       with:
         github_token: ${{secrets.GITHUB_TOKEN}}
-        #custom_tag: 1.0.0
+        custom_tag: 1.2.0
 
   build_net20:
     name: Build .NET Framework v2.0 assembly
