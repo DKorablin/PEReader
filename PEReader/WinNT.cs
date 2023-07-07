@@ -23,7 +23,8 @@ namespace AlphaOmega.Debug
 			IMAGE_NT_SIGNATURE = 0x00004550,// PE00
 		}
 
-		/// <summary>The architecture type of the computer. An image file can only be run on the specified computer or a system that emulates the specified computer</summary>
+		/// <summary>The architecture type of the computer</summary>
+		/// <remarks>An image file can only be run on the specified computer or a system that emulates the specified computer</remarks>
 		public enum IMAGE_FILE_MACHINE : ushort
 		{
 			/// <summary>The contents of this field are assumed to be applicable to any machine type</summary>
@@ -151,7 +152,7 @@ namespace AlphaOmega.Debug
 			/// <summary>
 			/// Code Integrity checks are enforced.
 			/// If you set this flag and a section contains only uninitialized data,
-			/// set the PointerToRawData member of <see cref="T:IMAGE_SECTION_HEADER"/> for that section to zero;
+			/// set the <see cref="IMAGE_SECTION_HEADER.PointerToRawData"/> member to zero;
 			/// otherwise, the image will fail to load because the digital signature cannot be verified
 			/// </summary>
 			FORCE_INTEGRITY = 0x0080,
@@ -159,7 +160,8 @@ namespace AlphaOmega.Debug
 			NX_COMPAT = 0x0100,
 			/// <summary>The image is isolation aware, but should not be isolated</summary>
 			NO_ISOLATION = 0x0200,
-			/// <summary>The image does not use structured exception handling (SEH). No handlers can be called in this image</summary>
+			/// <summary>The image does not use structured exception handling (SEH)</summary>
+			/// <remarks>No handlers can be called in this image</remarks>
 			NO_SEH = 0x0400,
 			/// <summary>Do not bind the image</summary>
 			NO_BIND = 0x0800,
@@ -179,19 +181,16 @@ namespace AlphaOmega.Debug
 			/// <summary>Unknown value, ignored by all tools</summary>
 			UNKNOWN = 0,
 
-			/// <summary>COFF debugging information (line numbers, symbol table, and string table). This type of debugging information is also pointed to by fields in the file headers</summary>
+			/// <summary>COFF debugging information (line numbers, symbol table, and string table)</summary>
+			/// <remarks>This type of debugging information is also pointed to by fields in the file headers</remarks>
 			COFF = 1,
 
-			/// <summary>
-			/// CodeView debugging information.
-			/// The format of the data block is described by the CodeView 4.0 specification
-			/// </summary>
+			/// <summary>CodeView debugging information</summary>
+			/// <remarks>The format of the data block is described by the CodeView 4.0 specification</remarks>
 			CODEVIEW = 2,
 
-			/// <summary>
-			/// Frame pointer omission (FPO) information.
-			/// This information tells the debugger how to interpret nonstandard stack frames, which use the EBP register for a purpose other than as a frame pointer
-			/// </summary>
+			/// <summary>Frame pointer omission (FPO) information</summary>
+			/// <remarks>This information tells the debugger how to interpret nonstandard stack frames, which use the EBP register for a purpose other than as a frame pointer</remarks>
 			FPO = 3,
 			/// <summary>The location of DBG file</summary>
 			MISC = 4,
@@ -215,8 +214,8 @@ namespace AlphaOmega.Debug
 		[Flags]
 		public enum COMIMAGE_FLAGS : uint
 		{
-			/// <summary>
-			/// The image contains IL code only, with no embedded native unmanaged code except the start-up stub (whitch simply executes an indirect jump to the CLR entry point).
+			/// <summary>The image contains IL code only, with no embedded native unmanaged code except the start-up stub (whitch simply executes an indirect jump to the CLR entry point)</summary>
+			/// <remarks>
 			/// Common language runtime-aware operating systems (such as Windows XP and newer) ignore the start-up stub and invoke the CLR automatically, so for all practical purposes the file can be considered pure IL.
 			/// Howewer, setting this flag can cause certain problems when running under Windows XP and newer.
 			/// If this flag is set, the OS loader of Windows XP and newer ignores not only the start-up stub but also the .reloc section, whitch in this case contains single relocation (or single pair of relocations in IA64-specific images) for the CLR entry point.
@@ -224,37 +223,33 @@ namespace AlphaOmega.Debug
 			/// Among existing managed compilers, only the VC++ and the IL assembler can produce this items.
 			/// The VC++ of v7.0 and v7.1 (corresponding to CLR version 1.0 and 1.1) newer set this flag because the image file it generated was newer pure IL.
 			/// In v2.0 this situation has changed, and currently, th VC++ and IL assembler are the only two capable of producing pure-IL image files that might require additional relocations in the .reloc section.
-			/// To resolve this problem, the IL assembler, if TLS-based data or data on data is emitted, clears this flag and, if the target platform is 32-bit, sets the <see cref="T:_32BITREQUIRED"/> flag instead.
-			/// </summary>
+			/// To resolve this problem, the IL assembler, if TLS-based data or data on data is emitted, clears this flag and, if the target platform is 32-bit, sets the <see cref="_32BITREQUIRED"/> flag instead.
+			/// </remarks>
 			ILONLY = 0x00000001,
-			/// <summary>
-			/// The image file can be loaded only into a 32-bit process.
-			/// This flag is set alone when native unmanaged code is embedded in the PE file or when the .reloc section contains additional relocations or is set in combination with <see cref="T:ILONLY"/> when the executable does not contain additional relocations but is in some way 32-bit specific
+			/// <summary>The image file can be loaded only into a 32-bit process</summary>
+			/// <remarks>
+			/// This flag is set alone when native unmanaged code is embedded in the PE file or when the .reloc section contains additional relocations or is set in combination with <see cref="ILONLY"/> when the executable does not contain additional relocations but is in some way 32-bit specific
 			/// (for example, invokes an unmanaged 32-bit specific API or uses 4-byte integers to store pinters)
-			/// </summary>
+			/// </remarks>
 			_32BITREQUIRED = 0x00000002,
-			/// <summary>
-			/// This flag is obsolete and should not be set.
-			/// Setting it as the IL assembler allows, using the .corflags directive - will render your module unloadable
-			/// </summary>
+			/// <summary>Setting it as the IL assembler allows, using the .corflags directive - will render your module unloadable</summary>
+			/// <remarks>This flag is obsolete and should not be set</remarks>
 			IL_LIBRARY = 0x00000004,
-			/// <summary>
-			/// The image file is protected with strong name signature.
+			/// <summary>The image file is protected with strong name signature</summary>
+			/// <remarks>
 			/// The strong name signature includes the public key and the signature hash and is a part of an assembly's identity, along with the assembly name, version number, and culture information.
 			/// This flag is set when the strong name signing procedure is applied to the image file.
 			/// No compiler, including ILAsm, can set this flag explicity
-			/// </summary>
+			/// </remarks>
 			STRONGNAMESIGNED = 0x00000008,
-			/// <remarks>
+			/// <summary>
 			/// The executable's entry point is an unmanaged method.
 			/// The EntryPointToken/EntryPointRVA field of CLR header contains the RVA of this native method.
-			/// This flag was introduced in version 2.0 of the CLR
-			/// </remarks>
-			NATIVE_ENTRYPOINT = 0x00000010,
-			/// <summary>
-			/// The CLR loader and the JIT compiler are required to track debug information about the methods.
-			/// This flag is not used
 			/// </summary>
+			/// <remarks>This flag was introduced in version 2.0 of the CLR</remarks>
+			NATIVE_ENTRYPOINT = 0x00000010,
+			/// <summary>The CLR loader and the JIT compiler are required to track debug information about the methods</summary>
+			/// <remarks>This flag is not used</remarks>
 			TRACKDEBUGDATA = 0x00010000,
 		}
 
@@ -269,22 +264,24 @@ namespace AlphaOmega.Debug
 			/// The default behavior of the linker is to strip base relocations from executable (EXE) files
 			/// </summary>
 			RELOCS_STRIPPED = 0x0001,
-			/// <summary>
-			/// Image only. This indicates that the image file is valid and can be run.
-			/// If this flag is not set, it indicates a linker error
-			/// </summary>
+			/// <summary>Image only. This indicates that the image file is valid and can be run</summary>
+			/// <remarks>If this flag is not set, it indicates a linker error</remarks>
 			EXECUTABLE_IMAGE = 0x0002,
-			/// <summary>COFF line numbers have been removed. This flag is deprecated and should be zero</summary>
+			/// <summary>COFF line numbers have been removed</summary>
+			/// <remarks>This flag is deprecated and should be zero</remarks>
 			LINE_NUMS_STRIPPED = 0x0004,
-			/// <summary>COFF symbol table entries for local symbols have been removed. This flag is deprecated and should be zero</summary>
+			/// <summary>COFF symbol table entries for local symbols have been removed</summary>
+			/// <remarks>This flag is deprecated and should be zero</remarks>
 			LOCAL_SYMS_STRIPPED = 0x0008,
-			/// <summary>Obsolete. Aggressively trim working set. This flag is deprecated for Windows 2000 and later and must be zero</summary>
+			/// <summary>Obsolete. Aggressively trim working set</summary>
+			/// <remarks>This flag is deprecated for Windows 2000 and later and must be zero</remarks>
 			AGGRESIVE_WS_TRIM = 0x0010,
 			/// <summary>Application can handle > 2 GB addresses</summary>
 			LARGE_ADDRESS_AWARE = 0x0020,
 			/// <summary>This flag is reserved for future use</summary>
 			Reserved1=0x0040,
-			/// <summary>Little endian: the least significant bit (LSB) precedes the most significant bit (MSB) in memory. This flag is deprecated and should be zero</summary>
+			/// <summary>Little endian: the least significant bit (LSB) precedes the most significant bit (MSB) in memory</summary>
+			/// <remarks>This flag is deprecated and should be zero</remarks>
 			BYTES_REVERSED_LO = 0x0080,
 			/// <summary>Machine is based on a 32-bit-word architecture</summary>
 			_32BIT_MACHINE = 0x0100,
@@ -296,17 +293,13 @@ namespace AlphaOmega.Debug
 			NET_RUN_FROM_SWAP = 0x0800,
 			/// <summary>The image file is a system file, not a user program</summary>
 			SYSTEM = 0x1000,
-			/// <summary>
-			/// The image file is a dynamic-link library (DLL).
-			/// Such files are considered executable files for almost all purposes, although they cannot be directly run
-			/// </summary>
+			/// <summary>The image file is a dynamic-link library (DLL)</summary>
+			/// <remarks>Such files are considered executable files for almost all purposes, although they cannot be directly run</remarks>
 			DLL = 0x2000,
 			/// <summary>The file should be run only on a uniprocessor machine</summary>
 			UP_SYSTEM_ONLY = 0x4000,
-			/// <summary>
-			/// Big endian: the MSB precedes the LSB in memory.
-			/// This flag is deprecated and should be zero
-			/// </summary>
+			/// <summary>Big endian: the MSB precedes the LSB in memory</summary>
+			/// <remarks>This flag is deprecated and should be zero</remarks>
 			BYTES_REVERSED_HI = 0x8000,
 		}
 
@@ -314,23 +307,23 @@ namespace AlphaOmega.Debug
 		public enum IMAGE_DIRECTORY_ENTRY
 		{
 			/// <summary>The export table address and size</summary>
-			/// <remarks>Points to the exports (an <see cref="T:IMAGE_EXPORT_DIRECTORY"/> structure)</remarks>
+			/// <remarks>Points to the exports (an <see cref="IMAGE_EXPORT_DIRECTORY"/> structure)</remarks>
 			EXPORT = 0,
 			/// <summary>The import table address and size</summary>
-			/// <remarks>Points to the imports (an array of <see cref="T:IMAGE_IMPORT_DESCRIPTOR"/> structures)</remarks>
+			/// <remarks>Points to the imports (an array of <see cref="IMAGE_IMPORT_DESCRIPTOR"/> structures)</remarks>
 			IMPORT = 1,
 			/// <summary>The resource table address and size</summary>
-			/// <remarks>Points to the resources (an <see cref="T:IMAGE_RESOURCE_DIRECTORY"/> structure)</remarks>
+			/// <remarks>Points to the resources (an <see cref="Resource.IMAGE_RESOURCE_DIRECTORY"/> structure)</remarks>
 			RESOURCE = 2,
 			/// <summary>The exception table address and size</summary>
 			/// <remarks>
-			/// Points to the exception handler table (an array of <see cref="T:IMAGE_RUNTIME_FUNCTION_ENTRY"/> structures).
+			/// Points to the exception handler table (an array of <see cref="IMAGE_RUNTIME_FUNCTION_ENTRY"/> structures).
 			/// CPU-specific and for table-based exception handling. Used on every CPU except the x86
 			/// </remarks>
 			EXCEPTION = 3,
 			/// <summary>The attribute certificate table address and size</summary>
 			/// <remarks>
-			/// Points to a list of <see cref="T:WIN_CERTIFICATE"/> structures, defined in WinTrust.H.
+			/// Points to a list of <see cref="WIN_CERTIFICATE"/> structures, defined in WinTrust.H.
 			/// Not mapped into memory as part of the image.
 			/// Therefore, the VirtualAddress field is a file offset, rather than an RVA
 			/// </remarks>
@@ -340,15 +333,16 @@ namespace AlphaOmega.Debug
 			BASERELOC = 5,
 			/// <summary>The debug data starting address and size</summary>
 			/// <remarks>
-			/// Points to an array of <see cref="T:IMAGE_DEBUG_DIRECTORY"/> structures, each describing some debug information for the image.
-			/// Early Borland linkers set the Size field of this <see cref="T:IMAGE_DATA_DIRECTORY"/> entry to the number of structures, rather than the size in bytes. To get the number of <see cref="T:IMAGE_DEBUG_DIRECTORY"/>s, divide the Size field by the size of an <see cref="T:IMAGE_DEBUG_DIRECTORY"/>
+			/// Points to an array of <see cref="IMAGE_DEBUG_DIRECTORY"/> structures, each describing some debug information for the image.
+			/// Early Borland linkers set the Size field of this <see cref="IMAGE_DATA_DIRECTORY"/> entry to the number of structures, rather than the size in bytes.
+			/// To get the number of <see cref="IMAGE_DEBUG_DIRECTORY"/>s, divide the Size field by the size of an <see cref="IMAGE_DEBUG_DIRECTORY"/>
 			/// </remarks>
 			DEBUG = 6,
-			/// <summary>Reserved, must be 0</summary>
-			/// <remarks>
+			/// <summary>
 			/// Points to architecture-specific data, which is an array of IMAGE_ARCHITECTURE_HEADER structures.
 			/// Not used for x86 or IA-64, but appears to have been used for DEC/Compaq Alpha
-			/// </remarks>
+			/// </summary>
+			/// <remarks>Reserved, must be 0</remarks>
 			ARCHITECTURE = 7,
 			/// <summary>
 			/// The RVA of the value to be stored in the global pointer register.
@@ -365,20 +359,20 @@ namespace AlphaOmega.Debug
 			TLS = 9,
 			/// <summary>The load configuration table address and size</summary>
 			/// <remarks>
-			/// Points to an IMAGE_LOAD_CONFIG_DIRECTORY structure.
-			/// The information in an IMAGE_LOAD_CONFIG_DIRECTORY is specific to Windows NT, Windows 2000, and Windows XP (for example, the GlobalFlag value).
-			/// To put this structure in your executable, you need to define a global structure with the name __load_config_used, and of type IMAGE_LOAD_CONFIG_DIRECTORY.
+			/// Points to an <see cref="WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32"/> structure.
+			/// The information in an <see cref="WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32"/> is specific to Windows NT, Windows 2000, and Windows XP (for example, the GlobalFlag value).
+			/// To put this structure in your executable, you need to define a global structure with the name __load_config_used, and of type <see cref="WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32"/>.
 			/// For non-x86 architectures, the symbol name needs to be _load_config_used (with a single underscore).
-			/// If you do try to include an IMAGE_LOAD_CONFIG_DIRECTORY, it can be tricky to get the name right in your C++ code.
+			/// If you do try to include an <see cref="WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32"/>, it can be tricky to get the name right in your C++ code.
 			/// The symbol name that the linker sees must be exactly: __load_config_used (with two underscores).
 			/// The C++ compiler adds an underscore to global symbols.
 			/// In addition, it decorates global symbols with type information.
-			/// So, to get everything right, in your C++ code, you'd have something like this: extern "C" IMAGE_LOAD_CONFIG_DIRECTORY _load_config_used = {...}
+			/// So, to get everything right, in your C++ code, you'd have something like this: extern "C" <see cref="WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32"/> _load_config_used = {...}
 			/// </remarks>
 			LOAD_CONFIG = 10,
 			/// <summary>The bound import table address and size</summary>
 			/// <remarks>
-			/// Points to an array of <see cref="T:IMAGE_BOUND_IMPORT_DESCRIPTOR"/>s, one for each DLL that this image has bound against.
+			/// Points to an array of <see cref="IMAGE_BOUND_IMPORT_DESCRIPTOR"/>s, one for each DLL that this image has bound against.
 			/// The timestamps in the array entries allow the loader to quickly determine whether the binding is fresh.
 			/// If stale, the loader ignores the binding information and resolves the imported API's normally
 			/// </remarks>
@@ -393,7 +387,7 @@ namespace AlphaOmega.Debug
 			IAT = 12,
 			/// <summary>The delay import descriptor address and size</summary>
 			/// <remarks>
-			/// Points to the delayload information, which is an array of <see cref="T:ImgDelayDescr"/> structures, defined in DELAYIMP.H from Visual C++.
+			/// Points to the delayload information, which is an array of <see cref="ImgDelayDescr"/> structures, defined in DELAYIMP.H from Visual C++.
 			/// Delayloaded DLLs aren't loaded until the first call to an API in them occurs.
 			/// It's important to note that Windows has no implicit knowledge of delay loading DLLs.
 			/// The delayload feature is completely implemented by the linker and runtime library
@@ -403,7 +397,7 @@ namespace AlphaOmega.Debug
 			/// <remarks>
 			/// This value has been renamed to IMAGE_DIRECTORY_ENTRY_COMHEADER in more recent updates to the system header files.
 			/// It points to the top-level information for .NET information in the executable, including metadata.
-			/// This information is in the form of an <see cref="T:IMAGE_COR20_HEADER"/> structure
+			/// This information is in the form of an <see cref="IMAGE_COR20_HEADER"/> structure
 			/// </remarks>
 			CLR_HEADER = 14,
 		}
@@ -415,30 +409,23 @@ namespace AlphaOmega.Debug
 			Resources = 0,
 			/// <summary>The RVA of the strong name hash data</summary>
 			StrongNameSignature = 1,
-			/// <summary>
-			/// The RVA of the code manager table.
-			/// A code manager contains the code required to obtain the state of a running program (such as tracing the stack and track GC references)
-			/// </summary>
+			/// <summary>The RVA of the code manager table</summary>
+			/// <remarks>A code manager contains the code required to obtain the state of a running program (such as tracing the stack and track GC references)</remarks>
 			CodeManagerTable = 2,
-			/// <summary>
-			/// The RVA of an array of function pointers that need fixups.
-			/// This is for support of unmanaged C++ vtables
-			/// </summary>
+			/// <summary>The RVA of an array of function pointers that need fixups</summary>
+			/// <remarks>This is for support of unmanaged C++ vtables</remarks>
 			VTableFuxups = 3,
-			/// <summary>
-			/// The RVA to an array of RVAs where export JMP thunks are written.
-			/// These thunks allow managed methods to be exported so that unmanaged code can call them
-			/// </summary>
+			/// <summary>The RVA to an array of RVAs where export JMP thunks are written</summary>
+			/// <remarks>These thunks allow managed methods to be exported so that unmanaged code can call them</remarks>
 			ExportAddressTableJumps = 4,
-			/// <summary>
-			/// For internal use of the .NET runtime in memory.
-			/// Set to 0 in the executable
-			/// </summary>
+			/// <summary>For internal use of the .NET runtime in memory</summary>
+			/// <remarks>Set to 0 in the executable</remarks>
 			ManagedNativeHeader = 5,
 			/// <summary>
 			/// The RVA to the metadata tables.
-			/// Symbol table and startup information</summary>
-			/// <remarks>Pointer to <see cref="T:IMAGE_COR20_METADATA"/> section</remarks>
+			/// Symbol table and startup information
+			/// </summary>
+			/// <remarks>Pointer to <see cref="Cor.IMAGE_COR20_METADATA"/> section</remarks>
 			MetaData = 6,
 		}
 
@@ -456,7 +443,7 @@ namespace AlphaOmega.Debug
 			TYPE_GROUP = 0x00000004,
 			/// <summary>
 			/// The section should not be padded to the next boundary.
-			/// This flag is obsolete and is replaced by <see cref="T:IMAGE_SCN.ALIGN_1BYTES"/>.
+			/// This flag is obsolete and is replaced by <see cref="IMAGE_SCN.ALIGN_1BYTES"/>.
 			/// This is valid only for object files
 			/// </summary>
 			TYPE_NO_PAD = 0x00000008,
@@ -478,16 +465,14 @@ namespace AlphaOmega.Debug
 			LNK_INFO = 0x00000200,
 			/// <summary>Reserved for future use</summary>
 			TYPE_OVER = 0x00000400,
-			/// <summary>
-			/// The section will not become part of the image.
-			/// This is valid only for object files
-			/// </summary>
+			/// <summary>The section will not become part of the image</summary>
+			/// <remarks>This is valid only for object files</remarks>
 			LNK_REMOVE = 0x00000800,
 			/// <summary>
 			/// The section contains COMDAT data.
 			/// For more information, see section 5.5.6, COMDAT Sections (Object Only).
-			/// This is valid only for object files
 			/// </summary>
+			/// <remarks>This is valid only for object files</remarks>
 			LNK_COMDAT = 0x00001000,
 			/// <summary>Reset speculative exceptions handling bits in the TLB entries for this section</summary>
 			NO_DEFER_SPEC_EXC = 0x00004000,
@@ -503,50 +488,59 @@ namespace AlphaOmega.Debug
 			MEM_LOCKED = 0x00040000,
 			/// <summary>Reserved for future use</summary>
 			MEM_PRELOAD = 0x00080000,
-			/// <summary>Align data on a 1-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 1-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_1BYTES = 0x00100000,
-			/// <summary>Align data on a 2-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 2-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_2BYTES = 0x00200000,
-			/// <summary>Align data on a 4-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 4-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_4BYTES = 0x00300000,
-			/// <summary>Align data on an 8-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on an 8-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_8BYTES = 0x00400000,
-			/// <summary>Align data on a 16-byte boundary. Valid only for object files</summary>
-			/// <remarks>Default alignment if no others are specified</remarks>
+			/// <summary>Align data on a 16-byte boundary. Default alignment if no others are specified</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_16BYTES = 0x00500000,
-			/// <summary>Align data on a 32-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 32-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_32BYTES = 0x00600000,
-			/// <summary>Align data on a 64-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 64-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_64BYTES = 0x00700000,
-			/// <summary>Align data on a 128-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 128-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_128BYTES = 0x00800000,
-			/// <summary>Align data on a 256-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 256-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_256BYTES = 0x00900000,
-			/// <summary>Align data on a 512-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 512-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_512BYTES = 0x00A00000,
-			/// <summary>Align data on a 1024-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 1024-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_1024BYTES = 0x00B00000,
-			/// <summary>Align data on a 2048-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 2048-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_2048BYTES = 0x00C00000,
-			/// <summary>Align data on a 4096-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on a 4096-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_4096BYTES = 0x00D00000,
-			/// <summary>Align data on an 8192-byte boundary. Valid only for object files</summary>
+			/// <summary>Align data on an 8192-byte boundary</summary>
+			/// <remarks>Valid only for object files</remarks>
 			ALIGN_8192BYTES = 0x00E00000,
 			/// <summary>Mask?</summary>
 			ALIGN_MASK=0x00F00000,
 			/// <summary>The section contains extended relocations</summary>
 			LNK_NRELOC_OVFL = 0x01000000,
-			/// <summary>
-			/// The section can be discarded from the final executable.
-			/// Used to hold information for the linker's use, including the .debug$ sections
-			/// </summary>
+			/// <summary>Used to hold information for the linker's use, including the .debug$ sections</summary>
+			/// <remarks>The section can be discarded from the final executable</remarks>
 			MEM_DISCARDABLE = 0x02000000,
 			/// <summary>The section cannot be cached</summary>
 			MEM_NOT_CACHED = 0x04000000,
-			/// <summary>
-			/// The section is not pageable, so it should always be physically present in memory.
-			/// Often used for kernel-mode drivers
-			/// </summary>
+			/// <summary>Often used for kernel-mode drivers</summary>
+			/// <remarks>The section is not pageable, so it should always be physically present in memory</remarks>
 			MEM_NOT_PAGED = 0x08000000,
 			/// <summary>
 			/// The physical pages containing this section's data will be shared between all processes that have this executable loaded.
@@ -565,10 +559,8 @@ namespace AlphaOmega.Debug
 		/// <summary>Certificate revision number type</summary>
 		public enum WIN_CERT_REVISION : ushort
 		{
-			/// <summary>
-			/// Version 1, legacy version of the Win_Certificate structure.
-			/// It is supported only for purposes of verifying legacy Authenticode signatures
-			/// </summary>
+			/// <summary>Version 1, legacy version of the Win_Certificate structure</summary>
+			/// <remarks>It is supported only for purposes of verifying legacy Authenticode signatures</remarks>
 			REVISION_1_0 = 0x0100,
 			/// <summary>Version 2 is the current version of the Win_Certificate structure</summary>
 			REVISION_2_0 = 0x0200,
@@ -576,7 +568,8 @@ namespace AlphaOmega.Debug
 		/// <summary>Specifies the type of certificate</summary>
 		public enum WIN_CERT_TYPE : ushort
 		{
-			/// <summary>bCertificate contains an X.509 Certificate. Not supported</summary>
+			/// <summary>bCertificate contains an X.509 Certificate</summary>
+			/// <remarks>Not supported</remarks>
 			X509 = 1,
 			/// <summary>bCertificate contains a PKCS#7 SignedData structure</summary>
 			PKCS_SIGNED_DATA = 2,
@@ -600,8 +593,9 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>The base relocation is skipped. This type can be used to pad a block</summary>
 			/// <remarks>
-			/// You will often see a relocation of type IMAGE_REL_BASED_ABSOLUTE at the end of a group of relocations.
-			/// These relocations do nothing, and are there just to pad things so that the next IMAGE_BASE_RELOCATION is aligned on a 4-byte boundary</remarks>
+			/// You will often see a relocation of type <see cref="IMAGE_REL_BASED.ABSOLUTE"/> at the end of a group of relocations.
+			/// These relocations do nothing, and are there just to pad things so that the next <see cref="IMAGE_BASE_RELOCATION"/> is aligned on a 4-byte boundary
+			/// </remarks>
 			ABSOLUTE = 0,
 			/// <summary>
 			/// The base relocation adds the high 16 bits of the difference to the 16-bit field at offset.
@@ -622,7 +616,7 @@ namespace AlphaOmega.Debug
 			LOW = 2,
 			/// <summary>The base relocation applies all 32 bits of the difference to the 32-bit field at offset</summary>
 			/// <remarks>
-			/// For x86 executables, all base relocations are of type IMAGE_REL_BASED_HIGHLOW.
+			/// For x86 executables, all base relocations are of type <see cref="IMAGE_REL_BASED.HIGHLOW"/>.
 			/// Docs imply two words in big-endian order, so perhaps this is only used on big-endian platforms,
 			/// in which case the obvious code will work
 			/// </remarks>
@@ -650,10 +644,10 @@ namespace AlphaOmega.Debug
 			/// The low 32 bits of the address are stored in the 32-bit double word that follows this relocation.
 			/// A fixup of this type occupies three slots
 			/// </summary>
-			/// <remarks>For IA-64 executables, the relocations seem to always be of type IMAGE_REL_BASED_DIR64</remarks>
+			/// <remarks>For IA-64 executables, the relocations seem to always be of type <see cref="IMAGE_REL_BASED.DIR64"/></remarks>
 			DIR64 = 10,
 			/// <summary>
-			/// Similar to IMAGE_REL_BASED_HIGHADJ except this is the third word.
+			/// Similar to <see cref="IMAGE_REL_BASED.HIGHADJ"/> except this is the third word.
 			/// Adjust low half of high ULONG of an address and adjust for sign extension of the low ULONG
 			/// </summary>
 			HIGH3ADJ = 11,
@@ -811,7 +805,7 @@ namespace AlphaOmega.Debug
 			/// This indicates the size of the section table, which immediately follows the headers.
 			/// Note that the Windows loader limits the number of sections to 96
 			/// </summary>
-			/// <remarks>The section table immediately follows the IMAGE_NT_HEADERS</remarks>
+			/// <remarks>The section table immediately follows the <see cref="IMAGE_NT_HEADERS32"/></remarks>
 			public UInt16 NumberOfSections;
 
 			/// <summary>
@@ -842,11 +836,9 @@ namespace AlphaOmega.Debug
 			/// </remarks>
 			public UInt32 NumberOfSymbols;
 
-			/// <summary>
-			/// The size of the optional data that follows the <see cref="T:IMAGE_FILE_HEADER"/>.
-			/// </summary>
+			/// <summary>The size of the optional data that follows the <see cref="IMAGE_FILE_HEADER"/></summary>
 			/// <remarks>
-			/// In PE files, this data is the IMAGE_OPTIONAL_HEADER.
+			/// In PE files, this data is the <see cref="IMAGE_OPTIONAL_HEADER32"/> or <see cref="IMAGE_OPTIONAL_HEADER64"/>.
 			/// This size is different depending on whether it's a 32 or 64-bit file.
 			/// For 32-bit PE files, this field is usually 224. For 64-bit PE32+ files, it's usually 240.
 			/// However, these sizes are just minimum values, and larger values could appear.
@@ -855,7 +847,7 @@ namespace AlphaOmega.Debug
 			public UInt16 SizeOfOptionalHeader;
 
 			/// <summary>A set of bit flags indicating attributes of the file</summary>
-			/// <remarks>Valid values of these flags are the <see cref="T:IMAGE_FILE"/> values defined in WINNT.H</remarks>
+			/// <remarks>Valid values of these flags are the <see cref="IMAGE_FILE"/> values defined in WINNT.H</remarks>
 			public IMAGE_FILE Characteristics;
 
 			/// <summary>This value is a more accurate indicator of when the file was created than is the file system date/time</summary>
@@ -1181,9 +1173,7 @@ namespace AlphaOmega.Debug
 			[FieldOffset(12)]
 			public UInt32 VirtualAddress;
 
-			/// <summary>
-			/// The size (in bytes) of data stored for the section in the executable or OBJ.
-			/// </summary>
+			/// <summary>The size (in bytes) of data stored for the section in the executable or OBJ</summary>
 			/// <remarks>
 			/// For executables, this must be a multiple of the file alignment given in the PE header.
 			/// If set to 0, the section is uninitialized data.
@@ -1339,7 +1329,7 @@ namespace AlphaOmega.Debug
 			/// with this directory entry. If the name of the entry is an actual text
 			/// string instead of an integer Id, then the high order bit of the name field
 			/// is set to one and the low order 31-bits are an offset, relative to the
-			/// beginning of the resource directory of the string, which is of type <see cref="T:IMAGE_RESOURCE_DIRECTORY_STRING"/>.
+			/// beginning of the resource directory of the string, which is of type <see cref="IMAGE_RESOURCE_DIRECTORY_STRING"/>.
 			/// Otherwise the high bit is clear and the low-order 16-bits are the integer Id that identify this resource directory
 			/// entry. If the directory entry is yet another resource directory (i.e. a
 			/// subdirectory), then the high order bit of the offset field will be
@@ -1357,7 +1347,7 @@ namespace AlphaOmega.Debug
 				/// <summary>Directory name is string</summary>
 				public Boolean IsNameString { get { return (this.NameOffset & 0x80000000) > 0; } }
 
-				/// <summary>Address to structure <see cref="T:IMAGE_RESOURCE_DIRECTORY_STRING"/> or directory identifier</summary>
+				/// <summary>Address to structure <see cref="IMAGE_RESOURCE_DIRECTORY_STRING"/> or directory identifier</summary>
 				public UInt32 NameAddress { get { return this.NameOffset & 0x7FFFFFFF; } }
 
 				/// <summary>Root directory type</summary>
@@ -1366,10 +1356,10 @@ namespace AlphaOmega.Debug
 				/// <summary>Entry is directory</summary>
 				public Boolean IsDirectory { get { return (this.OffsetToData & 0x80000000) > 0; } }
 
-				/// <summary>Address to <see cref="T:IMAGE_RESOURCE_DIRECTORY"/> or <see cref="T:WinNT.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
+				/// <summary>Address to <see cref="IMAGE_RESOURCE_DIRECTORY"/> or <see cref="WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
 				public UInt32 DirectoryAddress { get { return this.OffsetToData & 0x7FFFFFFF; } }
 
-				/// <summary>Address to structure <see cref="T:WinNT.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
+				/// <summary>Address to structure <see cref="WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
 				public Boolean IsDataEntry { get { return !this.IsNameString && !this.IsDirectory; } }
 			}
 
@@ -1442,9 +1432,7 @@ namespace AlphaOmega.Debug
 			[StructLayout(LayoutKind.Sequential)]
 			public struct IMAGE_RESOURCE_DATA_ENTRY
 			{
-				/// <summary>
-				/// The OffsetToData and Size fields specify the location (as a relative virtual address within the resource section) and size (in bytes) of the resource data
-				/// </summary>
+				/// <summary>The OffsetToData and Size fields specify the location (as a relative virtual address within the resource section) and size (in bytes) of the resource data</summary>
 				/// <remarks>
 				/// Although an RVA is not the same as a file offset, the equivalent file offset can be calculated by subtracting the resource section's RVA from OffsetToData's RVA value, and adding the difference to the offset of the root directory
 				/// </remarks>
@@ -1468,16 +1456,19 @@ namespace AlphaOmega.Debug
 				/// <summary>CodePage string representation</summary>
 				public String CodePageString { get { return Encoding.GetEncoding((Int32)this.CodePage).EncodingName; } }
 			}
+
 			/// <summary>Directory name</summary>
 			[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 			public struct IMAGE_RESOURCE_DIRECTORY_STRING
 			{
 				/// <summary>Name length</summary>
 				public UInt16 Length;
+
 				/// <summary>Name string</summary>
 				[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
 				public String NameString;
-				/// <summary>NameString может закончится НЕ \0. Поэтому правильно отрезать лишнюю информацию</summary>
+
+				/// <summary>NameString may NOT end \0. Therefore it's corrent to cut off excess information</summary>
 				public String Name { get { return this.NameString.Substring(0, this.Length); } }
 			}
 
@@ -1492,7 +1483,7 @@ namespace AlphaOmega.Debug
 			[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 			public struct VS_VERSIONINFO
 			{
-				/// <summary>The length, in bytes, of the VS_VERSIONINFO structure</summary>
+				/// <summary>The length, in bytes, of the <see cref="VS_VERSIONINFO"/> structure</summary>
 				/// <remarks>This length does not include any padding that aligns any subsequent version resource data on a 32-bit boundary</remarks>
 				public UInt16 wLength;
 				
@@ -1547,7 +1538,7 @@ namespace AlphaOmega.Debug
 				public VersionDataType wType;
 				
 				/// <summary>Size of next value</summary>
-				/// <exception cref="T:NotImplementedException">Only Text data type supported</exception>
+				/// <exception cref="NotImplementedException">Only Text data type supported</exception>
 				public UInt16 ValueLength
 				{
 					get
@@ -1613,7 +1604,7 @@ namespace AlphaOmega.Debug
 				//public Byte[] Value;
 
 				/// <summary>Length of the value</summary>
-				/// <exception cref="T:NotImplementedException">Only Text data type supported</exception>
+				/// <exception cref="NotImplementedException">Only Text data type supported</exception>
 				public UInt16 ValueLength
 				{
 					get
@@ -1638,9 +1629,9 @@ namespace AlphaOmega.Debug
 				
 				/// <summary>The highest message identifier contained within this structure</summary>
 				public UInt32 HighId;
-				
+
 				/// <summary>
-				/// The offset, in bytes, from the beginning of the MESSAGE_RESOURCE_DATA structure to the <see cref="MESSAGE_RESOURCE_ENTRY"/> structures in this <see cref="MESSAGE_RESOURCE_BLOCK"/>
+				/// The offset, in bytes, from the beginning of the <see cref="MESSAGE_RESOURCE_BLOCK"/> structure to the <see cref="MESSAGE_RESOURCE_ENTRY"/> structures in this <see cref="MESSAGE_RESOURCE_BLOCK"/>
 				/// </summary>
 				/// <remarks>The <see cref="MESSAGE_RESOURCE_ENTRY"/> structures contain the message strings</remarks>
 				public UInt32 OffsetToEntries;
@@ -1650,7 +1641,7 @@ namespace AlphaOmega.Debug
 			[StructLayout(LayoutKind.Sequential)]
 			public struct MESSAGE_RESOURCE_ENTRY
 			{
-				/// <summary>The length, in bytes, of the MESSAGE_RESOURCE_ENTRY structure</summary>
+				/// <summary>The length, in bytes, of the <see cref="MESSAGE_RESOURCE_ENTRY"/> structure</summary>
 				public UInt16 Length;
 
 				/// <summary>
@@ -1682,7 +1673,8 @@ namespace AlphaOmega.Debug
 			[FieldOffset(0)]
 			public UInt32 cb;
 
-			/// <summary>The minimum version of the runtime required to run this program. For the first release of .NET, this value is 1</summary>
+			/// <summary>The minimum version of the runtime required to run this program</summary>
+			/// <remarks>For the first release of .NET, this value is 1</remarks>
 			[FieldOffset(4)]
 			public UInt16 MajorRuntimeVersion;
 			
@@ -1694,7 +1686,7 @@ namespace AlphaOmega.Debug
 			/// The RVA to the metadata tables.
 			/// Symbol table and startup information
 			/// </summary>
-			/// <remarks>Pointer to <see cref="T:IMAGE_COR20_METADATA"/> section</remarks>
+			/// <remarks>Pointer to <see cref="Cor.IMAGE_COR20_METADATA"/> section</remarks>
 			[FieldOffset(8)]
 			public IMAGE_DATA_DIRECTORY MetaData;
 
@@ -1707,8 +1699,8 @@ namespace AlphaOmega.Debug
 			/// The .NET runtime calls this method to begin managed execution in the file
 			/// </summary>
 			/// <remarks>
-			/// If COMIMAGE_FLAGS.NATIVE_ENTRYPOINT is not set, EntryPointToken represents a managed entrypoint.
-			/// If COMIMAGE_FLAGS.NATIVE_ENTRYPOINT is set, EntryPointRVA represents an RVA to a native entrypoint
+			/// If <see cref="COMIMAGE_FLAGS.NATIVE_ENTRYPOINT"/> is not set, EntryPointToken represents a managed entrypoint.
+			/// If <see cref="COMIMAGE_FLAGS.NATIVE_ENTRYPOINT"/> is set, EntryPointRVA represents an RVA to a native entrypoint
 			/// </remarks>
 			[FieldOffset(20)]
 			public UInt32 EntryPointToken;
@@ -1745,7 +1737,7 @@ namespace AlphaOmega.Debug
 			/// At one time, this may have been a set of flags.
 			/// However, Microsoft changed its meaning and never bothered to update WINNT.H.
 			/// This field is really an offset (an RVA) to an array of pointers.
-			/// Each of these pointers points to an <see cref="T:IMAGE_IMPORT_BY_NAME"/> structure
+			/// Each of these pointers points to an <see cref="IMAGE_IMPORT_BY_NAME"/> structure
 			/// </summary>
 			public UInt32 Characteristics;
 
@@ -1767,9 +1759,9 @@ namespace AlphaOmega.Debug
 			/// <remarks>Common examples are "KERNEL32.DLL" and "USER32.DLL"</remarks>
 			public UInt32 Name;
 
-			/// <summary>This field is an offset (an RVA) to an IMAGE_THUNK_DATA union</summary>
+			/// <summary>This field is an offset (an RVA) to an <see cref="IMAGE_THUNK_DATA32"/> union</summary>
 			/// <remarks>
-			/// /// In almost every case, the union is interpreted as a pointer to an <see cref="T:IMAGE_IMPORT_BY_NAME"/> structure.
+			/// /// In almost every case, the union is interpreted as a pointer to an <see cref="IMAGE_IMPORT_BY_NAME"/> structure.
 			/// If the field isn't one of these pointers, then it's supposedly treated as an export ordinal value for the DLL that's being imported.
 			/// It's not clear from the documentation if you really can import a function by ordinal rather than by name
 			/// </remarks>
@@ -1795,7 +1787,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Ordinal value of imported API</summary>
 			public UInt32 Ordinal;
 
-			/// <summary>RVA to an <see cref="T:IMAGE_IMPORT_BY_NAME"/> with the imported API name</summary>
+			/// <summary>RVA to an <see cref="IMAGE_IMPORT_BY_NAME"/> with the imported API name</summary>
 			public UInt32 AddressOfData;
 		}
 
@@ -1812,7 +1804,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Ordinal value of imported API</summary>
 			public UInt64 Ordinal;
 
-			/// <summary>RVA to an <see cref="T:IMAGE_IMPORT_BY_NAME"/> with the imported API name</summary>
+			/// <summary>RVA to an <see cref="IMAGE_IMPORT_BY_NAME"/> with the imported API name</summary>
 			public UInt64 AddressOfData;
 		}
 
@@ -1835,7 +1827,7 @@ namespace AlphaOmega.Debug
 		/// Some architectures (including the IA-64) don't use frame-based exception handling, like the x86 does; instead, they used table-based exception handling in which there is a table containing information about every function that might be affected by exception unwinding.
 		/// The data for each function includes the starting address, the ending address, and information about how and where the exception should be handled.
 		/// When an exception occurs, the system searches through the tables to locate the appropriate entry and handles it.
-		/// The exception table is an array of <see cref="T:IMAGE_RUNTIME_FUNCTION_ENTRY"/> structures.
+		/// The exception table is an array of <see cref="IMAGE_RUNTIME_FUNCTION_ENTRY"/> structures.
 		/// The array is pointed to by the IMAGE_DIRECTORY_ENTRY_EXCEPTION entry in the DataDirectory.
 		/// </summary>
 		/// <remarks>http://msdn.microsoft.com/en-US/library/ft9x1kdx%28v=vs.80%29.aspx</remarks>
@@ -1870,10 +1862,7 @@ namespace AlphaOmega.Debug
 			public UInt32 Size;
 			
 			/// <summary>Data directory contains information</summary>
-			/// <remarks>
-			/// Directory checks by Size field but some directories ignores Size field.
-			/// See the docs
-			/// </remarks>
+			/// <remarks>Directory checks by Size field but some directories ignores Size field</remarks>
 			public Boolean IsEmpty { get { return this.Size == 0; } }
 		}
 
@@ -1882,7 +1871,7 @@ namespace AlphaOmega.Debug
 		public struct IMAGE_OPTIONAL_HEADER32
 		{
 			/// <summary>A signature WORD, identifying what type of header this is</summary>
-			/// <remarks>The two most common values are IMAGE_NT_OPTIONAL_HDR32_MAGIC 0x10b and IMAGE_NT_OPTIONAL_HDR64_MAGIC 0x20b</remarks>
+			/// <remarks>The two most common values are <see cref="IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR32_MAGIC"/> 0x10b and <see cref="IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC"/> 0x20b</remarks>
 			[FieldOffset(0)]
 			public IMAGE_SIGNATURE Magic;
 
@@ -1895,7 +1884,7 @@ namespace AlphaOmega.Debug
 			[FieldOffset(3)]
 			public Byte MinorLinkerVersion;
 
-			/// <summary>The combined total size of all sections with the IMAGE_SCN_CNT_CODE attribute</summary>
+			/// <summary>The combined total size of all sections with the <see cref="IMAGE_SCN.CNT_CODE"/> attribute</summary>
 			[FieldOffset(4)]
 			public UInt32 SizeOfCode;
 
@@ -2029,11 +2018,11 @@ namespace AlphaOmega.Debug
 			/// Important values include:
 			/// <list type="bullet">
 			///		<item>
-			///			<term>IMAGE_SUBSYSTEM_NATIVE</term>
+			///			<term><see cref="IMAGE_SUBSYSTEM.NATIVE"/></term>
 			///			<description>Image doesn't require a subsystem</description>
-			///			<term>IMAGE_SUBSYSTEM_WINDOWS_GUI</term>
+			///			<term><see cref="IMAGE_SUBSYSTEM.WINDOWS_GUI"/></term>
 			///			<description>Use the Windows GUI</description>
-			///			<term>IMAGE_SUBSYSTEM_WINDOWS_CUI</term>
+			///			<term><see cref="IMAGE_SUBSYSTEM.WINDOWS_CUI"/></term>
 			///			<description>Run as a console mode application</description>
 			///		</item>
 			/// </list>
@@ -2091,7 +2080,7 @@ namespace AlphaOmega.Debug
 			/// Each entry describes a location and size
 			/// </summary>
 			/// <remarks>
-			/// At the end of the IMAGE_NT_HEADERS structure is an array of IMAGE_DATA_DIRECTORY structures.
+			/// At the end of the <see cref="IMAGE_NT_HEADERS32"/> structure is an array of <see cref="IMAGE_DATA_DIRECTORY"/> structures.
 			/// This field contains the number of entries in the array.
 			/// This field has been 16 since the earliest releases of Windows NT
 			/// </remarks>
@@ -2127,7 +2116,7 @@ namespace AlphaOmega.Debug
 		public struct IMAGE_OPTIONAL_HEADER64
 		{
 			/// <summary>A signature WORD, identifying what type of header this is</summary>
-			/// <remarks>The two most common values are IMAGE_NT_OPTIONAL_HDR32_MAGIC 0x10b and IMAGE_NT_OPTIONAL_HDR64_MAGIC 0x20b</remarks>
+			/// <remarks>The two most common values are <see cref="IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR32_MAGIC"/> 0x10b and <see cref="IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC"/> 0x20b</remarks>
 			[FieldOffset(0)]
 			public IMAGE_SIGNATURE Magic;
 
@@ -2321,7 +2310,7 @@ namespace AlphaOmega.Debug
 			/// <summary>The number of directory entries in the remainder of the optional header</summary>
 			/// <remarks>
 			/// Each entry describes a location and size.
-			/// At the end of the IMAGE_NT_HEADERS structure is an array of IMAGE_DATA_DIRECTORY structures.
+			/// At the end of the <see cref="IMAGE_NT_HEADERS64"/> structure is an array of <see cref="IMAGE_DATA_DIRECTORY"/> structures.
 			/// This field contains the number of entries in the array.
 			/// This field has been 16 since the earliest releases of Windows NT
 			/// </remarks>
@@ -2367,11 +2356,11 @@ namespace AlphaOmega.Debug
 			/*[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 			public Char[] Signature;*/
 
-			/// <summary>An IMAGE_FILE_HEADER structure that specifies the file header</summary>
+			/// <summary>An <see cref="IMAGE_FILE_HEADER"/> structure that specifies the file header</summary>
 			[FieldOffset(4)]
 			public IMAGE_FILE_HEADER FileHeader;
 
-			/// <summary>An IMAGE_OPTIONAL_HEADER structure that specifies the optional file header</summary>
+			/// <summary>An <see cref="IMAGE_OPTIONAL_HEADER32"/> structure that specifies the optional file header</summary>
 			[FieldOffset(24)]
 			public IMAGE_OPTIONAL_HEADER32 OptionalHeader;
 
@@ -2390,8 +2379,8 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Represents the PE header format</summary>
 		/// <remarks>
-		/// The actual structure in Winnt.h is named IMAGE_NT_HEADERS32 and IMAGE_NT_HEADERS is defined as IMAGE_NT_HEADERS32.
-		/// However, if _WIN64 is defined, then IMAGE_NT_HEADERS is defined as IMAGE_NT_HEADERS64
+		/// The actual structure in Winnt.h is named <see cref="IMAGE_NT_HEADERS32"/> and IMAGE_NT_HEADERS is defined as <see cref="IMAGE_NT_HEADERS32"/>.
+		/// However, if _WIN64 is defined, then IMAGE_NT_HEADERS is defined as <see cref="IMAGE_NT_HEADERS64"/>
 		/// </remarks>
 		[StructLayout(LayoutKind.Explicit)]
 		public struct IMAGE_NT_HEADERS64
@@ -2403,11 +2392,11 @@ namespace AlphaOmega.Debug
 			/*[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 			public Char[] Signature;*/
 
-			/// <summary>An IMAGE_FILE_HEADER structure that specifies the file header</summary>
+			/// <summary>An <see cref="IMAGE_FILE_HEADER"/> structure that specifies the file header</summary>
 			[FieldOffset(4)]
 			public IMAGE_FILE_HEADER FileHeader;
 
-			/// <summary>An IMAGE_OPTIONAL_HEADER structure that specifies the optional file header</summary>
+			/// <summary>An <see cref="IMAGE_OPTIONAL_HEADER64"/> structure that specifies the optional file header</summary>
 			[FieldOffset(24)]
 			public IMAGE_OPTIONAL_HEADER64 OptionalHeader;
 
@@ -2468,7 +2457,7 @@ namespace AlphaOmega.Debug
 
 			/// <summary>The RVA of the EAT</summary>
 			/// <remarks>
-			/// The EAT is an array of RVAs
+			/// The EAT is an array of RVAs.
 			/// Each nonzero RVA in the array corresponds to an exported symbol
 			/// </remarks>
 			public UInt32 AddressOfFunctions;
@@ -2507,7 +2496,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Offset to a string with the name of the imported DLL</summary>
 			public UInt16 OffsetModuleName;
 
-			/// <summary>Number of <see cref="T:IMAGE_BOUND_FORWARDER_REF"/> structures that immediately follow this structure</summary>
+			/// <summary>Number of <see cref="IMAGE_BOUND_FORWARDER_REF"/> structures that immediately follow this structure</summary>
 			public UInt16 NumberOfModuleForwarderRefs;
 
 			/// <summary>Contains the time/date stamp of the imported DLL</summary>
@@ -2538,7 +2527,7 @@ namespace AlphaOmega.Debug
 			public UInt32 dwLength;
 
 			/// <summary>Specifies the certificate revision</summary>
-			/// <remarks>The only defined certificate revision is WIN_CERT_REVISION_1_0 (0x0100)</remarks>
+			/// <remarks>The only defined certificate revision is <see cref="WIN_CERT_REVISION.REVISION_1_0"/> (0x0100)</remarks>
 			public WIN_CERT_REVISION wRevision;
 
 			/// <summary>Specifies the type of certificate</summary>
@@ -2609,7 +2598,7 @@ namespace AlphaOmega.Debug
 
 			/// <summary>The size of this structure plus all the WORD relocations that follow</summary>
 			/// <remarks>
-			/// To determine the number of relocations in this block, subtract the size of an IMAGE_BASE_RELOCATION (8 bytes) from the value of this field, and then divide by 2 (the size of a WORD)
+			/// To determine the number of relocations in this block, subtract the size of an <see cref="IMAGE_BASE_RELOCATION"/> (8 bytes) from the value of this field, and then divide by 2 (the size of a WORD)
 			/// </remarks>
 			public UInt32 SizeOfBlock;
 
@@ -2718,7 +2707,8 @@ namespace AlphaOmega.Debug
 			[StructLayout(LayoutKind.Sequential)]
 			public struct IMAGE_LOAD_CONFIG_DIRECTORY64
 			{
-				/// <summary>The size of the structure. For Windows XP, the size must be specified as 64 for x86 images</summary>
+				/// <summary>The size of the structure</summary>
+				/// <remarks>For Windows XP, the size must be specified as 64 for x86 images</remarks>
 				public UInt32 Size;
 
 				/// <summary>The date and time stamp value</summary>
@@ -2807,22 +2797,25 @@ namespace AlphaOmega.Debug
 		public struct Tls
 		{
 			/// <remarks>
-			/// It's important to note that the addresses in the IMAGE_TLS_DIRECTORY structure are virtual addresses, not RVA's.
+			/// It's important to note that the addresses in the <see cref="IMAGE_TLS_DIRECTORY32"/> structure are virtual addresses, not RVA's.
 			/// Thus, they will get modified by base relocations if the executable doesn't load at its preferred load address.
-			/// Also, the IMAGE_TLS_DIRECTORY itself is not in the .tls section; it resides in the .rdata section
+			/// Also, the <see cref="IMAGE_TLS_DIRECTORY32"/> itself is not in the .tls section; it resides in the .rdata section
 			/// </remarks>
 			[StructLayout(LayoutKind.Sequential)]
 			public struct IMAGE_TLS_DIRECTORY32
 			{
 				/// <summary>The beginning address of a range of memory used to initialize a new thread's TLS data in memory</summary>
 				public UInt32 StartAddressOfRawDataVA;
+
 				/// <summary>The ending address of the range of memory used to initialize a new thread's TLS data in memory</summary>
 				public UInt32 EndAddressOfRawDataVA;
+
 				/// <summary>
 				/// When the executable is brought into memory and a .tls section is present, the loader allocates a TLS handle via TlsAlloc.
 				/// It stores the handle at the address given by this field. The runtime library uses this index to locate the thread local data
 				/// </summary>
 				public UInt32 AddressOfIndex;
+
 				/// <summary>
 				/// Address of an array of PIMAGE_TLS_CALLBACK function pointers.
 				/// When a thread is created or destroyed, each function in the list is called.
@@ -2830,32 +2823,37 @@ namespace AlphaOmega.Debug
 				/// In normal Visual C++ executables, this list is empty
 				/// </summary>
 				public UInt32 AddressOfCallBacks;
+
 				/// <summary>
 				/// The size in bytes of the initialization data, beyond the initialized data delimited by the StartAddressOfRawData and EndAddressOfRawData fields.
 				/// All per-thread data after this range is initialized to 0
 				/// </summary>
 				public UInt32 SizeOfZeroFill;
+
 				/// <summary>Reserved for possible future use by TLS flags</summary>
 				public UInt32 Characteristics;
 			}
 			/// <remarks>
-			/// It's important to note that the addresses in the IMAGE_TLS_DIRECTORY structure are virtual addresses, not RVA's.
+			/// It's important to note that the addresses in the <see cref="IMAGE_TLS_DIRECTORY64"/> structure are virtual addresses, not RVA's.
 			/// Thus, they will get modified by base relocations if the executable doesn't load at its preferred load address.
-			/// Also, the IMAGE_TLS_DIRECTORY itself is not in the .tls section; it resides in the .rdata section
+			/// Also, the <see cref="IMAGE_TLS_DIRECTORY64"/> itself is not in the .tls section; it resides in the .rdata section
 			/// </remarks>
 			[StructLayout(LayoutKind.Sequential)]
 			public struct IMAGE_TLS_DIRECTORY64
 			{
 				/// <summary>The beginning address of a range of memory used to initialize a new thread's TLS data in memory</summary>
 				public UInt64 StartAddressOfRawDataVA;
+
 				/// <summary>The ending address of the range of memory used to initialize a new thread's TLS data in memory</summary>
 				public UInt64 EndAddressOfRawDataVA;
+
 				/// <summary>
 				/// When the executable is brought into memory and a .tls section is present, the loader allocates a TLS handle via TlsAlloc.
 				/// It stores the handle at the address given by this field.
 				/// The runtime library uses this index to locate the thread local data
 				/// </summary>
 				public UInt64 AddressOfIndex;
+
 				/// <summary>
 				/// Address of an array of PIMAGE_TLS_CALLBACK function pointers.
 				/// When a thread is created or destroyed, each function in the list is called.
@@ -2863,11 +2861,13 @@ namespace AlphaOmega.Debug
 				/// In normal Visual C++ executables, this list is empty
 				/// </summary>
 				public UInt64 AddressOfCallBacks;
+
 				/// <summary>
 				/// The size in bytes of the initialization data, beyond the initialized data delimited by the StartAddressOfRawData and EndAddressOfRawData fields.
 				/// All per-thread data after this range is initialized to 0
 				/// </summary>
 				public UInt32 SizeOfZeroFill;
+
 				/// <summary>Reserved for possible future use by TLS flags</summary>
 				public UInt32 Characteristics;
 			}

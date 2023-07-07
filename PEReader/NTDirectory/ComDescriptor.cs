@@ -18,7 +18,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		private ManagedNativeHeader _managedNativeHeader;
 		#endregion Fields
 
-		/// <summary>Заголовок .NET приложения</summary>
+		/// <summary>.NET application header</summary>
 		public WinNT.IMAGE_COR20_HEADER Cor20Header
 		{
 			get

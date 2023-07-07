@@ -19,6 +19,19 @@ namespace AlphaOmega.Debug
 				Console.Write(title + ": ");
 			Console.WriteLine(Utils.GetReflectedMembers(obj));
 		}
+
+		public static void ConsoleWriteError(Exception exc, String title, Boolean waitForInput = false)
+		{
+			var color = Console.ForegroundColor;
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine(title + ": " + exc.Message);
+			Console.WriteLine("========================");
+			Console.WriteLine(exc.StackTrace);
+			Console.ForegroundColor = color;
+			if(waitForInput)
+				Console.ReadKey();
+		}
+
 		public static String GetReflectedMembers(Object obj)
 		{
 			if(obj == null)

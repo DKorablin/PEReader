@@ -9,14 +9,11 @@ namespace AlphaOmega.Debug.PESection
 	[DebuggerDisplay("Header {Header}")]
 	public class SectionHeader : ISectionData
 	{
-		private readonly PEFile _parent;
-		private readonly WinNT.IMAGE_SECTION_HEADER _header;
-
 		/// <summary>PE directory</summary>
-		internal PEFile Parent { get { return this._parent; } }
+		internal PEFile Parent { get; }
 
 		/// <summary>Section header descriptor</summary>
-		public WinNT.IMAGE_SECTION_HEADER Header { get { return this._header; } }
+		public WinNT.IMAGE_SECTION_HEADER Header { get; }
 
 		/// <summary>Section name description</summary>
 		public String Description { get { return Resources.Section.GetString(this.Header.Section); } }
@@ -26,8 +23,8 @@ namespace AlphaOmega.Debug.PESection
 		/// <param name="header">sections header descriptor</param>
 		public SectionHeader(PEFile parent, WinNT.IMAGE_SECTION_HEADER header)
 		{
-			this._parent = parent?? throw new ArgumentNullException(nameof(parent));
-			this._header = header;
+			this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
+			this.Header = header;
 		}
 
 		/// <summary>Get RAW data from section</summary>

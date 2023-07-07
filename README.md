@@ -1,8 +1,8 @@
 ﻿## Portable Executable reader
-[![Auto build](https://github.com/DKorablin/PEReader/actions/workflows/dotnet.yml/badge.svg)](https://github.com/DKorablin/PEReader/actions)
+[![Auto build](https://github.com/DKorablin/PEReader/actions/workflows/dotnet.yml/badge.svg)](https://github.com/DKorablin/PEReader/releases/latest)
 [![Nuget](https://img.shields.io/nuget/v/AlphaOmega.PEReader)](https://www.nuget.org/packages/AlphaOmega.PEReader)
 
-PE/PE+/CLI executable reader assembly. Compatible with .NET Framework 2.0 & .NET Standart 2.1
+PE/PE+/CLI executable reader assembly. Compatible with .NET Framework 2.0 & .NET Standard 2.0
 
 Usage:
 

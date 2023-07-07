@@ -16,7 +16,8 @@ namespace AlphaOmega.Debug
 		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct DLGITEMTEMPLATEEX
 		{
-			/// <summary>The help context identifier for the control. When the system sends a WM_HELP message, it passes the helpID value in the dwContextId member of the HELPINFO structure</summary>
+			/// <summary>The help context identifier for the control</summary>
+			/// <remarks>When the system sends a WM_HELP message, it passes the helpID value in the dwContextId member of the HELPINFO structure</remarks>
 			public UInt32 helpID;
 
 			/// <summary>The extended styles for a window</summary>
@@ -27,9 +28,7 @@ namespace AlphaOmega.Debug
 			public WS_EX exStyle;
 
 			/// <summary>The style of the control</summary>
-			/// <remarks>
-			/// This member can be a combination of window style values (such as WS_BORDER) and one or more of the control style values (such as BS_PUSHBUTTON and ES_LEFT)
-			/// </remarks>
+			/// <remarks>This member can be a combination of window style values (such as WS_BORDER) and one or more of the control style values (such as BS_PUSHBUTTON and ES_LEFT)</remarks>
 			public WS style;
 
 			/// <summary>The x-coordinate, in dialog box units, of the upper-left corner of the control</summary>
@@ -189,7 +188,7 @@ namespace AlphaOmega.Debug
 			/// <summary>The height, in dialog box units, of the dialog box</summary>
 			public Int16 cy;
 
-			/// <summary>В структуре присутсвует информация по шрифту</summary>
+			/// <summary>The structure contains information on the font</summary>
 			public Boolean ContainsFont { get { return (this.style & WS.DS_SETFONT) == WS.DS_SETFONT; } }
 		}
 
@@ -286,7 +285,7 @@ namespace AlphaOmega.Debug
 			/// <summary>Valid template</summary>
 			public Boolean IsValid { get { return this.signature == 0xFFFF; } }
 
-			/// <summary>В структуре присутсвует информация по шрифту</summary>
+			/// <summary>The structure contains information on the font</summary>
 			public Boolean ContainsFont { get { return (this.style & WinUser.WS.DS_SETFONT) == WinUser.WS.DS_SETFONT || (this.style & WinUser.WS.DS_SHELLFONT) == WinUser.WS.DS_SHELLFONT; } }
 		}
 
@@ -309,10 +308,10 @@ namespace AlphaOmega.Debug
 			/// <summary>The number of bytes inserted to ensure that the structure is aligned on a DWORD boundary</summary>
 			public UInt16 padding;
 
-			/// <summary>Получить строковое представление wAnsi параметра</summary>
-			/// <remarks>Для получения строкового представления используются Win32 вызовы</remarks>
-			/// <exception cref="T:Win32Exception">Can't convert Key code to text key name</exception>
-			/// <returns>Строковое представление параметра</returns>
+			/// <summary>Get string representation of wAnsi parameter</summary>
+			/// <remarks>Win32 calls are used to get string representation</remarks>
+			/// <exception cref="Win32Exception">Can't convert Key code to text key name</exception>
+			/// <returns>String representation of the parameter</returns>
 			public String StringKey
 			{
 				get

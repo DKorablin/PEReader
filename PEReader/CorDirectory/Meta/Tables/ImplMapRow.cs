@@ -8,11 +8,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>a 2-byte bitmask of type PInvokeAttributes, §23.1.8</summary>
 		public CorPinvokeMap MappingFlags { get { return (CorPinvokeMap)base.GetValue<UInt16>(0); } }
 
-		/// <summary>
-		/// an index into the Field or MethodDef table; more precisely,
-		/// a MemberForwarded (§II.24.2.6) coded index).
-		/// However, it only ever indexes the MethodDef table, since Field export is not supported
-		/// </summary>
+		/// <summary>An index into the Field or MethodDef table; more precisely, a MemberForwarded (§II.24.2.6) coded index)</summary>
+		/// <remarks>However, it only ever indexes the MethodDef table, since Field export is not supported</remarks>
 		public MetaCellCodedToken MemberForwarded { get { return base.GetValue<MetaCellCodedToken>(1); } }
 
 		/// <summary>Unmanaged method name</summary>

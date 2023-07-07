@@ -7,20 +7,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	[DefaultProperty("TableType")]
 	public class CellPointerBase
 	{
-		#region Fields
-		private readonly MetaCell _cell;
-		private readonly UInt32? _rowIndex;
-		private readonly Cor.MetaTableType _tableType;
-		#endregion Fields
-
 		/// <summary>Source cell</summary>
-		public MetaCell Cell { get { return this._cell; } }
+		public MetaCell Cell { get; }
 
 		/// <summary>Row index in target table</summary>
-		public UInt32? RowIndex { get { return this._rowIndex; } }
+		public UInt32? RowIndex { get; }
 
 		/// <summary>Target table type</summary>
-		public Cor.MetaTableType TableType { get { return this._tableType; } }
+		public Cor.MetaTableType TableType { get; }
 
 		/// <summary>Target table</summary>
 		public MetaTable TargetTable { get { return this.Cell.Table.Root[this.TableType]; } }
@@ -34,9 +28,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="tableType">Target table type</param>
 		internal CellPointerBase(MetaCell cell, UInt32 rowIndex, Cor.MetaTableType tableType)
 		{
-			this._cell = cell;
-			this._rowIndex = rowIndex == 0 ? (UInt32?)null : checked(rowIndex - 1);//TODO: Почему -1? (Код вылетает в Overflow в таблице TypeDef в TypeName=<Module>)
-			this._tableType = tableType;
+			this.Cell = cell ?? throw new ArgumentNullException(nameof(cell));
+			this.RowIndex = rowIndex == 0 ? (UInt32?)null : checked(rowIndex - 1);//TODO: Почему -1? (Код вылетает в Overflow в таблице TypeDef в TypeName=<Module>)
+			this.TableType = tableType;
 		}
 
 		/// <summary>Display type of the class and type of referenced table</summary>

@@ -7,16 +7,14 @@ namespace AlphaOmega.Debug.PESection
 	/// <summary>Manager PE sections wrapper</summary>
 	public class Sections : IEnumerable<SectionHeader>
 	{
-		private readonly PEFile _parent;
-
 		/// <summary>PE directory</summary>
-		internal PEFile Parent { get { return this._parent; } }
+		internal PEFile Parent { get; }
 
 		/// <summary>Create instance of section header reader class</summary>
 		/// <param name="parent">PE directory</param>
 		public Sections(PEFile parent)
 		{
-			this._parent = parent ?? throw new ArgumentNullException(nameof(parent));
+			this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
 		}
 
 		/// <summary>Get section by name</summary>

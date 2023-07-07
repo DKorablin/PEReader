@@ -7,14 +7,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>MetaTable rows collection</summary>
 	public class MetaRowCollection : IEnumerable<MetaRow>
 	{
-		private readonly MetaTable _table;
-		private MetaTable Table { get { return this._table; } }
+		private MetaTable Table { get; }
 
 		/// <summary>Create instance of rows collection class</summary>
 		/// <param name="table">Table from whitch taken all rows</param>
 		public MetaRowCollection(MetaTable table)
 		{
-			this._table = table;
+			this.Table = table ?? throw new ArgumentNullException(nameof(table));
 		}
 
 		/// <summary>Get all rows from table</summary>

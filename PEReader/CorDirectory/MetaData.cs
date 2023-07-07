@@ -30,7 +30,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			get
 			{
-				if(this._metaData.HasValue)
+				if(this._metaData != null)
 					return this._metaData.Value;
 				if(base.IsEmpty)
 					return null;

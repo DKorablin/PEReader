@@ -23,7 +23,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Indicates that the processor architecture is ARM (PE32)</summary>
 		afPA_ARM = 0x0050,
 		/// <summary>Indicates that the assembly is a reference assembly; that is, it applies to any architecture but cannot run on any architecture</summary>
-		/// <remarks>Thus, the flag is the same as afPA_Mask</remarks>
+		/// <remarks>Thus, the flag is the same as <see cref="afPA_Mask"/></remarks>
 		afPA_NoPlatform = 0x0070,
 		/// <summary>Indicates that the processor architecture flags should be propagated to the AssemblyRef record</summary>
 		afPA_Specified = 0x0080,

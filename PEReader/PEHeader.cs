@@ -11,10 +11,9 @@ namespace AlphaOmega.Debug
 		private WinNT.IMAGE_NT_HEADERS32? _headerNT32;
 		private WinNT.IMAGE_NT_HEADERS64? _headerNT64;
 		private WinNT.IMAGE_SECTION_HEADER[] _sections;
-		private IImageLoader _loader;
 
 		/// <summary>PE/PE+ loader interface</summary>
-		public IImageLoader Loader { get { return this._loader; } }
+		public IImageLoader Loader { get; private set; }
 
 		/// <summary>PE COFF header</summary>
 		public WinNT.IMAGE_DOS_HEADER HeaderDos
@@ -31,9 +30,7 @@ namespace AlphaOmega.Debug
 			get
 			{
 				if(this._is64Bit == null)
-					this._is64Bit = this.IsValid
-						? this.HeaderNT64.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC
-						: false;
+					this._is64Bit = this.IsValid && this.HeaderNT64.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 				return this._is64Bit.Value;
 			}
 			private set { this._is64Bit = value; }
@@ -55,7 +52,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>NT32 (PE) Header</summary>
-		/// <exception cref="T:InvalidOperationException">Invalid DOS header</exception>
+		/// <exception cref="InvalidOperationException">Invalid DOS header</exception>
 		public WinNT.IMAGE_NT_HEADERS32 HeaderNT32
 		{
 			get
@@ -72,7 +69,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>NT64 (PE+) Header</summary>
-		/// <exception cref="T:InvalidOperationException">Invalid DOS header</exception>
+		/// <exception cref="InvalidOperationException">Invalid DOS header</exception>
 		public WinNT.IMAGE_NT_HEADERS64 HeaderNT64
 		{
 			get
@@ -152,15 +149,15 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Create instance of PE header reader</summary>
 		/// <param name="loader">Image loader</param>
-		/// <exception cref="T:ArgumentNullException">loader is null</exception>
+		/// <exception cref="ArgumentNullException">loader is null</exception>
 		public PEHeader(IImageLoader loader)
 		{
-			this._loader = loader ?? throw new ArgumentNullException(nameof(loader));
-			this._loader.Endianness = EndianHelper.Endian.Little;
+			this.Loader = loader ?? throw new ArgumentNullException(nameof(loader));
+			this.Loader.Endianness = EndianHelper.Endian.Little;
 		}
 
 		/// <summary>Validata PE headers</summary>
-		/// <exception cref="T:InvalidOperationException">PE image is invalid</exception>
+		/// <exception cref="InvalidOperationException">PE image is invalid</exception>
 		public virtual void ValidatePeFile()
 		{
 			if(!this.IsValid)
@@ -254,10 +251,10 @@ namespace AlphaOmega.Debug
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
-			if(disposing && this._loader != null)
+			if(disposing && this.Loader != null)
 			{
-				this._loader.Dispose();
-				this._loader = null;
+				this.Loader.Dispose();
+				this.Loader = null;
 			}
 		}
 	}

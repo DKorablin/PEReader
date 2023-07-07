@@ -15,6 +15,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY32>(base.Directory.VirtualAddress);
 			}
 		}
+
 		/// <summary>TLS PE+ directory</summary>
 		public WinNT.Tls.IMAGE_TLS_DIRECTORY64? TlsDirectory64
 		{
@@ -25,6 +26,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY64>(base.Directory.VirtualAddress);
 			}
 		}
+
 		/// <summary>Create instance of TLS class</summary>
 		/// <param name="root">Data directory</param>
 		public Tls(PEFile root)

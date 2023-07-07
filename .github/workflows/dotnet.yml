@@ -1,4 +1,4 @@
-name: Buid, Test & GitDeploy
+name: Test, Buid, Release
 
 on:
   push:
@@ -6,51 +6,143 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  SolutionName: PEReader
+
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  test_net_standard20_windows:
+    name: Testing .NET Standard v2.0 on Windows
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
       with:
-        submodules: 'true'
+        submodules: true
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore PEReader.sln
+      run: dotnet restore ${{env.SolutionName}}.sln
+    - name: Test .NET Standard v2.0
+      run: dotnet test ${{env.SolutionName}}.sln --no-build --verbosity normal
+
+  test_net_standard20_ubuntu:
+    name: Testing .NET Standard v2.0 on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SolutionName}}.sln
+    - name: Test .NET Standard v2.0
+      run: dotnet test ${{env.SolutionName}}.sln --no-build --verbosity normal
+
+  version:
+    name: Incrementing version number
+    needs: [test_net_standard20_windows,test_net_standard20_ubuntu]
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{steps.tag_version.outputs.new_version}}
+      new_tag: ${{steps.tag_version.outputs.new_tag}}
+      changelog:  ${{steps.tag_version.outputs.changelog}}
+    steps:
     - name: Update version number
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.1
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        #custom_tag: 1.0.0
+
+  build_net20:
+    name: Build .NET Framework v2.0 assembly
+    needs: [version]
+    runs-on: windows-latest
+    steps:
     - name: Decode SNK
       id: sign_key_file
-      uses: timheuer/base64-to-file@v1
+      uses: timheuer/base64-to-file@v1 
       with:
         fileName: 'Signature.snk'
-        encodedString: ${{ secrets.SIGN_KEY }}
-    - name: Build
-      run: dotnet build PEReader.sln --configuration Release --no-restore /p:Configuration=Release /p:DebugType=none /p:OutputPath="../bin/" /p:DocumentationFile="../bin/PEReader.xml" /p:AssemblyVersion=${{ steps.tag_version.outputs.new_version }} /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
-    - name: Test
-      run: dotnet test PEReader.sln --no-build --verbosity normal
+        encodedString: ${{secrets.SIGN_KEY}}
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Build .NET v2.0
+      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}35.sln" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/" -property:Version=${{needs.version.outputs.new_version}} -property:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: PEReader
+        name: Net20
         path: ${{github.workspace}}/bin/*
         if-no-files-found: error
-    - name: Zip artifact
-      run: zip -qq -r release.zip *.*
-      working-directory: ${{github.workspace}}/bin
+
+  build_net_standard20:
+    name: Build .NET Standard v2.0 assembly
+    needs: [version]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Decode SNK
+      id: sign_key_file
+      uses: timheuer/base64-to-file@v1 
+      with:
+        fileName: 'Signature.snk'
+        encodedString: ${{secrets.SIGN_KEY}}
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SolutionName}}.sln
+    - name: Build .NET Standard v2.0
+      run: dotnet build ${{env.SolutionName}}.sln --configuration Release --no-restore /p:OutputPath="../bin/" /p:DocumentationFile="../bin/${{env.SolutionName}}.xml" /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{steps.sign_key_file.outputs.filePath}}" /p:AssemblyVersion=${{needs.version.outputs.new_version}} /p:FileVersion=${{needs.version.outputs.new_version}} /p:InformationalVersion=${{needs.version.outputs.new_version}}
+    - name: Deploy artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: NetStandard20
+        path: ${{github.workspace}}/bin/*
+        if-no-files-found: error
+
+  deploy:
+    name: Packing and deploying NuGet package to Release
+    needs: [version, build_net20, build_net_standard20]
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout nessesary files from repo
+      uses: actions/checkout@v3
+      with:
+        sparse-checkout: |
+          README.md
+          ${{env.SolutionName}}.dll.nuspec
+        sparse-checkout-cone-mode: false
+    - name: Extracting all artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: bin
+    - name: Pack artifacts
+      run: nuget pack ${{env.SolutionName}}.dll.nuspec -Version ${{needs.version.outputs.new_version}} -OutputDirectory nupkg
+#    - name: Zip artifacts
+#      run: |
+#        7z a -t7z -mx=9 "${{github.workspace}}/release.7z" "${{github.workspace}}/bin/*"
+#    - name: Zip artifact
+#      run: zip -qq -r release.zip *.*
+#      working-directory: ${{github.workspace}}/bin
     - name: Deploy GitHub
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ${{github.workspace}}/bin/release.zip
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Auto ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        artifacts: ${{github.workspace}}/nupkg/*.nupkg
+        tag: ${{ needs.version.outputs.new_tag }}
+        name: Auto ${{ needs.version.outputs.new_tag }}
+        body: ${{ needs.version.outputs.changelog }}
         artifactErrorsFailBuild: true
         generateReleaseNotes: true

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
@@ -72,13 +68,9 @@ namespace AlphaOmega.Debug
 
 					} catch(Win32Exception exc)
 					{
-						Console.WriteLine("EXCEPTION IN FILE: {0}", dll);
-						Console.WriteLine("===");
-						Console.WriteLine("Message: {0}", exc.Message);
-						Console.WriteLine(exc.StackTrace);
-						Console.WriteLine("===");
-						Console.WriteLine("Do yow want to continue? (Y/N)");
-						/*switch(Console.ReadKey().KeyChar)
+						Utils.ConsoleWriteError(exc, $"EXCEPTION IN FILE ({dll})", false);
+						/*Console.WriteLine("Do yow want to continue? (Y/N)");
+						switch(Console.ReadKey().KeyChar)
 						{
 						case 'y':
 						case 'Y':
@@ -225,8 +217,7 @@ namespace AlphaOmega.Debug
 												Utils.ConsoleWriteMembers(resBitmap.Header);
 											} catch(ArgumentOutOfRangeException exc)
 											{
-												Console.WriteLine("!!!ArgumentOutOfRangeException (Corrupt bitmap): {0}", exc.Message);
-												Console.ReadKey();
+												Utils.ConsoleWriteError(exc, "ArgumentOutOfRangeException (Corrupt bitmap)", true);
 											}
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON:
@@ -272,12 +263,10 @@ namespace AlphaOmega.Debug
 														Utils.ConsoleWriteMembers(ctrl);
 											} catch(IndexOutOfRangeException exc)
 											{
-												Console.WriteLine("!!!IndexOutOfRangeException (Corrupt dialog): {0}", exc.Message);
-												Console.ReadKey();
+												Utils.ConsoleWriteError(exc, "IndexOutOfRangeException (Corrupt dialog)", true);
 											} catch(ArgumentException exc)
 											{
-												Console.WriteLine("!!!ArgumentException (Corrupt dialog): {0}", exc.Message);
-												Console.ReadKey();
+												Utils.ConsoleWriteError(exc, "ArgumentException (Corrupt dialog)", true);
 											}
 											break;
 										}
@@ -374,7 +363,7 @@ namespace AlphaOmega.Debug
 												PropertyMapRow propertyMapRow = (PropertyMapRow)row;
 												TypeDefRow typeRow = propertyMapRow.Parent;
 												String typeName = typeRow.TypeNamespace + "." + typeRow.TypeName + " {\r\n";
-												foreach(PropertyRow propertyRow in propertyMapRow.Properties)
+												foreach(PropertyRow propertyRow in propertyMapRow.PropertyList)
 													typeName += "\t" + propertyRow.Name+";\r\n";
 												typeName += "}";
 												Console.WriteLine("{0}: {1}", type, typeName);
@@ -469,34 +458,32 @@ namespace AlphaOmega.Debug
 												} else
 													methodLength = ((UInt32)flags >> 2);
 
-												//try
-												//{
-												foreach(var ilLine in methodRow.Body.GetMethodBody2())
+												try
 												{
-													StringBuilder line = new StringBuilder("IL_" + ilLine.Line.ToString("X").PadLeft(4, '0'));
-													line.Append(": " + ilLine.IL.Name);
-													if(ilLine.Offset != null)
-														line.Append(" " + ilLine.Offset.Value);
-													else if(ilLine.Token != null)
-														line.Append(" [" + ilLine.Token.TableType + "]." + ilLine.Token.RowIndex);
-													else if(ilLine.StrConst != null)
-														line.Append(" " + ilLine.StrConst);
-													Console.WriteLine(line);
+													foreach(var ilLine in methodRow.Body.GetMethodBody2())
+													{
+														StringBuilder line = new StringBuilder("IL_" + ilLine.Line.ToString("X").PadLeft(4, '0'));
+														line.Append(": " + ilLine.IL.Name);
+														if(ilLine.Offset != null)
+															line.Append(" " + ilLine.Offset.Value);
+														else if(ilLine.Token != null)
+															line.Append(" [" + ilLine.Token.TableType + "]." + ilLine.Token.RowIndex);
+														else if(ilLine.StrConst != null)
+															line.Append(" " + ilLine.StrConst);
+														Console.WriteLine(line);
+													}
+													//Console.ReadKey();
+
+													Byte[] methodBody = info.Header.ReadBytes(rva, methodLength);
+													Byte[] methodBody2 = methodRow.Body.GetMethodBody();
+
+													for(Int32 loop = 0; loop < methodLength; loop++)
+														if(methodBody[loop] != methodBody2[loop])
+															throw new ArgumentException("Methods not equals");
+												} catch(Exception exc)
+												{
+													Utils.ConsoleWriteError(exc, "Error reading method body", false);
 												}
-												Console.ReadKey();
-
-												Byte[] methodBody = info.Header.ReadBytes(rva, methodLength);
-												Byte[] methodBody2 = methodRow.Body.GetMethodBody();
-
-												for(Int32 loop = 0; loop < methodLength; loop++)
-													if(methodBody[loop] != methodBody2[loop])
-														throw new ArgumentException("Methods not equals");
-												//} catch(Exception exc)
-												//{
-												//	Console.WriteLine("!!!Error while reading method body!!!");
-												//	Console.WriteLine(exc.Message);
-												//	Console.ReadLine();
-												//}
 											}
 											break;
 										default:
@@ -508,7 +495,7 @@ namespace AlphaOmega.Debug
 									//Пробежка по всем таблицам
 									MetaTable moduleTable = table[type];
 
-									Console.WriteLine(String.Format("==MetaTableType.{0} Contents:", type));
+									Console.WriteLine("==MetaTableType.{0} Contents:", type);
 									foreach(MetaRow row in moduleTable.Rows)
 									{
 										StringBuilder result =new StringBuilder();
@@ -517,7 +504,7 @@ namespace AlphaOmega.Debug
 										result.AppendLine();
 										Console.WriteLine(result.ToString());
 									}
-									Console.WriteLine(String.Format("==MetaTableType.{0} End", type));
+									Console.WriteLine("==MetaTableType.{0} End", type);
 								}
 								break;
 							case Cor.StreamHeaderType.Guid:
@@ -551,10 +538,7 @@ namespace AlphaOmega.Debug
 								Utils.ConsoleWriteMembers(entry);
 						} catch(ArgumentOutOfRangeException exc)
 						{
-							Console.WriteLine("Exception: "+exc.Message);
-							Console.WriteLine("========================");
-							Console.WriteLine(exc.StackTrace);
-							Console.ReadKey();
+							Utils.ConsoleWriteError(exc, "Exception", true);
 						}
 						if(pauseOnDir)
 							Console.ReadKey();
@@ -585,8 +569,7 @@ namespace AlphaOmega.Debug
 							Console.WriteLine("Certificate: {0}", x509 == null ? "NULL" : x509.ToString());
 						} catch(ArgumentOutOfRangeException exc)
 						{
-							Console.WriteLine("!!!OverflowException (Corrupted section): {0}", exc.Message);
-							Console.ReadKey();
+							Utils.ConsoleWriteError(exc, "OverflowException (Corrupted section)", true);
 						}
 						if(pauseOnDir)
 							Console.ReadKey();
@@ -596,7 +579,7 @@ namespace AlphaOmega.Debug
 					{
 						Console.WriteLine("===Delay Import===");
 						foreach(var module in info.DelayImport)
-							Console.WriteLine(String.Format("Module Name: {0}\tCount: {1}", module.ModuleName, module.Count()));
+							Console.WriteLine("Module Name: {0}\tCount: {1}", module.ModuleName, module.Count());
 						if(pauseOnDir)
 							Console.ReadKey();
 					}

@@ -91,9 +91,9 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		/// <summary>Get menu from resources</summary>
 		/// <remarks>
-		/// На выбор:
-		/// Описание меню: http://msdn.microsoft.com/en-us/library/windows/desktop/ms647558%28v=vs.85%29.aspx
-		/// Описание всех ресурсов включая меню: http://msdn.microsoft.com/en-us/library/windows/desktop/ms648007%28v=vs.85%29.aspx
+		/// Coice:
+		/// Menu description: http://msdn.microsoft.com/en-us/library/windows/desktop/ms647558%28v=vs.85%29.aspx
+		/// Description of all resources incuding menu: http://msdn.microsoft.com/en-us/library/windows/desktop/ms648007%28v=vs.85%29.aspx
 		/// </remarks>
 		/// <returns>Menu</returns>
 		public IEnumerable<MenuItem> GetMenuTemplate()
@@ -114,7 +114,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		/// <summary>Gets menu items from padding</summary>
 		/// <param name="padding">Starting menu padding</param>
-		/// <exception cref="T:InvalidOperationException">Can't find end of menu marker</exception>
+		/// <exception cref="InvalidOperationException">Can't find end of menu marker</exception>
 		/// <returns>Menu items</returns>
 		private IEnumerable<MenuItem> GetMenu(UInt32 padding)
 		{
@@ -125,10 +125,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 					padding = NativeMethods.AlignToInt(padding);
 
 					WinUser.MENUITEMEX item = reader.BytesToStructure<WinUser.MENUITEMEX>(ref padding);
-					MenuItem menu = new MenuItem()
-					{
-						ItemEx = item,
-					};
+					MenuItem menu = new MenuItem() { ItemEx = item, };
 					//result.Add(menu);
 
 					menu.Title = reader.BytesToStringUni(ref padding);
@@ -151,7 +148,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Gets popup menu items from padding</summary>
 		/// <param name="reader">Menu bytes</param>
 		/// <param name="padding">Starting popup menu padding</param>
-		/// <exception cref="T:InvalidOperationException">Can't find end of menu marker</exception>
+		/// <exception cref="InvalidOperationException">Can't find end of menu marker</exception>
 		/// <returns>Readed popup menu items</returns>
 		private MenuPopupItem[] GetPopupMenu(PinnedBufferReader reader, ref UInt32 padding)
 		{
@@ -161,10 +158,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				padding = NativeMethods.AlignToInt(padding);
 
 				WinUser.MENUITEMEX item = reader.BytesToStructure<WinUser.MENUITEMEX>(ref padding);
-				MenuPopupItem menu = new MenuPopupItem()
-				{
-					ItemEx = item,
-				};
+				MenuPopupItem menu = new MenuPopupItem() { ItemEx = item, };
 				result.Add(menu);
 
 				menu.Title = reader.BytesToStringUni(ref padding);
@@ -181,9 +175,9 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			throw new InvalidOperationException();
 		}
 
-		/// <summary>Получить меню старого образца</summary>
-		/// <param name="padding">Отступ от начала меню</param>
-		/// <returns>Элементы меню</returns>
+		/// <summary>Get the old style menu</summary>
+		/// <param name="padding">Indent from the beginning of the menu</param>
+		/// <returns>Menu elements</returns>
 		private IEnumerable<MenuItem> GetMenuOld(UInt32 padding)
 		{
 			//List<MenuItem> result = new List<MenuItem>();
@@ -191,10 +185,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				while(padding < reader.Length)
 				{
 					WinUser.MENUITEM item = reader.BytesToStructure<WinUser.MENUITEM>(ref padding);
-					MenuItem menu = new MenuItem()
-					{
-						Item = item,
-					};
+					MenuItem menu = new MenuItem() { Item = item, };
 					//result.Add(menu);
 
 					menu.Title = reader.BytesToStringUni(ref padding);
@@ -211,11 +202,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			//return result.ToArray();
 		}
 
-		/// <summary>Получить всплывающее меню</summary>
+		/// <summary>Get the popup menu</summary>
 		/// <param name="reader">Allocated bytes in memory</param>
-		/// <param name="padding">Отступ от начала</param>
-		/// <exception cref="T:InvalidOperationException">Cand find end of menu marker</exception>
-		/// <returns>Всплывающее меню</returns>
+		/// <param name="padding">Padding for beginning</param>
+		/// <exception cref="InvalidOperationException">Cand find end of menu marker</exception>
+		/// <returns>Popup menu</returns>
 		private MenuPopupItem[] GetPopupMenuOld(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			List<MenuPopupItem> result = new List<MenuPopupItem>();
@@ -229,10 +220,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				} else//Если это попап, то читать надо только 1 WORD.
 					padding += (UInt32)Marshal.SizeOf(typeof(WinUser.MENUITEMPOPUP));
 
-				MenuPopupItem menu = new MenuPopupItem()
-				{
-					Item = item,
-				};
+				MenuPopupItem menu = new MenuPopupItem() { Item = item, };
 				result.Add(menu);
 
 				menu.Title = reader.BytesToStringUni(ref padding);

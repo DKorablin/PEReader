@@ -9,7 +9,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Create instance of BLOB heap class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">.NET stream header</param>
-		/// <exception cref="T:InvalidOperationException">Blob heap can read only UnicodeString and Blob heaps</exception>
+		/// <exception cref="InvalidOperationException">Blob heap can read only UnicodeString and Blob heaps</exception>
 		public BlobHeap(MetaData meta, Cor.STREAM_HEADER header)
 			: base(meta, header)
 		{
@@ -17,9 +17,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				throw new InvalidOperationException();
 		}
 
-		/// <summary></summary>
-		/// <param name="pointer"></param>
-		/// <returns></returns>
+		/// <summary>This method is not implemented in BLOB heap</summary>
+		/// <param name="pointer">Pointer to start of a heap</param>
+		/// <exception cref="NotImplementedException">This method is not implemented</exception>
+		/// <returns>Array of bytes from BLOB heap</returns>
 		protected override Byte[] GetDataByPointer(Int32 pointer)
 		{
 			throw new NotImplementedException();

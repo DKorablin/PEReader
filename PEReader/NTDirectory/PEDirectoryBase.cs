@@ -9,31 +9,29 @@ namespace AlphaOmega.Debug.NTDirectory
 	[DebuggerDisplay("Directory={Directory}")]
 	public class PEDirectoryBase : IDirectory, ISectionData
 	{
-		private readonly WinNT.IMAGE_DIRECTORY_ENTRY _directory;
+		private WinNT.IMAGE_DIRECTORY_ENTRY DirectoryI { get; }
 
-		private readonly PEFile _parent;
+		/// <summary>PE file directory</summary>
+		internal PEFile Parent { get; }
 
-		/// <summary>Директория PE файла</summary>
-		internal PEFile Parent { get { return this._parent; } }
-
-		/// <summary>Директроия пустая</summary>
+		/// <summary>Directory is empty</summary>
 		public virtual Boolean IsEmpty { get { return this.Directory.IsEmpty; } }
 
-		/// <summary>Данные директории</summary>
-		public WinNT.IMAGE_DATA_DIRECTORY Directory { get { return this.Parent[this._directory]; } }
+		/// <summary>Directory data</summary>
+		public WinNT.IMAGE_DATA_DIRECTORY Directory { get { return this.Parent[this.DirectoryI]; } }
 
 		/// <summary>Create instance</summary>
 		/// <param name="parent">Parent PE directory</param>
 		/// <param name="directory">Directory type</param>
-		/// <exception cref="T:ArgumentNullException">parent directory is null</exception>
+		/// <exception cref="ArgumentNullException">parent directory is null</exception>
 		public PEDirectoryBase(PEFile parent, WinNT.IMAGE_DIRECTORY_ENTRY directory)
 		{
-			this._parent = parent ?? throw new ArgumentNullException(nameof(parent));
-			this._directory = directory;
+			this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
+			this.DirectoryI = directory;
 		}
 
-		/// <summary>Получить все данные из директории</summary>
-		/// <returns>Массив данных из директории</returns>
+		/// <summary>Get all data from a directory</summary>
+		/// <returns>Array of data from a directory</returns>
 		public Byte[] GetData()
 		{
 			if(this.IsEmpty)

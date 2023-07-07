@@ -4,10 +4,8 @@ using System.Reflection;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>
-	/// The GenericParam table stores the generic parameters used in generic type definitions
-	/// and generic method definitions.
-	/// These generic parameters can be constrained (i.e., generic arguments
-	/// shall extend some class and/or implement certain interfaces) or unconstrained.
+	/// The GenericParam table stores the generic parameters used in generic type definitions and generic method definitions.
+	/// These generic parameters can be constrained (i.e., generic arguments shall extend some class and/or implement certain interfaces) or unconstrained.
 	/// (Such constraints are stored in the GenericParamConstraint table.)
 	/// </summary>
 	/// <remarks>Conceptually, each row in the GenericParam table is owned by one, and only one, row in either the TypeDef or MethodDef tables</remarks>

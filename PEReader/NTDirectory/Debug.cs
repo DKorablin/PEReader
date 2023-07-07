@@ -52,12 +52,13 @@ namespace AlphaOmega.Debug.NTDirectory
 			get
 			{
 				var directory = this.FindDebugType(WinNT.IMAGE_DEBUG_TYPE.MISC);
-				if(directory.HasValue && directory.Value.AddressOfRawData > 0)
-					return this.Parent.Header.PtrToStructure<WinNT.Debug.IMAGE_DEBUG_MISC>(directory.Value.AddressOfRawData);
-				else return null;
+				return directory.HasValue && directory.Value.AddressOfRawData > 0
+					? this.Parent.Header.PtrToStructure<WinNT.Debug.IMAGE_DEBUG_MISC>(directory.Value.AddressOfRawData)
+					: (WinNT.Debug.IMAGE_DEBUG_MISC?)null;
 			}
 		}
-		/// <summary>Количество массивов в директории</summary>
+
+		/// <summary>Number of arrays in directory</summary>
 		public UInt32 Count { get { return base.IsEmpty ? 0 : base.Directory.Size / Debug.SizeOfDebugDirectory; } }
 
 		/// <summary>Create instance of debug directory</summary>

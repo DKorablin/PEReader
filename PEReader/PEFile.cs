@@ -9,8 +9,6 @@ namespace AlphaOmega.Debug
 	{
 
 		#region Fields
-		private readonly String _source;
-		private PEHeader _header;
 		private Sections _sections;
 
 		private Architecture _architecture;
@@ -30,10 +28,12 @@ namespace AlphaOmega.Debug
 		private Tls _tls;
 		#endregion Fields
 		#region Properties
+
 		/// <summary>File source</summary>
-		public String Source { get { return this._source; } }
+		public String Source { get; }
+
 		/// <summary>PE/PE+ Headers</summary>
-		public PEHeader Header { get { return this._header; } }
+		public PEHeader Header { get; private set; }
 
 		/// <summary>Get directory from optional header</summary>
 		/// <param name="entry">Directory entry type</param>
@@ -149,6 +149,7 @@ namespace AlphaOmega.Debug
 		{
 			get { return this._iat ?? (this._iat = new Iat(this)); }
 		}
+
 		/// <summary>Thread local storage directory</summary>
 		public Tls Tls
 		{
@@ -161,8 +162,8 @@ namespace AlphaOmega.Debug
 		/// <param name="loader">PE file loader</param>
 		public PEFile(String source, IImageLoader loader)
 		{
-			this._source = source ?? throw new ArgumentNullException(nameof(source));
-			this._header = new PEHeader(loader);
+			this.Source = source ?? throw new ArgumentNullException(nameof(source));
+			this.Header = new PEHeader(loader);
 		}
 
 		/// <summary>Close loader</summary>
@@ -176,10 +177,10 @@ namespace AlphaOmega.Debug
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
-			if(disposing && this._header != null)
+			if(disposing && this.Header != null)
 			{
-				this._header.Dispose();
-				this._header = null;
+				this.Header.Dispose();
+				this.Header = null;
 			}
 		}
 	}

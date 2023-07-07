@@ -28,8 +28,8 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 		}
 
-		/// <summary>Получить информацию о версии PE файла из ресурсов</summary>
-		/// <returns>Информация о версии PE файла</returns>
+		/// <summary>Get PE file version information from resources</summary>
+		/// <returns>PE file version information</returns>
 		public ResourceVersion GetVersion()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_VERSION))
@@ -37,8 +37,8 @@ namespace AlphaOmega.Debug.NTDirectory
 			return null;
 		}
 
-		/// <summary>Получить манифест из ресурсов PE файла</summary>
-		/// <returns>Манифест</returns>
+		/// <summary>Get manifest from PE file resources</summary>
+		/// <returns>manifest</returns>
 		public ResourceManifest GetManifest()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MANIFEST))
@@ -46,16 +46,16 @@ namespace AlphaOmega.Debug.NTDirectory
 			return null;
 		}
 
-		/// <summary>Получить все строки из ресурсов</summary>
-		/// <returns>Строки из PE файла</returns>
+		/// <summary>Get all rows from resources</summary>
+		/// <returns>Lines from PE file</returns>
 		public IEnumerable<ResourceString> GetStrings()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING))
 				yield return new ResourceString(directory);
 		}
 
-		/// <summary>Получить все акселераторы из ресурсов</summary>
-		/// <returns>Акселераторы</returns>
+		/// <summary>Get all accelerators from resources</summary>
+		/// <returns>Accelerators</returns>
 		public IEnumerable<ResourceAccelerator> GetAccelerators()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ACCELERATOR))
@@ -70,73 +70,73 @@ namespace AlphaOmega.Debug.NTDirectory
 				yield return new ResourceMessageTable(directory);
 		}
 
-		/// <summary>Получить описание ококн в приложении</summary>
-		/// <returns>Список диалогов в приложении</returns>
+		/// <summary>Get a description of windows in an application</summary>
+		/// <returns>List of dialogs in the application</returns>
 		public IEnumerable<ResourceDialog> GetDialogs()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DIALOG))
 				yield return new ResourceDialog(directory);
 		}
 
-		/// <summary>Получить инициализационную информацию для окон в MFC приложениях</summary>
-		/// <returns>Список ресурсов с данными инициализации диалогов в MFC приложениях</returns>
+		/// <summary>Get initialization information for windows in MFC applications</summary>
+		/// <returns>List of resources with dialog initialization data in MFC applications</returns>
 		public IEnumerable<ResourceDialogInit> GetDialogInint()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT))
 				yield return new ResourceDialogInit(directory);
 		}
 
-		/// <summary>Получить описание меню в приложении</summary>
-		/// <returns>Список меню в приложении</returns>
+		/// <summary>Get menu description in app</summary>
+		/// <returns>Menu list in app</returns>
 		public IEnumerable<ResourceMenu> GetMenus()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU))
 				yield return new ResourceMenu(directory);
 		}
 
-		/// <summary>Получить описания всех тулбаров в приложении</summary>
-		/// <returns>Список тулбаров в приложении</returns>
+		/// <summary>Get descriptions of all toolbars in the application</summary>
+		/// <returns>List of toolbars in the application</returns>
 		public IEnumerable<ResourceToolBar> GetToolBars()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR))
 				yield return new ResourceToolBar(directory);
 		}
 
-		/// <summary>Получить описание всех картинок в ресурсах</summary>
-		/// <returns>Список всех картинок в ресурсах</returns>
+		/// <summary>Get description of all pictures in resources</summary>
+		/// <returns>List of all images in resources</returns>
 		public IEnumerable<ResourceBitmap> GetBitmaps()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_BITMAP))
 				yield return new ResourceBitmap(directory);
 		}
 
-		/// <summary>Получить описание всех иконок в ресурсах</summary>
-		/// <returns>Список всех иконок в ресурсах</returns>
+		/// <summary>Get description of all icons in resources</summary>
+		/// <returns>List of all icons in resources</returns>
 		public IEnumerable<ResourceIcon> GetIcons()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON))
 				yield return new ResourceIcon(directory);
 		}
 
-		/// <summary>Получить описание всех директорий ресурсов</summary>
-		/// <returns>Список всех директорий с ресурсами</returns>
+		/// <summary>Get description of all resource directories</summary>
+		/// <returns>List of all resource directories</returns>
 		public IEnumerable<ResourceFontDir> GetFontDirs()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONTDIR))
 				yield return new ResourceFontDir(directory);
 		}
 
-		/// <summary>Получить шрифты из ресурсов</summary>
-		/// <returns>Список всех шрифтов из ресурсов</returns>
+		/// <summary>Get fonts from resources</summary>
+		/// <returns>List of all fonts from resources</returns>
 		public IEnumerable<ResourceFont> GetFonts()
 		{
 			foreach(ResourceDirectory directory in this.GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT))
 				yield return new ResourceFont(directory);
 		}
 
-		/// <summary>Получить директории с данными</summary>
-		/// <param name="directoryType">Тип директроии ресурсы из которой получить</param>
-		/// <returns>Директории соответствующий определённой директории</returns>
+		/// <summary>Get data directories</summary>
+		/// <param name="directoryType">Type of directory resources from which to get</param>
+		/// <returns>Directory corresponding to a specific directory</returns>
 		public IEnumerable<ResourceDirectory> GetResources(WinNT.Resource.RESOURCE_DIRECTORY_TYPE directoryType)
 		{
 			foreach(var directory in this)
@@ -146,10 +146,10 @@ namespace AlphaOmega.Debug.NTDirectory
 							yield return subDir2;
 		}
 
-		/// <summary>Получить директорию по адресу</summary>
-		/// <remarks>Действует только с директориями с данными</remarks>
-		/// <param name="directoryAddress">Адрес директории с данными</param>
-		/// <returns>Директорию с данными</returns>
+		/// <summary>Get the directory by address</summary>
+		/// <remarks>Only works on data directories</remarks>
+		/// <param name="directoryAddress">Data directory address</param>
+		/// <returns>Directory with data</returns>
 		public ResourceDirectory GetResource(UInt32 directoryAddress)
 		{
 			foreach(var directory in this)
@@ -162,7 +162,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		/// <summary>Get recource directories from image direstory</summary>
-		/// <returns>Resourec directories</returns>
+		/// <returns>Resource directories</returns>
 		public IEnumerator<ResourceDirectory> GetEnumerator()
 		{
 			var root = this.Header;

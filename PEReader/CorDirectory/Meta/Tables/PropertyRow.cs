@@ -3,12 +3,8 @@ using System.Reflection;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>
-	/// Properties within metadata are best viewed as a means
-	/// to gather together collections of methods defined on a class, give them a name, and not much else.
-	/// The methods are typically get_ and set_ methods, already defined on the class,
-	/// and inserted like any other methods into the MethodDef table.
-	/// </summary>
+	/// <summary>Properties within metadata are best viewed as a means to gather together collections of methods defined on a class, give them a name, and not much else</summary>
+	/// <remarks>The methods are typically get_ and set_ methods, already defined on the class, and inserted like any other methods into the MethodDef table</remarks>
 	public class PropertyRow : BaseMetaRow
 	{
 		/// <summary>Flags that can be associated with a property</summary>

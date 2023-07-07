@@ -24,7 +24,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		private Int64 _position = 0;
 		private Stream _rtBitmap = null;
-		private Byte[] _header = null;
+		private Byte[] Header { get; }
 
 		/// <summary>Can read from stream</summary>
 		public override Boolean CanRead { get { return true; } }
@@ -54,8 +54,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <param name="buffer"></param>
 		public DibStream(Byte[] buffer)
 		{
+			_ = buffer ?? throw new ArgumentNullException(nameof(buffer));
+
 			this._rtBitmap = new MemoryStream(buffer);
-			this._header = this.CreateHeader();
+			this.Header = this.CreateHeader();
 		}
 
 		/// <summary>Close DIB stream and free all resources</summary>
@@ -114,7 +116,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			if(this._position < 14)
 			{
 				Int32 headerCount = Math.Min(count + (Int32)this._position, 14);
-				Array.Copy(this._header, this._position, buffer, offset, headerCount);
+				Array.Copy(this.Header, this._position, buffer, offset, headerCount);
 				dibCount -= headerCount;
 				this._position += headerCount;
 				result = headerCount;

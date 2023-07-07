@@ -15,6 +15,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					: base.Parent.Header.PtrToStructure<WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32>(base.Directory.VirtualAddress);
 			}
 		}
+
 		/// <summary>PE+ load configuration directory entry</summary>
 		public WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64? Directory64
 		{
@@ -25,6 +26,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					: base.Parent.Header.PtrToStructure<WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64>(base.Directory.VirtualAddress);
 			}
 		}
+
 		/// <summary>Create instance of LoadConfig class</summary>
 		/// <param name="parent">Data directory</param>
 		public LoadConfig(PEFile parent)

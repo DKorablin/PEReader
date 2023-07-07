@@ -12,7 +12,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Create instance of Guid heap class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">.NET stream header</param>
-		/// <exception cref="T:InvalidOperationException">GuidHeap can only read Guid heaps</exception>
+		/// <exception cref="InvalidOperationException">GuidHeap can only read Guid heaps</exception>
 		public GuidHeap(MetaData meta, Cor.STREAM_HEADER header)
 			: base(meta, header)
 		{
@@ -25,12 +25,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>Guid</returns>
 		public override Guid this[Int32 index]
 		{
-			get
-			{
-				return index == 0
-					? Guid.Empty
-					: base[index - 1];
-			}
+			get { return index == 0 ? Guid.Empty : base[index - 1]; }
 		}
 
 		/// <summary>

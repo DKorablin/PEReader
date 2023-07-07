@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug
 		public struct VS_FIXEDFILEINFO
 		{
 			/// <summary>Contains the value 0xFEEF04BD</summary>
-			/// <remarks>This is used with the szKey member of the VS_VERSIONINFO structure when searching a file for the VS_FIXEDFILEINFO structure</remarks>
+			/// <remarks>This is used with the szKey member of the <see cref="WinNT.Resource.VS_VERSIONINFO"/> structure when searching a file for the <see cref="VS_FIXEDFILEINFO"/> structure</remarks>
 			public UInt32 dwSignature;
 
 			/// <summary>The binary version number of this structure</summary>

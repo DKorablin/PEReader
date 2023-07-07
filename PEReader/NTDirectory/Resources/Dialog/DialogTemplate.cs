@@ -43,7 +43,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			get { return this._menu; }
 			set
 			{
-				if(value.HasValue && !value.Value.IsEmpty)
+				if(value != null && value.Value.IsEmpty == false)
 					this._menu = value;
 			}
 		}
@@ -54,7 +54,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			get { return this._windowName; }
 			set
 			{
-				if(value.HasValue && !value.Value.IsEmpty)
+				if(value != null && value.Value.IsEmpty == false)
 					this._windowName = value;
 			}
 		}

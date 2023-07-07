@@ -24,7 +24,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		public UInt16 RevisionNumber { get { return base.GetValue<UInt16>(3); } }
 
 		/// <summary>Assembly flags</summary>
-		/// <remarks>Flags shall have only one bit set, the PublicKey bit (�II.23.1.2). All other bits shall be zero</remarks>
+		/// <remarks>Flags shall have only one bit set, the PublicKey bit (§II.23.1.2). All other bits shall be zero</remarks>
 		public AssemblyNameFlags Flags { get { return (AssemblyNameFlags)base.GetValue<UInt32>(4); } }
 		//public CorAssemblyFlags Flags { get { return (CorAssemblyFlags)base.GetValue<UInt32>(4); } }
 

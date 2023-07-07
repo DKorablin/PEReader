@@ -18,13 +18,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			{
 				T result;
 				SortedList<Int32, T> data = this.GetData();
-				if(data.TryGetValue(pointer, out result))
-				{
-					return result;
-				} else
-				{
-					return this.GetDataByPointer(pointer);
-				}
+				return data.TryGetValue(pointer, out result)
+					? result
+					: this.GetDataByPointer(pointer);
 			}
 		}
 
@@ -43,9 +39,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>Sorted array from the stream</returns>
 		protected virtual SortedList<Int32, T> GetData()
 		{
-			return this._data == null
-				? this._data = this.DataBind()
-				: this._data;
+			return this._data ?? (this._data = this.DataBind());
 		}
 
 		/// <summary>

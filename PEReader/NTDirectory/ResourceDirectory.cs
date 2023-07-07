@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace AlphaOmega.Debug.NTDirectory
 {
-	/// <summary>Директория ресурсов</summary>
+	/// <summary>Resource directory</summary>
 	[DefaultProperty("DirectoryEntry")]
 	public class ResourceDirectory : IEnumerable<ResourceDirectory>, ISectionData
 	{
@@ -15,19 +15,18 @@ namespace AlphaOmega.Debug.NTDirectory
 		internal static UInt32 DirectorySize = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY));
 		internal static UInt32 DirectoryEntrySize = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY));
 
-		private readonly WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY _entry;
 		private WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY? _dataEntry;
-		private readonly Resource _root;
-		private readonly ResourceDirectory _parent;
 		#endregion Fields
 		#region Properties
 		/// <summary>Корневой узел ресурсов</summary>
-		public Resource Root { get { return this._root; } }
+		public Resource Root { get; }
+
 		/// <summary>Родительская директория к текущей директории</summary>
-		public ResourceDirectory Parent { get { return this._parent; } }
+		public ResourceDirectory Parent { get; }
 
 		/// <summary>Directory description</summary>
-		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY DirectoryEntry { get { return this._entry; } }
+		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY DirectoryEntry { get; }
+
 		/// <summary>Описатель директории</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? Directory
 		{
@@ -38,6 +37,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					: (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null;
 			}
 		}
+
 		/// <summary>Наименование директории</summary>
 		public String Name
 		{
@@ -60,7 +60,8 @@ namespace AlphaOmega.Debug.NTDirectory
 					return this.DirectoryEntry.NameAddress.ToString();
 			}
 		}
-		/// <summary>Описание данных</summary>
+
+		/// <summary>Data description</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY? DataEntry
 		{
 			get
@@ -74,6 +75,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					return null;
 			}
 		}
+
 		#endregion Properties
 		/// <summary>Create instance of resource root directory class</summary>
 		/// <param name="entry">Directory description</param>
@@ -82,15 +84,16 @@ namespace AlphaOmega.Debug.NTDirectory
 			: this(entry, root, null)
 		{
 		}
+
 		/// <summary>Create instance of resource directory class</summary>
 		/// <param name="entry">Directory description</param>
 		/// <param name="root">PE directory</param>
 		/// <param name="parent">Parent directory</param>
 		public ResourceDirectory(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY entry, Resource root, ResourceDirectory parent)
 		{
-			this._entry = entry;
-			this._root = root;
-			this._parent = parent;
+			this.DirectoryEntry = entry;
+			this.Root = root ?? throw new ArgumentNullException(nameof(root));
+			this.Parent = parent;
 		}
 
 		/// <summary>Get all data in directory</summary>
@@ -103,8 +106,8 @@ namespace AlphaOmega.Debug.NTDirectory
 				: this.Root.Parent.Header.ReadBytes(dataEntry.Value.OffsetToData, dataEntry.Value.Size);
 		}
 
-		/// <summary>Получить список всех поддиректорий к текущей директории</summary>
-		/// <returns>Список поддиректорий</returns>
+		/// <summary>Get a list of all directories in the current directory</summary>
+		/// <returns>List of subdirectories</returns>
 		public IEnumerator<ResourceDirectory> GetEnumerator()
 		{
 			var root = this.Directory;

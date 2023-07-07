@@ -11,9 +11,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// </summary>
 	/// <remarks>
 	/// Note that FieldMarshal information is used only by code paths that arbitrate operation with unmanaged code.
-	/// In order to execute such paths, the caller, on most platforms,
-	/// would be installed with elevated security permission.
-	/// Once it invokes unmanaged code, it lies outside the regime that the CLI can check � it is simply trusted not to violate the type system.
+	/// In order to execute such paths, the caller, on most platforms, would be installed with elevated security permission.
+	/// Once it invokes unmanaged code, it lies outside the regime that the CLI can check - it is simply trusted not to violate the type system.
 	/// </remarks>
 	public class FieldMarshalRow : BaseMetaRow
 	{

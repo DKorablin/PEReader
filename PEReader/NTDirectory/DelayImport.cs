@@ -13,6 +13,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.DELAY_IMPORT)
 		{
 		}
+
 		/// <summary>Get array of delay import modules and procedures</summary>
 		/// <returns>Delay import modules</returns>
 		public IEnumerator<DelayImportModule> GetEnumerator()

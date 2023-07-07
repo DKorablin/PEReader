@@ -28,7 +28,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		}
 
 		/// <summary>Resource header</summary>
-		/// <exception cref="T:InvalidOperationException">Managed resource header is invalid</exception>
+		/// <exception cref="InvalidOperationException">Managed resource header is invalid</exception>
 		public Cor.ResourceSetHeader RuntimeHeader
 		{
 			get

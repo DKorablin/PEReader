@@ -10,14 +10,13 @@ namespace AlphaOmega.Debug.CorDirectory
 	public class ResourceTableReader : IEnumerable<ResourceTableItem>, IDisposable
 	{
 		#region Fields
-		private readonly String _name;
-		private readonly Byte[] _file;
+		private Byte[] File { get; }
 		private ResourceReader _reader;
 		private readonly Object _readerLock = new Object();
 		#endregion Fields
 		#region Properties
 		/// <summary>.resource name</summary>
-		public String Name { get { return this._name; } }
+		public String Name { get; }
 
 		/// <summary>This type of resource fragment can be read by default <see cref="System.Resources.ResourceReader"/> class</summary>
 		public Boolean CanRead
@@ -32,7 +31,7 @@ namespace AlphaOmega.Debug.CorDirectory
 					Array.Reverse(bytes);
 					magicNumber = checked((UInt32)BitConverter.ToInt32(bytes, 0));
 				} else*/
-					magicNumber = BitConverter.ToInt32(this._file, 0);
+					magicNumber = BitConverter.ToInt32(this.File, 0);
 
 				return (UInt32)magicNumber == Cor.ResourceManagerHeader.MagicNumberConst;
 			}
@@ -47,7 +46,7 @@ namespace AlphaOmega.Debug.CorDirectory
 					lock(_readerLock)
 						if(this._reader == null)
 						{
-							MemoryStream stream = new MemoryStream(this._file);
+							MemoryStream stream = new MemoryStream(this.File);
 							try
 							{
 								this._reader = new ResourceReader(stream);
@@ -67,8 +66,8 @@ namespace AlphaOmega.Debug.CorDirectory
 			if(file == null || file.Length == 0)
 				throw new ArgumentNullException(nameof(file));
 
-			this._name = name ?? throw new ArgumentNullException(nameof(name));
-			this._file = file;
+			this.Name = name ?? throw new ArgumentNullException(nameof(name));
+			this.File = file;
 		}
 
 		internal void GetResourceData(String resourceName, out String resourceType, out Byte[] resourceData)

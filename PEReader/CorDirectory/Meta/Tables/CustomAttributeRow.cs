@@ -12,10 +12,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class CustomAttributeRow : BaseMetaRow
 	{//TODO: Need additional checkup. Maybe Type and Parent misplaced.
 		/// <summary>An index into a metadata table that has an associated HasCustomAttribute (§II.24.2.6) coded index</summary>
-		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(1); } }
+		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(0); } }
 
 		/// <summary>An index into the MethodDef or MemberRef table; more precisely, a CustomAttributeType (§II.24.2.6) coded index</summary>
-		public MetaCellCodedToken Type { get { return base.GetValue<MetaCellCodedToken>(0); } }
+		public MetaCellCodedToken Type { get { return base.GetValue<MetaCellCodedToken>(1); } }
 
 		/// <summary>Attribute value</summary>
 		/// <remarks>All binary values are stored in little-endian format (except for PackedLen items, which are used only as a count for the number of bytes to follow in a UTF8 string)</remarks>

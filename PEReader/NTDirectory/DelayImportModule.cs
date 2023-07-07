@@ -8,16 +8,14 @@ namespace AlphaOmega.Debug.NTDirectory
 	[DefaultProperty("ModuleName")]
 	public class DelayImportModule: IEnumerable<WinNT.IMAGE_IMPORT_BY_NAME>
 	{
-		private readonly DelayImport _directory;
-		private readonly WinNT.ImgDelayDescr _descriptor;
-
 		/// <summary>PE directory</summary>
-		private DelayImport Directory { get { return this._directory; } }
+		private DelayImport Directory { get; }
+
 		/// <summary>Delay load descriptor</summary>
-		public WinNT.ImgDelayDescr Descriptor { get { return this._descriptor; } }
+		public WinNT.ImgDelayDescr Descriptor { get; }
 
 		/// <summary>Name of the imported DLL</summary>
-		/// <exception cref="T:NotImplementedException">Unknown address type specified</exception>
+		/// <exception cref="NotImplementedException">Unknown address type specified</exception>
 		public String ModuleName
 		{
 			get
@@ -41,22 +39,25 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				return this.Directory.Parent.Header.Is64Bit
-					? this.Directory.Parent.Header.HeaderNT64.OptionalHeader.ImageBase
-					: this.Directory.Parent.Header.HeaderNT32.OptionalHeader.ImageBase;
+				var header = this.Directory.Parent.Header;
+				return header.Is64Bit
+					? header.HeaderNT64.OptionalHeader.ImageBase
+					: header.HeaderNT32.OptionalHeader.ImageBase;
 			}
 		}
+
 		/// <summary>Create instance of delay import module description class</summary>
 		/// <param name="directory">PE directory</param>
 		/// <param name="descriptor">Base info</param>
 		public DelayImportModule(DelayImport directory, WinNT.ImgDelayDescr descriptor)
 		{
-			this._directory = directory;
-			this._descriptor = descriptor;
+			this.Directory = directory;
+			this.Descriptor = descriptor;
 		}
-		/// <summary>Получить список адресов, по которым можно получить наименования процедур, которые будут импортированы из модуля</summary>
-		/// <exception cref="T:NotImplementedException">Unknown address type specified</exception>
-		/// <returns>Массив адресов</returns>
+
+		/// <summary>Get a list of addresses where you can get the names of procedures that will be imported from the module</summary>
+		/// <exception cref="NotImplementedException">Unknown address type specified</exception>
+		/// <returns>Address array</returns>
 		public IEnumerable<UInt32> GetIntAddress()
 		{
 			UInt64 rvaINT;
@@ -85,7 +86,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		/// <summary>Get Import Name Table array</summary>
-		/// <returns>Массив импортируемых процедур</returns>
+		/// <returns>Array of Imported Procedures</returns>
 		public IEnumerator<WinNT.IMAGE_IMPORT_BY_NAME> GetEnumerator()
 		{
 			UInt32 imageBase = 0;
@@ -104,6 +105,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					yield return this.Directory.Parent.Header.PtrToStructure<WinNT.IMAGE_IMPORT_BY_NAME>(addrOfImport - imageBase);
 			}
 		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();

@@ -9,22 +9,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	[DebuggerDisplay("Type={ColumnType} Name={Name}")]
 	public class MetaColumn : IColumn
 	{
-		private readonly Cor.MetaTableType _tableType;
-		private readonly MetaColumnType _columnType;
-		private readonly String _columnName;
-		private readonly UInt16 _columnIndex;
-
 		/// <summary>Owner table type</summary>
-		public Cor.MetaTableType TableType { get { return this._tableType; } }
+		public Cor.MetaTableType TableType { get; }
 
 		/// <summary>Column type</summary>
-		public MetaColumnType ColumnType { get { return this._columnType; } }
+		public MetaColumnType ColumnType { get; }
 
 		/// <summary>Column name</summary>
-		public String Name { get { return this._columnName; } }
+		public String Name { get; }
 
 		/// <summary>Column index in table</summary>
-		public UInt16 Index { get { return this._columnIndex; } }
+		public UInt16 Index { get; }
 
 		/// <summary>Cell pointer column</summary>
 		public Boolean IsCellPointer { get { return MetaColumn.IsColumnCellPointer(this.ColumnType); } }
@@ -39,10 +34,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="columnIndex">Column index in table</param>
 		public MetaColumn(Cor.MetaTableType tableType, MetaColumnType columnType, String columnName, UInt16 columnIndex)
 		{
-			this._tableType = tableType;
-			this._columnType = columnType;
-			this._columnName = columnName;
-			this._columnIndex = columnIndex;
+			this.TableType = tableType;
+			this.ColumnType = columnType;
+			this.Name = columnName;
+			this.Index = columnIndex;
 		}
 
 		/// <summary>Cell pointer column</summary>

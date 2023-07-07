@@ -2,47 +2,43 @@
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>Базовый класс для детального описания ряда таблицы в метаданных</summary>
+	/// <summary>Basic class to descibe any metadata table row</summary>
 	public class BaseMetaRow : IEquatable<BaseMetaRow>
 	{
 		private MetaRow _row;
 
-		/// <summary>Базовый ряд для обработки</summary>
+		/// <summary>Base metadata row for processing</summary>
+		/// <exception cref="ArgumentNullException">value is null</exception>
 		internal MetaRow Row
 		{
 			get { return this._row; }
-			set
-			{
-				if(value == null)
-					throw new ArgumentNullException(nameof(value));
-				this._row = value;
-			}
+			set { this._row = value ?? throw new ArgumentNullException(nameof(value)); }
 		}
 
 		/// <summary>Row index</summary>
 		public UInt32 Index { get { return this.Row.Index; } }
 
-		/// <summary>Получить значение из колонки ряда по значению</summary>
-		/// <typeparam name="T">Тип данных в колонке</typeparam>
-		/// <param name="columnIndex">Индекс колонки в таблице метаданных</param>
-		/// <returns>Значение колонки в таблице метаданных</returns>
+		/// <summary>Get cell value by index from metadata row</summary>
+		/// <typeparam name="T">Cell data type</typeparam>
+		/// <param name="columnIndex">Column index from metadata table</param>
+		/// <returns>Cell value from table metadata</returns>
 		protected T GetValue<T>(UInt16 columnIndex)
 		{
 			return (T)this.Row[columnIndex].Value;
 		}
 
-		/// <summary>Проверка на наличие бита дабы уменьшить синтаксис</summary>
-		/// <param name="flags">Флаги</param>
-		/// <param name="enumValue">Значение бита, которое надо проверить</param>
-		/// <returns>Бит проставлен</returns>
+		/// <summary>Bit check to reduce syntax</summary>
+		/// <param name="flags">Flags</param>
+		/// <param name="enumValue">Bit index to check</param>
+		/// <returns>Bit is set</returns>
 		protected static Boolean IsBitSet(UInt32 flags, UInt32 enumValue)
 		{
 			return (flags & enumValue) == enumValue;
 		}
 
-		/// <summary>Отобразить текущий объект ввиде строки</summary>
-		/// <param name="args">Ключевой объект от наследуемого класса</param>
-		/// <returns>Строка</returns>
+		/// <summary>Shows current object as string</summary>
+		/// <param name="args">Key value to show as string</param>
+		/// <returns>String representation</returns>
 		protected internal String ToString(Object args)
 		{
 			return $"{this.GetType().Name} : {{{args}}}";

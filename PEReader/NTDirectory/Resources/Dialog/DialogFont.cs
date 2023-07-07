@@ -2,18 +2,18 @@
 
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
-	/// <summary>Шрифт</summary>
+	/// <summary>Dialog font description</summary>
 	public struct DialogFont
 	{
-		/// <summary>Размер шрифта</summary>
+		/// <summary>Font size</summary>
 		public UInt16 FontSize;
-		/// <summary>Толщина шрифта</summary>
+		/// <summary>Font weight</summary>
 		public UInt16 FontWeight;
-		/// <summary>Наклонный</summary>
+		/// <summary>Italic font</summary>
 		public Byte? Italic;
 		/// <summary>Character Set</summary>
 		public Byte? CharSet;
-		/// <summary>Наименование шрифта</summary>
+		/// <summary>Font name</summary>
 		public String TypeFace;
 	}
 }

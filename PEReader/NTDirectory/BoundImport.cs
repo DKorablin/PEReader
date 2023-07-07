@@ -44,8 +44,9 @@ namespace AlphaOmega.Debug.NTDirectory
 			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.BOUND_IMPORT)
 		{
 		}
-		/// <summary></summary>
-		/// <returns></returns>
+
+		/// <summary>Get the list of bound import class</summary>
+		/// <returns>Stream of bound import classes</returns>
 		public IEnumerator<BoundImportReference> GetEnumerator()
 		{
 			WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR? descriptor = this.Descriptor;
@@ -70,6 +71,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				}
 			}
 		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();

@@ -1,9 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo9.csproj", "{3A7DE130-3542-442A-82F1-4905210E625D}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33529.622
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo35", "Demo\Demo35.csproj", "{3A7DE130-3542-442A-82F1-4905210E625D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEReader", "PEReader\PEReader9.csproj", "{5F56B043-3547-49FF-AB37-3B9A1B14FC53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEReader35", "PEReader\PEReader35.csproj", "{5F56B043-3547-49FF-AB37-3B9A1B14FC53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,7 +16,6 @@ Global
 		{3A7DE130-3542-442A-82F1-4905210E625D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3A7DE130-3542-442A-82F1-4905210E625D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A7DE130-3542-442A-82F1-4905210E625D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A7DE130-3542-442A-82F1-4905210E625D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F56B043-3547-49FF-AB37-3B9A1B14FC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F56B043-3547-49FF-AB37-3B9A1B14FC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F56B043-3547-49FF-AB37-3B9A1B14FC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -22,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1232EBF1-95A9-499C-8236-3EEB14313C01}
 	EndGlobalSection
 EndGlobal

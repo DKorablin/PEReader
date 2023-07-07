@@ -4,39 +4,33 @@ using System.Collections.Generic;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>Базовый класс для детализированного описания таблицы в метаданных</summary>
+	/// <summary>Basic class to describe any metadata table</summary>
 	public class BaseMetaTable<R> : IEnumerable<R> where R : BaseMetaRow, new()
 	{
-		#region Fields
-		private readonly MetaTable _table;
-		private readonly Cor.MetaTableType _tableType;
-		#endregion Fields
+		/// <summary>Metadata table</summary>
+		public MetaTable Table { get; }
 
-		/// <summary>Таблица в метаданных</summary>
-		public MetaTable Table { get { return this._table; } }
+		/// <summary>Strongly typed metadata table</summary>
+		public Cor.MetaTableType TableType { get; }
 
-		/// <summary>Тип таблицы из метаданных</summary>
-		public Cor.MetaTableType TableType { get { return this._tableType; } }
-
-		/// <summary>Получить детализированный ряд из таблицы метаданных</summary>
-		/// <param name="rowIndex">Индекс ряда из таблицы</param>
-		/// <returns>Детализированный ряд таблицы из метаданных</returns>
+		/// <summary>Get detailed row from metadata table by index</summary>
+		/// <param name="rowIndex">Row index from metadata table</param>
+		/// <returns>Strongly typed detailed row from metadata</returns>
 		public R this[UInt32 rowIndex] { get { return new R() { Row = this.Table[rowIndex], }; } }
 
-		/// <summary>Создание экземпляра базового класса детализированного описания таблицы в метаданных</summary>
-		/// <param name="stream">Поток</param>
-		/// <param name="type">Тип таблицы</param>
+		/// <summary>Creating an instance of the base class of a detailed description of a table in metadata</summary>
+		/// <param name="stream">Metadata stream</param>
+		/// <param name="type">Stronglt typed table type</param>
 		internal BaseMetaTable(StreamTables stream, Cor.MetaTableType type)
 		{
-			if(stream == null)
-				throw new ArgumentNullException(nameof(stream));
+			_ = stream ?? throw new ArgumentNullException(nameof(stream));
 
-			this._tableType = type;
-			this._table = stream[this._tableType];
+			this.TableType = type;
+			this.Table = stream[this.TableType];
 		}
 
-		/// <summary>Получить в итерации список всех рядов в таблице метаданных</summary>
-		/// <returns>Ряд метаданных детально описывающий структуру таблицы</returns>
+		/// <summary>Get in iteration a list of all rows in a metadata table</summary>
+		/// <returns>A set of metadata detailing the structure of a table</returns>
 		public IEnumerator<R> GetEnumerator()
 		{
 			foreach(var row in this.Table.Rows)

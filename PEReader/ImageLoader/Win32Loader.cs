@@ -67,16 +67,16 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Load image from file</summary>
 		/// <param name="filePath">Path to file</param>
-		/// <exception cref="T:ArgumentNullException">filePath is null</exception>
-		/// <exception cref="T:FileNotFoundException">File on path filePath not found</exception>
-		/// <exception cref="T:Win32Exception">LoadLibrary can't load PE/PE+ image</exception>
+		/// <exception cref="ArgumentNullException">filePath is null</exception>
+		/// <exception cref="FileNotFoundException">File on path filePath not found</exception>
+		/// <exception cref="Win32Exception">LoadLibrary can't load PE/PE+ image</exception>
 		/// <returns>Loader</returns>
 		public static Win32Loader FromFile(String filePath)
 		{
 			if(String.IsNullOrEmpty(filePath))
 				throw new ArgumentNullException(nameof(filePath));
 			else if(!File.Exists(filePath))
-				throw new FileNotFoundException("File not found", filePath);
+				throw new FileNotFoundException(nameof(filePath), filePath);
 
 			IntPtr hModule = NativeMethods.LoadLibraryEx(filePath, IntPtr.Zero, NativeMethods.LoadLibraryFlags.DONT_RESOLVE_DLL_REFERENCES);
 			if(hModule == IntPtr.Zero)
@@ -87,7 +87,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Load image from HModule</summary>
 		/// <param name="module">Loaded module</param>
-		/// <exception cref="T:ArgumentNullException">module is null</exception>
+		/// <exception cref="ArgumentNullException">module is null</exception>
 		/// <returns>Loader</returns>
 		public static Win32Loader FromModule(ProcessModule module)
 		{
@@ -107,8 +107,8 @@ namespace AlphaOmega.Debug
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
 		/// <param name="freeOnClode">Close HMODULE after exit</param>
-		/// <exception cref="T:ArgumentNullException">hModule is empty</exception>
-		/// <exception cref="T:ArgumentNullException">source is null</exception>
+		/// <exception cref="ArgumentNullException">hModule is empty</exception>
+		/// <exception cref="ArgumentNullException">source is null</exception>
 		public Win32Loader(IntPtr hModule, Boolean freeOnClode)
 		{
 			if(hModule == IntPtr.Zero)
@@ -149,7 +149,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Free HMODULE</summary>
-		/// <exception cref="T:Win32Exception">Can't unload library</exception>
+		/// <exception cref="Win32Exception">Can't unload library</exception>
 		public void Dispose()
 		{
 			this.Dispose(true);

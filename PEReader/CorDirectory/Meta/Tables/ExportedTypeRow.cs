@@ -17,7 +17,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// This column is used as a hint only.
 		/// If the entry in the target TypeDef table matches the TypeName and TypeNamespace entries in this table, resolution has succeeded.
 		/// But if there is a mismatch, the CLI shall fall back to a search of the target TypeDef table.
-		/// Ignored and should be zero if Flags has IsTypeForwarder set
+		/// Ignored and should be zero if Flags has IsTypeForwarder set.
 		/// </summary>
 		public UInt32 TypeDefId { get { return base.GetValue<UInt32>(1); } }
 

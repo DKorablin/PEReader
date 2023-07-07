@@ -2,10 +2,12 @@
 
 namespace AlphaOmega.Debug
 {
+	/// <summary>Strongly typed resource layer</summary>
 	internal static class Resources
 	{
 		private static ResourceManager _section;
 
+		/// <summary>Sections description</summary>
 		public static ResourceManager Section
 		{
 			get { return _section ?? (_section = new ResourceManager("AlphaOmega.Debug.Section", typeof(Resources).Assembly)); }

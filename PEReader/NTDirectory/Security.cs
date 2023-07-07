@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		/// <summary>Certificate header</summary>
-		/// <exception cref="T:ArgumentOutOfRangeException">Directory VA out of file size</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Directory VA out of file size</exception>
 		public WinNT.WIN_CERTIFICATE? Certificate
 		{
 			get
@@ -44,6 +44,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					return null;
 			}
 		}
+
 		/// <summary>Create instance of certificate class</summary>
 		/// <param name="root">Data directory</param>
 		public Security(PEFile root)

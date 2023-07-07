@@ -2,10 +2,8 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>
-	/// The rows of the MethodSemantics table are filled by .property (§II.17) and .event directives (§II.18).
-	/// (See §II.22.13 for more information)
-	/// </summary>
+	/// <summary>The rows of the MethodSemantics table are filled by .property (§II.17) and .event directives (§II.18)</summary>
+	/// <remarks>(See §II.22.13 for more information)</remarks>
 	public class MethodSemanticsRow : BaseMetaRow
 	{
 		/// <summary>2-byte bitmask of type MethodSemanticsAttributes, §II.23.1.12</summary>

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
-	/// <summary>RT_STRING resource reader class</summary>
+	/// <summary><see cref="WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING"/> resource reader class</summary>
 	public class ResourceString : ResourceBase, IEnumerable<ResourceString.StringItem>
 	{
 		/// <summary>Starting directory string ID</summary>

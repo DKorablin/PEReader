@@ -5,7 +5,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// <summary>
 	/// MethodImpl tables let a compiler override the default inheritance rules provided by the CLI.
 	/// Their original use was to allow a class C, that inherited method M from both interfaces I and J, to provide implementations for both methods (rather than have only one slot for M in its vtable).
-	/// However, MethodImpls can be used for other reasons too, limited only by the compiler writer�s ingenuity within the constraints defined in the Validation rules below.
+	/// However, MethodImpls can be used for other reasons too, limited only by the compiler writer's ingenuity within the constraints defined in the Validation rules below.
 	/// </summary>
 	public class MethodImplRow : BaseMetaRow
 	{

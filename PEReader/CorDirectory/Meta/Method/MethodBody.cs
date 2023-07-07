@@ -14,10 +14,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private static UInt32 SizeOfMethodExceptionFat = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionFat));
 		private static UInt32 SizeOfMethodExceptionSmall = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionSmall));
 
-		private readonly MethodDefRow _row;
 		private static Dictionary<Int16, OpCode> _opCodeList;
 		private Cor.CorILMethodHeader? _header;
-		private MethodDefRow Row { get { return this._row; } }
+		private MethodDefRow Row { get; }
 
 		private static Dictionary<Int16, OpCode> OpCodeList
 		{
@@ -62,7 +61,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		internal MethodBody(MethodDefRow row)
 		{
-			this._row = row;
+			this.Row = row ?? throw new ArgumentNullException(nameof(row));
 		}
 
 		/// <summary>Gets method body</summary>
@@ -81,7 +80,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>An array of the OpCodes representing the MSIL code</returns>
 		public IEnumerable<MethodLine> GetMethodBody2()
 		{
-			MetaCell cell = this._row.Row.Cells[0];
+			MetaCell cell = this.Row.Row.Cells[0];
 			Byte[] data = this.GetMethodBody();
 
 			for(Int32 loop = 0; loop < data.Length; loop++)

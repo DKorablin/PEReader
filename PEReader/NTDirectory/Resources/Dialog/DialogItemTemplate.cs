@@ -63,11 +63,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Control item extended data</summary>
 		public readonly Byte[] ExtraData;
 
-		/// <summary>
-		/// The window is initially disabled.
+		/// <summary>The window is initially disabled</summary>
+		/// <remarks>
 		/// A disabled window cannot receive input from the user.
 		/// To change this after a window has been created, use the EnableWindow function
-		/// </summary>
+		/// </remarks>
 		public Boolean IsDisabled
 		{
 			get { return (this.Styles & WinUser.WS.WS_DISABLED) == WinUser.WS.WS_DISABLED; }
@@ -82,7 +82,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		public DialogItemTemplate(WinUser.DLGITEMTEMPLATE? control, WinUser.DLGITEMTEMPLATEEX? controlEx, ResourceBase.SzInt itemClass, ResourceBase.SzInt itemText, Byte[] extraData)
 		{
 			if(control == null && controlEx == null)
-				throw new ArgumentNullException("control or controlEx must be not null");
+				throw new ArgumentNullException(nameof(control) + " || " + nameof(controlEx), "control or controlEx must be not null");
 
 			if(control != null)
 			{

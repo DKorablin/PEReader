@@ -15,8 +15,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		}
 
-		/// <summary>Получить список используемых акселераторов</summary>
-		/// <returns>Массив используемых акселераторов</returns>
+		/// <summary>Get a list of used accelerators</summary>
+		/// <returns>Array of used accelerators</returns>
 		public IEnumerator<WinUser.ACCELTABLEENTRY> GetEnumerator()
 		{
 			UInt32 position = 0;

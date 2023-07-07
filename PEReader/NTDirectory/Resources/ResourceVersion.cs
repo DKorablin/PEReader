@@ -10,12 +10,12 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	[DefaultProperty("VersionInfo")]
 	public class ResourceVersion : ResourceBase
 	{
-		/// <summary>Тип таблицы</summary>
+		/// <summary>Varsion table type</summary>
 		public enum VersionTableType
 		{
-			/// <summary>Таблица со строковыми данными</summary>
+			/// <summary>Table with string data</summary>
 			StringFileInfo,
-			/// <summary>Таблица с бинарными данными</summary>
+			/// <summary>Table with binary data</summary>
 			VarFileInfo,
 		}
 
@@ -30,14 +30,14 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			public UInt16 charsetID;
 			
 			/// <summary>Convert language to string</summary>
-			/// <exception cref="T:NotImplementedException">Unknown langID</exception>
+			/// <exception cref="NotImplementedException">Unknown langID</exception>
 			/// <returns>String</returns>
 			public override String ToString()
 			{
 				String lang = ResourceDirectory.GetLangName(this.langID);
 				String charset = Encoding.GetEncoding(this.charsetID).EncodingName;
 
-				return String.Format("Lang: {0} Charset: {1}", lang, charset);
+				return $"Lang: {lang} Charset: {charset}";
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			/// <summary>Value</summary>
 			public Object Value;
 			/// <summary>Convert value to string</summary>
-			/// <exception cref="T:NotImplementedException">Don't now how to convert version item to string</exception>
+			/// <exception cref="NotImplementedException">Don't now how to convert version item to string</exception>
 			/// <returns>String</returns>
 			public override String ToString()
 			{
@@ -195,7 +195,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <param name="reader">Mapped bytes</param>
 		/// <param name="type">Type of version table</param>
 		/// <param name="padding">Base padding</param>
-		/// <exception cref="T:NotImplementedException">Unknown table row type</exception>
+		/// <exception cref="NotImplementedException">Unknown table row type</exception>
 		/// <returns>Readed version table</returns>
 		private VersionTable GetVersionTable(PinnedBufferReader reader, VersionTableType type, ref UInt32 padding)
 		{

@@ -13,6 +13,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.BASERELOC)
 		{
 		}
+
 		/// <summary>Get all relocations blocks from directory</summary>
 		/// <returns>Relocation blocks</returns>
 		public IEnumerator<RelocationBlock> GetEnumerator()
@@ -38,6 +39,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				}
 			}
 		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();

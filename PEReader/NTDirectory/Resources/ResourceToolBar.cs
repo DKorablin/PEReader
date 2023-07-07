@@ -39,28 +39,25 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				{
 					UInt16 toolBarItem = reader.BytesToStructure<UInt16>(ref padding);
 
-					if(toolBarItem <= 0)
-					{
-						CommCtrl.TBBUTTON separator = new CommCtrl.TBBUTTON();
-						separator.iBitmap = 0;
-						separator.idCommand = 0;
-						separator.fsState = CommCtrl.TBSTATE.ENABLED;
-						separator.fsStyle = CommCtrl.TBSTYLE.BTNS_SEP;
-						separator.dwData = 0;
-						separator.iString = null;
-						yield return separator;
-					} else
-					{
-						String title = "RT_STRING ID: " + toolBarItem;
-						CommCtrl.TBBUTTON button = new CommCtrl.TBBUTTON();
-						button.iBitmap = iIconIndex++;
-						button.idCommand = toolBarItem;
-						button.fsState = CommCtrl.TBSTATE.ENABLED;
-						button.fsStyle = CommCtrl.TBSTYLE.BTNS_BUTTON;
-						button.dwData = 0;
-						button.iString = title;
-						yield return button;
-					}
+					yield return toolBarItem > 0
+						? new CommCtrl.TBBUTTON()
+						{
+							iBitmap = iIconIndex++,
+							idCommand = toolBarItem,
+							fsState = CommCtrl.TBSTATE.ENABLED,
+							fsStyle = CommCtrl.TBSTYLE.BTNS_BUTTON,
+							dwData = 0,
+							iString = "RT_STRING ID: " + toolBarItem,
+						}
+						: new CommCtrl.TBBUTTON()
+						{
+							iBitmap = 0,
+							idCommand = 0,
+							fsState = CommCtrl.TBSTATE.ENABLED,
+							fsStyle = CommCtrl.TBSTYLE.BTNS_SEP,
+							dwData = 0,
+							iString = null,
+						};
 				}
 		}
 	}

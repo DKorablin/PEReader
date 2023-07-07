@@ -32,7 +32,9 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			get
 			{
-				return base.Directory.IsEmpty ? null : this.Parent.Header.PtrToStringAnsi(this.Header.Value.NameRva);
+				return base.Directory.IsEmpty
+					? null
+					: this.Parent.Header.PtrToStringAnsi(this.Header.Value.NameRva);
 			}
 		}
 
@@ -43,8 +45,8 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 		}
 
-		/// <summary>Получить список экспортируемых функций</summary>
-		/// <returns>Массив с адресами экспортируемых функций</returns>
+		/// <summary>Get a list of exported functions</summary>
+		/// <returns>Array with addresses of exported functions</returns>
 		public IEnumerable<ExportFunction> GetExportFunctions()
 		{
 			//[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

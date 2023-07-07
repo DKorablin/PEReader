@@ -14,9 +14,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		{
 			/// <summary>ID of entry that used by eventlog</summary>
 			public UInt32 EntryId;
+
 			/// <summary>Message for eventlog</summary>
 			public String EntryName;
 		}
+
 		/// <summary>Each block contains array of messages</summary>
 		public UInt32 NumberOfBlocks { get { return PinnedBufferReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0); } }
 
@@ -27,8 +29,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		{
 
 		}
-		/// <summary>Получить блоки сообщений</summary>
-		/// <returns>Массив блоков сообщений</returns>
+		/// <summary>Get message blocks</summary>
+		/// <returns>Array of message blocks</returns>
 		public IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks()
 		{
 			using(PinnedBufferReader reader = base.CreateDataReader())
@@ -41,6 +43,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			for(Int32 loop = 0;loop < this.NumberOfBlocks;loop++)
 				yield return reader.BytesToStructure<WinNT.Resource.MESSAGE_RESOURCE_BLOCK>(ref padding);
 		}
+
 		/// <summary>Get all messages from block</summary>
 		/// <param name="block">Message block from witch read all messages</param>
 		/// <returns>Messages array</returns>
@@ -49,10 +52,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			using(PinnedBufferReader reader = base.CreateDataReader())
 				return this.GetMessageBlockEntries(reader, block);
 		}
+
 		/// <summary>Get message block entries from starting address</summary>
 		/// <param name="reader">Mapped bytes</param>
 		/// <param name="block">message block header</param>
-		/// <exception cref="T:NotImplementedException">Unknown string encoding specified</exception>
+		/// <exception cref="NotImplementedException">Unknown string encoding specified</exception>
 		/// <returns></returns>
 		private IEnumerable<ResourceMessageTable.MessageResourceEntry> GetMessageBlockEntries(PinnedBufferReader reader, WinNT.Resource.MESSAGE_RESOURCE_BLOCK block)
 		{
@@ -80,6 +84,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				entryId++;
 			}
 		}
+
 		/// <summary>Get all messages from resource directory</summary>
 		/// <returns>Messages array</returns>
 		public IEnumerator<ResourceMessageTable.MessageResourceEntry> GetEnumerator()
@@ -89,6 +94,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 					foreach(var entry in this.GetMessageBlockEntries(reader, block))
 						yield return entry;
 		}
+
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();

@@ -6,11 +6,11 @@ namespace AlphaOmega.Debug.NTDirectory
 	/// <summary>Import description class</summary>
 	public struct ImportModule : IEnumerable<WinNT.IMAGE_IMPORT_BY_NAME>
 	{
-		private readonly Import _directory;
-		private readonly WinNT.IMAGE_IMPORT_DESCRIPTOR _header;
-		private Import Directory { get { return this._directory; } }
+		private Import Directory { get; }
+
 		/// <summary>Import directory header</summary>
-		public WinNT.IMAGE_IMPORT_DESCRIPTOR Header { get { return this._header; } }
+		public WinNT.IMAGE_IMPORT_DESCRIPTOR Header { get; }
+
 		/// <summary>Name of the imported module</summary>
 		public String ModuleName
 		{
@@ -24,11 +24,13 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Create instance of import description class</summary>
 		/// <param name="directory">Import directory</param>
 		/// <param name="header">Header</param>
+		/// <exception cref="ArgumentNullException">Directory is null</exception>
 		public ImportModule(Import directory, WinNT.IMAGE_IMPORT_DESCRIPTOR header)
 		{
-			this._directory = directory;
-			this._header = header;
+			this.Directory = directory ?? throw new ArgumentNullException(nameof(directory));
+			this.Header = header;
 		}
+
 		/// <summary>Get all import procedures from module</summary>
 		/// <returns>Import procedures</returns>
 		public IEnumerator<WinNT.IMAGE_IMPORT_BY_NAME> GetEnumerator()
@@ -51,14 +53,16 @@ namespace AlphaOmega.Debug.NTDirectory
 				}
 			}
 		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
 		}
-		/// <summary>Получить информацию по импорту</summary>
-		/// <param name="offset">Сдвиг по PE файлу</param>
-		/// <param name="isRva">Получить импорт по Relative Virtual Address адресу. В противном случае передаётся Virtual Address</param>
-		/// <returns>Структура</returns>
+
+		/// <summary>Get Import Information</summary>
+		/// <param name="offset">Shift in PE file</param>
+		/// <param name="isRva">Get import by Relative Virtual Address address. Otherwise, the Virtual Address is passed</param>
+		/// <returns>Structure</returns>
 		private WinNT.IMAGE_IMPORT_BY_NAME GetImageImport(UInt32 offset, Boolean isRva)
 		{
 			PEHeader header = this.Directory.Parent.Header;

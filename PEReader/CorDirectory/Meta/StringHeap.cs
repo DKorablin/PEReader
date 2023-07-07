@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Create instance of String heap class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">.NET stream header</param>
-		/// <exception cref="T:InvalidOperationException">StringHeap class can only read String heap</exception>
+		/// <exception cref="InvalidOperationException">StringHeap class can only read String heap</exception>
 		public StringHeap(MetaData meta, Cor.STREAM_HEADER header)
 			: base(meta, header)
 		{
@@ -22,7 +22,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
 		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
 		/// </summary>
-		/// <param name="pointer">Pointer in the heap</param>
+		/// <param name="pointer">Pointer to heap</param>
 		/// <returns>Data by pointer</returns>
 		protected override String GetDataByPointer(Int32 pointer)
 		{
@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 			Int32 diff = pointer - key;
 
-			//TODO: Here i can add found string to the SortedList<,>
+			//TODO: Here I can add found string to the SortedList<,>
 			String result = nearestString.Substring(diff, nearestString.Length - diff);
 			return result;
 		}

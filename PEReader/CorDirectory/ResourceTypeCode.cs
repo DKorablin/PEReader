@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AlphaOmega.Debug.CorDirectory
+﻿namespace AlphaOmega.Debug.CorDirectory
 {
 	/// <summary>Default resource type codes</summary>
 	/// <remarks>Cloe of internal visible System.Resources.ResourceTypeCode</remarks>

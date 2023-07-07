@@ -18,6 +18,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					return sizeof(UInt32);
 			}
 		}
+
 		/// <summary>Pointer count in the directory</summary>
 		public UInt32 Count { get { return base.Directory.IsEmpty ? 0 : base.Directory.Size / this.SizeOfStruct; } }
 
@@ -40,6 +41,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				padding += this.SizeOfStruct;
 			}
 		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();

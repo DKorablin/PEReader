@@ -39,9 +39,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>
-		/// The root of the physical metadata starts with a magic signature,
-		/// several bytes of version and other miscellaneous information,
-		/// followed by a count and an array of stream headers, one for each stream that is present.
+		/// The root of the physical metadata starts with a magic signature, several bytes of version and other miscellaneous information, followed by a count and an array of stream headers, one for each stream that is present.
 		/// </summary>
 		public struct IMAGE_COR20_METADATA
 		{
@@ -746,7 +744,7 @@ namespace AlphaOmega.Debug
 			/// <summary>
 			/// Stores the generic parameters used in generic type definitions and generic method definitions.
 			/// These generic parameters can be constrained (i.e., generic arguments shall extend some class 
-			/// and/or implement certain interfaces) or unconstrained.  (Such constraints are stored in the GenericParamConstraint table.)
+			/// and/or implement certain interfaces) or unconstrained. (Such constraints are stored in the GenericParamConstraint table.)
 			/// Conceptually, each row in the GenericParam table is owned by one, and only one, row in either the TypeDef or 
 			/// MethodDef tables
 			/// </summary>

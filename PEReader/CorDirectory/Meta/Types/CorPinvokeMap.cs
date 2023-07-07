@@ -17,11 +17,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		pmCharSetAnsi = 0x0002,
 		/// <summary>Marshal strings as Unicode 2-byte characters</summary>
 		pmCharSetUnicode = 0x0004,
-		/// <summary>
-		/// Automatically marshal strings appropriately for the target operating system.
+		/// <summary>Automatically marshal strings appropriately for the target operating system</summary>
+		/// <remarks>
 		/// The default is Unicode on Windows NT, Windows 2000, Windows XP, and the Windows Server 2003 family;
 		/// the default is ANSI on Windows 98 and Windows ME
-		/// </summary>
+		/// </remarks>
 		pmCharSetAuto = 0x0006,
 
 		/// <summary>Reserved</summary>
@@ -47,10 +47,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Reserved</summary>
 		pmCallConvMask = 0x0700,
-		/// <summary>
-		/// Use the default platform calling convention.
-		/// For example, on Windows the default is StdCall and on Windows CE .NET it is Cdecl
-		/// </summary>
+		/// <summary>Use the default platform calling convention</summary>
+		/// <remarks>For example, on Windows the default is StdCall and on Windows CE .NET it is Cdecl</remarks>
 		pmCallConvWinapi = 0x0100,
 		/// <summary>
 		/// Use the Cdecl calling convention.

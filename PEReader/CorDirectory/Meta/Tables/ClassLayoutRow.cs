@@ -2,12 +2,8 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>
-	/// The ClassLayout table is used to define how the fields of a class or value type
-	/// shall be laid out by the CLI.
-	/// (Normally, the CLI is free to reorder and/or insert gaps between the fields defined
-	/// for a class or value type)
-	/// </summary>
+	/// <summary>The ClassLayout table is used to define how the fields of a class or value type shall be laid out by the CLI</summary>
+	/// <remarks>Normally, the CLI is free to reorder and/or insert gaps between the fields defined for a class or value type</remarks>
 	public class ClassLayoutRow : BaseMetaRow
 	{
 		/// <summary>A 2-byte constant</summary>

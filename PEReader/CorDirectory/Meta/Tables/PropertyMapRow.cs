@@ -16,8 +16,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new TypeDefRow() { Row = this.ParentI.TargetRow, }; }
 		}
+
 		/// <summary>Property table list</summary>
-		public IEnumerable<PropertyRow> Properties
+		public IEnumerable<PropertyRow> PropertyList
 		{
 			get
 			{

@@ -10,8 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		internal MetaCellPointer ClassI { get { return base.GetValue<MetaCellPointer>(0); } }
 
 		/// <summary>
-		/// An index into the TypeDef, TypeRef, or TypeSpec table;
-		/// more precisely, a TypeDefOrRef (§II.24.2.6) coded index
+		/// An index into the TypeDef, TypeRef, or TypeSpec table; more precisely, a TypeDefOrRef (§II.24.2.6) coded index
 		/// </summary>
 		public MetaCellCodedToken Interface { get { return base.GetValue<MetaCellCodedToken>(1); } }
 

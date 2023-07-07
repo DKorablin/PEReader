@@ -15,7 +15,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		/// <summary>Get dialog template in resource directory</summary>
-		/// <exception cref="T:NotImplementedException">Class type not implemented</exception>
+		/// <exception cref="NotImplementedException">Class type not implemented</exception>
 		/// <returns>Dialog template from directory</returns>
 		public DialogTemplate GetDialogTemplate()
 		{

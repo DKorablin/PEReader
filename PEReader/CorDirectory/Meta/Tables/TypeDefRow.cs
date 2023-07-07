@@ -27,11 +27,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Attributes reserved for runtime use</summary>
 		public TypeAttributes ReservedMask { get { return this.Flags & TypeAttributes.ReservedMask; } }
 
-		/// <summary>
-		/// Used to retrieve non-standard encoding information for native interop.
+		/// <summary>Used to retrieve non-standard encoding information for native interop</summary>
+		/// <remarks>
 		/// The meaning of the values of these 2 bits is unspecified.
 		/// Not used in the Microsoft implementation of the .NET Framework.
-		/// </summary>
+		/// </remarks>
 		public TypeAttributes CustomFormatMask { get { return this.Flags & TypeAttributes.CustomFormatMask; } }
 
 		/// <summary>Type name</summary>

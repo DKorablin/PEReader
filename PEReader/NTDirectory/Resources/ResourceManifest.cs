@@ -21,9 +21,9 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MANIFEST)
 		{
 		}
-		/// <summary>Получить поток для передачи в <see cref="T:System.Data.DataSet"/></summary>
-		/// <remarks>Получаемый поток необходимо отпустить после выполнения действий</remarks>
-		/// <returns>Поток для загрузки в DataSet</returns>
+		/// <summary>Get stream to send to System.Data.DataSet</summary>
+		/// <remarks>The received stream must be released after the actions are completed</remarks>
+		/// <returns>Stream to download to DataSet</returns>
 		public Stream GetXmlStream()
 		{
 			return new MemoryStream(base.Directory.GetData());

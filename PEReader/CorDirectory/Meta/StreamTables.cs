@@ -11,6 +11,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private UInt32[] _totalRowsCount;
 		private Cor.STREAM_TABLE_HEADER? _streamTableHeader;
 		private Dictionary<Cor.MetaTableType, MetaTable> _tables;
+
 		/// <summary>Таблица с информацией о типе</summary>
 		/// <param name="tableType">Тип таблицы</param>
 		/// <returns>Данные в таблице</returns>
@@ -32,10 +33,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>Total rows count</returns>
 		public UInt32[] TotalRowsCount
 		{
-			get
-			{
-				return this._totalRowsCount ?? (this._totalRowsCount = this.GetRowsCountI());
-			}
+			get { return this._totalRowsCount ?? (this._totalRowsCount = this.GetRowsCountI()); }
 		}
 
 		#region Tables
@@ -375,7 +373,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Create instance of stream tables class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">stream header</param>
-		/// <exception cref="T:InvalidOperationException">StreamTable can only read optimized or unoptimized stream tables</exception>
+		/// <exception cref="InvalidOperationException">StreamTable can only read optimized or unoptimized stream tables</exception>
 		public StreamTables(MetaData meta, Cor.STREAM_HEADER header)
 			: base(meta, header)
 		{

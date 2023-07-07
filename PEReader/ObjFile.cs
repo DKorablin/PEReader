@@ -7,13 +7,12 @@ namespace AlphaOmega.Debug
 	/// <summary>OBJ/COFF file reader</summary>
 	public class ObjFile : IDisposable
 	{
-		private IImageLoader _loader;
 		private WinNT.IMAGE_FILE_HEADER? _fileHeader;
 		private WinNT.IMAGE_SECTION_HEADER[] _sections;
 		private WinNT.IMAGE_COFF_SYMBOL[] _symbols;
 		private String[] _stringTable;
 
-		private IImageLoader Loader { get { return this._loader; } }
+		private IImageLoader Loader { get; set; }
 
 		/// <summary>OBJ File header structure</summary>
 		public WinNT.IMAGE_FILE_HEADER FileHeader
@@ -120,7 +119,7 @@ namespace AlphaOmega.Debug
 		/// <param name="loader">Image loader</param>
 		public ObjFile(IImageLoader loader)
 		{
-			this._loader = loader?? throw new ArgumentNullException(nameof(loader));
+			this.Loader = loader ?? throw new ArgumentNullException(nameof(loader));
 		}
 
 		/// <summary>Convert relative address to virtual address</summary>
@@ -194,10 +193,10 @@ namespace AlphaOmega.Debug
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
-			if(disposing && this._loader != null)
+			if(disposing && this.Loader != null)
 			{
-				this._loader.Dispose();
-				this._loader = null;
+				this.Loader.Dispose();
+				this.Loader = null;
 			}
 		}
 	}

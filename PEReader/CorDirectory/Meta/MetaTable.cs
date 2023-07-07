@@ -10,63 +10,54 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	public class MetaTable : ITable, ISectionData
 	{
 		#region Fields
-		private readonly StreamTables _root;
-		private readonly Cor.MetaTableType _tableType;
-		/// <summary>Размер ряда с данными</summary>
+		//Size of row size with payload
 		private UInt32? _rowSize;
-		/// <summary>Отступ от начала блока с таблицами</summary>
-		private readonly UInt32 _padding;
-		private readonly MetaColumn[] _columns;
+		//Indent from the beginning of the block with tables
+		private UInt32 Padding { get; }
 
 		private MetaRow[] _rows;
 		private Byte[] _data;
 		#endregion Fields
 
-		internal StreamTables Root { get { return this._root; } }
+		internal StreamTables Root { get; }
 
-		/// <summary>Массив колонок в таблице</summary>
-		public MetaColumn[] Columns { get { return this._columns; } }
-		IColumn[] ITable.Columns { get { return this._columns; } }
+		/// <summary>Array of columns in a table</summary>
+		public MetaColumn[] Columns { get; }
+		IColumn[] ITable.Columns { get { return this.Columns; } }
 
-		/// <summary>Массив рядов в таблице</summary>
+		/// <summary>Array of rows in a table</summary>
 		private MetaRow[] RowsI
 		{
-			get
-			{
-				return this._rows == null
-					? this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)]
-					: this._rows;
-			}
+			get { return this._rows ?? (this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)]); }
 		}
 		IEnumerable<IRow> ITable.Rows { get { return this.RowsI; } }
 
-		/// <summary>Кол-во рядов в таблице</summary>
+		/// <summary>Row count in table</summary>
 		public UInt32 RowsCount { get { return (UInt32)this.RowsI.Length; } }
 
-		/// <summary>Размер ряда</summary>
+		/// <summary>Row size</summary>
 		private UInt32 RowSize
 		{
 			get
 			{
-				return (this._rowSize == null
-					? this._rowSize = this.SizeOfColumns()
-					: this._rowSize).Value;
+				return (this._rowSize ?? (this._rowSize = this.SizeOfColumns())).Value;
 			}
 		}
-		/// <summary>Тип таблицы</summary>
-		public Cor.MetaTableType TableType { get { return this._tableType; } }
-		Object ITable.Type { get { return this._tableType; } }
 
-		/// <summary>Размер всей таблицы с данными</summary>
+		/// <summary>Table type</summary>
+		public Cor.MetaTableType TableType { get; }
+		Object ITable.Type { get { return this.TableType; } }
+
+		/// <summary>The size of the entire data table</summary>
 		public UInt32 TableSize { get { return this.RowSize * (UInt32)this.RowsI.Length; } }
 
 		/// <summary>Rows in table</summary>
 		public MetaRowCollection Rows { get { return new MetaRowCollection(this); } }
 
-		/// <summary>Получить ряд из таблицы</summary>
-		/// <param name="rowIndex">Индекс ряда в таблице</param>
-		/// <exception cref="T:ArgumentOutOfRangeException">rowIndex out of range of table rows</exception>
-		/// <returns>Ряд с данными</returns>
+		/// <summary>Get row from table</summary>
+		/// <param name="rowIndex">Row index in table</param>
+		/// <exception cref="ArgumentOutOfRangeException">rowIndex out of range of table rows</exception>
+		/// <returns>Row with payload</returns>
 		public MetaRow this[UInt32 rowIndex]
 		{
 			get
@@ -74,34 +65,31 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				if(this._rows.Length <= rowIndex)
 					throw new ArgumentOutOfRangeException(nameof(rowIndex));
 
-				if(this._rows[rowIndex] == null)
-					this._rows[rowIndex] = this.GetRow(rowIndex);
-				return this._rows[rowIndex];
+				return this._rows[rowIndex] ?? (this._rows[rowIndex] = this.GetRow(rowIndex));
 			}
 		}
 		IRow ITable.this[UInt32 rowIndex] { get { return this[rowIndex]; } }
 
-		/// <summary>Создание экземпляра класса мета-таблицы</summary>
-		/// <param name="root">Корневой поток</param>
-		/// <param name="tableType">Тип таблицы</param>
-		/// <param name="padding">Отступ от начала потома метаданных</param>
-		/// <exception cref="T:ArgumentNullException">root is null</exception>
+		/// <summary>Create metatable instance</summary>
+		/// <param name="root">Root stream</param>
+		/// <param name="tableType">Table type</param>
+		/// <param name="padding">Indent from the start of the metadata stream</param>
+		/// <exception cref="ArgumentNullException">root is null</exception>
 		public MetaTable(StreamTables root, Cor.MetaTableType tableType, UInt32 padding)
 		{
-			this._root = root ?? throw new ArgumentNullException(nameof(root));
-			this._tableType = tableType;
-			this._padding = padding;
+			this.Root = root ?? throw new ArgumentNullException(nameof(root));
+			this.TableType = tableType;
+			this.Padding = padding;
 
-			this._columns = MetaTable.GetTableDescription(this.TableType);
+			this.Columns = MetaTable.GetTableDescription(this.TableType);
 		}
 
 		/// <summary>Gets section data</summary>
 		/// <returns>Byte array</returns>
 		public Byte[] GetData()
 		{
-			return this._data == null
-				? this._data = this.Root.Parent.Parent.Parent.Header.ReadBytes(this.Root.DataPosition + this._padding, this.TableSize)
-				: this._data;
+			return this._data
+				?? (this._data = this.Root.Parent.Parent.Parent.Header.ReadBytes(this.Root.DataPosition + this.Padding, this.TableSize));
 		}
 
 		private MetaRow GetRow(UInt32 rowIndex)
@@ -111,16 +99,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			{
 				reader.BaseStream.Position = this.RowSize * rowIndex;
 
-				MetaCell[] cells = new MetaCell[this._columns.Length];
-				for(Int32 loop = 0;loop < this._columns.Length;loop++)
-					cells[loop] = new MetaCell(this, this._columns[loop], rowIndex, reader);
+				MetaCell[] cells = new MetaCell[this.Columns.Length];
+				for(Int32 loop = 0;loop < this.Columns.Length;loop++)
+					cells[loop] = new MetaCell(this, this.Columns[loop], rowIndex, reader);
 
 				return new MetaRow(this, rowIndex, cells);
 			}
 		}
 
-		/// <summary>Получить размер всех колонок в таблице</summary>
-		/// <returns>Размер ряда в таблице</returns>
+		/// <summary>Get the size of all columns in a table</summary>
+		/// <returns>Row size in table</returns>
 		private UInt32 SizeOfColumns()
 		{
 			UInt32 result = 0;
@@ -129,9 +117,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			return result;
 		}
 
-		/// <summary>Получить размер колонки в таблице</summary>
-		/// <param name="type">Тип колонки</param>
-		/// <returns>Размер колонки</returns>
+		/// <summary>Get the size of a column in a table</summary>
+		/// <param name="type">Column type</param>
+		/// <returns>Column size</returns>
 		internal UInt32 SizeOfColumn(MetaColumnType type)
 		{
 			switch(type)
@@ -147,8 +135,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				case MetaColumnType.Guid:
 					return this.Root.StreamTableHeader.GuidIndexSize;
 				default:
-					if(MetaColumn.IsColumnCellPointer(type))//Указатель на другую таблицу
-						return (UInt32)(this.Root.GetRowsCount((Cor.MetaTableType)type) < 65536 ? 2 : 4);
+					if(MetaColumn.IsColumnCellPointer(type))//Pointer to another table
+					return (UInt32)(this.Root.GetRowsCount((Cor.MetaTableType)type) < 65536 ? 2 : 4);
 
 					//CodedToken
 					MetaColumnType[] referredTypes = MetaTable.GetCodedTokenTypes(type);
@@ -174,7 +162,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			case MetaColumnType.HasConstant:
 				return new MetaColumnType[] { MetaColumnType.Field, MetaColumnType.Param, MetaColumnType.Property, };
 			case MetaColumnType.HasCustomAttribute:
-				return new MetaColumnType[] { MetaColumnType.MethodDef, MetaColumnType.Field, MetaColumnType.TypeRef, MetaColumnType.TypeDef, MetaColumnType.Param, MetaColumnType.InterfaceImpl, MetaColumnType.MemberRef, MetaColumnType.Module, MetaColumnType.DeclSecurity, MetaColumnType.Property, MetaColumnType.Event, MetaColumnType.StandAloneSig, MetaColumnType.ModuleRef, MetaColumnType.TypeSpec, MetaColumnType.Assembly, MetaColumnType.AssemblyRef, MetaColumnType.File, MetaColumnType.ExportedType, MetaColumnType.ManifestResource, /*MetaColumnType.GenericParam, MetaColumnType.GenericParamConstraint, MetaColumnType.MethodSpec,*/ };
+				return new MetaColumnType[] { MetaColumnType.MethodDef, MetaColumnType.Field, MetaColumnType.TypeRef, MetaColumnType.TypeDef, MetaColumnType.Param, MetaColumnType.InterfaceImpl, MetaColumnType.MemberRef, MetaColumnType.Module, MetaColumnType.DeclSecurity, MetaColumnType.Property, MetaColumnType.Event, MetaColumnType.StandAloneSig, MetaColumnType.ModuleRef, MetaColumnType.TypeSpec, MetaColumnType.Assembly, MetaColumnType.AssemblyRef, MetaColumnType.File, MetaColumnType.ExportedType, MetaColumnType.ManifestResource,
+					MetaColumnType.GenericParam, MetaColumnType.GenericParamConstraint, MetaColumnType.MethodSpec, };//NuGet.exe v6.4.0.123 points to column 18 (But I don't see any documentation about this columns that's why I guess that it's linkin to new tables)
 			case MetaColumnType.HasFieldMarshal:
 				return new MetaColumnType[] { MetaColumnType.Field, MetaColumnType.Param, };
 			case MetaColumnType.HasDeclSecurity:
@@ -199,11 +188,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			}
 		}
 
-		/// <summary>Получить описатель таблицы</summary>
-		/// <param name="table">Таблица для получения колонок</param>
-		/// <exception cref="T:NotSupportedException">Unknown table</exception>
-		/// <exception cref="T:InvalidOperationException">Column names not equal column types</exception>
-		/// <returns>Массив колонок в таблице</returns>
+		/// <summary>Get table descriptor</summary>
+		/// <param name="table">Table to get columns</param>
+		/// <exception cref="NotSupportedException">Unknown table</exception>
+		/// <exception cref="InvalidOperationException">Column names not equal column types</exception>
+		/// <returns>Array of columns in a table</returns>
 		private static MetaColumn[] GetTableDescription(Cor.MetaTableType table)
 		{
 			MetaColumnType[] columnType;
@@ -212,183 +201,183 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			{
 			case Cor.MetaTableType.Module:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.String, MetaColumnType.Guid, MetaColumnType.Guid, MetaColumnType.Guid, };
-				columnName = new String[] { "Generation", "Name", "Mvid", "EncId", "EncBaseId", };
+				columnName = new String[] { nameof(Tables.ModuleRow.Generation), nameof(Tables.ModuleRow.Name), nameof(Tables.ModuleRow.Mvid), nameof(Tables.ModuleRow.EncId), nameof(Tables.ModuleRow.EncBaseId), };
 				break;
 			case Cor.MetaTableType.TypeRef:
 				columnType = new MetaColumnType[] { MetaColumnType.ResolutionScope, MetaColumnType.String, MetaColumnType.String, };
-				columnName = new String[] { "ResolutionScope", "TypeName", "TypeNamespace" };
+				columnName = new String[] { nameof(Tables.TypeRefRow.ResolutionScope), nameof(Tables.TypeRefRow.TypeName), nameof(Tables.TypeRefRow.TypeNamespace) };
 				break;
 			case Cor.MetaTableType.TypeDef:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.String, MetaColumnType.String, MetaColumnType.TypeDefOrRef, MetaColumnType.Field, MetaColumnType.MethodDef, };
-				columnName = new String[] { "Flags", "TypeName", "TypeNamespace", "Extends", "FieldList", "MethodList", };
+				columnName = new String[] { nameof(Tables.TypeDefRow.Flags), nameof(Tables.TypeDefRow.TypeName), nameof(Tables.TypeDefRow.TypeNamespace), nameof(Tables.TypeDefRow.Extends), nameof(Tables.TypeDefRow.FieldList), nameof(Tables.TypeDefRow.MethodList), };
 				break;
 			case Cor.MetaTableType.FieldPtr:
 				columnType = new MetaColumnType[] { MetaColumnType.Field, };
-				columnName = new String[] { "Field" };
+				columnName = new String[] { nameof(Tables.FieldPtrRow.Field) };
 				break;
 			case Cor.MetaTableType.Field:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.String, MetaColumnType.Blob, };
-				columnName = new String[] { "Flags", "Name", "Signature", };
+				columnName = new String[] { nameof(Tables.FieldRow.Flags), nameof(Tables.FieldRow.Name), nameof(Tables.FieldRow.Signature), };
 				break;
 			case Cor.MetaTableType.MethodPtr:
 				columnType = new MetaColumnType[] { MetaColumnType.MethodDef, };
-				columnName = new String[] { "Method", };
+				columnName = new String[] { nameof(Tables.MethodPtrRow.Method), };
 				break;
 			case Cor.MetaTableType.MethodDef:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.String, MetaColumnType.Blob, MetaColumnType.Param, };
-				columnName = new String[] { "RVA", "ImplFlags", "Flags", "Name", "Signature", "ParamList", };
+				columnName = new String[] { nameof(Tables.MethodDefRow.RVA), nameof(Tables.MethodDefRow.ImplFlags), nameof(Tables.MethodDefRow.Flags), nameof(Tables.MethodDefRow.Name), nameof(Tables.MethodDefRow.Signature), nameof(Tables.MethodDefRow.ParamList), };
 				break;
 			case Cor.MetaTableType.ParamPtr:
 				columnType = new MetaColumnType[] { MetaColumnType.Param, };
-				columnName = new String[] { "Param", };
+				columnName = new String[] { nameof(Tables.ParamPtrRow.Param), };
 				break;
 			case Cor.MetaTableType.Param:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.String, };
-				columnName = new String[] { "Flags", "Sequence", "Name", };
+				columnName = new String[] { nameof(Tables.ParamRow.Flags), nameof(Tables.ParamRow.Sequence), nameof(Tables.ParamRow.Name), };
 				break;
 			case Cor.MetaTableType.InterfaceImpl:
 				columnType = new MetaColumnType[] { MetaColumnType.TypeDef, MetaColumnType.TypeDefOrRef, };
-				columnName = new String[] { "Class", "Interface", };
+				columnName = new String[] { nameof(Tables.InterfaceImplRow.Class), nameof(Tables.InterfaceImplRow.Interface), };
 				break;
 			case Cor.MetaTableType.MemberRef:
 				columnType = new MetaColumnType[] { MetaColumnType.MemberRefParent, MetaColumnType.String, MetaColumnType.Blob, };
-				columnName = new String[] { "Class", "Name", "Signature", };
+				columnName = new String[] { nameof(Tables.MemberRefRow.Class), nameof(Tables.MemberRefRow.Name), nameof(Tables.MemberRefRow.Signature), };
 				break;
 			case Cor.MetaTableType.Constant:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.HasConstant, MetaColumnType.Blob, };
-				columnName = new String[] { "Type", "Parent", "Value", };
+				columnName = new String[] { nameof(Tables.ConstantRow.Type), nameof(Tables.ConstantRow.Parent), nameof(Tables.ConstantRow.Value), };
 				break;
 			case Cor.MetaTableType.CustomAttribute:
 				columnType = new MetaColumnType[] { MetaColumnType.HasCustomAttribute, MetaColumnType.CustomAttributeType, MetaColumnType.Blob, };
-				columnName = new String[] { "Parent", "Type", "Value", };
+				columnName = new String[] { nameof(Tables.CustomAttributeRow.Parent), nameof(Tables.CustomAttributeRow.Type), nameof(Tables.CustomAttributeRow.Value), };
 				break;
 			case Cor.MetaTableType.FieldMarshal:
 				columnType = new MetaColumnType[] { MetaColumnType.HasFieldMarshal, MetaColumnType.Blob, };
-				columnName = new String[] { "Parent", "Native", };
+				columnName = new String[] { nameof(Tables.FieldMarshalRow.Parent), nameof(Tables.FieldMarshalRow.Native), };
 				break;
 			case Cor.MetaTableType.DeclSecurity:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.HasDeclSecurity, MetaColumnType.Blob, };
-				columnName = new String[] { "Action", "Parent", "PermissionSet", };
+				columnName = new String[] { nameof(Tables.DeclSecurityRow.Action), nameof(Tables.DeclSecurityRow.Parent), nameof(Tables.DeclSecurityRow.PermissionSet), };
 				break;
 			case Cor.MetaTableType.ClassLayout:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.UInt32, MetaColumnType.TypeDef, };
-				columnName = new String[] { "PackingSize", "ClassSize", "Parent", };
+				columnName = new String[] { nameof(Tables.ClassLayoutRow.PackingSize), nameof(Tables.ClassLayoutRow.ClassSize), nameof(Tables.ClassLayoutRow.Parent), };
 				break;
 			case Cor.MetaTableType.FieldLayout:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.Field, };
-				columnName = new String[] { "Offset", "Field", };
+				columnName = new String[] { nameof(Tables.FieldLayoutRow.Offset), nameof(Tables.FieldLayoutRow.Field), };
 				break;
 			case Cor.MetaTableType.StandAloneSig:
 				columnType = new MetaColumnType[] { MetaColumnType.Blob, };
-				columnName = new String[] { "Signature", };
+				columnName = new String[] { nameof(Tables.StandAloneSigRow.Signature), };
 				break;
 			case Cor.MetaTableType.EventMap:
 				columnType = new MetaColumnType[] { MetaColumnType.TypeDef, MetaColumnType.Event, };
-				columnName = new String[] { "Parent", "EventList", };
+				columnName = new String[] { nameof(Tables.EventMapRow.Parent), nameof(Tables.EventMapRow.EventList), };
 				break;
 			case Cor.MetaTableType.EventPtr:
 				columnType = new MetaColumnType[] { MetaColumnType.Event, };
-				columnName = new String[] { "Event", };
+				columnName = new String[] { nameof(Tables.EventPtrRow.Event), };
 				break;
 			case Cor.MetaTableType.Event:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.String, MetaColumnType.TypeDefOrRef, };
-				columnName = new String[] { "EventFlags", "Name", "EventType", };
+				columnName = new String[] { nameof(Tables.EventRow.EventFlags), nameof(Tables.EventRow.Name), nameof(Tables.EventRow.EventType), };
 				break;
 			case Cor.MetaTableType.PropertyMap:
 				columnType = new MetaColumnType[] { MetaColumnType.TypeDef, MetaColumnType.Property, };
-				columnName = new String[] { "Parent", "PropertyList", };
+				columnName = new String[] { nameof(Tables.PropertyMapRow.Parent), nameof(Tables.PropertyMapRow.PropertyList), };
 				break;
 			case Cor.MetaTableType.PropertyPtr:
 				columnType = new MetaColumnType[] { MetaColumnType.Property, };
-				columnName = new String[] { "Property", };
+				columnName = new String[] { nameof(Tables.PropertyPtrRow.Property), };
 				break;
 			case Cor.MetaTableType.Property:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.String, MetaColumnType.Blob, };
-				columnName = new String[] { "Flags", "Name", "Type", };
+				columnName = new String[] { nameof(Tables.PropertyRow.Flags), nameof(Tables.PropertyRow.Name), nameof(Tables.PropertyRow.Type), };
 				break;
 			case Cor.MetaTableType.MethodSemantics:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.MethodDef, MetaColumnType.HasSemantic, };
-				columnName = new String[] { "Semantic", "Method", "Association", };
+				columnName = new String[] { nameof(Tables.MethodSemanticsRow.Semantic), nameof(Tables.MethodSemanticsRow.Method), nameof(Tables.MethodSemanticsRow.Association), };
 				break;
 			case Cor.MetaTableType.MethodImpl:
 				columnType = new MetaColumnType[] { MetaColumnType.TypeDef, MetaColumnType.MethodDefOrRef, MetaColumnType.MethodDefOrRef, };
-				columnName = new String[] { "Class", "MethodBody", "MethodDeclaration", };
+				columnName = new String[] { nameof(Tables.MethodImplRow.Class), nameof(Tables.MethodImplRow.MethodBody), nameof(Tables.MethodImplRow.MethodDeclaration), };
 				break;
 			case Cor.MetaTableType.ModuleRef:
 				columnType = new MetaColumnType[] { MetaColumnType.String, };
-				columnName = new String[] { "Name", };
+				columnName = new String[] { nameof(Tables.ModuleRefRow.Name), };
 				break;
 			case Cor.MetaTableType.TypeSpec:
 				columnType = new MetaColumnType[] { MetaColumnType.Blob, };
-				columnName = new String[] { "Signature", };
+				columnName = new String[] { nameof(Tables.TypeSpecRow.Signature), };
 				break;
 			case Cor.MetaTableType.ImplMap:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.MemberForwarded, MetaColumnType.String, MetaColumnType.ModuleRef, };
-				columnName = new String[] { "MappingFlags", "MemberForwarded", "ImportName", "ImportScope", };
+				columnName = new String[] { nameof(Tables.ImplMapRow.MappingFlags), nameof(Tables.ImplMapRow.MemberForwarded), nameof(Tables.ImplMapRow.ImportName), nameof(Tables.ImplMapRow.ImportScope), };
 				break;
 			case Cor.MetaTableType.FieldRVA:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.Field, };
-				columnName = new String[] { "RVA", "Field", };
+				columnName = new String[] { nameof(Tables.FieldRVARow.RVA), nameof(Tables.FieldRVARow.Field), };
 				break;
 			case Cor.MetaTableType.ENCLog:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt32, };
-				columnName = new String[] { "Token", "FuncCode", };
+				columnName = new String[] { nameof(Tables.ENCLogRow.Token), nameof(Tables.ENCLogRow.FuncCode), };
 				break;
 			case Cor.MetaTableType.ENCMap:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, };
-				columnName = new String[] { "Token", };
+				columnName = new String[] { nameof(Tables.ENCMapRow.Token), };
 				break;
 			case Cor.MetaTableType.Assembly:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.UInt32, MetaColumnType.Blob, MetaColumnType.String, MetaColumnType.String, };
-				columnName = new String[] { "HashAlgId", "MajorVersion", "MinorVersion", "BuildNumber", "RevisionNumber", "Flags", "PublicKey", "Name", "Locale", };
+				columnName = new String[] { nameof(Tables.AssemblyRow.HashAlgId), nameof(Tables.AssemblyRow.MajorVersion), nameof(Tables.AssemblyRow.MinorVersion), nameof(Tables.AssemblyRow.BuildNumber), nameof(Tables.AssemblyRow.RevisionNumber), nameof(Tables.AssemblyRow.Flags), nameof(Tables.AssemblyRow.PublicKey), nameof(Tables.AssemblyRow.Name), nameof(Tables.AssemblyRow.Locale), };
 				break;
 			case Cor.MetaTableType.AssemblyProcessor:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, };
-				columnName = new String[] { "Processor", };
+				columnName = new String[] { nameof(Tables.AssemblyProcessorRow.Processor), };
 				break;
 			case Cor.MetaTableType.AssemblyOS:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt32, MetaColumnType.UInt32, };
-				columnName = new String[] { "OSPlatformId", "OSMajorVersion", "OSMinorVersion", };
+				columnName = new String[] { nameof(Tables.AssemblyOSRow.OSPlatformId), nameof(Tables.AssemblyOSRow.OSMajorVersion), nameof(Tables.AssemblyOSRow.OSMinorVersion), };
 				break;
 			case Cor.MetaTableType.AssemblyRef:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.UInt32, MetaColumnType.Blob, MetaColumnType.String, MetaColumnType.String, MetaColumnType.Blob, };
-				columnName = new String[] { "MajorVersion", "MinorVersion", "BuildNumber", "RevisionNumber", "Flags", "PublicKeyOrToken", "Name", "Locale", "HashValue", };
+				columnName = new String[] { nameof(Tables.AssemblyRefRow.MajorVersion), nameof(Tables.AssemblyRefRow.MinorVersion), nameof(Tables.AssemblyRefRow.BuildNumber), nameof(Tables.AssemblyRefRow.RevisionNumber), nameof(Tables.AssemblyRefRow.Flags), nameof(Tables.AssemblyRefRow.PublicKeyOrToken), nameof(Tables.AssemblyRefRow.Name), nameof(Tables.AssemblyRefRow.Locale), nameof(Tables.AssemblyRefRow.HashValue), };
 				break;
 			case Cor.MetaTableType.AssemblyRefProcessor:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.AssemblyRef, };
-				columnName = new String[] { "Processor", "AssemblyRef", };
+				columnName = new String[] { nameof(Tables.AssemblyRefProcessorRow.Processor), nameof(Tables.AssemblyRefProcessorRow.AssemblyRef), };
 				break;
 			case Cor.MetaTableType.AssemblyRefOS:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt32, MetaColumnType.UInt32, MetaColumnType.AssemblyRef, };
-				columnName = new String[] { "OSPlatformId", "OSMajorVersion", "OSMinorVersion", "AssemblyRef", };
+				columnName = new String[] { nameof(Tables.AssemblyRefOSRow.OSPlatformId), nameof(Tables.AssemblyRefOSRow.OSMajorVersion), nameof(Tables.AssemblyRefOSRow.OSMinorVersion), nameof(Tables.AssemblyRefOSRow.AssemblyRef), };
 				break;
 			case Cor.MetaTableType.File:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.String, MetaColumnType.Blob, };
-				columnName = new String[] { "Flags", "Name", "HashValue", };
+				columnName = new String[] { nameof(Tables.FileRow.Flags), nameof(Tables.FileRow.Name), nameof(Tables.FileRow.HashValue), };
 				break;
 			case Cor.MetaTableType.ExportedType:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt32, MetaColumnType.String, MetaColumnType.String, MetaColumnType.Implementation, };
-				columnName = new String[] { "Flags", "TypeDefId", "TypeName", "TypeNamespace", "Implementation", };
+				columnName = new String[] { nameof(Tables.ExportedTypeRow.Flags), nameof(Tables.ExportedTypeRow.TypeDefId), nameof(Tables.ExportedTypeRow.TypeName), nameof(Tables.ExportedTypeRow.TypeNamespace), nameof(Tables.ExportedTypeRow.Implementation), };
 				break;
 			case Cor.MetaTableType.ManifestResource:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt32, MetaColumnType.UInt32, MetaColumnType.String, MetaColumnType.Implementation, };
-				columnName = new String[] { "Offset", "Flags", "Name", "Implementation", };
+				columnName = new String[] { nameof(Tables.ManifestResourceRow.Offset), nameof(Tables.ManifestResourceRow.Flags), nameof(Tables.ManifestResourceRow.Name), nameof(Tables.ManifestResourceRow.Implementation), };
 				break;
 			case Cor.MetaTableType.NestedClass:
 				columnType = new MetaColumnType[] { MetaColumnType.TypeDef, MetaColumnType.TypeDef, };
-				columnName = new String[] { "NestedClass", "EnclosingClass", };
+				columnName = new String[] { nameof(Tables.NestedClassRow.NestedClass), nameof(Tables.NestedClassRow.EnclosingClass), };
 				break;
 			case Cor.MetaTableType.GenericParam:
 				columnType = new MetaColumnType[] { MetaColumnType.UInt16, MetaColumnType.UInt16, MetaColumnType.TypeOrMethodDef, MetaColumnType.String, };
-				columnName = new String[] { "Number", "Flags", "Owner", "Name", };
+				columnName = new String[] { nameof(Tables.GenericParamRow.Number), nameof(Tables.GenericParamRow.Flags), nameof(Tables.GenericParamRow.Owner), nameof(Tables.GenericParamRow.Name), };
 				break;
 			case Cor.MetaTableType.MethodSpec:
 				columnType = new MetaColumnType[] { MetaColumnType.MethodDefOrRef, MetaColumnType.Blob, };
-				columnName = new String[] { "Method", "Instantiation", };
+				columnName = new String[] { nameof(Tables.MethodSpecRow.Method), nameof(Tables.MethodSpecRow.Instantiation), };
 				break;
 			case Cor.MetaTableType.GenericParamConstraint:
 				columnType = new MetaColumnType[] { MetaColumnType.GenericParam, MetaColumnType.TypeDefOrRef, };
-				columnName = new String[] { "Owner", "Constraint", };
+				columnName = new String[] { nameof(Tables.GenericParamConstraintRow.Owner), nameof(Tables.GenericParamConstraintRow.Constraint), };
 				break;
 			default: throw new NotSupportedException();
 			}

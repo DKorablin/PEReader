@@ -46,7 +46,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				this.ControlID = header.ControlID;
 				this.MessageID = header.MessageID;
 				this.DataLength = header.DataLength;
-				this.Data = data;
+				this.Data = data ?? throw new ArgumentNullException(nameof(data));
 			}
 		}
 

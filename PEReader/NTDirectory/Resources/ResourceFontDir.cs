@@ -19,10 +19,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Gets number of fons in directory</summary>
 		public UInt16 NumberOfFonts
 		{
-			get
-			{
-				return PinnedBufferReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0);
-			}
+			get { return PinnedBufferReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0); }
 		}
 
 		/// <summary>Create instance of font directory resource class</summary>

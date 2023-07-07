@@ -166,10 +166,8 @@ namespace AlphaOmega.Debug
 			/// <summary>The distance from the top of a character definition cell to the baseline of the typographical font</summary>
 			public UInt16 dfAscent;
 
-			/// <summary>
-			/// The amount of leading inside the bounds set by the dfPixHeight member.
-			/// Accent marks and other diacritical characters can occur in this area
-			/// </summary>
+			/// <summary>The amount of leading inside the bounds set by the dfPixHeight member</summary>
+			/// <remarks>Accent marks and other diacritical characters can occur in this area</remarks>
 			public UInt16 dfInternalLeading;
 
 			/// <summary>The amount of extra leading that the application adds between rows</summary>
@@ -235,10 +233,8 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			public UInt16 dfWidthBytes;
 
-			/// <summary>
-			/// The offset in the file to a null-terminated string that specifies a device name.
-			/// For a generic font, this value is zero
-			/// </summary>
+			/// <summary>The offset in the file to a null-terminated string that specifies a device name</summary>
+			/// <remarks>For a generic font, this value is zero</remarks>
 			public UInt32 dfDevice;
 
 			/// <summary>The offset in the file to a null-terminated string that names the typeface</summary>

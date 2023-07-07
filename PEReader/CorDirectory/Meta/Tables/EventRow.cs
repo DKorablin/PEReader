@@ -22,7 +22,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// An index into a TypeDef, a TypeRef, or TypeSpec table;
 		/// more precisely, a TypeDefOrRef (§II.24.2.6) coded index.
 		/// </summary>
-		/// <remarks>This corresponds to the Type of the Event; it is not the Type that owns this event.</remarks>
+		/// <remarks>This corresponds to the Type of the Event; it is not the Type that owns this event</remarks>
 		public MetaCellCodedToken EventType { get { return base.GetValue<MetaCellCodedToken>(2); } }
 
 		/// <summary>Name</summary>

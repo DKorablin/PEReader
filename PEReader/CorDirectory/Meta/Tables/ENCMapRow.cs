@@ -2,10 +2,8 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>
-	/// Edit-and-continue mapping descriptors.
-	/// This table does not exist in optimized metadata (#~ stream).
-	/// </summary>
+	/// <summary>Edit-and-continue mapping descriptors</summary>
+	/// <remarks>This table does not exist in optimized metadata (#~ stream)</remarks>
 	public class ENCMapRow : BaseMetaRow
 	{
 		/// <summary>Banana</summary>
