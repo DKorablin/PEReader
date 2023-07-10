@@ -1,0 +1,71 @@
+name: Test & Buid
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  SolutionName: PEReader
+
+jobs:
+  test_net_standard20_windows:
+    name: Testing .NET Standard v2.0 on Windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SolutionName}}.sln
+    - name: Test .NET Standard v2.0
+      run: dotnet test ${{env.SolutionName}}.sln --no-build --verbosity normal
+
+  test_net_standard20_ubuntu:
+    name: Testing .NET Standard v2.0 on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SolutionName}}.sln
+    - name: Test .NET Standard v2.0
+      run: dotnet test ${{env.SolutionName}}.sln --no-build --verbosity normal
+
+  build_net20:
+    name: Build .NET Framework v2.0 assembly
+    needs: [test_net_standard20_windows,test_net_standard20_ubuntu]
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Build .NET v2.0
+      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}35.sln" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/"
+
+  build_net_standard20:
+    name: Build .NET Standard v2.0 assembly
+    needs: [test_net_standard20_windows,test_net_standard20_ubuntu]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SolutionName}}.sln
+    - name: Build .NET Standard v2.0
+      run: dotnet build ${{env.SolutionName}}.sln --configuration Release --no-restore /p:OutputPath="../bin/" /p:DocumentationFile="../bin/${{env.SolutionName}}.xml"

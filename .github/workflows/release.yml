@@ -3,8 +3,6 @@ name: Test, Buid, Release
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 env:
   SolutionName: PEReader
