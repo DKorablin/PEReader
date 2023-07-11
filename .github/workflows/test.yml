@@ -51,7 +51,7 @@ jobs:
     - name: Setup .NET
       uses: microsoft/setup-msbuild@v1.1
     - name: Build .NET v2.0
-      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}35.sln" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/"
+      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}35.sln" /property:Configuration=Release -property:SignAssembly=false -property:OutputPath="${{github.workspace}}/bin/"
 
   build_net_standard20:
     name: Build .NET Standard v2.0 assembly
@@ -68,4 +68,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{env.SolutionName}}.sln
     - name: Build .NET Standard v2.0
-      run: dotnet build ${{env.SolutionName}}.sln --configuration Release --no-restore /p:OutputPath="../bin/" /p:DocumentationFile="../bin/${{env.SolutionName}}.xml"
+      run: dotnet build ${{env.SolutionName}}.sln --configuration Release --no-restore /p:OutputPath="../bin/" /p:SignAssembly=false /p:DocumentationFile="../bin/${{env.SolutionName}}.xml"
