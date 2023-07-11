@@ -490,7 +490,8 @@ namespace AlphaOmega.Debug
 			/// <remarks>
 			/// This style is valid only for single-line edit controls.
 			/// To change the characters that is displayed, or set or clear this style, use the EM_SETPASSWORDCHAR message.
-			/// Note  To use Comctl32.dll version 6, specify it in a manifest. For more information on manifests, see Enabling Visual Styles.
+			/// Note: To use Comctl32.dll version 6, specify it in a manifest.
+			/// For more information on manifests, see Enabling Visual Styles.
 			/// </remarks>
 			PASSWORD = 0x00000020,
 			/// <summary>Automatically scrolls text up one page when the user presses the ENTER key on the last line</summary>
@@ -807,7 +808,7 @@ namespace AlphaOmega.Debug
 			/// <remarks>
 			/// For more information, see Remarks.
 			/// This cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.
-			/// Windows 2000:  This style is not supported
+			/// Windows 2000: This style is not supported
 			/// </remarks>
 			COMPOSITED = 0x02000000,
 			/// <summary>The title bar of the window includes a question mark</summary>
@@ -829,7 +830,7 @@ namespace AlphaOmega.Debug
 			/// <summary>The window is a layered window</summary>
 			/// <remarks>
 			/// This style cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.
-			/// Windows 8:  The WS_EX_LAYERED style is supported for top-level windows and child windows.
+			/// Windows 8: The WS_EX_LAYERED style is supported for top-level windows and child windows.
 			/// Previous Windows versions support WS_EX_LAYERED only for top-level windows
 			/// </remarks>
 			LAYERED = 0x00080000,

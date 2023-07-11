@@ -21,7 +21,7 @@ namespace AlphaOmega.Debug
 			public UInt16 MinorVersion;
 			/// <summary>Reserved, always 0</summary>
 			public UInt32 Reserved;
-			/// <summary>Length of version string in bytes, say  m (&lt;= 255), rounded up to a multiple of four</summary>
+			/// <summary>Length of version string in bytes, say m (&lt;= 255), rounded up to a multiple of four</summary>
 			public UInt32 Length;
 			/// <summary>MetaData signature is valid</summary>
 			public Boolean IsValid { get { return this.Signature == 0x424A5342; } }
@@ -51,7 +51,7 @@ namespace AlphaOmega.Debug
 			public UInt16 MinorVersion;
 			/// <summary>Reserved, always 0</summary>
 			public UInt32 Reserved;
-			/// <summary>Length of version string in bytes, say  m (&lt;= 255), rounded up to a multiple of four</summary>
+			/// <summary>Length of version string in bytes, say m (&lt;= 255), rounded up to a multiple of four</summary>
 			public UInt32 Length;
 			/// <summary>UTF8-encoded version string of length m (see below)</summary>
 			public String Version;
@@ -591,8 +591,8 @@ namespace AlphaOmega.Debug
 			/// <summary>
 			/// Combines two sorts of references, to Methods and to Fields of a class, known as 'MethodRef' and 'FieldRef', respectively.
 			/// An entry is made into the MemberRef table whenever a reference is made in the CIL code to a method or field 
-			/// which is defined in another module or assembly.  (Also, an entry is made for a call to a method with a VARARG
-			/// signature, even when it is defined in the same module as the call site.) 
+			/// which is defined in another module or assembly.
+			/// (Also, an entry is made for a call to a method with a VARARG signature, even when it is defined in the same module as the call site.) 
 			/// </summary>
 			MemberRef = 10,
 			/// <summary>Used to store compile-time, constant values for fields, parameters, and properties</summary>
@@ -605,7 +605,7 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			CustomAttribute = 12,
 			/// <summary>
-			/// The FieldMarshal table  'links' an existing row in the Field or Param table, to information 
+			/// The FieldMarshal table 'links' an existing row in the Field or Param table, to information 
 			/// in the Blob heap that defines how that field or parameter (which, as usual, covers the method return, as 
 			/// parameter number 0) shall be marshalled when calling to or from unmanaged code via PInvoke dispatch.
 			/// A row in the FieldMarshal table is created if the .field directive for the parent field has specified a marshal attribute.
@@ -624,10 +624,11 @@ namespace AlphaOmega.Debug
 			/// <summary>A row in the FieldLayout table is created if the .field directive for the parent field has specified a field offset</summary>
 			FieldLayout = 16,
 			/// <summary>
-			/// Signatures are stored in the metadata Blob heap.  In most cases, they are indexed by a column in some table —
-			/// Field.Signature, Method.Signature, MemberRef.Signature, etc.  However, there are two cases that require a 
-			/// metadata token for a signature that is not indexed by any metadata table.  The StandAloneSig table fulfils this 
-			/// need.  It has just one column, which points to a Signature in the Blob heap.
+			/// Signatures are stored in the metadata Blob heap.
+			/// In most cases, they are indexed by a column in some table — Field.Signature, Method.Signature, MemberRef.Signature, etc.
+			/// However, there are two cases that require a metadata token for a signature that is not indexed by any metadata table.
+			/// The StandAloneSig table fulfils this need.
+			/// It has just one column, which points to a Signature in the Blob heap.
 			/// </summary>
 			StandAloneSig = 17,
 			/// <summary>
@@ -728,13 +729,14 @@ namespace AlphaOmega.Debug
 			/// <summary>
 			/// Holds a row for each type:
 			/// a. Defined within other modules of this Assembly; that is exported out of this Assembly.
-			/// In essence, it  stores TypeDef row numbers of all types that are marked public in other modules that this Assembly comprises.
+			/// In essence, it stores TypeDef row numbers of all types that are marked public in other modules that this Assembly comprises.
 			/// The actual target row in a TypeDef table is given by the combination of TypeDefId (in effect, row 
-			/// number) and Implementation (in effect, the module that holds the target TypeDef table). Note that this 
-			/// is the only occurrence in metadata of foreign tokens; that is, token values that have a meaning in 
-			/// another module. (A regular token value is an index into a table in the current module); OR
-			/// b. Originally defined in this Assembly but now moved to another Assembly. Flags must have 
-			/// IsTypeForwarder set and Implementation is an AssemblyRef indicating the Assembly the type may now be found in.
+			/// number) and Implementation (in effect, the module that holds the target TypeDef table).
+			/// Note that this is the only occurrence in metadata of foreign tokens; that is, token values that have a meaning in another module.
+			/// (A regular token value is an index into a table in the current module);
+			/// OR
+			/// b. Originally defined in this Assembly but now moved to another Assembly.
+			/// Flags must have IsTypeForwarder set and Implementation is an AssemblyRef indicating the Assembly the type may now be found in.
 			/// </summary>
 			ExportedType = 39,
 			/// <summary>The rows in the table result from .mresource directives on the Assembly</summary>

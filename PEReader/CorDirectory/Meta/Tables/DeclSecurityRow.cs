@@ -35,11 +35,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// </summary>
 		/// <remarks>
 		/// PermissionSet is a 'blob' having the following format:
-		///     A byte containing a period (.).
-		///     A compressed unsigned integer containing the number of attributes encoded in the blob.
-		///     An array of attributes each containing the following:
-		///         A String, which is the fully-qualified type name of the attribute. (Strings are encoded as a compressed unsigned integer to indicate the size followed by an array of UTF8 characters.)
-		///         A set of properties, encoded as the named arguments to a custom attribute would be (as in §II.23.3, beginning with NumNamed).
+		/// A byte containing a period (.).
+		/// A compressed unsigned integer containing the number of attributes encoded in the blob.
+		/// An array of attributes each containing the following:
+		/// A String, which is the fully-qualified type name of the attribute. (Strings are encoded as a compressed unsigned integer to indicate the size followed by an array of UTF8 characters.)
+		/// A set of properties, encoded as the named arguments to a custom attribute would be (as in §II.23.3, beginning with NumNamed).
 		/// </remarks>
 		public Byte[] PermissionSet { get { return base.GetValue<Byte[]>(2); } }
 	}

@@ -67,7 +67,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 					//padding += padding % sizeof(UInt32);//Align to DWORD
 				}
 
-				//Чтение  элементов управления, следующих после описателя окна
+				//Чтение элементов управления, следующих после описателя окна
 				for(Int32 loop = 0;loop < result.Controls.Length;loop++)
 				{
 					padding = NativeMethods.AlignToInt(padding);
