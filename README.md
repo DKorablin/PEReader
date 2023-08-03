@@ -26,7 +26,7 @@ Usage:
                 //...
             }
 
-            if(!file.Crtificate.IsEmpty)
+            if(!file.Certificate.IsEmpty)
             {//WIN_CERTIFICATE
                 X509Certificate2 cert = file.Certificate.X509;
                 //...
