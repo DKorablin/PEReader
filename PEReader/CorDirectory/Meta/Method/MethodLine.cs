@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
@@ -20,10 +19,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		public Int32? Offset { get; }
 
 		/// <summary>String constant in the instruction</summary>
-		public String StringConstant { get; }
-
-		/// <summary>Reference to method param index</summary>
-		public MethodParamRow ParamIndexRow { get; }
+		public String StrConst { get; }
 
 		internal MethodLine(Int32 line, OpCode il, MetaCellCodedToken token)
 			: this(line, il)
@@ -40,13 +36,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		internal MethodLine(Int32 line, OpCode il, String strConst)
 			: this(line, il)
 		{
-			this.StringConstant = strConst;
-		}
-
-		internal MethodLine(Int32 line, OpCode il, MethodParamRow paramRow)
-			: this(line, il)
-		{
-			this.ParamIndexRow = paramRow;
+			this.StrConst = strConst;
 		}
 
 		internal MethodLine(Int32 line, OpCode il)

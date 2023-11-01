@@ -72,9 +72,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			}
 		}
 
-		public AssemblyRefRow()
-			: base(Cor.MetaTableType.AssemblyRef) { }
-
 		/// <summary>Describes an assembly's unique identity in full</summary>
 		/// <returns>String representation of the assembly</returns>
 		public override String ToString()

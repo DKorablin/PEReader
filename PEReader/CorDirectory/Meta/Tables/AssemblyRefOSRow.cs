@@ -29,8 +29,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{//TODO: Not tested. I don't find any file with data in this table
 			get { return new AssemblyRefRow() { Row = this.AssemblyRefI.TargetRow, }; }
 		}
-
-		public AssemblyRefOSRow()
-			: base(Cor.MetaTableType.AssemblyRefOS) { }
 	}
 }

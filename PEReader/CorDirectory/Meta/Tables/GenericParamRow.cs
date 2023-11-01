@@ -27,11 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>This is purely descriptive and is used only by source language compilers and by reflection</remarks>
 		public String Name { get { return base.GetValue<String>(3); } }
 
-		/// <summary>Create instance of Generic param row</summary>
-		public GenericParamRow()
-			: base(Cor.MetaTableType.GenericParam) { }
-
-		/// <summary>Represents generic param row as a string</summary>
+		/// <summary>Name</summary>
 		/// <returns>String</returns>
 		public override String ToString()
 		{

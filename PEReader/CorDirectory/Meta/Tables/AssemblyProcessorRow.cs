@@ -10,8 +10,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>Banana</summary>
 		public UInt32 Processor { get { return base.GetValue<UInt32>(0); } }
-
-		public AssemblyProcessorRow()
-			: base(Cor.MetaTableType.AssemblyProcessor) { }
 	}
 }

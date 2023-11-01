@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Metadata table</summary>
 		public MetaTable Table { get; }
 
-		/// <summary>Strongly typed metadata table type</summary>
+		/// <summary>Strongly typed metadata table</summary>
 		public Cor.MetaTableType TableType { get; }
 
 		/// <summary>Get detailed row from metadata table by index</summary>

@@ -9,10 +9,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>typically, it might name the file used to hold the module</remarks>
 		public String Name { get { return base.GetValue<String>(0); } }
 
-		/// <summary>Create instance of Module definition row</summary>
-		public ModuleRefRow()
-			: base(Cor.MetaTableType.ModuleRef) { }
-
 		/// <summary>Name</summary>
 		/// <returns>String</returns>
 		public override String ToString()

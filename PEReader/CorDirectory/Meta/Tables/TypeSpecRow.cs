@@ -11,9 +11,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>Banana</summary>
 		public Byte[] Signature { get { return base.GetValue<Byte[]>(0); } }
-
-		/// <summary>Create instance of type specification row</summary>
-		public TypeSpecRow()
-			: base(Cor.MetaTableType.TypeSpec) { }
 	}
 }

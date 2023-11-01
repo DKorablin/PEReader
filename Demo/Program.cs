@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
@@ -30,8 +26,35 @@ namespace AlphaOmega.Debug
 			//TODO: Не правильно читается MSDOS файл. (Вылетает с ошибкой при поптыке чтения по адресу e_lfanew)
 			//String dll = @"C:\Program Files\HOMM_3.5\Data\zvs\h3blade.exe";
 			//String dll = @"C:\WINDOWS\WinSxS\x86_Microsoft.Tools.VisualCPlusPlus.Runtime-Libraries_6595b64144ccf1df_6.0.9792.0_x-ww_08a6620a\atl.dll";
-			//String dll = @"C:\Visual Studio Projects\Tests\ConsoleApp2\bin\Debug\net7.0\ConsoleApp2.dll";
-			//String dll = @"C:\Visual Studio Projects\C#\ILMerge.exe";
+
+			/*using(FileStream stream = new FileStream(dll, FileMode.Open, FileAccess.Read))
+			{
+				using(BinaryReader reader = new BinaryReader(stream))
+				{
+					ImageHlp.IMAGE_DOS_HEADER dosHeader = PtrToStructure<ImageHlp.IMAGE_DOS_HEADER>(reader, 0);
+					if(dosHeader.IsValid)
+					{
+						ImageHlp.IMAGE_NT_HEADERS32 hdr32 = PtrToStructure<ImageHlp.IMAGE_NT_HEADERS32>(reader, dosHeader.e_lfanew);
+						ImageHlp.IMAGE_NT_HEADERS64 hdr64 = PtrToStructure<ImageHlp.IMAGE_NT_HEADERS64>(reader, dosHeader.e_lfanew);
+					}
+				}
+			}
+			return;*/
+
+			/*DynamicDllLoader loader = new DynamicDllLoader();
+			Byte[] bytes = File.ReadAllBytes(dll);
+			loader.LoadLibrary(bytes);
+			//Console.WriteLine(String.Format("Module count: {0}", loader.BuildImportTable()));
+			//foreach(String procName in loader.GetProcedures())
+			//{
+			//	UInt32? procAddress = loader.GetProcAddress(procName);
+			//	String text = String.Format("Proc: {0} Addr: 0x{1:X}", procName, procAddress);
+			//	Console.WriteLine(text);
+			//}
+			return;*/
+
+			/*PEFile file = new PEFile(dll);
+			return;*/
 
 			foreach(String dll in Directory.GetFiles(@"C:\Visual Studio Projects\C#", "*.*", SearchOption.AllDirectories))
 			switch(Path.GetExtension(dll.ToLowerInvariant()))
@@ -45,7 +68,7 @@ namespace AlphaOmega.Debug
 
 					} catch(Win32Exception exc)
 					{
-						Utils.ConsoleWriteError(exc, $"EXCEPTION IN FILE ({dll})");
+						Utils.ConsoleWriteError(exc, $"EXCEPTION IN FILE ({dll})", false);
 						/*Console.WriteLine("Do yow want to continue? (Y/N)");
 						switch(Console.ReadKey().KeyChar)
 						{
@@ -162,7 +185,7 @@ namespace AlphaOmega.Debug
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU:
 											var resMenu = new AlphaOmega.Debug.NTDirectory.Resources.ResourceMenu(dir2);
 											foreach(var entry in resMenu.GetMenuTemplate())
-												Utils.ConsoleWriteMembers(entry);
+											Utils.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR:
 											var resToolbar = new AlphaOmega.Debug.NTDirectory.Resources.ResourceToolBar(dir2);
@@ -300,18 +323,6 @@ namespace AlphaOmega.Debug
 									{
 										switch(type)
 										{
-										case Cor.MetaTableType.CustomAttribute:
-											{
-												CustomAttributeRow attr = (CustomAttributeRow)row;
-												List<String> arguments = new List<String>();
-												foreach(var value in attr.FixedArg)
-												{
-													arguments.Add($"{value.Type} {value.Name} = {value.Value}");
-												}
-
-												Console.WriteLine($"CustomAttributeName: ({String.Join(", ", arguments.ToArray())})");
-											}
-											break;
 										case Cor.MetaTableType.NestedClass:
 											{
 												NestedClassRow nestedClassRow = (NestedClassRow)row;
@@ -401,11 +412,9 @@ namespace AlphaOmega.Debug
 													typeName += "\t" + fieldRow.Name + ";\r\n";
 												foreach(var methodRow in typeRow.MethodList)
 												{
-													typeName += "\t" + Utils.ElementTypeToString(methodRow.ReturnType)
-														+ " " + methodRow.Name + "(";
+													typeName += "\t" + methodRow.Name + "(";
 													foreach(var paramRow in methodRow.ParamList)
-														typeName += Utils.ElementTypeToString(paramRow.Type)
-															+ " " + paramRow.Name + ", ";
+														typeName += paramRow.Name + ", ";
 													typeName = typeName.TrimEnd(',', '"', ' ') + ");\r\n";
 												}
 												typeName += "}";
@@ -415,16 +424,9 @@ namespace AlphaOmega.Debug
 										case Cor.MetaTableType.MethodDef:
 											{
 												MethodDefRow methodRow = (MethodDefRow)row;
-												String methodName = Utils.ElementTypeToString(methodRow.ReturnType) + " " + methodRow.Name + "(";
-												Int32 index = 0;
+												String methodName = methodRow.Name + "(";
 												foreach(var paramRow in methodRow.ParamList)
-												{
-													String typeString = String.Empty;
-													var typeEnum = methodRow.ArgsType[index];
-													typeString = Utils.ElementTypeToString(typeEnum);
-													methodName += typeString + " " + paramRow.Name + ", ";
-												}
-
+													methodName += paramRow.Name + ", ";
 												methodName = methodName.TrimEnd(',', '"', ' ') + ")";
 												Console.WriteLine("{0}: {1}", type, methodName);
 
@@ -456,9 +458,6 @@ namespace AlphaOmega.Debug
 												} else
 													methodLength = ((UInt32)flags >> 2);
 
-												Console.WriteLine($"Method begins at RVA: 0x{rva:X}");
-												Console.WriteLine($"Method length: 0x{methodLength:X}");
-
 												try
 												{
 													foreach(var ilLine in methodRow.Body.GetMethodBody2())
@@ -466,51 +465,11 @@ namespace AlphaOmega.Debug
 														StringBuilder line = new StringBuilder("IL_" + ilLine.Line.ToString("X").PadLeft(4, '0'));
 														line.Append(": " + ilLine.IL.Name);
 														if(ilLine.Offset != null)
-															line.Append(" IL_" + ilLine.Offset.Value.ToString("X").PadLeft(4, '0'));
-														else if(ilLine.ParamIndexRow != null)
-															line.Append(" " + ilLine.ParamIndexRow.Name);
+															line.Append(" " + ilLine.Offset.Value);
 														else if(ilLine.Token != null)
-														{
-															MetaRow memberRow = ilLine.Token.TargetRow;
-															switch(ilLine.Token.TableType)
-															{
-															case Cor.MetaTableType.Field:
-																FieldRow fieldRow = ilLine.Token.GetTargetRowTyped<FieldRow>();
-																line.Append(" " + fieldRow.ReturnType + " " + fieldRow.Name);
-																break;
-															case Cor.MetaTableType.MemberRef:
-																MemberRefRow memberRefRow = ilLine.Token.GetTargetRowTyped<MemberRefRow>();
-																switch(memberRefRow.Class.TableType)
-																{
-																case Cor.MetaTableType.TypeRef:
-																	TypeRefRow classRefRow = memberRefRow.Class.GetTargetRowTyped<TypeRefRow>();
-																	line.Append(" " + String.Join(".", new String[] { classRefRow.TypeNamespace, classRefRow.TypeName }) + "::" + memberRefRow.Name);
-																	break;
-																case Cor.MetaTableType.TypeSpec:
-																	TypeSpecRow typeSpecRow = memberRefRow.Class.GetTargetRowTyped<TypeSpecRow>();
-																	break;
-																default:
-																	throw new NotImplementedException();
-																}
-																break;
-															case Cor.MetaTableType.TypeRef:
-																TypeRefRow typeRefRow = ilLine.Token.GetTargetRowTyped<TypeRefRow>();
-																line.Append(" " + String.Join(".", typeRefRow.TypeNamespace, typeRefRow.TypeName));
-																break;
-															case Cor.MetaTableType.MethodDef:
-																MethodDefRow methodDefRow = ilLine.Token.GetTargetRowTyped<MethodDefRow>();
-																line.Append(" " + Utils.ElementTypeToString(methodDefRow.ReturnType) + " " + methodDefRow.Name + "(?)");
-																break;
-															case Cor.MetaTableType.TypeDef:
-																TypeDefRow typeDefRow = ilLine.Token.GetTargetRowTyped<TypeDefRow>();
-																line.Append(" " + typeDefRow.TypeNamespace + "." + typeDefRow.TypeName);
-																break;
-															default:
-																throw new NotImplementedException($"Unknown reference {ilLine.Token.TableType}");
-															}
-
-														} else if(ilLine.StringConstant != null)
-															line.Append(" " + ilLine.StringConstant);
+															line.Append(" [" + ilLine.Token.TableType + "]." + ilLine.Token.RowIndex);
+														else if(ilLine.StrConst != null)
+															line.Append(" " + ilLine.StrConst);
 														Console.WriteLine(line);
 													}
 													//Console.ReadKey();
@@ -523,7 +482,7 @@ namespace AlphaOmega.Debug
 															throw new ArgumentException("Methods not equals");
 												} catch(Exception exc)
 												{
-													Utils.ConsoleWriteError(exc, "Error reading method body");
+													Utils.ConsoleWriteError(exc, "Error reading method body", false);
 												}
 											}
 											break;

@@ -20,9 +20,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new MethodDefRow() { Row = this.MethodI.TargetRow, }; }
 		}
-
-		/// <summary>Create instance of MethodSemantics row</summary>
-		public MethodSemanticsRow()
-			: base(Cor.MetaTableType.MethodSemantics) { }
 	}
 }

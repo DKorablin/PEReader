@@ -2,7 +2,7 @@ using System;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>Signature of an instantiated generic method</summary>
+	/// <summary>Generic method instantiation descriptors</summary>
 	public class MethodSpecRow : BaseMetaRow
 	{
 		/// <summary>
@@ -14,9 +14,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Signature of this instantiation</summary>
 		public Byte[] Instantiation { get { return base.GetValue<Byte[]>(1); } }
-
-		/// <summary>Create instance of Method spec row</summary>
-		public MethodSpecRow()
-			: base(Cor.MetaTableType.MethodSpec) { }
 	}
 }

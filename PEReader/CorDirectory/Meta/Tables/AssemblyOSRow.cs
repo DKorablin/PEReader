@@ -20,9 +20,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Operating system version</summary>
 		public Version OSVersion { get { return new Version((Int32)this.OSMajorVersion, (Int32)this.OSMinorVersion); } }
 
-		public AssemblyOSRow()
-			: base(Cor.MetaTableType.AssemblyOS) { }
-
 		/// <summary>OSVersion</summary>
 		/// <returns>String</returns>
 		public override String ToString()

@@ -13,9 +13,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Banana</summary>
 		public Byte[] HashValue { get { return base.GetValue<Byte[]>(2); } }
-
-		/// <summary>Create instance of File row</summary>
-		public FileRow()
-			: base(Cor.MetaTableType.File) { }
 	}
 }

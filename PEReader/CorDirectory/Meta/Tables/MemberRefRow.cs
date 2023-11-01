@@ -11,8 +11,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// </remarks>
 	public class MemberRefRow : BaseMetaRow
 	{
-		private SignatureParser _signatureI;
-
 		/// <summary>
 		/// An index into the MethodDef, ModuleRef, TypeDef, TypeRef, or TypeSpec tables;
 		/// more precisely, a MemberRefParent (§II.24.2.6) coded index.
@@ -22,38 +20,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Memeber name</summary>
 		public String Name { get { return base.GetValue<String>(1); } }
 
-		/// <summary>Member arguments and calling convention description</summary>
+		/// <summary>Banana</summary>
 		public Byte[] Signature { get { return base.GetValue<Byte[]>(2); } }
-
-		/// <summary>Strongly typed method signature with return type, calling convention and arguments types</summary>
-		private SignatureParser SignatureI
-		{
-			get { return this._signatureI ?? (this._signatureI = new SignatureParser(this.Signature)); }
-		}
-
-		/// <summary>Calling convention that are made in managed code for current method</summary>
-		public Cor.IMAGE_CEE_CS CorCallingConvention
-		{
-			get { return this._signatureI.CorCallingConvention; }
-		}
-
-		/// <summary>Count of method args</summary>
-		public Int32 ArgsCount { get { return this.SignatureI.ArgsCount; } }
-
-		/// <summary>Return method type</summary>
-		public ElementType ReturnType { get { return this.SignatureI.ReturnType; } }
-
-		/// <summary>Arguments types</summary>
-		public ElementType[] ArgsType
-		{
-			get
-			{
-				return this.SignatureI.ArgumentsTypes;
-			}
-		}
-
-		/// <summary>Create instance of Memeber reference row</summary>
-		public MemberRefRow()
-			: base(Cor.MetaTableType.MemberRef) { }
 	}
 }

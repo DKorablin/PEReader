@@ -42,8 +42,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// A set of properties, encoded as the named arguments to a custom attribute would be (as in §II.23.3, beginning with NumNamed).
 		/// </remarks>
 		public Byte[] PermissionSet { get { return base.GetValue<Byte[]>(2); } }
-
-		public DeclSecurityRow()
-			: base(Cor.MetaTableType.DeclSecurity) { }
 	}
 }

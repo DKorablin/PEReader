@@ -25,9 +25,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new GenericParamRow() { Row = this.OwnerI.TargetRow, }; }
 		}
-
-		/// <summary>Create instance of Generic param constraint row</summary>
-		public GenericParamConstraintRow()
-			: base(Cor.MetaTableType.GenericParamConstraint) { }
 	}
 }

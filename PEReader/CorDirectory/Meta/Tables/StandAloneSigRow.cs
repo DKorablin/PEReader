@@ -4,7 +4,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>
 	/// Signatures are stored in the metadata Blob heap.
-	/// In most cases, they are indexed by a column in some table - <see cref="FieldRow.Signature"/>, <see cref="MethodDefRow.Signature"/>, <see cref="MemberRefRow.Signature"/>, etc.
+	/// In most cases, they are indexed by a column in some table - Field.Signature, Method.Signature, MemberRef.Signature, etc.
 	/// However, there are two cases that require a metadata token for a signature that is not indexed by any metadata table.
 	/// The StandAloneSig table fulfils this need.
 	/// It has just one column, which points to a Signature in the Blob heap.
@@ -25,9 +25,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// </list>
 		/// </summary>
 		public Byte[] Signature { get { return base.GetValue<Byte[]>(0); } }
-
-		/// <summary>Create instance of assembly signature row</summary>
-		public StandAloneSigRow()
-			: base(Cor.MetaTableType.StandAloneSig) { }
 	}
 }

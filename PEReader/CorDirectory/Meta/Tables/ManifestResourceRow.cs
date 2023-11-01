@@ -76,10 +76,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Managed resource directory</summary>
 		private ResourceTable ResourceDirectory { get { return base.Row.Table.Root.Parent.Parent.Resources; } }
 
-		/// <summary>Create instance of manifest resource row</summary>
-		public ManifestResourceRow()
-			: base(Cor.MetaTableType.ManifestResource) { }
-
 		/// <summary>Create instance of resource reader class pointed to resource file on current PE file</summary>
 		/// <returns>Contexts of resource file</returns>
 		public ResourceTableReader GetResourceReader()

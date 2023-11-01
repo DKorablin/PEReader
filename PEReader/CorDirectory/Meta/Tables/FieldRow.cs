@@ -27,9 +27,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Field type</summary>
 		public Cor.ELEMENT_TYPE ReturnType { get { return (Cor.ELEMENT_TYPE)this.Signature[1]; } }
-
-		/// <summary>Create instance of Field row</summary>
-		public FieldRow()
-			: base(Cor.MetaTableType.Field) { }
 	}
 }

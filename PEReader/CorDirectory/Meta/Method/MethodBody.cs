@@ -93,7 +93,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 						? BitConverter.ToInt16(new Byte[] { data[loop + 1], data[loop] }, 0)
 						: BitConverter.ToInt16(data, loop);
 					il = MethodBody.OpCodeList[value];
-					loop++; //Actual index is started from previos position, but we have to increment it here once more time. TODO: Find the way to toss real index to output code
+					loop++;
 					break;
 				}
 
@@ -102,67 +102,29 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				case "ldfld":
 				case "stfld":
 				case "call":
-				case "callvirt":
 				case "newobj":
-				case "newarr":
-				case "ldtoken":
-				case "ldsfld":
-				case "castclass":
-				case "isinst":
-				case "stelem":
-				case "box":
-				case "unbox.any":
-				case "ldelem":
 					UInt32 rawValue = BitConverter.ToUInt32(data, loop + 1);
 					MetaCellCodedToken token = new MetaCellCodedToken(cell, rawValue);
 					yield return new MethodLine(loop, il, token);
 					loop += 4;
 					break;
-				case "brfalse": //(Вероятно тут не int) Checked on ILMerge.exe CreateTargetAssembly. It's Int32
-				case "brtrue":
+				//case "brfalse": (Вероятно тут не int)
 				case "ldc.i4":
-				case "br":
-				case "leave":
-				case "bne.un":
-				case "blt":
-				case "ble":
-				case "beq":
-				case "bge":
-				case "bgt":
 					Int32 offset = BitConverter.ToInt32(data, loop + 1);
 					offset = (loop + 1) + sizeof(UInt32) + offset;
 					yield return new MethodLine(loop, il, offset);
 					loop += 4;
 					break;
 				case "brtrue.s":
+					Byte offsetS = data[loop + 1];
+					yield return new MethodLine(loop, il, offsetS);
+					loop += 1;
+					break;
 				case "stloc.s":
 				case "ldloc.s":
 				case "ldc.i4.s":
-				case "ldloca.s":
-					Byte vListIndex = data[loop + 1];
+					Int32 vListIndex = data[loop + 1];
 					yield return new MethodLine(loop, il, vListIndex);
-					loop += 1;
-					break;
-				case "br.s":
-					Byte goToAddr = data[loop + 1];
-					yield return new MethodLine(loop, il, loop + 2 + goToAddr);//The br.s instruction unconditionally transfers control to a target instruction. The target instruction is represented as a 1-byte signed offset from the beginning of the instruction (+1 for current instruction) following the current instruction.
-					loop += 1;
-					break;
-				case "blt.s":
-					Byte goToAddr2 = data[loop + 1];
-					yield return new MethodLine(loop, il, loop + 2 + ((sbyte)goToAddr2));
-					loop += 1;
-					break;
-				case "ldarg.s":
-					UInt16 argIndex = data[loop + 1];
-					MethodParamRow paramRow = null;
-					foreach(var item in this.Row.ParamList)
-						if(item.Sequence == argIndex)
-						{
-							paramRow = item;
-							break;
-						}
-					yield return new MethodLine(loop, il, paramRow);
 					loop += 1;
 					break;
 				case "ldstr":
@@ -175,15 +137,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				case "ldarg.0":
 				case "ldarg.1":
 				case "ldarg.2":
-				case "ldarg.3":
 				case "ldnull":
 				case "ldc.i4.0":
 				case "ldc.i4.1":
-				case "ldc.i4.2":
-				case "ldc.i4.3":
-				case "ldc.i4.5":
-				case "ldc.i4.7":
-				case "ldc.i4.8":
 				case "ret":
 				case "nop":
 				case "ceq":
@@ -193,28 +149,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				case "stloc.2":
 				case "stloc.3":
 				case "conv.u8":
-				case "dup":
-				case "stelem.i1":
-				case "add":
-				case "ldloc.0":
-				case "ldloc.1":
-				case "ldloc.2":
-				case "ldloc.3":
-				case "endfinally":
-				case "and":
-				case "or":
-				case "stelem.ref":
-				case "pop":
-				case "ldlen":
-				case "conv.i4":
-				case "shl":
-				case "shr":
-				case "volatile.":
 					//if(il.OpCodeType)
 					yield return new MethodLine(loop, il);
 					break;
 				default:
-					throw new NotImplementedException(il.Name);
+					throw new NotImplementedException();
 				}
 			}
 		}

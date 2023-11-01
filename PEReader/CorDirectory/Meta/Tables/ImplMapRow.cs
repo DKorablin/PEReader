@@ -23,9 +23,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new ModuleRefRow() { Row = this.ImportScopeI.TargetRow, }; }
 		}
-
-		/// <summary>Create instance of ImplMap row</summary>
-		public ImplMapRow()
-			: base(Cor.MetaTableType.ImplMap) { }
 	}
 }

@@ -27,9 +27,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new TypeDefRow() { Row = this.EnclosingClassI.TargetRow, }; }
 		}
-
-		/// <summary>Create instance of nested class description row</summary>
-		public NestedClassRow()
-			: base(Cor.MetaTableType.NestedClass) { }
 	}
 }

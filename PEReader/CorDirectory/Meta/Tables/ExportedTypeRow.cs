@@ -35,10 +35,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// </summary>
 		public MetaCellCodedToken Implementation { get { return base.GetValue<MetaCellCodedToken>(4); } }
 
-		/// <summary>Create instance of ExportedType row</summary>
-		public ExportedTypeRow()
-			: base(Cor.MetaTableType.ExportedType) { }
-
 		/// <summary>TypeNamespace+"."+TypeName</summary>
 		/// <returns>String</returns>
 		public override String ToString()

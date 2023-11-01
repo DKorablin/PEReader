@@ -27,8 +27,5 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new TypeDefRow() { Row = this.ParentI.TargetRow, }; }
 		}
-
-		public ClassLayoutRow()
-			: base(Cor.MetaTableType.ClassLayout) { }
 	}
 }

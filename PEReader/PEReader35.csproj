@@ -9,7 +9,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4C323072-E406-4ADE-B5CE-BDB9A4895C1D}</ProjectGuid>
+    <ProjectGuid>{5F56B043-3547-49FF-AB37-3B9A1B14FC53}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AlphaOmega.Debug</RootNamespace>
@@ -24,7 +24,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -89,11 +89,9 @@
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellCodedToken.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellPointer.cs" />
     <Compile Include="CorDirectory\Meta\MetaColumn.cs" />
-    <Compile Include="CorDirectory\Meta\Method\ElementType.cs" />
     <Compile Include="CorDirectory\Meta\Method\MethodBody.cs" />
     <Compile Include="CorDirectory\Meta\Method\MethodLine.cs" />
     <Compile Include="CorDirectory\Meta\Method\MethodSection.cs" />
-    <Compile Include="CorDirectory\Meta\Method\SignatureParser.cs" />
     <Compile Include="CorDirectory\Meta\StreamHeaderTyped.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyOSRow.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyProcessorRow.cs" />

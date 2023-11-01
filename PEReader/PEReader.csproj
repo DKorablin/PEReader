@@ -22,7 +22,6 @@
 <PropertyGroup>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\..\..\AlphaOmega (NoPwd).snk</AssemblyOriginatorKeyFile>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
 </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\FileReader.Shared\ImageData\IBaseRow.cs">
