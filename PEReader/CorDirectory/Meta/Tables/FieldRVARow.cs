@@ -22,5 +22,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new FieldRow() { Row = this.FieldI.TargetRow, }; }
 		}
+
+		/// <summary>Create instance of Field-to-data mapping descriptor row</summary>
+		public FieldRVARow()
+			: base(Cor.MetaTableType.FieldRVA) { }
 	}
 }

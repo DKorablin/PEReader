@@ -61,5 +61,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				return result;
 			}
 		}
+
+		public AssemblyRow()
+			: base(Cor.MetaTableType.Assembly) { }
 	}
 }

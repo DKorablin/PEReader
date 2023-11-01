@@ -20,7 +20,7 @@ namespace AlphaOmega.Debug
 			Console.WriteLine(Utils.GetReflectedMembers(obj));
 		}
 
-		public static void ConsoleWriteError(Exception exc, String title, Boolean waitForInput = false)
+		public static void ConsoleWriteError(Exception exc, String title, Boolean waitForInput = true)
 		{
 			var color = Console.ForegroundColor;
 			Console.ForegroundColor = ConsoleColor.Red;
@@ -51,6 +51,13 @@ namespace AlphaOmega.Debug
 			}
 
 			return result.ToString();
+		}
+
+		public static String ElementTypeToString(ElementType type)
+		{
+			return type.Type
+				+ (type.IsArray ? "[]" : String.Empty)
+				+ (type.IsPointer ? "*" : String.Empty);
 		}
 
 		[Conditional("DEBUG")]

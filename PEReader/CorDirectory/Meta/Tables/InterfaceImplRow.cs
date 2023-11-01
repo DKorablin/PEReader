@@ -19,5 +19,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new TypeDefRow() { Row = this.ClassI.TargetRow, }; }
 		}
+
+		/// <summary>Create instance of Interface implementation row</summary>
+		public InterfaceImplRow()
+			: base(Cor.MetaTableType.InterfaceImpl) { }
 	}
 }

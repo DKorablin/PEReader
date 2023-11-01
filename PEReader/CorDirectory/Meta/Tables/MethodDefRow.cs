@@ -6,12 +6,11 @@ using System.Reflection;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>Method definition descriptors</summary>
-	[DefaultProperty("Name")]
+	[DefaultProperty(nameof(Name))]
 	public class MethodDefRow : BaseMetaRow
 	{
-		#region Fields
+		private SignatureParser _signatureI;
 		private MethodBody _body;
-		#endregion Fields
 
 		/// <summary>Method body address</summary>
 		public UInt32 RVA { get { return base.GetValue<UInt32>(0); } }
@@ -35,6 +34,33 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>If Signature is GENERIC (0x10), the generic arguments are described in the GenericParam table (§II.22.20)</remarks>
 		public Byte[] Signature { get { return base.GetValue<Byte[]>(4); } }
 
+		/// <summary>Strongly typed method signature with return type, calling convention and arguments types</summary>
+		private SignatureParser SignatureI
+		{
+			get { return this._signatureI ?? (this._signatureI = new SignatureParser(this.Signature)); }
+		}
+
+		/// <summary>Calling convention that are made in managed code for current method</summary>
+		public Cor.IMAGE_CEE_CS CorCallingConvention
+		{
+			get { return this._signatureI.CorCallingConvention; }
+		}
+
+		/// <summary>Count of method args</summary>
+		public Int32 ArgsCount { get { return this.SignatureI.ArgsCount; } }
+
+		/// <summary>Return method type</summary>
+		public ElementType ReturnType { get { return this.SignatureI.ReturnType; } }
+
+		/// <summary>Arguments types</summary>
+		public ElementType[] ArgsType
+		{
+			get
+			{
+				return this.SignatureI.ArgumentsTypes;
+			}
+		}
+
 		/// <summary>Index into the Param table</summary>
 		/// <remarks>
 		/// It marks the first of a contiguous run of Parameters owned by this method. The run continues to the smaller of:
@@ -43,13 +69,23 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// </remarks>
 		internal MetaCellPointer ParamListI { get { return base.GetValue<MetaCellPointer>(5); } }
 
-		/// <summary>Gets list of method arguments</summary>
-		public IEnumerable<ParamRow> ParamList
+		/// <summary>Get a list of method arguments</summary>
+		public IEnumerable<MethodParamRow> ParamList
 		{
 			get
 			{
+				if(this.ArgsCount == 0)
+					yield break;
+
+				Int32 argsIndex = 0;
 				foreach(MetaRow row in this.ParamListI.GetTargetRowsIt())
-					yield return new ParamRow() { Row = row, };
+				{
+					ParamRow param = new ParamRow() { Row = row, };
+					if(param.Flags == ParameterAttributes.HasFieldMarshal)
+						continue;//TODO: We ignore arguments with marshaling information. (Ex: [return: MarshalAsAttribute(UnmanagedType.Bool)])
+					ElementType argument = this.SignatureI.ArgumentsTypes[argsIndex++];
+					yield return new MethodParamRow(argument) { Row = row, };
+				}
 			}
 		}
 
@@ -58,6 +94,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return this._body ?? (this._body = new MethodBody(this)); }
 		}
+
+		/// <summary>Create instance of Method definition row</summary>
+		public MethodDefRow()
+			: base(Cor.MetaTableType.MethodDef) { }
 
 		/// <summary>String representation of the Method definition row</summary>
 		/// <returns>String representation of the current row</returns>

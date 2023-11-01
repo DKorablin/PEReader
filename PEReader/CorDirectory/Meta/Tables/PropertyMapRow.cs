@@ -26,5 +26,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield return new PropertyRow() { Row = row, };
 			}
 		}
+
+		/// <summary>Create isntance of Property map row</summary>
+		public PropertyMapRow()
+			: base(Cor.MetaTableType.PropertyMap) { }
 	}
 }

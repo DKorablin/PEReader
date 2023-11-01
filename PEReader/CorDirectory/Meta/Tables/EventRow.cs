@@ -25,6 +25,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>This corresponds to the Type of the Event; it is not the Type that owns this event</remarks>
 		public MetaCellCodedToken EventType { get { return base.GetValue<MetaCellCodedToken>(2); } }
 
+		/// <summary>Create instance of Event row</summary>
+		public EventRow()
+			: base(Cor.MetaTableType.Event) { }
+
 		/// <summary>Name</summary>
 		/// <returns>String</returns>
 		public override String ToString()

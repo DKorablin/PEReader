@@ -27,5 +27,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield return new EventRow() { Row = row, };
 			}
 		}
+
+		/// <summary>Create instance of EventMap row</summary>
+		public EventMapRow()
+			: base(Cor.MetaTableType.EventMap) { }
 	}
 }

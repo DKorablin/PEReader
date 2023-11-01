@@ -6,7 +6,7 @@ using System.Reflection;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>Class in the current assembly</summary>
-	[DefaultProperty("TypeName")]
+	[DefaultProperty(nameof(TypeName))]
 	public class TypeDefRow : BaseMetaRow
 	{
 		/// <summary>A 4-byte bit mask of type TypeAttributes (§II.23.1.15)</summary>
@@ -78,6 +78,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield return new MethodDefRow() { Row = row, };
 			}
 		}
+
+		public TypeDefRow()
+			: base(Cor.MetaTableType.TypeDef) { }
 
 		/// <summary>TypeNamespace+"."+TypeName</summary>
 		/// <returns>String</returns>

@@ -104,5 +104,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				}
 			}
 		}
+
+		public ConstantRow()
+			: base(Cor.MetaTableType.Constant) { }
 	}
 }

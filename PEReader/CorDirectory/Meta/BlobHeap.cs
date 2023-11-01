@@ -36,7 +36,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			for(UInt32 loop = 0;loop < bytes.Length;)
 			{
 				Int32 padding;
-				Int32 length = BlobHeap.GetStreamLength(bytes, loop, out padding);
+				Int32 length = BlobHeap.GetPackedLength(bytes, loop, out padding);
 
 				Byte[] b;
 				if(length == 0)
@@ -72,7 +72,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			}*/
 			return result;
 		}
-		internal static Int32 GetStreamLength(Byte[] bytes, UInt32 position, out Int32 padding)
+		internal static Int32 GetPackedLength(Byte[] bytes, ref Int32 offset)
+		{
+			Int32 result = GetPackedLength(bytes, (UInt32)offset, out Int32 padding);
+			offset += padding;
+			return result;
+
+		}
+
+		internal static Int32 GetPackedLength(Byte[] bytes, UInt32 position, out Int32 padding)
 		{
 			Int32 result = bytes[position];
 			if((result & 0x80) == 0)
@@ -83,14 +91,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			{
 				padding = 2;
 				return ((result & 0x3F) << 8) | bytes[position + 1];
-			} else
+			} else if((result & 0xE0) == 0xC0)
 			{
 				padding = 4;
-				return ((result & 0x3F) << 24)
+				return ((result & 0x1F) << 24)//0x3F
 				| (bytes[position + 1] << 16)
 				| (bytes[position + 2] << 8)
 				| bytes[position + 3];
-			}
+			} else throw new InvalidOperationException();
 		}
 	}
 }

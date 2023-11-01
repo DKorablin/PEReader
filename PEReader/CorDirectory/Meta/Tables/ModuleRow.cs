@@ -27,5 +27,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>An index into the Guid heap; reserved, shall be zero</summary>
 		public Guid EncBaseId { get { return base.GetValue<Guid>(4); } }
+
+		/// <summary>Create instance of module descriptor row</summary>
+		public ModuleRow()
+			: base(Cor.MetaTableType.Module) { }
 	}
 }

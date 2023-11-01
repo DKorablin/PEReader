@@ -7,5 +7,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>Banana</summary>
 		public Object Property { get { return base.GetValue<Object>(0); } }
+
+		/// <summary>Create instance of Property map-to-property lookup row</summary>
+		public PropertyPtrRow()
+			: base(Cor.MetaTableType.PropertyPtr) { }
 	}
 }

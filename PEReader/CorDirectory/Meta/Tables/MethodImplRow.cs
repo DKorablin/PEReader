@@ -23,5 +23,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get { return new TypeDefRow() { Row = this.ClassI.TargetRow, }; }
 		}
+
+		/// <summary>Create instance of Method implementation row</summary>
+		public MethodImplRow()
+			: base(Cor.MetaTableType.MethodImpl) { }
 	}
 }

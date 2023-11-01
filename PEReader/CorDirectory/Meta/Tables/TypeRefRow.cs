@@ -16,5 +16,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Type namespace</summary>
 		public String TypeNamespace { get { return base.GetValue<String>(2); } }
+
+		public TypeRefRow()
+			: base(Cor.MetaTableType.TypeRef) { }
 	}
 }

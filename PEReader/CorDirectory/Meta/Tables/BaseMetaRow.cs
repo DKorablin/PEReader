@@ -7,6 +7,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		private MetaRow _row;
 
+		internal Cor.MetaTableType TableType { get; }
+
+		internal BaseMetaRow(Cor.MetaTableType type)
+		{
+			this.TableType = type;
+		}
+
 		/// <summary>Base metadata row for processing</summary>
 		/// <exception cref="ArgumentNullException">value is null</exception>
 		internal MetaRow Row
@@ -70,7 +77,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <param name="a">First row to compare</param>
 		/// <param name="b">Second row to compare</param>
 		/// <returns>Rows are equals</returns>
-		public static Boolean operator ==(BaseMetaRow a,BaseMetaRow b)
+		public static Boolean operator ==(BaseMetaRow a, BaseMetaRow b)
 		{
 			if(ReferenceEquals(a, b))
 				return true;
@@ -85,7 +92,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <param name="a">First row to compare</param>
 		/// <param name="b">Second row to compare</param>
 		/// <returns>Rows are NOT equals</returns>
-		public static Boolean operator !=(BaseMetaRow a,BaseMetaRow b)
+		public static Boolean operator !=(BaseMetaRow a, BaseMetaRow b)
 		{
 			return !(a == b);
 		}
@@ -94,7 +101,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <returns></returns>
 		public override Int32 GetHashCode()
 		{
-			return (Int32)this.Row.Table.TableType.GetHashCode() ^ (Int32)this.Index;
+			return (Int32)this.TableType.GetHashCode() ^ (Int32)this.Index;
 		}
 	}
 }
