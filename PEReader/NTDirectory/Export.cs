@@ -6,44 +6,30 @@ using System.Diagnostics;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Export directory class</summary>
-	[DefaultProperty("Header")]
-	[DebuggerDisplay("Header = {Header}")]
+	[DefaultProperty(nameof(Header))]
+	[DebuggerDisplay("Header = {"+nameof(Header)+"}")]
 	public class Export : PEDirectoryBase
 	{
 		/// <summary>Directory is empty</summary>
 		public override Boolean IsEmpty
-		{
-			get { return base.IsEmpty || this.Header.Value.NumberOfNames == 0; }
-		}
+			=> base.IsEmpty || this.Header.Value.NumberOfNames == 0;
 
 		/// <summary>Директория экспортируемых функций</summary>
 		public WinNT.IMAGE_EXPORT_DIRECTORY? Header
-		{
-			get
-			{
-				return base.IsEmpty
+			=> base.IsEmpty
 					? (WinNT.IMAGE_EXPORT_DIRECTORY?)null
 					: this.Parent.Header.PtrToStructure<WinNT.IMAGE_EXPORT_DIRECTORY>(base.Directory.VirtualAddress);
-			}
-		}
 
 		/// <summary>Module name</summary>
 		public String DllName
-		{
-			get
-			{
-				return base.Directory.IsEmpty
+			=> base.Directory.IsEmpty
 					? null
 					: this.Parent.Header.PtrToStringAnsi(this.Header.Value.NameRva);
-			}
-		}
 
 		/// <summary>Create instance of Export class</summary>
 		/// <param name="root">Data directory</param>
 		public Export(PEFile root)
-			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.EXPORT)
-		{
-		}
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.EXPORT) { }
 
 		/// <summary>Get a list of exported functions</summary>
 		/// <returns>Array with addresses of exported functions</returns>

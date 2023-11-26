@@ -6,6 +6,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class FieldPtrRow : BaseMetaRow
 	{
 		/// <summary>Banana</summary>
-		public Object Field { get { return base.GetValue<Object>(0); } }
+		public Object Field => base.GetValue<Object>(0);
+
+		/// <summary>Create instance of FieldPtr row</summary>
+		public FieldPtrRow()
+			: base(Cor.MetaTableType.FieldPtr) { }
 	}
 }

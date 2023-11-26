@@ -6,8 +6,8 @@ using System.ComponentModel;
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Resource Message table class</summary>
-	[DefaultProperty("NumberOfBlocks")]
-	public class ResourceMessageTable : ResourceBase,IEnumerable<ResourceMessageTable.MessageResourceEntry>
+	[DefaultProperty(nameof(NumberOfBlocks))]
+	public class ResourceMessageTable : ResourceBase, IEnumerable<ResourceMessageTable.MessageResourceEntry>
 	{
 		/// <summary>Message descriptor</summary>
 		public struct MessageResourceEntry
@@ -20,15 +20,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		/// <summary>Each block contains array of messages</summary>
-		public UInt32 NumberOfBlocks { get { return PinnedBufferReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0); } }
+		public UInt32 NumberOfBlocks => PinnedBufferReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0);
 
 		/// <summary>Create instance of message table resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceMessageTable(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MESSAGETABLE)
-		{
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MESSAGETABLE) { }
 
-		}
 		/// <summary>Get message blocks</summary>
 		/// <returns>Array of message blocks</returns>
 		public IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks()
@@ -96,8 +94,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

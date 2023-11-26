@@ -12,15 +12,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class FieldRVARow : BaseMetaRow
 	{
 		/// <summary>a 4-byte constant</summary>
-		public UInt32 RVA { get { return base.GetValue<UInt32>(0); } }
+		public UInt32 RVA => base.GetValue<UInt32>(0);
 
 		/// <summary>An index into Field table</summary>
-		internal MetaCellPointer FieldI { get { return base.GetValue<MetaCellPointer>(1); } }
+		internal MetaCellPointer FieldI => base.GetValue<MetaCellPointer>(1);
 
 		/// <summary>Row from Field table</summary>
 		public FieldRow Field
-		{
-			get { return new FieldRow() { Row = this.FieldI.TargetRow, }; }
-		}
+			=> new FieldRow() { Row = this.FieldI.TargetRow, };
+
+		/// <summary>Create instance of Field-to-data mapping descriptor row</summary>
+		public FieldRVARow()
+			: base(Cor.MetaTableType.FieldRVA) { }
 	}
 }

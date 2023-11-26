@@ -19,13 +19,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// Values 0x80 - 0xFF and 0x0800 - 0xFFFF are for uses where the action shall be implemented for secure operation;
 		/// in implementations where the action is not available, no access to the assembly, type, or method shall be permitted.
 		/// </remarks>
-		public UInt16 Action { get { return base.GetValue<UInt16>(0); } }
+		public UInt16 Action => base.GetValue<UInt16>(0);
 
 		/// <summary>
 		/// an index into the TypeDef, MethodDef, or Assembly table;
 		/// more precisely, a HasDeclSecurity (§II.24.2.6) coded index.
 		/// </summary>
-		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(1); } }
+		public MetaCellCodedToken Parent => base.GetValue<MetaCellCodedToken>(1);
 
 		/// <summary>
 		/// The permission set contains the permissions that were requested with an
@@ -41,6 +41,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// A String, which is the fully-qualified type name of the attribute. (Strings are encoded as a compressed unsigned integer to indicate the size followed by an array of UTF8 characters.)
 		/// A set of properties, encoded as the named arguments to a custom attribute would be (as in §II.23.3, beginning with NumNamed).
 		/// </remarks>
-		public Byte[] PermissionSet { get { return base.GetValue<Byte[]>(2); } }
+		public Byte[] PermissionSet => base.GetValue<Byte[]>(2);
+
+		/// <summary>Create instance of security attribute row</summary>
+		public DeclSecurityRow()
+			: base(Cor.MetaTableType.DeclSecurity) { }
 	}
 }

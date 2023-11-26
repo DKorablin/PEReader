@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>MetaTable cell</summary>
-	[DefaultProperty("Value")]
+	[DefaultProperty(nameof(Value))]
 	[DebuggerDisplay("Column={Column.Name} Value={Value}")]
 	public class MetaCell : ICell
 	{
@@ -15,7 +15,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Owner column</summary>
 		public MetaColumn Column { get; }
-		IColumn ICell.Column { get { return this.Column; } }
+		IColumn ICell.Column => this.Column;
 
 		/// <summary>Cell row index</summary>
 		public UInt32 RowIndex { get; }
@@ -92,8 +92,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Convert cell value to String</summary>
 		/// <returns>value converted to string</returns>
 		public override String ToString()
-		{
-			return $"{this.GetType().Name} : {{{this.Table.TableType}: {this.Column.Name}}}";
-		}
+			=> $"{this.GetType().Name} : {{{this.Table.TableType}: {this.Column.Name}}}";
 	}
 }

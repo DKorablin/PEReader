@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Font directory resource class</summary>
-	[DefaultProperty("NumberOfFonts")]
+	[DefaultProperty(nameof(NumberOfFonts))]
 	public class ResourceFontDir : ResourceBase, IEnumerable<ResourceFontDir.FontDirEntry>
 	{
 		/// <summary>Font dir info</summary>
@@ -18,16 +18,12 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		/// <summary>Gets number of fons in directory</summary>
 		public UInt16 NumberOfFonts
-		{
-			get { return PinnedBufferReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0); }
-		}
+			=> PinnedBufferReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0);
 
 		/// <summary>Create instance of font directory resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceFontDir(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONTDIR)
-		{
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONTDIR) { }
 
 		/// <summary>Get all fonts from directory</summary>
 		/// <returns>Fonts from directory</returns>
@@ -51,8 +47,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3A7DE130-3542-442A-82F1-4905210E625D}</ProjectGuid>
+    <ProjectGuid>{195B264C-8735-4FDF-97B9-D0A8D6538563}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AlphaOmega.Debug</RootNamespace>
@@ -60,7 +60,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Reader.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>

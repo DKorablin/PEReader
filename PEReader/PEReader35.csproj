@@ -9,7 +9,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5F56B043-3547-49FF-AB37-3B9A1B14FC53}</ProjectGuid>
+    <ProjectGuid>{0AE5063A-7A43-4950-9300-1EBEA70FF36D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AlphaOmega.Debug</RootNamespace>
@@ -84,14 +84,25 @@
     <Compile Include="CorDirectory\CodeManagerTable.cs" />
     <Compile Include="CorDirectory\Eat.cs" />
     <Compile Include="CorDirectory\ManagedNativeHeader.cs" />
+    <Compile Include="CorDirectory\Meta\Member\MemberValueBase.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\AttributeReader.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\FieldReader.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\MethodReader.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\PropertyReader.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\TypeReader.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\CellPointerBase.cs" />
+    <Compile Include="CorDirectory\Meta\Member\MemberArgument.cs" />
+    <Compile Include="CorDirectory\Meta\Member\MemberElement.cs" />
     <Compile Include="CorDirectory\Meta\MetaCell.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellCodedToken.cs" />
     <Compile Include="CorDirectory\Meta\CellPointer\MetaCellPointer.cs" />
     <Compile Include="CorDirectory\Meta\MetaColumn.cs" />
+    <Compile Include="CorDirectory\Meta\Method\ElementType.cs" />
     <Compile Include="CorDirectory\Meta\Method\MethodBody.cs" />
     <Compile Include="CorDirectory\Meta\Method\MethodLine.cs" />
     <Compile Include="CorDirectory\Meta\Method\MethodSection.cs" />
+    <Compile Include="CorDirectory\Meta\Method\SignatureParser.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\TypeRefReader.cs" />
     <Compile Include="CorDirectory\Meta\StreamHeaderTyped.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyOSRow.cs" />
     <Compile Include="CorDirectory\Meta\Tables\AssemblyProcessorRow.cs" />
@@ -152,7 +163,6 @@
     <Compile Include="CorDirectory\ResourceTable.cs" />
     <Compile Include="CorDirectory\ResourceTableItem.cs" />
     <Compile Include="CorDirectory\ResourceTableReader.cs" />
-    <Compile Include="CorDirectory\ResourceTypeCode.cs" />
     <Compile Include="CorDirectory\StrongNameSignature.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="ISectionData.cs" />

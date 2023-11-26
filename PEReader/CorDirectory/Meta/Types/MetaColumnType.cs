@@ -1,7 +1,9 @@
-﻿namespace AlphaOmega.Debug.CorDirectory.Meta
+﻿using System;
+
+namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>MetaData column type</summary>
-	public enum MetaColumnType : int
+	public enum MetaColumnType : Int32
 	{
 		/// <summary>Module descriptor</summary>
 		Module = 0,

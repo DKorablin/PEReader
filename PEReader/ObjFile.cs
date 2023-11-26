@@ -16,12 +16,10 @@ namespace AlphaOmega.Debug
 
 		/// <summary>OBJ File header structure</summary>
 		public WinNT.IMAGE_FILE_HEADER FileHeader
-		{
-			get { return this._fileHeader ?? (this._fileHeader = this.Loader.PtrToStructure<WinNT.IMAGE_FILE_HEADER>(0)).Value; }
-		}
+			=> this._fileHeader ?? (this._fileHeader = this.Loader.PtrToStructure<WinNT.IMAGE_FILE_HEADER>(0)).Value;
 
 		/// <summary>Checking if OBJ file is valid</summary>
-		public Boolean IsValid { get { return this.FileHeader.IsValid; } }
+		public Boolean IsValid => this.FileHeader.IsValid;
 
 		/*/// <summary>Represents the COFF symbols header</summary>
 		public WinNT.IMAGE_COFF_SYMBOLS_HEADER? SymbolTable
@@ -118,9 +116,7 @@ namespace AlphaOmega.Debug
 		/// <summary>Create instance of OBJ file reader</summary>
 		/// <param name="loader">Image loader</param>
 		public ObjFile(IImageLoader loader)
-		{
-			this.Loader = loader ?? throw new ArgumentNullException(nameof(loader));
-		}
+			=> this.Loader = loader ?? throw new ArgumentNullException(nameof(loader));
 
 		/// <summary>Convert relative address to virtual address</summary>
 		/// <param name="offset">RVA in PE image</param>

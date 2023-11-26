@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory
 	public class ResourceTableReader : IEnumerable<ResourceTableItem>, IDisposable
 	{
 		#region Fields
-		private Byte[] File { get; }
+		private readonly Byte[] _file;
 		private ResourceReader _reader;
 		private readonly Object _readerLock = new Object();
 		#endregion Fields
@@ -31,7 +31,7 @@ namespace AlphaOmega.Debug.CorDirectory
 					Array.Reverse(bytes);
 					magicNumber = checked((UInt32)BitConverter.ToInt32(bytes, 0));
 				} else*/
-					magicNumber = BitConverter.ToInt32(this.File, 0);
+					magicNumber = BitConverter.ToInt32(this._file, 0);
 
 				return (UInt32)magicNumber == Cor.ResourceManagerHeader.MagicNumberConst;
 			}
@@ -46,7 +46,7 @@ namespace AlphaOmega.Debug.CorDirectory
 					lock(_readerLock)
 						if(this._reader == null)
 						{
-							MemoryStream stream = new MemoryStream(this.File);
+							MemoryStream stream = new MemoryStream(this._file);
 							try
 							{
 								this._reader = new ResourceReader(stream);
@@ -67,15 +67,14 @@ namespace AlphaOmega.Debug.CorDirectory
 				throw new ArgumentNullException(nameof(file));
 
 			this.Name = name ?? throw new ArgumentNullException(nameof(name));
-			this.File = file;
+			this._file = file;
 		}
 
 		internal void GetResourceData(String resourceName, out String resourceType, out Byte[] resourceData)
 		{
 			if(String.IsNullOrEmpty(resourceName))
 				throw new ArgumentNullException(nameof(resourceName));
-			if(this._reader == null)
-				throw new ArgumentNullException(nameof(_reader));
+			_ = this._reader ?? throw new ArgumentNullException(nameof(_reader));
 
 			this._reader.GetResourceData(resourceName, out resourceType, out resourceData);
 		}
@@ -97,9 +96,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 
 		/// <summary>Close underlying <see cref="ResourceReader"/></summary>
 		public void Dispose()

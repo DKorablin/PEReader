@@ -7,31 +7,19 @@ namespace AlphaOmega.Debug.NTDirectory
 	{
 		/// <summary>PE load configuration directory entry</summary>
 		public WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32? Directory32
-		{
-			get
-			{
-				return base.Directory.IsEmpty || base.Parent.Header.Is64Bit
-					? (WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32?)null
-					: base.Parent.Header.PtrToStructure<WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32>(base.Directory.VirtualAddress);
-			}
-		}
+			=> base.Directory.IsEmpty || base.Parent.Header.Is64Bit
+				? (WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32?)null
+				: base.Parent.Header.PtrToStructure<WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32>(base.Directory.VirtualAddress);
 
 		/// <summary>PE+ load configuration directory entry</summary>
 		public WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64? Directory64
-		{
-			get
-			{
-				return base.Directory.IsEmpty || !base.Parent.Header.Is64Bit
-					? (WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64?)null
-					: base.Parent.Header.PtrToStructure<WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64>(base.Directory.VirtualAddress);
-			}
-		}
+			=> base.Directory.IsEmpty || !base.Parent.Header.Is64Bit
+				? (WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64?)null
+				: base.Parent.Header.PtrToStructure<WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64>(base.Directory.VirtualAddress);
 
 		/// <summary>Create instance of LoadConfig class</summary>
 		/// <param name="parent">Data directory</param>
 		public LoadConfig(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.LOAD_CONFIG)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.LOAD_CONFIG) { }
 	}
 }

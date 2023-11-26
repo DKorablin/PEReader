@@ -6,7 +6,9 @@ using System.Runtime.InteropServices;
 
 [assembly: System.CLSCompliant(false)]
 
-#if !NETSTANDARD
+#if NETSTANDARD
+[assembly: AssemblyMetadata("RepositoryUrl", "https://github.com/DKorablin/PEReader")]
+#else
 [assembly: AssemblyCompany("Danila Korablin")]
 [assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2023")]
 [assembly: AssemblyProduct("Portable Executable Reader")]

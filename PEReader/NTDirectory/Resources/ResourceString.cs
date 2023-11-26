@@ -31,10 +31,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Create instance of string resource reader class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceString(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING)
-		{
-
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING) { }
 
 		/// <summary>Get all strings from resource directory</summary>
 		/// <returns>Strings from resource</returns>
@@ -59,8 +56,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

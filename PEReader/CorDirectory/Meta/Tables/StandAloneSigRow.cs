@@ -24,6 +24,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		///		</item>
 		/// </list>
 		/// </summary>
-		public Byte[] Signature { get { return base.GetValue<Byte[]>(0); } }
+		public Byte[] Signature => base.GetValue<Byte[]>(0);
+
+		/// <summary>Create instance of assembly signature row</summary>
+		public StandAloneSigRow()
+			: base(Cor.MetaTableType.StandAloneSig) { }
 	}
 }

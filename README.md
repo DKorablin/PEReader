@@ -4,7 +4,7 @@
 
 PE/PE+/CLI executable reader assembly. Compatible with .NET Framework 2.0 & .NET Standard 2.0
 
-Usage:
+Usage (See Wiki for details):
 
     String filePath=@"C:\Windows\System32\kernel32.dll";
     using(PEFile file = new PEFile(filePath, StreamLoader.FromFile(filePath)))
@@ -60,12 +60,16 @@ Usage:
           - Field
           - MethodPtr
           - MethodDef
+            - Signature
+            - IL Instructions
           - ParamPtr
           - Param
           - InterfaceImpl
           - MemberRef
+            - Signature
           - Constant
           - CustomAttribute
+            - Signature
           - FieldMarshal
           - DeclSecurity
           - ClassLayout
@@ -77,6 +81,7 @@ Usage:
           - PropertyMap
           - PropertyPtr
           - Property
+            - Signature
           - MethodSemantics
           - MethodImpl
           - ModuleRef

@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.CorDirectory
 	public class ResourceTableItem
 	{
 		#region Fields
-		private ResourceTableReader Reader { get; }
+		private readonly ResourceTableReader _reader;
 		private String _type;
 		private Byte[] _data;
 		#endregion Fields
@@ -35,13 +35,14 @@ namespace AlphaOmega.Debug.CorDirectory
 				return this._data;
 			}
 		}
+
 		#endregion Properties
 		/// <summary>Create instance of a resource item</summary>
 		/// <param name="reader">Resource reader</param>
 		/// <param name="name">Reasource name in the .resource item</param>
 		internal ResourceTableItem(ResourceTableReader reader, String name)
 		{
-			this.Reader = reader ?? throw new ArgumentNullException(nameof(reader));
+			this._reader = reader ?? throw new ArgumentNullException(nameof(reader));
 			this.Name = name ?? throw new ArgumentNullException(nameof(name));
 		}
 
@@ -60,7 +61,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		private void Initialize()
 		{
 			if(this._type == null && this._data == null)
-				this.Reader.GetResourceData(this.Name, out this._type, out this._data);
+				this._reader.GetResourceData(this.Name, out this._type, out this._data);
 		}
 	}
 }

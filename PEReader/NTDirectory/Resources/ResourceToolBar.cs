@@ -6,26 +6,22 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Toolbar resource info class</summary>
-	[DefaultProperty("Header")]
+	[DefaultProperty(nameof(Header))]
 	public class ResourceToolBar : ResourceBase
 	{
 		private static UInt32 SizeOfStruct = (UInt32)Marshal.SizeOf(typeof(CommCtrl.TOOLBARDATA));
 
 		/// <summary>Toolbar header</summary>
 		public CommCtrl.TOOLBARDATA Header
-		{
-			get { return PinnedBufferReader.BytesToStructure<CommCtrl.TOOLBARDATA>(base.Directory.GetData(), 0); }
-		}
+			=> PinnedBufferReader.BytesToStructure<CommCtrl.TOOLBARDATA>(base.Directory.GetData(), 0);
 
 		/// <summary>TooBar header validation</summary>
-		public Boolean IsValid { get { return this.Header.wVersion == 1; } }
+		public Boolean IsValid => this.Header.wVersion == 1;
 
 		/// <summary>Create instance of toolbar resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceToolBar(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR)
-		{
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR) { }
 
 		/// <summary>Gets the array of toolbar buttons and separators from the current toolbar</summary>
 		/// <returns></returns>

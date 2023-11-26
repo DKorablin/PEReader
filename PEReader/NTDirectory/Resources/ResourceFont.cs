@@ -4,11 +4,11 @@ using System.ComponentModel;
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Font resource class</summary>
-	[DefaultProperty("Font")]
+	[DefaultProperty(nameof(Font))]
 	public class ResourceFont : ResourceBase
 	{
 		/// <summary>Font info</summary>
-		[DefaultProperty("szFaceName")]
+		[DefaultProperty(nameof(szFaceName))]
 		public class FontEntry
 		{
 			/// <summary>Contains information about an individual font in a font resource group</summary>
@@ -39,9 +39,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Create instance of font resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceFont(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT)
-		{
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT) { }
 
 		internal static void GetFont<T>(PinnedBufferReader reader, ref T result, ref UInt32 padding) where T : FontEntry
 		{

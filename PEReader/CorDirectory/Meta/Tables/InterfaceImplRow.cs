@@ -7,17 +7,18 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class InterfaceImplRow : BaseMetaRow
 	{
 		/// <summary>Index into the TypeDef table</summary>
-		internal MetaCellPointer ClassI { get { return base.GetValue<MetaCellPointer>(0); } }
+		internal MetaCellPointer ClassI => base.GetValue<MetaCellPointer>(0);
 
 		/// <summary>
-		/// An index into the TypeDef, TypeRef, or TypeSpec table; more precisely, a TypeDefOrRef (§II.24.2.6) coded index
+		/// An index into the <see cref="Cor.MetaTableType.TypeDef"/>, <see cref="Cor.MetaTableType.TypeRef"/>, or <see cref="Cor.MetaTableType.TypeSpec"/> table; more precisely, a TypeDefOrRef (§II.24.2.6) coded index
 		/// </summary>
-		public MetaCellCodedToken Interface { get { return base.GetValue<MetaCellCodedToken>(1); } }
+		public MetaCellCodedToken Interface => base.GetValue<MetaCellCodedToken>(1);
 
 		/// <summary>TypeDef table row that implements current interface</summary>
-		public TypeDefRow Class
-		{
-			get { return new TypeDefRow() { Row = this.ClassI.TargetRow, }; }
-		}
+		public TypeDefRow Class => new TypeDefRow() { Row = this.ClassI.TargetRow, };
+
+		/// <summary>Create instance of Interface implementation row</summary>
+		public InterfaceImplRow()
+			: base(Cor.MetaTableType.InterfaceImpl) { }
 	}
 }

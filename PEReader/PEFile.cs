@@ -28,7 +28,6 @@ namespace AlphaOmega.Debug
 		private Tls _tls;
 		#endregion Fields
 		#region Properties
-
 		/// <summary>File source</summary>
 		public String Source { get; }
 
@@ -39,54 +38,37 @@ namespace AlphaOmega.Debug
 		/// <param name="entry">Directory entry type</param>
 		/// <returns>Directory</returns>
 		public WinNT.IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry]
-		{
-			get
-			{
-				return this.Header.Is64Bit
+			=> this.Header.Is64Bit
 					? this.Header.HeaderNT64.OptionalHeader[entry]
 					: this.Header.HeaderNT32.OptionalHeader[entry];
-			}
-		}
 
 		/// <summary>PE file sections</summary>
 		public Sections Sections
-		{
-			get { return this._sections ?? (this._sections = new Sections(this)); }
-		}
+			=> this._sections ?? (this._sections = new Sections(this));
 
 		/// <summary>Architecture directory</summary>
 		public Architecture Architecture
-		{
-			get { return this._architecture ?? (this._architecture = new Architecture(this)); }
-		}
+			=> this._architecture ?? (this._architecture = new Architecture(this));
 
 		/// <summary>Get all exported functions from PE file</summary>
 		/// <remarks>Export directory</remarks>
 		public Export Export
-		{
-			get { return this._export ?? (this._export = new Export(this)); }
-		}
+			=> this._export ?? (this._export = new Export(this));
 
 		/// <summary>Get all Imported functions from PE file</summary>
 		/// <returns>Import directory</returns>
 		public Import Import
-		{
-			get { return this._import ?? (this._import = new Import(this)); }
-		}
+			=> this._import ?? (this._import = new Import(this));
 
 		/// <summary>Get detailed information for debugginig</summary>
 		/// <returns>Debugging directory</returns>
 		public NTDirectory.Debug Debug
-		{
-			get { return this._debug ?? (this._debug = new NTDirectory.Debug(this)); }
-		}
+			=> this._debug ?? (this._debug = new NTDirectory.Debug(this));
 
 		/// <summary>Get resources from PE file</summary>
 		/// <returns>Resource directory</returns>
 		public Resource Resource
-		{
-			get { return this._resource ?? (this._resource = new Resource(this)); }
-		}
+			=> this._resource ?? (this._resource = new Resource(this));
 
 		/// <summary>.NET Directory</summary>
 		public ComDescriptor ComDescriptor
@@ -104,57 +86,39 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Load config directory</summary>
 		public LoadConfig LoadConfig
-		{
-			get { return this._loadConfig ?? (this._loadConfig = new LoadConfig(this)); }
-		}
+			=> this._loadConfig ?? (this._loadConfig = new LoadConfig(this));
 
 		/// <summary>Certificate directory</summary>
 		public Security Certificate
-		{
-			get { return this._certificate ?? (this._certificate = new Security(this)); }
-		}
+			=> this._certificate ?? (this._certificate = new Security(this));
 
 		/// <summary>Boundimport directory</summary>
 		public BoundImport BoundImport
-		{
-			get { return this._boundImport ?? (this._boundImport = new BoundImport(this)); }
-		}
+			=> this._boundImport ?? (this._boundImport = new BoundImport(this));
 
 		/// <summary>Relocation directory</summary>
 		public Relocation Relocations
-		{
-			get { return this._relocations ?? (this._relocations = new Relocation(this)); }
-		}
+			=> this._relocations ?? (this._relocations = new Relocation(this));
 
 		/// <summary>Delay import modules directory</summary>
 		public DelayImport DelayImport
-		{
-			get { return this._delayImport ?? (this._delayImport = new DelayImport(this)); }
-		}
+			=> this._delayImport ?? (this._delayImport = new DelayImport(this));
 
 		/// <summary>Global pointer directory</summary>
 		public GlobalPtr GlobalPtr
-		{
-			get { return this._globalPtr ?? (this._globalPtr = new GlobalPtr(this)); }
-		}
+			=> this._globalPtr ?? (this._globalPtr = new GlobalPtr(this));
 
 		/// <summary>Exception table directory</summary>
 		public ExceptionTable ExceptionTable
-		{
-			get { return this._exceptionTable ?? (this._exceptionTable = new ExceptionTable(this)); }
-		}
+			=> this._exceptionTable ?? (this._exceptionTable = new ExceptionTable(this));
 
 		/// <summary>Import Address Table directory</summary>
 		public Iat Iat
-		{
-			get { return this._iat ?? (this._iat = new Iat(this)); }
-		}
+			=> this._iat ?? (this._iat = new Iat(this));
 
 		/// <summary>Thread local storage directory</summary>
 		public Tls Tls
-		{
-			get { return this._tls ?? (this._tls = new Tls(this)); }
-		}
+			=> this._tls ?? (this._tls = new Tls(this));
 		#endregion Properties
 
 		/// <summary>Create instance and specify image loader instance</summary>

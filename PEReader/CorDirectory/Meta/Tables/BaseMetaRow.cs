@@ -7,50 +7,47 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		private MetaRow _row;
 
+		internal Cor.MetaTableType TableType { get; }
+
 		/// <summary>Base metadata row for processing</summary>
 		/// <exception cref="ArgumentNullException">value is null</exception>
 		internal MetaRow Row
 		{
-			get { return this._row; }
-			set { this._row = value ?? throw new ArgumentNullException(nameof(value)); }
+			get => this._row;
+			set => this._row = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
 		/// <summary>Row index</summary>
-		public UInt32 Index { get { return this.Row.Index; } }
+		public UInt32 Index => this.Row.Index;
+
+		internal BaseMetaRow(Cor.MetaTableType type)
+			=> this.TableType = type;
 
 		/// <summary>Get cell value by index from metadata row</summary>
 		/// <typeparam name="T">Cell data type</typeparam>
 		/// <param name="columnIndex">Column index from metadata table</param>
 		/// <returns>Cell value from table metadata</returns>
 		protected T GetValue<T>(UInt16 columnIndex)
-		{
-			return (T)this.Row[columnIndex].Value;
-		}
+			=> (T)this.Row[columnIndex].Value;
 
 		/// <summary>Bit check to reduce syntax</summary>
 		/// <param name="flags">Flags</param>
 		/// <param name="enumValue">Bit index to check</param>
 		/// <returns>Bit is set</returns>
 		protected static Boolean IsBitSet(UInt32 flags, UInt32 enumValue)
-		{
-			return (flags & enumValue) == enumValue;
-		}
+			=> (flags & enumValue) == enumValue;
 
 		/// <summary>Shows current object as string</summary>
 		/// <param name="args">Key value to show as string</param>
 		/// <returns>String representation</returns>
 		protected internal String ToString(Object args)
-		{
-			return $"{this.GetType().Name} : {{{args}}}";
-		}
+			=> $"{this.GetType().Name} : {{{args}}}";
 
 		/// <summary>Compare two rows by table type and index fields</summary>
 		/// <param name="obj">Object to compare with current field</param>
 		/// <returns>Objects are equals</returns>
 		public override Boolean Equals(Object obj)
-		{
-			return Equals(obj as BaseMetaRow);
-		}
+			=> Equals(obj as BaseMetaRow);
 
 		/// <summary>Compare two rows by table type and index fields</summary>
 		/// <param name="row">Row to compare with current row</param>
@@ -85,16 +82,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <param name="a">First row to compare</param>
 		/// <param name="b">Second row to compare</param>
 		/// <returns>Rows are NOT equals</returns>
-		public static Boolean operator !=(BaseMetaRow a,BaseMetaRow b)
-		{
-			return !(a == b);
-		}
+		public static Boolean operator !=(BaseMetaRow a, BaseMetaRow b)
+			=> !(a == b);
+
+		/// <summary>Converts base row for strongly typed rows to generic row</summary>
+		/// <param name="row">The base row</param>
+		public static implicit operator MetaRow(BaseMetaRow row)
+			=> row.Row;
 
 		/// <summary>Gets unique identifier for current row in current table</summary>
 		/// <returns></returns>
 		public override Int32 GetHashCode()
-		{
-			return (Int32)this.Row.Table.TableType.GetHashCode() ^ (Int32)this.Index;
-		}
+			=> (Int32)this.Row.Table.TableType.GetHashCode() ^ (Int32)this.Index;
 	}
 }

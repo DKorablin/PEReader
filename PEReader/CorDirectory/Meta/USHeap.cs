@@ -11,9 +11,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">.NET stream header</param>
 		public USHeap(MetaData meta, Cor.STREAM_HEADER header)
-			: base(meta, header)
-		{
-		}
+			: base(meta, header) { }
+
 		/// <summary>Get string from string heap</summary>
 		/// <param name="index">String index in the heap</param>
 		/// <returns>String from heap</returns>
@@ -26,7 +25,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				return Encoding.Unicode.GetString(payload);
 			}
 		}
-
 
 		/// <summary>Binds the data form stream to string array</summary>
 		public IEnumerable<KeyValuePair<Int32, String>> GetDataString()

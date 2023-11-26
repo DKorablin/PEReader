@@ -13,14 +13,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="cell">Source cell</param>
 		/// <param name="rawValue">Original value from PE file</param>
 		internal MetaCellCodedToken(MetaCell cell, UInt32 rawValue)
-			: this(cell, (rawValue & 0xFFFFFF), (MetaColumnType)(rawValue >> 24))
+			: base(cell,
+				(rawValue & 0xFFFFFF),
+				(Cor.MetaTableType)(rawValue >> 24))
 		{
 		}
 
 		internal MetaCellCodedToken(MetaCell cell, UInt32 rowIndex, MetaColumnType columnType)
 			: base(cell,
-			(UInt32)rowIndex,
-			(Cor.MetaTableType)columnType)
+				rowIndex,
+				(Cor.MetaTableType)columnType)
 		{
 		}
 

@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	public class DialogItemTemplate
 	{
 		/// <summary>Predefined system class</summary>
-		public enum ControlSystemClass : ushort
+		public enum ControlSystemClass : UInt16
 		{
 			/// <summary>Button</summary>
 			Button = 0x0080,
@@ -69,9 +69,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// To change this after a window has been created, use the EnableWindow function
 		/// </remarks>
 		public Boolean IsDisabled
-		{
-			get { return (this.Styles & WinUser.WS.WS_DISABLED) == WinUser.WS.WS_DISABLED; }
-		}
+			=> (this.Styles & WinUser.WS.WS_DISABLED) == WinUser.WS.WS_DISABLED;
 
 		/// <summary>Win32 API dialog generic resource control template</summary>
 		/// <param name="control">Defines the dimensions and style of a control in a dialog box.</param>

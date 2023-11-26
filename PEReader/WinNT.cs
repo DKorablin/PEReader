@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug
 	public struct WinNT
 	{
 		/// <summary>4 byte packing is the default</summary>
-		public enum Signature4b : ushort
+		public enum Signature4b : UInt16
 		{
 			/// <summary>DOS signature</summary>
 			IMAGE_DOS_SIGNATURE = 0x5A4D,// MZ
@@ -25,7 +25,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>The architecture type of the computer</summary>
 		/// <remarks>An image file can only be run on the specified computer or a system that emulates the specified computer</remarks>
-		public enum IMAGE_FILE_MACHINE : ushort
+		public enum IMAGE_FILE_MACHINE : UInt16
 		{
 			/// <summary>The contents of this field are assumed to be applicable to any machine type</summary>
 			UNKNOWN = 0,
@@ -90,7 +90,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>The state of the image file</summary>
-		public enum IMAGE_SIGNATURE : ushort
+		public enum IMAGE_SIGNATURE : UInt16
 		{
 			/// <summary>The file is an executable 32bit version image</summary>
 			IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10b,
@@ -105,7 +105,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>The subsystem required to run this image</summary>
-		public enum IMAGE_SUBSYSTEM : ushort
+		public enum IMAGE_SUBSYSTEM : UInt16
 		{
 			/// <summary>An unknown subsystem</summary>
 			UNKNOWN = 0,
@@ -137,7 +137,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>The DLL characteristics of the image</summary>
 		[Flags]
-		public enum IMAGE_DLLCHARACTERISTICS : ushort
+		public enum IMAGE_DLLCHARACTERISTICS : UInt16
 		{
 			/// <summary>Reserved, must be zero</summary>
 			RES_0 = 0x0001,
@@ -176,7 +176,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>The format of the debugging information</summary>
-		public enum IMAGE_DEBUG_TYPE : uint
+		public enum IMAGE_DEBUG_TYPE : UInt32
 		{
 			/// <summary>Unknown value, ignored by all tools</summary>
 			UNKNOWN = 0,
@@ -212,7 +212,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>COM+ Header entry point flags</summary>
 		[Flags]
-		public enum COMIMAGE_FLAGS : uint
+		public enum COMIMAGE_FLAGS : UInt32
 		{
 			/// <summary>The image contains IL code only, with no embedded native unmanaged code except the start-up stub (whitch simply executes an indirect jump to the CLR entry point)</summary>
 			/// <remarks>
@@ -255,7 +255,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>The characteristics of the image</summary>
 		[Flags]
-		public enum IMAGE_FILE : ushort
+		public enum IMAGE_FILE : UInt16
 		{
 			/// <summary>
 			/// Image only, Windows CE, and Windows NT® and later.
@@ -431,7 +431,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Image section characteristics</summary>
 		[Flags]
-		public enum IMAGE_SCN : uint
+		public enum IMAGE_SCN : UInt32
 		{
 			/// <summary>Reserved for future use</summary>
 			TYPE_REG = 0x00000000,
@@ -557,7 +557,7 @@ namespace AlphaOmega.Debug
 			MEM_WRITE = 0x80000000
 		}
 		/// <summary>Certificate revision number type</summary>
-		public enum WIN_CERT_REVISION : ushort
+		public enum WIN_CERT_REVISION : UInt16
 		{
 			/// <summary>Version 1, legacy version of the Win_Certificate structure</summary>
 			/// <remarks>It is supported only for purposes of verifying legacy Authenticode signatures</remarks>
@@ -566,7 +566,7 @@ namespace AlphaOmega.Debug
 			REVISION_2_0 = 0x0200,
 		}
 		/// <summary>Specifies the type of certificate</summary>
-		public enum WIN_CERT_TYPE : ushort
+		public enum WIN_CERT_TYPE : UInt16
 		{
 			/// <summary>bCertificate contains an X.509 Certificate</summary>
 			/// <remarks>Not supported</remarks>
@@ -581,7 +581,7 @@ namespace AlphaOmega.Debug
 			PKCS1_SIGN = 9,
 		}
 		/// <summary>Delay Load Attributes</summary>
-		public enum DLAttr : uint
+		public enum DLAttr : UInt32
 		{
 			/// <summary>Virtual Addresses used</summary>
 			Va = 0,
@@ -717,10 +717,10 @@ namespace AlphaOmega.Debug
 			public Int32 e_lfanew;
 
 			/// <summary>String representation fo signature field</summary>
-			public String SignatureStr { get { return Encoding.ASCII.GetString(BitConverter.GetBytes((UInt16)this.e_magic)).Replace("\0", "\\0"); } }
+			public String SignatureStr => Encoding.ASCII.GetString(BitConverter.GetBytes((UInt16)this.e_magic)).Replace("\0", "\\0");
 
 			/// <summary>Dos header is valid</summary>
-			public Boolean IsValid { get { return this.e_magic == Signature4b.IMAGE_DOS_SIGNATURE; } }
+			public Boolean IsValid => this.e_magic == Signature4b.IMAGE_DOS_SIGNATURE;
 		}
 
 		/// <summary>OS/2 .EXE header</summary>
@@ -851,14 +851,14 @@ namespace AlphaOmega.Debug
 			public IMAGE_FILE Characteristics;
 
 			/// <summary>This value is a more accurate indicator of when the file was created than is the file system date/time</summary>
-			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+			public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 
 			/// <summary>File contains COFF symbol table</summary>
-			public Boolean ContainsSymbolTable { get { return this.PointerToSymbolTable > 0; } }
+			public Boolean ContainsSymbolTable => this.PointerToSymbolTable > 0;
 
 			/// <summary>OBJ file validation</summary>
 			/// <remarks>OBJ file does not contains DOS or NT file header</remarks>
-			public Boolean IsValid { get { return Enum.IsDefined(typeof(IMAGE_FILE_MACHINE), this.Machine); } }
+			public Boolean IsValid => Enum.IsDefined(typeof(IMAGE_FILE_MACHINE), this.Machine);
 		}
 
 		/// <summary>obj symbol table structure</summary>
@@ -961,7 +961,7 @@ namespace AlphaOmega.Debug
 			/// The characters following the $ provide an alphabetic ordering for how the merged sections appear in the final section.
 			/// There's quite a bit more to the subject of sections with $ in the name and how they're combined, but the details are outside the scope of this article.
 			/// </summary>
-			public String SymbolTabeShortName { get { return Encoding.ASCII.GetString(new Byte[] { this.SN1, this.SN2, this.SN3, this.SN4, this.SN5, this.SN6, this.SN7, this.SN8, }); } }
+			public String SymbolTabeShortName => Encoding.ASCII.GetString(new Byte[] { this.SN1, this.SN2, this.SN3, this.SN4, this.SN5, this.SN6, this.SN7, this.SN8 });
 		}
 
 		/// <summary>Banana banana banana</summary>
@@ -1003,7 +1003,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Symbols have a section number of the section in which they are defined. Otherwise, section numbers have the following meanings</summary>
-		public enum IMAGE_SYM : short
+		public enum IMAGE_SYM : Int16
 		{
 			/// <summary>Symbol is undefined or is common</summary>
 			UNDEFINED = 0,
@@ -1014,7 +1014,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Type (fundamental) values</summary>
-		public enum IMAGE_SYM_TYPE : ushort
+		public enum IMAGE_SYM_TYPE : UInt16
 		{
 			/// <summary>No type information or unknown base type</summary>
 			NULL = 0,
@@ -1051,7 +1051,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Storage class tells where and what the symbol represents</summary>
-		public enum IMAGE_SYM_CLASS : byte
+		public enum IMAGE_SYM_CLASS : Byte
 		{
 			// Physical end of function.
 			//END_OF_FUNCTION = (Byte)(-1),
@@ -1141,7 +1141,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Represents the image section header format</summary>
 		[StructLayout(LayoutKind.Explicit)]
-		[DebuggerDisplay("Name={Section}")]
+		[DebuggerDisplay("Name={"+nameof(Section)+"}")]
 		public struct IMAGE_SECTION_HEADER
 		{
 			/// <summary>The ASCII name of the section</summary>
@@ -1278,10 +1278,10 @@ namespace AlphaOmega.Debug
 			public UInt32 PointerToRawData;
 
 			/// <summary>The time and date that the debug data was created</summary>
-			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+			public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 
 			/// <summary>Version number of the debugging information format</summary>
-			public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
+			public Version Version => new Version(this.MajorVersion, this.MinorVersion);
 		}
 
 		/// <summary>Native Resource directory</summary>
@@ -1310,16 +1310,16 @@ namespace AlphaOmega.Debug
 				public UInt16 NumberOfIdEntries;
 
 				/// <summary>Unused</summary>
-				public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+				public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 
 				/// <summary>Directory version</summary>
-				public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
+				public Version Version => new Version(this.MajorVersion, this.MinorVersion);
 
 				/// <summary>Contains subdirectories</summary>
-				public Boolean ContainsEntries { get { return this.NumberOfEntries > 0; } }
+				public Boolean ContainsEntries => this.NumberOfEntries > 0;
 
 				/// <summary>Number of subdirectories</summary>
-				public UInt16 NumberOfEntries { get { return checked((UInt16)(this.NumberOfIdEntries + this.NumberOfNamedEntries)); } }
+				public UInt16 NumberOfEntries => checked((UInt16)(this.NumberOfIdEntries + this.NumberOfNamedEntries));
 			}
 
 			/// <summary>Resource directory description</summary>
@@ -1345,22 +1345,22 @@ namespace AlphaOmega.Debug
 				public UInt32 OffsetToData;
 
 				/// <summary>Directory name is string</summary>
-				public Boolean IsNameString { get { return (this.NameOffset & 0x80000000) > 0; } }
+				public Boolean IsNameString => (this.NameOffset & 0x80000000) > 0;
 
 				/// <summary>Address to structure <see cref="IMAGE_RESOURCE_DIRECTORY_STRING"/> or directory identifier</summary>
-				public UInt32 NameAddress { get { return this.NameOffset & 0x7FFFFFFF; } }
+				public UInt32 NameAddress => this.NameOffset & 0x7FFFFFFF;
 
 				/// <summary>Root directory type</summary>
-				public RESOURCE_DIRECTORY_TYPE NameType { get { return this.IsNameString ? RESOURCE_DIRECTORY_TYPE.Undefined : (RESOURCE_DIRECTORY_TYPE)this.NameAddress; } }
+				public RESOURCE_DIRECTORY_TYPE NameType => this.IsNameString ? RESOURCE_DIRECTORY_TYPE.Undefined : (RESOURCE_DIRECTORY_TYPE)this.NameAddress;
 
 				/// <summary>Entry is directory</summary>
-				public Boolean IsDirectory { get { return (this.OffsetToData & 0x80000000) > 0; } }
+				public Boolean IsDirectory => (this.OffsetToData & 0x80000000) > 0;
 
 				/// <summary>Address to <see cref="IMAGE_RESOURCE_DIRECTORY"/> or <see cref="WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
-				public UInt32 DirectoryAddress { get { return this.OffsetToData & 0x7FFFFFFF; } }
+				public UInt32 DirectoryAddress => this.OffsetToData & 0x7FFFFFFF;
 
 				/// <summary>Address to structure <see cref="WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY"/></summary>
-				public Boolean IsDataEntry { get { return !this.IsNameString && !this.IsDirectory; } }
+				public Boolean IsDataEntry => !this.IsNameString && !this.IsDirectory;
 			}
 
 			/// <summary>The following are the predefined resource types</summary>
@@ -1454,7 +1454,7 @@ namespace AlphaOmega.Debug
 				public UInt32 Reserved;
 
 				/// <summary>CodePage string representation</summary>
-				public String CodePageString { get { return Encoding.GetEncoding((Int32)this.CodePage).EncodingName; } }
+				public String CodePageString => Encoding.GetEncoding((Int32)this.CodePage).EncodingName;
 			}
 
 			/// <summary>Directory name</summary>
@@ -1469,7 +1469,7 @@ namespace AlphaOmega.Debug
 				public String NameString;
 
 				/// <summary>NameString may NOT end \0. Therefore it's corrent to cut off excess information</summary>
-				public String Name { get { return this.NameString.Substring(0, this.Length); } }
+				public String Name => this.NameString.Substring(0, this.Length);
 			}
 
 			/// <summary>
@@ -1514,7 +1514,7 @@ namespace AlphaOmega.Debug
 			}
 
 			/// <summary>Data type in version</summary>
-			public enum VersionDataType : short
+			public enum VersionDataType : Int16
 			{
 				/// <summary>Binary data</summary>
 				Binary = 0,
@@ -1652,11 +1652,11 @@ namespace AlphaOmega.Debug
 
 				/// <summary>Pointer to an array that contains the error message or message box display text</summary>
 				//public Byte[] Text;
-				public UInt16 MessageLength { get { return (UInt16)(this.Length - Marshal.SizeOf(this)); } }
+				public UInt16 MessageLength => (UInt16)(this.Length - Marshal.SizeOf(this));
 			}
 
 			/// <summary>Type of resource encoding</summary>
-			public enum ResourceEncodingType : short
+			public enum ResourceEncodingType : Int16
 			{
 				/// <summary>ANSI encoding</summary>
 				Ansi = 0,
@@ -1726,7 +1726,7 @@ namespace AlphaOmega.Debug
 			}
 
 			/// <summary>Version of the runtime required to run this program</summary>
-			public Version RuntimeVersion { get { return new Version(this.MajorRuntimeVersion, this.MinorRuntimeVersion); } }
+			public Version RuntimeVersion => new Version(this.MajorRuntimeVersion, this.MinorRuntimeVersion);
 		}
 
 		/// <summary>Import directory header</summary>
@@ -1768,10 +1768,10 @@ namespace AlphaOmega.Debug
 			public UInt32 FirstThunk;
 
 			/// <summary>The time/date stamp indicating when the file was built</summary>
-			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+			public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 			
 			/// <summary>Structure is empty</summary>
-			public Boolean IsEmpty { get { return this.Name == 0; } }
+			public Boolean IsEmpty => this.Name == 0;
 		}
 
 		/// <summary>Imported function from the image</summary>
@@ -1820,7 +1820,7 @@ namespace AlphaOmega.Debug
 			public String Name;
 
 			/// <summary>Function is loaded by Ordinal index</summary>
-			public Boolean IsByOrdinal { get { return this.Name == null; } }
+			public Boolean IsByOrdinal => this.Name == null;
 		}
 
 		/// <summary>
@@ -1848,7 +1848,7 @@ namespace AlphaOmega.Debug
 			public UInt32 UnwindInfoAddress;
 			
 			/// <summary>Last row marker</summary>
-			public Boolean IsLatEntry { get { return (this.UnwindInfoAddress & 0xF) > 0; } }
+			public Boolean IsLatEntry => (this.UnwindInfoAddress & 0xF) > 0;
 		}
 
 		/// <summary>Represents the data directory</summary>
@@ -1863,7 +1863,7 @@ namespace AlphaOmega.Debug
 			
 			/// <summary>Data directory contains information</summary>
 			/// <remarks>Directory checks by Size field but some directories ignores Size field</remarks>
-			public Boolean IsEmpty { get { return this.Size == 0; } }
+			public Boolean IsEmpty => this.Size == 0;
 		}
 
 		/// <summary>Optional header format</summary>
@@ -2093,22 +2093,19 @@ namespace AlphaOmega.Debug
 			public IMAGE_DATA_DIRECTORY[] DataDirectory;
 
 			/// <summary>DataDirectories</summary>
-			public IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry]
-			{
-				get { return this.DataDirectory[(Int32)entry]; }
-			}
+			public IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry] => this.DataDirectory[(Int32)entry];
 
 			/// <summary>Version of the linker used to build this executable</summary>
-			public Version LinkerVersion { get { return new Version(this.MajorLinkerVersion, this.MinorLinkerVersion); } }
+			public Version LinkerVersion => new Version(this.MajorLinkerVersion, this.MinorLinkerVersion);
 
 			/// <summary>Version number of the required operating system</summary>
-			public Version OperatingSystemVersion { get { return new Version(this.MajorOperatingSystemVersion, this.MinorOperatingSystemVersion); } }
+			public Version OperatingSystemVersion => new Version(this.MajorOperatingSystemVersion, this.MinorOperatingSystemVersion);
 
 			/// <summary>Version number of this file</summary>
-			public Version ImageVersion { get { return new Version(this.MajorImageVersion, this.MinorImageVersion); } }
+			public Version ImageVersion => new Version(this.MajorImageVersion, this.MinorImageVersion);
 
 			/// <summary>Version of the operating subsystem needed for this executable</summary>
-			public Version SubsystemVersion { get { return new Version(this.MajorSubsystemVersion, this.MinorSubsystemVersion); } }
+			public Version SubsystemVersion => new Version(this.MajorSubsystemVersion, this.MinorSubsystemVersion);
 		}
 
 		/// <summary>Optional header format</summary>
@@ -2323,22 +2320,19 @@ namespace AlphaOmega.Debug
 			public IMAGE_DATA_DIRECTORY[] DataDirectory;
 
 			/// <summary>DataDirectories</summary>
-			public IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry]
-			{
-				get { return this.DataDirectory[(Int32)entry]; }
-			}
+			public IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry] => this.DataDirectory[(Int32)entry];
 
 			/// <summary>Version of the linker used to build this executable</summary>
-			public Version LinkerVersion { get { return new Version(this.MajorLinkerVersion, this.MinorLinkerVersion); } }
+			public Version LinkerVersion => new Version(this.MajorLinkerVersion, this.MinorLinkerVersion);
 
 			/// <summary>Version number of the required operating system</summary>
-			public Version OperatingSystemVersion { get { return new Version(this.MajorOperatingSystemVersion, this.MinorOperatingSystemVersion); } }
+			public Version OperatingSystemVersion => new Version(this.MajorOperatingSystemVersion, this.MinorOperatingSystemVersion);
 
 			/// <summary>Version number of this file</summary>
-			public Version ImageVersion { get { return new Version(this.MajorImageVersion, this.MinorImageVersion); } }
+			public Version ImageVersion => new Version(this.MajorImageVersion, this.MinorImageVersion);
 
 			/// <summary>Version of the operating subsystem needed for this executable</summary>
-			public Version SubsystemVersion { get { return new Version(this.MajorSubsystemVersion, this.MinorSubsystemVersion); } }
+			public Version SubsystemVersion => new Version(this.MajorSubsystemVersion, this.MinorSubsystemVersion);
 		}
 
 		/// <summary>Represents the PE header format</summary>
@@ -2366,15 +2360,10 @@ namespace AlphaOmega.Debug
 
 			/// <summary>NT header validation property</summary>
 			public Boolean IsValid
-			{
-				get { return this.Signature == 0x00004550/*"PE\0\0"*/ && (this.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR32_MAGIC/* || this.OptionalHeader.Magic == ImageHlp.ImageSignatureType.IMAGE_NT_OPTIONAL_HDR64_MAGIC*/); }
-			}
+				=> this.Signature == 0x00004550/*"PE\0\0"*/ && (this.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR32_MAGIC/* || this.OptionalHeader.Magic == ImageHlp.ImageSignatureType.IMAGE_NT_OPTIONAL_HDR64_MAGIC*/);
 
 			/// <summary>Signature as String</summary>
-			public String SignatureStr
-			{
-				get { return Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)).Replace("\0", "\\0"); }
-			}
+			public String SignatureStr => Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)).Replace("\0", "\\0");
 		}
 
 		/// <summary>Represents the PE header format</summary>
@@ -2402,15 +2391,10 @@ namespace AlphaOmega.Debug
 
 			/// <summary>Valid NT header</summary>
 			public Boolean IsValid
-			{
-				get { return this.Signature == 0x00004550/*"PE\0\0"*/ && (/*this.OptionalHeader.Magic == ImageHlp.ImageSignatureType.IMAGE_NT_OPTIONAL_HDR32_MAGIC || */this.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC); }
-			}
+				=> this.Signature == 0x00004550/*"PE\0\0"*/ && (/*this.OptionalHeader.Magic == ImageHlp.ImageSignatureType.IMAGE_NT_OPTIONAL_HDR32_MAGIC || */this.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC);
 
 			/// <summary>Signature as String</summary>
-			public String SignatureStr
-			{
-				get { return Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)).Replace("\0", "\\0"); }
-			}
+			public String SignatureStr => Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)).Replace("\0", "\\0");
 		}
 
 		/// <summary>Export Format</summary>
@@ -2480,10 +2464,10 @@ namespace AlphaOmega.Debug
 			public UInt32 AddressOfNameOrdinals;
 
 			/// <summary>The time and date that the export data was created</summary>
-			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+			public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 
 			/// <summary>Version number</summary>
-			public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
+			public Version Version => new Version(this.MajorVersion, this.MinorVersion);
 		}
 
 		/// <summary>Represents the time/date stamp of one imported DLL that has been bound against</summary>
@@ -2500,7 +2484,7 @@ namespace AlphaOmega.Debug
 			public UInt16 NumberOfModuleForwarderRefs;
 
 			/// <summary>Contains the time/date stamp of the imported DLL</summary>
-			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+			public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 		}
 
 		/// <summary>Forwarded DLL references</summary>
@@ -2517,8 +2501,9 @@ namespace AlphaOmega.Debug
 			public UInt16 Reserved;
 
 			/// <summary>Contains the time/date stamp of the imported DLL</summary>
-			public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+			public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 		}
+
 		/// <summary>This structure encapsulates a signature used in verifying executable files</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct WIN_CERTIFICATE
@@ -2537,6 +2522,7 @@ namespace AlphaOmega.Debug
 			// <remarks>The format of this member depends on the value of wCertificateType</remarks>
 			//public Byte bCertificate;
 		}
+
 		/// <summary>Delay Load info</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ImgDelayDescr
@@ -2582,10 +2568,10 @@ namespace AlphaOmega.Debug
 			public UInt32 dwTimeStamp;
 
 			/// <summary>0 if not bound, O.W. date/time stamp of DLL bound to (Old BIND)</summary>
-			public DateTime? TimeStamp { get { return NativeMethods.ConvertTimeDateStamp(this.dwTimeStamp); } }
+			public DateTime? TimeStamp => NativeMethods.ConvertTimeDateStamp(this.dwTimeStamp);
 
 			/// <summary>Empty structure</summary>
-			public Boolean IsEmpty { get { return this.rvaDLLName == 0 && this.rvaINT == 0; } }
+			public Boolean IsEmpty => this.rvaDLLName == 0 && this.rvaINT == 0;
 		}
 
 		/// <summary>Based relocation format</summary>
@@ -2604,9 +2590,7 @@ namespace AlphaOmega.Debug
 
 			/// <summary>Relocation type offset</summary>
 			public UInt16 TypeOffest
-			{
-				get { return checked((UInt16)(((UInt16)this.SizeOfBlock - (UInt16)Marshal.SizeOf(typeof(IMAGE_BASE_RELOCATION))) / (UInt16)sizeof(UInt16))); }
-			}
+				=> checked((UInt16)(((UInt16)this.SizeOfBlock - (UInt16)Marshal.SizeOf(typeof(IMAGE_BASE_RELOCATION))) / (UInt16)sizeof(UInt16)));
 		}
 
 		/// <summary>Load config headers</summary>
@@ -2696,10 +2680,10 @@ namespace AlphaOmega.Debug
 				public UInt32 SEHandlerCount;
 
 				/// <summary>The date and time stamp value</summary>
-				public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+				public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 				
 				/// <summary>Version number</summary>
-				public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
+				public Version Version => new Version(this.MajorVersion, this.MinorVersion);
 			}
 
 			/// <summary>Load Configuration Directory Entry</summary>
@@ -2786,10 +2770,10 @@ namespace AlphaOmega.Debug
 				public UInt64 SEHandlerCount;
 				
 				/// <summary>The date and time stamp value</summary>
-				public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp); } }
+				public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 				
 				/// <summary>Version number</summary>
-				public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion); } }
+				public Version Version => new Version(this.MajorVersion, this.MinorVersion);
 			}
 		}
 
@@ -2833,6 +2817,7 @@ namespace AlphaOmega.Debug
 				/// <summary>Reserved for possible future use by TLS flags</summary>
 				public UInt32 Characteristics;
 			}
+
 			/// <remarks>
 			/// It's important to note that the addresses in the <see cref="IMAGE_TLS_DIRECTORY64"/> structure are virtual addresses, not RVA's.
 			/// Thus, they will get modified by base relocations if the executable doesn't load at its preferred load address.
@@ -2910,10 +2895,10 @@ namespace AlphaOmega.Debug
 				public UInt32 Age;
 				
 				/// <summary>PDV v7 signature is valid</summary>
-				public Boolean IsValid { get { return this.CvSignature == CV_INFO_PDB70.PDB70Signature; } }
+				public Boolean IsValid => this.CvSignature == CV_INFO_PDB70.PDB70Signature;
 				
 				/// <summary>CodeView signature, equal to "RSDS"</summary>
-				public String CvSigString { get { return Encoding.ASCII.GetString(BitConverter.GetBytes(this.CvSignature)); } }
+				public String CvSigString => Encoding.ASCII.GetString(BitConverter.GetBytes(this.CvSignature));
 				
 				/// <summary>A unique identifier, which changes with every rebuild of the executable and PDB file</summary>
 				public Guid Signature
@@ -2952,6 +2937,7 @@ namespace AlphaOmega.Debug
 					}
 				}
 			}
+
 			/// <summary>CodeView PDB v2 header</summary>
 			[StructLayout(LayoutKind.Sequential)]
 			public struct CV_HEADER
@@ -2967,10 +2953,10 @@ namespace AlphaOmega.Debug
 				public UInt32 Offset;
 				
 				/// <summary>PDV v2 signature is valid</summary>
-				public Boolean IsValid { get { return this.Signature == CV_HEADER.PDB20Signature; } }
+				public Boolean IsValid => this.Signature == CV_HEADER.PDB20Signature;
 				
 				/// <summary>CodeView signature, equals to "NB10"</summary>
-				public String CvSigString { get { return Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature)); } }
+				public String CvSigString => Encoding.ASCII.GetString(BitConverter.GetBytes(this.Signature));
 			}
 
 			/// <summary>PDB v2 Info</summary>
@@ -2987,7 +2973,7 @@ namespace AlphaOmega.Debug
 				public UInt32 Age;
 				
 				/// <summary>The time when debug information was created</summary>
-				public DateTime? TimeDate { get { return NativeMethods.ConvertTimeDateStamp(this.Signature); } }
+				public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.Signature);
 			}
 
 			/*struct IMAGE_DEBUG_MISC
@@ -2999,7 +2985,7 @@ namespace AlphaOmega.Debug
 				BYTE		Data[1];	// Actual data
 			};*/
 			/// <summary>Type of misc data</summary>
-			public enum IMAGE_DEBUG_MISC_TYPE : uint
+			public enum IMAGE_DEBUG_MISC_TYPE : UInt32
 			{
 				/// <summary></summary>
 				EXENAME = 1,

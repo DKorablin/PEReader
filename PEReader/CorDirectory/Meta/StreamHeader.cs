@@ -13,11 +13,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Headp stream start position</summary>
 		public virtual UInt32 Position
-		{
-			get { return this.Parent.Directory.VirtualAddress + this.Header.Offset; }
-		}
+			=> this.Parent.Directory.VirtualAddress + this.Header.Offset;
+
 		/// <summary>Byte array in Heap Stream</summary>
-		public Byte[] Bytes { get { return this.Parent.Parent.Parent.Header.ReadBytes(this.Position, this.Header.Size); } }
+		public Byte[] Bytes => this.Parent.Parent.Parent.Header.ReadBytes(this.Position, this.Header.Size);
 		
 		/// <summary>Create instance of stream header class</summary>
 		/// <param name="loader">MetaData</param>

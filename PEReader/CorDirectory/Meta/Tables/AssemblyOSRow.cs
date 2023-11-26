@@ -9,22 +9,24 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class AssemblyOSRow : BaseMetaRow
 	{
 		/// <summary>A 4-byte constant</summary>
-		public UInt32 OSPlatformId { get { return base.GetValue<UInt32>(0); } }
+		public UInt32 OSPlatformId => base.GetValue<UInt32>(0);
 
 		/// <summary>Operating system major version</summary>
-		public UInt32 OSMajorVersion { get { return base.GetValue<UInt32>(1); } }
+		public UInt32 OSMajorVersion => base.GetValue<UInt32>(1);
 
 		/// <summary>Operating system minor version</summary>
-		public UInt32 OSMinorVersion { get { return base.GetValue<UInt32>(2); } }
+		public UInt32 OSMinorVersion => base.GetValue<UInt32>(2);
 
 		/// <summary>Operating system version</summary>
-		public Version OSVersion { get { return new Version((Int32)this.OSMajorVersion, (Int32)this.OSMinorVersion); } }
+		public Version OSVersion => new Version((Int32)this.OSMajorVersion, (Int32)this.OSMinorVersion);
+
+		/// <summary>Create instance of AssemblyOSRow</summary>
+		public AssemblyOSRow()
+			: base(Cor.MetaTableType.AssemblyOS) { }
 
 		/// <summary>OSVersion</summary>
 		/// <returns>String</returns>
 		public override String ToString()
-		{
-			return base.ToString(this.OSVersion);
-		}
+			=> base.ToString(this.OSVersion);
 	}
 }

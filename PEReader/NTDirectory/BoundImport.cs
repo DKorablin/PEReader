@@ -6,19 +6,15 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Bound import class</summary>
-	[DefaultProperty("ModuleName")]
+	[DefaultProperty(nameof(ModuleName))]
 	public class BoundImport : PEDirectoryBase, IEnumerable<BoundImportReference>
 	{
 		/// <summary>Header</summary>
 		public WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR? Descriptor
-		{
-			get
-			{
-				return base.IsEmpty
+			=> base.IsEmpty
 					? (WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR?)null
 					: base.Parent.Header.PtrToStructure<WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR>(base.Directory.VirtualAddress);
-			}
-		}
+
 		/// <summary>Module name whitch this image is bounded</summary>
 		public String ModuleName
 		{
@@ -32,18 +28,12 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 		/// <summary>Directory is empty</summary>
 		public override Boolean IsEmpty
-		{
-			get
-			{
-				return base.IsEmpty || this.Descriptor.Value.NumberOfModuleForwarderRefs == 0;
-			}
-		}
+			=> base.IsEmpty || this.Descriptor.Value.NumberOfModuleForwarderRefs == 0;
+
 		/// <summary>Create instance of bound import class</summary>
 		/// <param name="root">Data directory</param>
 		public BoundImport(PEFile root)
-			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.BOUND_IMPORT)
-		{
-		}
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.BOUND_IMPORT) { }
 
 		/// <summary>Get the list of bound import class</summary>
 		/// <returns>Stream of bound import classes</returns>
@@ -73,8 +63,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug.PESection
 		public WinNT.IMAGE_SECTION_HEADER Header { get; }
 
 		/// <summary>Section name description</summary>
-		public String Description { get { return Resources.Section.GetString(this.Header.Section); } }
+		public String Description => Resources.Section.GetString(this.Header.Section);
 
 		/// <summary>Create instance of section header reader class</summary>
 		/// <param name="parent">PE directory</param>
@@ -41,8 +41,6 @@ namespace AlphaOmega.Debug.PESection
 		/// <summary>Create data reader for data in section</summary>
 		/// <returns>Memory pinned data reader</returns>
 		public PinnedBufferReader CreateDataReader()
-		{
-			return new PinnedBufferReader(this.GetData());
-		}
+			=> new PinnedBufferReader(this.GetData());
 	}
 }

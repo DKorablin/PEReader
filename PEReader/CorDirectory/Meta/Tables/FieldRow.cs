@@ -14,18 +14,32 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class FieldRow : BaseMetaRow
 	{
 		/// <summary>A 4-byte bit mask of type TypeAttributes</summary>
-		public FieldAttributes Flags { get { return (FieldAttributes)base.GetValue<UInt16>(0); } }
+		public FieldAttributes Flags => (FieldAttributes)base.GetValue<UInt16>(0);
+
+		/// <summary>The FieldAccessMask subfield of Flags shall contain precisely one of CompilerControlled, Private, FamANDAssem, Assembly, Family, FamORAssem, or Public</summary>
+		public FieldAttributes FieldAccessFlags => this.Flags & FieldAttributes.FieldAccessMask;
 
 		/// <summary>Field Name</summary>
-		public String Name { get { return base.GetValue<String>(1); } }
+		public String Name => base.GetValue<String>(1);
 
 		/// <summary>Banana</summary>
-		public Byte[] Signature { get { return base.GetValue<Byte[]>(2); } }
+		public Byte[] Signature => base.GetValue<Byte[]>(2);
 
 		/// <summary>First byte of signature</summary>
-		public CorSignature FieldSig { get { return (CorSignature)this.Signature[0]; } }
+		public CorSignature FieldSig => (CorSignature)this.Signature[0];
 
 		/// <summary>Field type</summary>
-		public Cor.ELEMENT_TYPE ReturnType { get { return (Cor.ELEMENT_TYPE)this.Signature[1]; } }
+		public ElementType ReturnType
+		{
+			get
+			{
+				UInt32 offset = 1;
+				return new ElementType(this.Row.Cells[0], this.Signature, ref offset);
+			}
+		}
+
+		/// <summary>Create instance of Field row</summary>
+		public FieldRow()
+			: base(Cor.MetaTableType.Field) { }
 	}
 }

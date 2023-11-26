@@ -40,7 +40,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Dialog menu index</summary>
 		public ResourceBase.SzInt? Menu
 		{
-			get { return this._menu; }
+			get => this._menu;
 			set
 			{
 				if(value != null && value.Value.IsEmpty == false)
@@ -51,7 +51,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>WindowName</summary>
 		public ResourceBase.SzInt? WindowName
 		{
-			get { return this._windowName; }
+			get => this._windowName;
 			set
 			{
 				if(value != null && value.Value.IsEmpty == false)

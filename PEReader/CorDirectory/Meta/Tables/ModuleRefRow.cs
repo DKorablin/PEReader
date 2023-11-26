@@ -7,13 +7,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	{
 		/// <summary>This string shall enable the CLI to locate the target module</summary>
 		/// <remarks>typically, it might name the file used to hold the module</remarks>
-		public String Name { get { return base.GetValue<String>(0); } }
+		public String Name => base.GetValue<String>(0);
+
+		/// <summary>Create instance of Module definition row</summary>
+		public ModuleRefRow()
+			: base(Cor.MetaTableType.ModuleRef) { }
 
 		/// <summary>Name</summary>
 		/// <returns>String</returns>
 		public override String ToString()
-		{
-			return base.ToString(this.Name);
-		}
+			=> base.ToString(this.Name);
 	}
 }

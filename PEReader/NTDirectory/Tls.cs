@@ -7,32 +7,19 @@ namespace AlphaOmega.Debug.NTDirectory
 	{
 		/// <summary>TLS PE directory</summary>
 		public WinNT.Tls.IMAGE_TLS_DIRECTORY32? TlsDirectory32
-		{
-			get
-			{
-				return base.IsEmpty || base.Parent.Header.Is64Bit
-					? (WinNT.Tls.IMAGE_TLS_DIRECTORY32?)null
-					: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY32>(base.Directory.VirtualAddress);
-			}
-		}
+			=> base.IsEmpty || base.Parent.Header.Is64Bit
+				? (WinNT.Tls.IMAGE_TLS_DIRECTORY32?)null
+				: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY32>(base.Directory.VirtualAddress);
 
 		/// <summary>TLS PE+ directory</summary>
 		public WinNT.Tls.IMAGE_TLS_DIRECTORY64? TlsDirectory64
-		{
-			get
-			{
-				return base.IsEmpty || !base.Parent.Header.Is64Bit
-					? (WinNT.Tls.IMAGE_TLS_DIRECTORY64?)null
-					: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY64>(base.Directory.VirtualAddress);
-			}
-		}
+			=> base.IsEmpty || !base.Parent.Header.Is64Bit
+				? (WinNT.Tls.IMAGE_TLS_DIRECTORY64?)null
+				: base.Parent.Header.PtrToStructure<WinNT.Tls.IMAGE_TLS_DIRECTORY64>(base.Directory.VirtualAddress);
 
 		/// <summary>Create instance of TLS class</summary>
 		/// <param name="root">Data directory</param>
 		public Tls(PEFile root)
-			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.TLS)
-		{
-
-		}
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.TLS) { }
 	}
 }

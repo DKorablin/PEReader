@@ -10,15 +10,13 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Create instance of delay import class</summary>
 		/// <param name="parent">Data directory</param>
 		public DelayImport(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.DELAY_IMPORT)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.DELAY_IMPORT) { }
 
 		/// <summary>Get array of delay import modules and procedures</summary>
 		/// <returns>Delay import modules</returns>
 		public IEnumerator<DelayImportModule> GetEnumerator()
 		{
-			if(!IsEmpty)
+			if(!this.IsEmpty)
 			{
 				UInt32 sizeOfDescr = (UInt32)Marshal.SizeOf(typeof(WinNT.ImgDelayDescr));
 				UInt32 count = (base.Directory.Size / sizeOfDescr) - 1;//Значение чисто абстрактное, т.к. Delphi пишет в последнюю структуру одни нули. А в count указывает левое значение (только Delphi).
@@ -37,8 +35,6 @@ namespace AlphaOmega.Debug.NTDirectory
 			}
 		}
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

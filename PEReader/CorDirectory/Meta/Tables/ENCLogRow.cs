@@ -9,9 +9,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class ENCLogRow : BaseMetaRow
 	{
 		/// <summary>Banana</summary>
-		public UInt32 Token { get { return base.GetValue<UInt32>(0); } }
+		public UInt32 Token => base.GetValue<UInt32>(0);
 
 		/// <summary>Banana</summary>
-		public UInt32 FuncCode { get { return base.GetValue<UInt32>(1); } }
+		public UInt32 FuncCode => base.GetValue<UInt32>(1);
+
+		/// <summary>Create instance of Edit-and-continue log descriptors row</summary>
+		public ENCLogRow()
+			: base(Cor.MetaTableType.ENCLog) { }
 	}
 }

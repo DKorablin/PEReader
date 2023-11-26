@@ -13,14 +13,10 @@ namespace AlphaOmega.Debug.NTDirectory
 
 		/// <summary>Name of the imported module</summary>
 		public String ModuleName
-		{
-			get
-			{
-				return this.Header.IsEmpty
-					? null
-					: this.Directory.Parent.Header.PtrToStringAnsi(this.Header.Name);//Marshal.PtrToStringAnsi(new IntPtr(this.Directory.Info.HModule.ToInt64() + this.Descriptor.Name));
-			}
-		}
+			=> this.Header.IsEmpty
+				? null
+				: this.Directory.Parent.Header.PtrToStringAnsi(this.Header.Name);//Marshal.PtrToStringAnsi(new IntPtr(this.Directory.Info.HModule.ToInt64() + this.Descriptor.Name));
+
 		/// <summary>Create instance of import description class</summary>
 		/// <param name="directory">Import directory</param>
 		/// <param name="header">Header</param>
@@ -55,9 +51,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 
 		/// <summary>Get Import Information</summary>
 		/// <param name="offset">Shift in PE file</param>

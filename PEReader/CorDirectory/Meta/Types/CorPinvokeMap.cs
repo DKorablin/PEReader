@@ -5,7 +5,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Specifies options for a PInvoke call</summary>
 	/// <remarks>http://msdn.microsoft.com/en-us/library/ms233461.aspx</remarks>
 	[Flags]
-	public enum CorPinvokeMap : ushort
+	public enum CorPinvokeMap : UInt16
 	{
 		/// <summary>Use each member name as specified</summary>
 		pmNoMangle = 0x0001,

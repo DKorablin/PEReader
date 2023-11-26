@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Delay import module description</summary>
-	[DefaultProperty("ModuleName")]
+	[DefaultProperty(nameof(ModuleName))]
 	public class DelayImportModule: IEnumerable<WinNT.IMAGE_IMPORT_BY_NAME>
 	{
 		/// <summary>PE directory</summary>
@@ -107,8 +107,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

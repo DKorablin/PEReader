@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug
 	public struct WinGdi
 	{
 		/// <summary>Bitmap info type</summary>
-		public enum BI : int
+		public enum BI : Int32
 		{
 			/// <summary>An uncompressed format</summary>
 			RGB = 0,
@@ -120,9 +120,7 @@ namespace AlphaOmega.Debug
 
 			/// <summary>Size of the image mask</summary>
 			public Int32 MaskImageSize
-			{
-				get { return (Int32)(this.biHeight / 2 * BITMAPINFOHEADER.GetDibRowWidth(this.biWidth)); }
-			}
+				=> (Int32)(this.biHeight / 2 * BITMAPINFOHEADER.GetDibRowWidth(this.biWidth));
 
 			/// <summary>
 			/// Returns the width of a row in a DIB Bitmap given the number of bits.
@@ -131,9 +129,7 @@ namespace AlphaOmega.Debug
 			/// <param name="width">Number of bits</param>
 			/// <returns>Width of a row in bytes</returns>
 			public static Int32 GetDibRowWidth(Int32 width)
-			{
-				return (Int32)((width + 31) / 32) * 4;
-			}
+				=> (Int32)((width + 31) / 32) * 4;
 		}
 
 		/// <summary>Contains information about an individual font in a font resource group</summary>
@@ -248,17 +244,17 @@ namespace AlphaOmega.Debug
 			//public Char szFaceName;
 
 			/// <summary>The font is italic</summary>
-			public Boolean IsItalic { get { return this.dfItalic > 0; } }
+			public Boolean IsItalic => this.dfItalic > 0;
 
 			/// <summary>The font is underline</summary>
-			public Boolean IsUnderline { get { return this.dfUnderline > 0; } }
+			public Boolean IsUnderline => this.dfUnderline > 0;
 
 			/// <summary>The font is strikeout</summary>
-			public Boolean IsStrikeOut { get { return this.dfStrikeOut > 0; } }
+			public Boolean IsStrikeOut => this.dfStrikeOut > 0;
 		}
 
 		/// <summary>Font weight</summary>
-		public enum FW : ushort
+		public enum FW : UInt16
 		{
 			/// <summary>Ignore</summary>
 			DONTCARE = 0,
@@ -283,7 +279,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>The character set</summary>
-		public enum CHARSET : byte
+		public enum CHARSET : Byte
 		{
 			/// <summary>ANSI charset</summary>
 			ANSI = 0,

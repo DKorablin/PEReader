@@ -2,62 +2,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>MetaTable row class</summary>
-	[DefaultProperty("Index")]
-	public class MetaRow : IEnumerable<MetaCell>, IRow
+	[DefaultProperty(nameof(Index))]
+	public class MetaRow : IEnumerable<MetaCell>, IEquatable<MetaRow>, IRow
 	{
 		/// <summary>Row index</summary>
 		public UInt32 Index { get; }
 
 		/// <summary>Parent table</summary>
 		public MetaTable Table { get; }
-		ITable IRow.Table { get { return this.Table; } }
+		ITable IRow.Table => this.Table;
 
 		/// <summary>Get all cells in this row</summary>
 		public MetaCell[] Cells { get; }
-		ICell[] IRow.Cells { get { return this.Cells; } }
+		ICell[] IRow.Cells => this.Cells;
 
 		/// <summary>Get cell by column</summary>
 		/// <param name="column">MetaTable column</param>
 		/// <exception cref="ArgumentException">Column not from this table</exception>
 		/// <returns>Table cell</returns>
 		public MetaCell this[MetaColumn column]
-		{
-			get
-			{
-				if(column.TableType == this.Table.TableType)
-					return this[column.Index];
-				else
-					throw new ArgumentException("This column does not belong to this table");
-			}
-		}
+			=> column.TableType == this.Table.TableType
+				? this[column.Index]
+				: null;
 
-		ICell IRow.this[IColumn column] { get { return this[(MetaColumn)column]; } }
+		ICell IRow.this[IColumn column] => this[(MetaColumn)column];
 
 		/// <summary>Get table cell by column index</summary>
 		/// <param name="columnIndex">Column index</param>
-		/// <exception cref="ArgumentOutOfRangeException">columnIndex out of row columns</exception>
+		/// <exception cref="ArgumentOutOfRangeException">The column index is out of the range of available columns in the row</exception>
 		/// <returns>Table cell</returns>
 		public MetaCell this[UInt16 columnIndex]
-		{
-			get
-			{
-				if(columnIndex < this.Cells.Length)
-					return this.Cells[columnIndex];
-				else
-					throw new ArgumentOutOfRangeException(nameof(columnIndex));
-			}
-		}
+			=> columnIndex < this.Cells.Length
+				? this.Cells[columnIndex]
+				: throw new ArgumentOutOfRangeException(nameof(columnIndex));
 
-		ICell IRow.this[UInt16 columnIndex] { get { return this[columnIndex]; } }
+		ICell IRow.this[UInt16 columnIndex] => this[columnIndex];
 
 		/// <summary>Gets the table cell by column name</summary>
-		/// <param name="columnName">Column name from current table</param>
-		/// <exception cref="ArgumentNullException">columnName is empty or null</exception>
-		/// <exception cref="ArgumentOutOfRangeException">column with specified name not found</exception>
+		/// <param name="columnName">The column name from current table columns</param>
+		/// <exception cref="ArgumentNullException">A column with the specified name <c>columnname</c> is empty or null</exception>
+		/// <exception cref="ArgumentOutOfRangeException">A column with the specified name <c>columnName</c> was not found</exception>
 		/// <returns>Table cell</returns>
 		public MetaCell this[String columnName]
 		{
@@ -73,7 +62,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			}
 		}
 
-		ICell IRow.this[String columnName] { get { return this[columnName]; } }
+		ICell IRow.this[String columnName] => this[columnName];
 
 		/// <summary>Create instance of MetaTable rows class</summary>
 		/// <param name="table">Owner table</param>
@@ -101,8 +90,53 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
+			=> this.GetEnumerator();
+
+		/// <summary>Compare two rows by table type and index fields</summary>
+		/// <param name="obj">Object to compare with current field</param>
+		/// <returns>Objects are equals</returns>
+		public override Boolean Equals(Object obj)
+			=> Equals(obj as MetaRow);
+
+		/// <summary>Compare two rows by table type and index fields</summary>
+		/// <param name="row">Row to compare with current row</param>
+		/// <returns>Rows are equals</returns>
+		public Boolean Equals(MetaRow row)
 		{
-			return this.GetEnumerator();
+			if(ReferenceEquals(row, null))
+				return false;
+			if(ReferenceEquals(this, row))
+				return true;
+
+			return this.Index == row.Index
+				&& this.Table.TableType == row.Table.TableType;
 		}
+
+		/// <summary>Gets unique identifier for current row in current table by combining tableType and row index</summary>
+		/// <returns></returns>
+		public override Int32 GetHashCode()
+			=> (Int32)this.Table.TableType.GetHashCode() ^ (Int32)this.Index;
+
+		/// <summary>Compare two rows by table type and index field</summary>
+		/// <param name="a">First row to compare</param>
+		/// <param name="b">Second row to compare</param>
+		/// <returns>Rows are equals</returns>
+		public static Boolean operator ==(MetaRow a, MetaRow b)
+		{
+			if(ReferenceEquals(a, b))
+				return true;
+			if(ReferenceEquals(a, null))
+				return false;
+			if(ReferenceEquals(b, null))
+				return false;
+			return a.Index == b.Index;
+		}
+
+		/// <summary>Compare two rows by table type and index field</summary>
+		/// <param name="a">First row to compare</param>
+		/// <param name="b">Second row to compare</param>
+		/// <returns>Rows are NOT equals</returns>
+		public static Boolean operator !=(MetaRow a, MetaRow b)
+			=> !(a == b);
 	}
 }

@@ -12,9 +12,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Create instance of rows collection class</summary>
 		/// <param name="table">Table from whitch taken all rows</param>
 		public MetaRowCollection(MetaTable table)
-		{
-			this.Table = table ?? throw new ArgumentNullException(nameof(table));
-		}
+			=> this.Table = table ?? throw new ArgumentNullException(nameof(table));
 
 		/// <summary>Get all rows from table</summary>
 		/// <returns>Rows collection</returns>
@@ -25,8 +23,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

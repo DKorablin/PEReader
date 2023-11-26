@@ -9,7 +9,7 @@ using AlphaOmega.Debug.NTDirectory;
 namespace AlphaOmega.Debug.CorDirectory
 {
 	/// <summary>.NET MetaData directory class</summary>
-	[DefaultProperty("Header")]
+	[DefaultProperty(nameof(Header))]
 	public class MetaData : CorDirectoryBase, IEnumerable<StreamHeader>
 	{
 		private static UInt32 SizeOfCor20Metadata1 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1));
@@ -21,9 +21,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <summary>Create instance of MetaData directory class</summary>
 		/// <param name="parent">.NET directory</param>
 		public MetaData(ComDescriptor parent)
-			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.MetaData)
-		{
-		}
+			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.MetaData) { }
 
 		/// <summary>MetaData header</summary>
 		public Cor.IMAGE_COR20_METADATA? Header
@@ -84,8 +82,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			get
 			{
 
-				StreamHeader result;
-				if(this.Streams.TryGetValue(Cor.StreamHeaderType.StreamTable, out result))
+				if(this.Streams.TryGetValue(Cor.StreamHeaderType.StreamTable, out StreamHeader result))
 					return (StreamTables)result;
 				else if(this.Streams.TryGetValue(Cor.StreamHeaderType.StreamTableUnoptimized, out result))
 					return (StreamTables)result;
@@ -95,51 +92,27 @@ namespace AlphaOmega.Debug.CorDirectory
 		}
 		/// <summary>Guid heap</summary>
 		public GuidHeap GuidHeap
-		{
-			get
-			{
-				StreamHeader result;
-				return this.Streams.TryGetValue(Cor.StreamHeaderType.Guid, out result)
-					? (GuidHeap)result
-					: null;
-			}
-		}
+			=> this.Streams.TryGetValue(Cor.StreamHeaderType.Guid, out StreamHeader result)
+				? (GuidHeap)result
+				: null;
 
 		/// <summary>Bloab heap</summary>
 		public BlobHeap BlobHeap
-		{
-			get
-			{
-				StreamHeader result;
-				return this.Streams.TryGetValue(Cor.StreamHeaderType.Blob, out result)
-					? (BlobHeap)result
-					: null;
-			}
-		}
+			=> this.Streams.TryGetValue(Cor.StreamHeaderType.Blob, out StreamHeader result)
+				? (BlobHeap)result
+				: null;
 
 		/// <summary>String heap</summary>
 		public StringHeap StringHeap
-		{
-			get
-			{
-				StreamHeader result;
-				return this.Streams.TryGetValue(Cor.StreamHeaderType.String, out result)
-					? (StringHeap)result
-					: null;
-			}
-		}
+			=> this.Streams.TryGetValue(Cor.StreamHeaderType.String, out StreamHeader result)
+				? (StringHeap)result
+				: null;
 
 		/// <summary>User String heap</summary>
 		public USHeap USHeap
-		{
-			get
-			{
-				StreamHeader result;
-				return this.Streams.TryGetValue(Cor.StreamHeaderType.UnicodeSting, out result)
-					? (USHeap)result
-					: null;
-			}
-		}
+			=> this.Streams.TryGetValue(Cor.StreamHeaderType.UnicodeSting, out StreamHeader result)
+				? (USHeap)result
+				: null;
 
 		/// <summary>Get array of all heaps in MedaData directory</summary>
 		/// <returns>Heaps in MetaData directory</returns>
@@ -150,9 +123,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 
 		private IEnumerable<StreamHeader> GetStreams()
 		{

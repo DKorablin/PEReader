@@ -27,7 +27,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			/// <summary>Index in resource file</summary>
 			public UInt16 Index
 			{
-				get { return this._index; }
+				get => this._index;
 				set
 				{
 					this._index = value;
@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			/// <summary>String</summary>
 			public String Name
 			{
-				get { return this._name; }
+				get => this._name;
 				set
 				{
 					this._name = value;
@@ -47,7 +47,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			}
 
 			/// <summary>Value is empty</summary>
-			public Boolean IsEmpty { get { return this.Type == SzIntResult.None; } }
+			public Boolean IsEmpty => this.Type == SzIntResult.None;
 
 			/// <summary>Type of value stored in the structure</summary>
 			public SzIntResult Type { get; private set; }
@@ -83,8 +83,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <exception cref="InvalidOperationException">directory type must be equals to type</exception>
 		public ResourceBase(ResourceDirectory directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE type)
 		{
-			if(directory == null)
-				throw new ArgumentNullException(nameof(directory));
+			_ = directory ?? throw new ArgumentNullException(nameof(directory));
 			
 			if(directory.DataEntry == null || directory.Parent == null || directory.Parent.Parent == null
 				|| directory.Parent.Parent.DirectoryEntry.NameType != type)
@@ -121,8 +120,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Create data reader for data in directory</summary>
 		/// <returns>Memory pinned data reader</returns>
 		public PinnedBufferReader CreateDataReader()
-		{
-			return new PinnedBufferReader(this.Directory.GetData());
-		}
+			=> new PinnedBufferReader(this.Directory.GetData());
 	}
 }

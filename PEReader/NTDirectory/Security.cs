@@ -6,26 +6,19 @@ using System.Security.Cryptography.X509Certificates;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Certificate class</summary>
-	[DefaultProperty("Certificate")]
+	[DefaultProperty(nameof(Certificate))]
 	public class Security : PEDirectoryBase
 	{
 		/// <summary>PE file contains certificate</summary>
 		public override Boolean IsEmpty
-		{
-			get { return base.IsEmpty || base.Parent.Header.Loader.IsModuleMapped; }
-		}
+			=> base.IsEmpty || base.Parent.Header.Loader.IsModuleMapped;
 
 		/// <summary>Certificate header</summary>
 		/// <exception cref="ArgumentOutOfRangeException">Directory VA out of file size</exception>
 		public WinNT.WIN_CERTIFICATE? Certificate
-		{
-			get
-			{
-				return this.IsEmpty
-					? (WinNT.WIN_CERTIFICATE?)null//TODO: Читается только из физического файла. Т.к. сертификат находится в файле. И ссылка идёт на VA, а не на RVA.
-					: base.Parent.Header.Loader.PtrToStructure<WinNT.WIN_CERTIFICATE>(base.Directory.VirtualAddress);
-			}
-		}
+			=> this.IsEmpty
+				? (WinNT.WIN_CERTIFICATE?)null//TODO: Читается только из физического файла. Т.к. сертификат находится в файле. И ссылка идёт на VA, а не на RVA.
+				: base.Parent.Header.Loader.PtrToStructure<WinNT.WIN_CERTIFICATE>(base.Directory.VirtualAddress);
 
 		/// <summary>X.509 certificate</summary>
 		public X509Certificate2 X509
@@ -48,8 +41,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Create instance of certificate class</summary>
 		/// <param name="root">Data directory</param>
 		public Security(PEFile root)
-			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.CERTIFICATE)
-		{
-		}
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.CERTIFICATE) { }
 	}
 }

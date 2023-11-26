@@ -9,8 +9,6 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <summary>Create instance of String name hash class</summary>
 		/// <param name="parent">.NET directory</param>
 		public StrongNameSignature(ComDescriptor parent)
-			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.StrongNameSignature)
-		{
-		}
+			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.StrongNameSignature) { }
 	}
 }

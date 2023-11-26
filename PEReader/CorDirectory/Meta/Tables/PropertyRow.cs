@@ -8,27 +8,33 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class PropertyRow : BaseMetaRow
 	{
 		/// <summary>Flags that can be associated with a property</summary>
-		public PropertyAttributes Flags { get { return (PropertyAttributes)base.GetValue<UInt16>(0); } }
+		public PropertyAttributes Flags => (PropertyAttributes)base.GetValue<UInt16>(0);
 
 		/// <summary>Property name</summary>
-		public String Name { get { return base.GetValue<String>(1); } }
+		public String Name => base.GetValue<String>(1);
 
 		/// <summary>Signature</summary>
 		/// <remarks>
 		/// The name of this column is misleading.
 		/// It does not index a TypeDef or TypeRef table - instead it indexes the signature in the Blob heap of the Property.
 		/// </remarks>
-		public Byte[] Type { get { return base.GetValue<Byte[]>(2); } }
+		public Byte[] Type => base.GetValue<Byte[]>(2);
 
 		/// <summary>First byte of signature</summary>
-		public CorSignature PropertySig { get { return (CorSignature)this.Type[0]; } }
+		public CorSignature PropertySig => (CorSignature)this.Type[0];
 
 		/// <summary>Count of input parameters for this property</summary>
 		[Obsolete("It's compressed UInt32", true)]
-		public Byte ParamCount { get { return this.Type[1]; } }
+		public Byte ParamCount => this.Type[1];
 
 		/// <summary>Property type</summary>
 		public Cor.ELEMENT_TYPE ReturnType { get { return (Cor.ELEMENT_TYPE)this.Type[2]; } }
+
+		/// <summary>Create instance of Property description row</summary>
+		public PropertyRow()
+			: base(Cor.MetaTableType.Property)
+		{
+		}
 
 		/// <summary>Name</summary>
 		/// <returns>String</returns>

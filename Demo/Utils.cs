@@ -1,35 +1,112 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using AlphaOmega.Debug.CorDirectory.Meta;
+using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug
 {
 	public static class Utils
 	{
-		public static void ConsoleWriteMembers(Object obj)
+		public static String ValueToString(Object value)
 		{
-			Utils.ConsoleWriteMembers(null, obj);
-		}
-		public static void ConsoleWriteMembers(String title, Object obj)
-		{
-			if(!String.IsNullOrEmpty(title))
-				Console.Write(title + ": ");
-			Console.WriteLine(Utils.GetReflectedMembers(obj));
+			if(value == null)
+				return "null";
+			Type type = value.GetType();
+			if(type == typeof(String))
+				return "\"" + value.ToString() + "\"";
+			else
+				return value.ToString();
 		}
 
-		public static void ConsoleWriteError(Exception exc, String title, Boolean waitForInput = false)
+		public static String ElementTypeToString(ElementType type)
 		{
-			var color = Console.ForegroundColor;
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine(title + ": " + exc.Message);
-			Console.WriteLine("========================");
-			Console.WriteLine(exc.StackTrace);
-			Console.ForegroundColor = color;
-			if(waitForInput)
-				Console.ReadKey();
+			String sType;
+			switch(type.Type)
+			{
+			case Cor.ELEMENT_TYPE.OBJECT:
+				sType = typeof(Object).Name;
+				break;
+			case Cor.ELEMENT_TYPE.BOOLEAN:
+				sType = typeof(Boolean).Name;
+				break;
+			case Cor.ELEMENT_TYPE.STRING:
+				sType = typeof(String).Name;
+				break;
+			case Cor.ELEMENT_TYPE.I:
+				sType = typeof(IntPtr).Name;
+				break;
+			case Cor.ELEMENT_TYPE.I2:
+				sType = typeof(Int16).Name;
+				break;
+			case Cor.ELEMENT_TYPE.I4:
+				sType = typeof(Int32).Name;
+				break;
+			case Cor.ELEMENT_TYPE.I8:
+				sType = typeof(Int64).Name;
+				break;
+			case Cor.ELEMENT_TYPE.U:
+				sType = typeof(UIntPtr).Name;
+				break;
+			case Cor.ELEMENT_TYPE.U1:
+				sType = typeof(Byte).Name;
+				break;
+			case Cor.ELEMENT_TYPE.U2:
+				sType = typeof(UInt16).Name;
+				break;
+			case Cor.ELEMENT_TYPE.U4:
+				sType = typeof(UInt32).Name;
+				break;
+			case Cor.ELEMENT_TYPE.U8:
+				sType = typeof(UInt64).Name;
+				break;
+			case Cor.ELEMENT_TYPE.VOID:
+				sType = typeof(void).Name;
+				break;
+			case Cor.ELEMENT_TYPE.CLASS:
+			case Cor.ELEMENT_TYPE.VALUETYPE:
+				switch(type.TypeDefOrRef.TableType)
+				{
+				case Cor.MetaTableType.TypeDef:
+					TypeDefRow typeDef = type.TypeDefOrRef.GetTargetRowTyped<TypeDefRow>();
+					sType = typeDef.TypeNamespace == String.Empty
+						? typeDef.TypeName
+						: String.Join(".", typeDef.TypeNamespace, typeDef.TypeName);
+					break;
+				case Cor.MetaTableType.TypeRef:
+					TypeRefRow typeRef = type.TypeDefOrRef.GetTargetRowTyped<TypeRefRow>();
+					sType = typeRef.TypeNamespace == String.Empty
+						? typeRef.TypeName
+						: String.Join(".", typeRef.TypeNamespace, typeRef.TypeName);
+					break;
+				case Cor.MetaTableType.TypeSpec:
+					TypeSpecRow typeSpec = type.TypeDefOrRef.GetTargetRowTyped<TypeSpecRow>();
+					sType = type.Type.ToString() + ".???.TYPESPEC.???";
+					break;
+				default:
+					throw new InvalidOperationException();
+				}
+				break;
+			case Cor.ELEMENT_TYPE.MVAR:
+				sType = "!" + type.RawPointer;
+				break;
+			case Cor.ELEMENT_TYPE.VAR:
+				goto default;
+			default:
+				sType = type.Type.ToString();
+				break;
+			}
+			String generic = type.GenericArguments == null
+				? String.Empty
+				: "<" + String.Join(", ", Array.ConvertAll(type.GenericArguments, a => Utils.ElementTypeToString(a))) + ">";
+			return sType
+			+ generic
+				+ (type.IsArray ? String.Join(String.Empty, Array.ConvertAll(new Object[type.MultiArray], o => { return "[]"; })) : String.Empty)
+				+ (type.IsByRef ? "&" : String.Empty)
+				+ (type.IsPointer ? "*" : String.Empty);
 		}
 
 		public static String GetReflectedMembers(Object obj)

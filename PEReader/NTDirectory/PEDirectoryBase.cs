@@ -5,8 +5,8 @@ using System.Diagnostics;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Base class of PE directory</summary>
-	[DefaultProperty("Directory")]
-	[DebuggerDisplay("Directory={Directory}")]
+	[DefaultProperty(nameof(Directory))]
+	[DebuggerDisplay("Directory={"+nameof(Directory)+"}")]
 	public class PEDirectoryBase : IDirectory, ISectionData
 	{
 		private WinNT.IMAGE_DIRECTORY_ENTRY DirectoryI { get; }
@@ -15,10 +15,10 @@ namespace AlphaOmega.Debug.NTDirectory
 		internal PEFile Parent { get; }
 
 		/// <summary>Directory is empty</summary>
-		public virtual Boolean IsEmpty { get { return this.Directory.IsEmpty; } }
+		public virtual Boolean IsEmpty => this.Directory.IsEmpty;
 
 		/// <summary>Directory data</summary>
-		public WinNT.IMAGE_DATA_DIRECTORY Directory { get { return this.Parent[this.DirectoryI]; } }
+		public WinNT.IMAGE_DATA_DIRECTORY Directory => this.Parent[this.DirectoryI];
 
 		/// <summary>Create instance</summary>
 		/// <param name="parent">Parent PE directory</param>

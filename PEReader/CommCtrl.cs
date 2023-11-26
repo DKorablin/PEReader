@@ -49,7 +49,7 @@ namespace AlphaOmega.Debug
 		/// <summary>This section lists the states a toolbar button can have</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/windows/desktop/bb760437(v=vs.85).aspx</remarks>
 		[Flags]
-		public enum TBSTATE : ushort
+		public enum TBSTATE : UInt16
 		{
 			/// <summary>The button has the TBSTYLE_CHECK style and is being clicked</summary>
 			CHECKED = 1,
@@ -72,7 +72,7 @@ namespace AlphaOmega.Debug
 		/// <summary>The following window styles are specific to toolbars. They are combined with other window styles when the toolbar is created</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/windows/desktop/bb760439(v=vs.85).aspx</remarks>
 		[Flags]
-		public enum TBSTYLE : ushort
+		public enum TBSTYLE : UInt16
 		{
 			/// <summary>
 			/// Allows users to change a toolbar button's position by dragging it while holding down the ALT key.

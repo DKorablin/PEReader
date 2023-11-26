@@ -79,10 +79,10 @@ namespace AlphaOmega.Debug
 
 			/// <summary>The structure defines a item that opens a drop-down menu or submenu</summary>
 			/// <remarks>xSubsequent structures define menu items in the corresponding drop-down menu or submenu</remarks>
-			public Boolean IsPopUp { get { return (this.bResInfo & MFe.POPUP) == MFe.POPUP; } }
+			public Boolean IsPopUp => (this.bResInfo & MFe.POPUP) == MFe.POPUP;
 
 			/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu</summary>
-			public Boolean IsFinal { get { return (this.bResInfo & MFe.END) == MFe.END; } }
+			public Boolean IsFinal => (this.bResInfo & MFe.END) == MFe.END;
 		}
 
 		/// <summary>Defines a menu item in a menu template</summary>
@@ -99,10 +99,10 @@ namespace AlphaOmega.Debug
 			/// The structure defines a item that opens a drop-down menu or submenu.
 			/// Subsequent structures define menu items in the corresponding drop-down menu or submenu
 			/// </summary>
-			public Boolean IsPopUp { get { return (this.mtOption & MF.POPUP) == MF.POPUP; } }
+			public Boolean IsPopUp => (this.mtOption & MF.POPUP) == MF.POPUP;
 
 			/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu</summary>
-			public Boolean IsFinal { get { return (this.mtOption & MF.END) == MF.END; } }
+			public Boolean IsFinal => (this.mtOption & MF.END) == MF.END;
 		}
 
 		/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu</summary>
@@ -125,10 +125,10 @@ namespace AlphaOmega.Debug
 			/// The structure defines a item that opens a drop-down menu or submenu.
 			/// Subsequent structures define menu items in the corresponding drop-down menu or submenu
 			/// </summary>
-			public Boolean IsPopUp { get { return (this.mtOption & MF.POPUP) == MF.POPUP; } }
+			public Boolean IsPopUp => (this.mtOption & MF.POPUP) == MF.POPUP;
 
 			/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu</summary>
-			public Boolean IsFinal { get { return (this.mtOption & MF.END) == MF.END; } }
+			public Boolean IsFinal => (this.mtOption & MF.END) == MF.END;
 		}
 
 		/// <summary>
@@ -148,10 +148,10 @@ namespace AlphaOmega.Debug
 			public UInt16 cbHeaderSize;
 
 			/// <summary>Old menu format</summary>
-			public Boolean IsOldFormat { get { return this.wVersion == 0; } }
+			public Boolean IsOldFormat => this.wVersion == 0;
 
 			/// <summary>New menu format</summary>
-			public Boolean IsNewFormat { get { return this.wVersion == 1; } }
+			public Boolean IsNewFormat => this.wVersion == 1;
 		}
 
 		/// <summary>
@@ -189,7 +189,7 @@ namespace AlphaOmega.Debug
 			public Int16 cy;
 
 			/// <summary>The structure contains information on the font</summary>
-			public Boolean ContainsFont { get { return (this.style & WS.DS_SETFONT) == WS.DS_SETFONT; } }
+			public Boolean ContainsFont => (this.style & WS.DS_SETFONT) == WS.DS_SETFONT;
 		}
 
 		/// <summary>
@@ -283,10 +283,10 @@ namespace AlphaOmega.Debug
 			public Int16 cy;
 
 			/// <summary>Valid template</summary>
-			public Boolean IsValid { get { return this.signature == 0xFFFF; } }
+			public Boolean IsValid => this.signature == 0xFFFF;
 
 			/// <summary>The structure contains information on the font</summary>
-			public Boolean ContainsFont { get { return (this.style & WinUser.WS.DS_SETFONT) == WinUser.WS.DS_SETFONT || (this.style & WinUser.WS.DS_SHELLFONT) == WinUser.WS.DS_SHELLFONT; } }
+			public Boolean ContainsFont => (this.style & WinUser.WS.DS_SETFONT) == WinUser.WS.DS_SETFONT || (this.style & WinUser.WS.DS_SHELLFONT) == WinUser.WS.DS_SHELLFONT;
 		}
 
 		/// <summary>Describes the data in an individual accelerator table resource</summary>
@@ -327,7 +327,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Describes keyboard accelerator characteristics</summary>
 		[Flags]
-		public enum AccelFlags : short
+		public enum AccelFlags : Int16
 		{
 			/// <summary>The accelerator key is a virtual-key code</summary>
 			/// <remarks>If this flag is not specified, the accelerator key is assumed to specify an ASCII character code</remarks>
@@ -354,7 +354,7 @@ namespace AlphaOmega.Debug
 		/// </summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/windows/desktop/bb775951(v=vs.85).aspx</remarks>
 		[Flags]
-		public enum BS : uint
+		public enum BS : UInt32
 		{
 			/// <summary>Creates a push button that posts a WM_COMMAND message to the owner window when the user selects the button</summary>
 			PUSHBUTTON = 0x00000000,
@@ -529,7 +529,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Describes the menu item</summary>
 		[Flags]
-		public enum MF : ushort
+		public enum MF : UInt16
 		{
 			/// <summary>Indicates that the menu item is initially inactive and drawn with a gray effect</summary>
 			GRAYED = 0x00000001,
@@ -556,7 +556,7 @@ namespace AlphaOmega.Debug
 		/// <summary>The menu item state</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms647578%28v=vs.85%29.aspx</remarks>
 		[Flags]
-		public enum MFS : int
+		public enum MFS : Int32
 		{
 			/// <summary>Checks the menu item</summary>
 			CHECKED = 0x00000008,
@@ -583,7 +583,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Menu item types</summary>
 		[Flags]
-		public enum MFT : int
+		public enum MFT : Int32
 		{
 			/// <summary>Displays the menu item using a text string</summary>
 			/// <remarks>
@@ -629,7 +629,7 @@ namespace AlphaOmega.Debug
 		/// After the window has been created, these styles cannot be modified, except as noted
 		/// </summary>
 		[Flags]
-		public enum WS : uint
+		public enum WS : UInt32
 		{
 			/// <summary>The window is an overlapped window</summary>
 			/// <remarks>An overlapped window has a title bar and a border. Same as the WS_TILED style</remarks>
@@ -796,7 +796,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>The following are the extended window styles</summary>
 		[Flags]
-		public enum WS_EX : uint
+		public enum WS_EX : UInt32
 		{
 			/// <summary>The window accepts drag-drop files</summary>
 			ACCEPTFILES = 0x00000010,
@@ -901,7 +901,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Menu item type in PE file</summary>
 		[Flags]
-		public enum MFe : ushort
+		public enum MFe : UInt16
 		{
 			/// <summary>The structure defines a item that opens a drop-down menu or submenu</summary>
 			/// <remarks>Subsequent structures define menu items in the corresponding drop-down menu or submenu</remarks>

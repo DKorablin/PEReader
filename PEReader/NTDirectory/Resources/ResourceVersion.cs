@@ -7,7 +7,7 @@ using System.Text;
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Version resource class</summary>
-	[DefaultProperty("VersionInfo")]
+	[DefaultProperty(nameof(VersionInfo))]
 	public class ResourceVersion : ResourceBase
 	{
 		/// <summary>Varsion table type</summary>
@@ -53,9 +53,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			/// <summary>Type of table</summary>
 			/// <returns>String</returns>
 			public override String ToString()
-			{
-				return szKey.ToString();
-			}
+				=> szKey.ToString();
 		}
 
 		/// <summary>Table of values</summary>
@@ -69,7 +67,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			public VersionItem[] Items;
 			/// <summary>Table name</summary>
 			/// <returns>String</returns>
-			public override String ToString() { return this.szKey; }
+			public override String ToString() => this.szKey;
 		}
 
 		/// <summary>Value info</summary>
@@ -98,12 +96,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		/// <summary>Default version info</summary>
 		public WinNT.Resource.VS_VERSIONINFO VersionInfo
-		{
-			get
-			{
-				return PinnedBufferReader.BytesToStructure<WinNT.Resource.VS_VERSIONINFO>(base.Directory.GetData(), 0);
-			}
-		}
+			=> PinnedBufferReader.BytesToStructure<WinNT.Resource.VS_VERSIONINFO>(base.Directory.GetData(), 0);
 
 		/// <summary>Extended version info</summary>
 		public WinVer.VS_FIXEDFILEINFO? FileInfo
@@ -133,9 +126,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Create instance of version resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceVersion(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_VERSION)
-		{
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_VERSION) { }
 
 		/// <summary>Get version tables</summary>
 		/// <returns>Extended file description</returns>

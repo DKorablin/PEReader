@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Menu resource class</summary>
-	[DefaultProperty("Header")]
+	[DefaultProperty(nameof(Header))]
 	public class ResourceMenu : ResourceBase
 	{
 		/// <summary>Root menu item</summary>
-		[DefaultProperty("Title")]
+		[DefaultProperty(nameof(Title))]
 		public class MenuItem
 		{
 			/// <summary>Help ID</summary>
@@ -29,21 +29,17 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			public MenuPopupItem[] SubItems;
 
 			/// <summary>Extended template</summary>
-			public Boolean IsExMenu { get { return this.ItemEx.HasValue; } }
+			public Boolean IsExMenu => this.ItemEx.HasValue;
 
 			/// <summary>Specifies that the menu item is a separator</summary>
 			public Boolean IsSeparator
-			{
-				get
-				{
-					return this.IsExMenu
-						? (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR
-						: String.IsNullOrEmpty(this.Title);
-				}
-			}
+				=> this.IsExMenu
+					? (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR
+					: String.IsNullOrEmpty(this.Title);
 		}
+
 		/// <summary>Popup menu item</summary>
-		[DefaultProperty("Title")]
+		[DefaultProperty(nameof(Title))]
 		public class MenuPopupItem
 		{
 			/// <summary>Help ID</summary>
@@ -62,36 +58,27 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			public MenuPopupItem[] SubItems;
 
 			/// <summary>Extended template</summary>
-			public Boolean IsExMenu { get { return this.ItemEx.HasValue; } }
+			public Boolean IsExMenu => this.ItemEx.HasValue;
 
 			/// <summary>Specifies that the menu item is a separator</summary>
 			public Boolean IsSepearator
-			{
-				get
-				{
-					return this.IsExMenu
-						? (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR
-						: this.Item.Value.mtID == 0 && String.IsNullOrEmpty(this.Title);
-				}
-			}
+				=> this.IsExMenu
+					? (this.ItemEx.Value.dwType & WinUser.MFT.SEPARATOR) == WinUser.MFT.SEPARATOR
+					: this.Item.Value.mtID == 0 && String.IsNullOrEmpty(this.Title);
 		}
 
 		/// <summary>Resource menu header</summary>
 		public WinUser.MENUHEADER Header
-		{
-			get { return PinnedBufferReader.BytesToStructure<WinUser.MENUHEADER>(base.Directory.GetData(), 0); }
-		}
+			=> PinnedBufferReader.BytesToStructure<WinUser.MENUHEADER>(base.Directory.GetData(), 0);
 
 		/// <summary>Create instance of menu resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceMenu(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU)
-		{
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU) { }
 
 		/// <summary>Get menu from resources</summary>
 		/// <remarks>
-		/// Coice:
+		/// Choice:
 		/// Menu description: http://msdn.microsoft.com/en-us/library/windows/desktop/ms647558%28v=vs.85%29.aspx
 		/// Description of all resources incuding menu: http://msdn.microsoft.com/en-us/library/windows/desktop/ms648007%28v=vs.85%29.aspx
 		/// </remarks>
@@ -125,10 +112,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 					padding = NativeMethods.AlignToInt(padding);
 
 					WinUser.MENUITEMEX item = reader.BytesToStructure<WinUser.MENUITEMEX>(ref padding);
-					MenuItem menu = new MenuItem() { ItemEx = item, };
-					//result.Add(menu);
-
-					menu.Title = reader.BytesToStringUni(ref padding);
+					MenuItem menu = new MenuItem()
+					{
+						ItemEx = item,
+						Title = reader.BytesToStringUni(ref padding),
+					};
 
 					//TODO: bResInfo в 16 битных приложениях занимает не WORD, а BYTE. Если найдётся реальный пример, придётся полностью делать динамичесую структуру.
 					if(item.IsPopUp)
@@ -180,15 +168,15 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <returns>Menu elements</returns>
 		private IEnumerable<MenuItem> GetMenuOld(UInt32 padding)
 		{
-			//List<MenuItem> result = new List<MenuItem>();
 			using(PinnedBufferReader reader = base.CreateDataReader())
 				while(padding < reader.Length)
 				{
 					WinUser.MENUITEM item = reader.BytesToStructure<WinUser.MENUITEM>(ref padding);
-					MenuItem menu = new MenuItem() { Item = item, };
-					//result.Add(menu);
-
-					menu.Title = reader.BytesToStringUni(ref padding);
+					MenuItem menu = new MenuItem()
+					{
+						Item = item,
+						Title = reader.BytesToStringUni(ref padding),
+					};
 
 					if(item.IsPopUp)
 						menu.SubItems = this.GetPopupMenuOld(reader, ref padding);
@@ -196,10 +184,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 					yield return menu;
 					if(item.IsFinal)
 						yield break;
-						//return result.ToArray();
 				}
 			//throw new InvalidOperationException();C:\Program Files\Windows NT\Accessories\wordpad.exe - Нет MF_END
-			//return result.ToArray();
 		}
 
 		/// <summary>Get the popup menu</summary>

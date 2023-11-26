@@ -7,26 +7,19 @@ using AlphaOmega.Debug.NTDirectory.Resources;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Native resource directory class</summary>
-	[DefaultProperty("Header")]
+	[DefaultProperty(nameof(Header))]
 	public class Resource : PEDirectoryBase, IEnumerable<ResourceDirectory>
 	{
 		/// <summary>Root resource directory</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? Header
-		{
-			get
-			{
-				return base.Directory.IsEmpty
-					? (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null
-					: base.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(base.Directory.VirtualAddress);
-			}
-		}
+			=> base.Directory.IsEmpty
+				? (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null
+				: base.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(base.Directory.VirtualAddress);
 
 		/// <summary>Create instance of resource directory class</summary>
 		/// <param name="parent">Data directory</param>
 		public Resource(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.RESOURCE)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.RESOURCE) { }
 
 		/// <summary>Get PE file version information from resources</summary>
 		/// <returns>PE file version information</returns>
@@ -181,8 +174,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

@@ -15,10 +15,10 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Get relocation section by index</summary>
 		/// <param name="index">Relocation section index</param>
 		/// <returns>Section</returns>
-		public RelocationSection this[Int32 index] { get { return this.Sections[index]; } }
+		public RelocationSection this[Int32 index] => this.Sections[index];
 
 		/// <summary>Count of sections in the relocation block</summary>
-		public Int32 Count { get { return this.Sections.Length; } }
+		public Int32 Count => this.Sections.Length;
 
 		/// <summary>Create instance of relocation block info</summary>
 		/// <param name="block">Relocation block</param>
@@ -38,8 +38,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

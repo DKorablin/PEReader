@@ -9,7 +9,7 @@ using Microsoft.Win32.SafeHandles;
 namespace AlphaOmega.Debug
 {
 	/// <summary>HMODULE loader class</summary>
-	[DefaultProperty("Source")]
+	[DefaultProperty(nameof(BaseAddress))]
 	[DebuggerDisplay("BaseAddress={BaseAddress}")]
 	public class Win32Loader : IImageLoader
 	{

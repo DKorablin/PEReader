@@ -4,26 +4,19 @@ using System.ComponentModel;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Exception table class</summary>
-	[DefaultProperty("FirstEntry")]
+	[DefaultProperty(nameof(FirstEntry))]
 	public class ExceptionTable : PEDirectoryBase, IEnumerable<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY>
 	{
 		/// <summary>First entry in exception table directory</summary>
 		public WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY? FirstEntry
-		{
-			get
-			{
-				return base.IsEmpty
+			=> base.IsEmpty
 					? (WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY?)null
 					: base.Parent.Header.PtrToStructure<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY>(base.Directory.VirtualAddress);
-			}
-		}
 
 		/// <summary>Create instance of exception table class</summary>
 		/// <param name="parent">Data directory</param>
 		public ExceptionTable(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.EXCEPTION)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.EXCEPTION) { }
 
 		/// <summary>Get all exception procedure pointers</summary>
 		/// <returns>Entries</returns>
@@ -50,8 +43,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

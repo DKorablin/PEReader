@@ -12,97 +12,60 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// is <see cref="Cor.ELEMENT_TYPE.CLASS"/> with a Value of a 4-byte zero.
 		/// Unlike uses of <see cref="Cor.ELEMENT_TYPE.CLASS"/> in signatures, this one is not followed by a type token
 		/// </remarks>
-		public UInt16 Type { get { return base.GetValue<UInt16>(0); } }
-
-		/// <summary>Strongly typed type desctiption</summary>
-		public TypeCode TypeCode
-		{
-			get
-			{
-				switch(this.Type)
-				{
-				case 2://Boolean
-					return TypeCode.Boolean;
-				case 3://Char
-					return TypeCode.Char;
-				case 4://SByte
-					return TypeCode.SByte;
-				case 5://Byte
-					return TypeCode.Byte;
-				case 6://Int16
-					return TypeCode.Int16;
-				case 7://UInt16
-					return TypeCode.UInt16;
-				case 8://Int32
-					return TypeCode.Int32;
-				case 9://UInt32
-					return TypeCode.UInt32;
-				case 10://Int64
-					return TypeCode.Int64;
-				case 11://UInt64
-					return TypeCode.UInt64;
-				case 12://Single
-					return TypeCode.Single;
-				case 13://Double
-					return TypeCode.Double;
-				case 14://String
-					return TypeCode.String;
-				case 18://Null
-					return TypeCode.Empty;
-				default://Unknown
-					throw new NotSupportedException();
-				}
-			}
-		}
+		public Cor.ELEMENT_TYPE Type => (Cor.ELEMENT_TYPE)base.GetValue<UInt16>(0);
 
 		/// <summary>
 		/// An index into the Param, Field, or Property table;
 		/// more precisely, a HasConstant (§II.24.2.6) coded index
 		/// </summary>
-		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(1); } }
+		public MetaCellCodedToken Parent => base.GetValue<MetaCellCodedToken>(1);
 
 		/// <summary>Constant value</summary>
-		public Byte[] Value { get { return base.GetValue<Byte[]>(2); } }
+		public Byte[] Value => base.GetValue<Byte[]>(2);
 
 		/// <summary>Constant value converted to object</summary>
 		public Object ValueTyped
 		{
 			get
 			{
-				switch(this.TypeCode)
+				switch(this.Type)
 				{
-				case TypeCode.Boolean://Boolean
+				case Cor.ELEMENT_TYPE.BOOLEAN://Boolean
 					return BitConverter.ToBoolean(this.Value, 0);
-				case TypeCode.Char://Char
+				case Cor.ELEMENT_TYPE.CHAR://Char
 					return BitConverter.ToChar(this.Value, 0);
-				case TypeCode.SByte://SByte
+				case Cor.ELEMENT_TYPE.I1://SByte
 					return (SByte)this.Value[0];
-				case TypeCode.Byte://Byte
+				case Cor.ELEMENT_TYPE.U1://Byte
 					return this.Value[0];
-				case TypeCode.Int16://Int16
+				case Cor.ELEMENT_TYPE.I2://Int16
 					return BitConverter.ToInt16(this.Value, 0);
-				case TypeCode.UInt16://UInt16
+				case Cor.ELEMENT_TYPE.U2://UInt16
 					return BitConverter.ToUInt16(this.Value, 0);
-				case TypeCode.Int32://Int32
+				case Cor.ELEMENT_TYPE.I4://Int32
 					return BitConverter.ToInt32(this.Value, 0);
-				case TypeCode.UInt32://UInt32
+				case Cor.ELEMENT_TYPE.U4://UInt32
 					return BitConverter.ToUInt32(this.Value, 0);
-				case TypeCode.Int64://Int64
+				case Cor.ELEMENT_TYPE.I8://Int64
 					return BitConverter.ToInt64(this.Value, 0);
-				case TypeCode.UInt64://UInt64
+				case Cor.ELEMENT_TYPE.U8://UInt64
 					return BitConverter.ToUInt64(this.Value, 0);
-				case TypeCode.Single://Single
+				case Cor.ELEMENT_TYPE.R4://Single
 					return BitConverter.ToSingle(this.Value, 0);
-				case TypeCode.Double://Double
+				case Cor.ELEMENT_TYPE.R8://Double
 					return BitConverter.ToDouble(this.Value, 0);
-				case TypeCode.String://String
-					return UTF8Encoding.Unicode.GetString(this.Value);
-				case TypeCode.Empty://Null
+				case Cor.ELEMENT_TYPE.STRING://String
+					return Encoding.Unicode.GetString(this.Value);
+				case Cor.ELEMENT_TYPE.CLASS://Null
 					return null;
 				default://Unknown
 					throw new NotSupportedException();
 				}
 			}
 		}
+
+		/// <summary>Create instance of Constant value row</summary>
+		public ConstantRow()
+			: base(Cor.MetaTableType.Constant) { }
 	}
 }

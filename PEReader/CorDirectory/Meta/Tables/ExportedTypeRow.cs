@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class ExportedTypeRow : BaseMetaRow
 	{
 		/// <summary>Specifies type attributes</summary>
-		public TypeAttributes Flags { get { return (TypeAttributes)base.GetValue<UInt32>(0); } }
+		public TypeAttributes Flags => (TypeAttributes)base.GetValue<UInt32>(0);
 
 		/// <summary>
 		/// A 4-byte index into a TypeDef table of another module in this Assembly).
@@ -19,13 +19,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// But if there is a mismatch, the CLI shall fall back to a search of the target TypeDef table.
 		/// Ignored and should be zero if Flags has IsTypeForwarder set.
 		/// </summary>
-		public UInt32 TypeDefId { get { return base.GetValue<UInt32>(1); } }
+		public UInt32 TypeDefId => base.GetValue<UInt32>(1);
 
 		/// <summary>Type name</summary>
-		public String TypeName { get { return base.GetValue<String>(2); } }
+		public String TypeName => base.GetValue<String>(2);
 
 		/// <summary>Type namespace</summary>
-		public String TypeNamespace { get { return base.GetValue<String>(3); } }
+		public String TypeNamespace => base.GetValue<String>(3);
 
 		/// <summary>
 		/// This is an index (more precisely, an Implementation (§II.24.2.6) coded index) into either of the following tables:
@@ -33,7 +33,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		///		ExportedType table, where that entry is the enclosing Type of the current nested Type.
 		///		AssemblyRef table, where that entry says in which assembly the type may now be found (Flags must have the IsTypeForwarder flag set).
 		/// </summary>
-		public MetaCellCodedToken Implementation { get { return base.GetValue<MetaCellCodedToken>(4); } }
+		public MetaCellCodedToken Implementation => base.GetValue<MetaCellCodedToken>(4);
+
+		/// <summary>Create instance of ExportedType row</summary>
+		public ExportedTypeRow()
+			: base(Cor.MetaTableType.ExportedType) { }
 
 		/// <summary>TypeNamespace+"."+TypeName</summary>
 		/// <returns>String</returns>

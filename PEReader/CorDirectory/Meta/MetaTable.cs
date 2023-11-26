@@ -6,11 +6,11 @@ using System.Collections.Generic;
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>MetaTable class</summary>
-	[DefaultProperty("TableType")]
+	[DefaultProperty(nameof(TableType))]
 	public class MetaTable : ITable, ISectionData
 	{
 		#region Fields
-		//Size of row size with payload
+		//Size of the row with payload
 		private UInt32? _rowSize;
 		//Indent from the beginning of the block with tables
 		private UInt32 Padding { get; }
@@ -23,36 +23,28 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Array of columns in a table</summary>
 		public MetaColumn[] Columns { get; }
-		IColumn[] ITable.Columns { get { return this.Columns; } }
+		IColumn[] ITable.Columns => this.Columns;
 
 		/// <summary>Array of rows in a table</summary>
-		private MetaRow[] RowsI
-		{
-			get { return this._rows ?? (this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)]); }
-		}
-		IEnumerable<IRow> ITable.Rows { get { return this.RowsI; } }
+		private MetaRow[] RowsI => this._rows ?? (this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)]);
+
+		IEnumerable<IRow> ITable.Rows => this.RowsI;
 
 		/// <summary>Row count in table</summary>
-		public UInt32 RowsCount { get { return (UInt32)this.RowsI.Length; } }
+		public UInt32 RowsCount => (UInt32)this.RowsI.Length;
 
 		/// <summary>Row size</summary>
-		private UInt32 RowSize
-		{
-			get
-			{
-				return (this._rowSize ?? (this._rowSize = this.SizeOfColumns())).Value;
-			}
-		}
+		private UInt32 RowSize => (this._rowSize ?? (this._rowSize = this.SizeOfColumns())).Value;
 
 		/// <summary>Table type</summary>
 		public Cor.MetaTableType TableType { get; }
-		Object ITable.Type { get { return this.TableType; } }
+		Cor.MetaTableType ITable.Type => this.TableType;
 
 		/// <summary>The size of the entire data table</summary>
-		public UInt32 TableSize { get { return this.RowSize * (UInt32)this.RowsI.Length; } }
+		public UInt32 TableSize => this.RowSize * (UInt32)this.RowsI.Length;
 
 		/// <summary>Rows in table</summary>
-		public MetaRowCollection Rows { get { return new MetaRowCollection(this); } }
+		public MetaRowCollection Rows => new MetaRowCollection(this);
 
 		/// <summary>Get row from table</summary>
 		/// <param name="rowIndex">Row index in table</param>
@@ -68,7 +60,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				return this._rows[rowIndex] ?? (this._rows[rowIndex] = this.GetRow(rowIndex));
 			}
 		}
-		IRow ITable.this[UInt32 rowIndex] { get { return this[rowIndex]; } }
+		IRow ITable.this[UInt32 rowIndex] => this[rowIndex];
 
 		/// <summary>Create metatable instance</summary>
 		/// <param name="root">Root stream</param>
@@ -87,10 +79,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Gets section data</summary>
 		/// <returns>Byte array</returns>
 		public Byte[] GetData()
-		{
-			return this._data
+			=> this._data
 				?? (this._data = this.Root.Parent.Parent.Parent.Header.ReadBytes(this.Root.DataPosition + this.Padding, this.TableSize));
-		}
 
 		private MetaRow GetRow(UInt32 rowIndex)
 		{

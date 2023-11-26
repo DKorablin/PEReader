@@ -27,21 +27,21 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		private Byte[] Header { get; }
 
 		/// <summary>Can read from stream</summary>
-		public override Boolean CanRead { get { return true; } }
+		public override Boolean CanRead => true;
 
 		/// <summary>Can seek in stream</summary>
-		public override Boolean CanSeek { get { return false; } }
+		public override Boolean CanSeek => false;
 
 		/// <summary>Can write to stream</summary>
-		public override Boolean CanWrite { get { return false; } }
+		public override Boolean CanWrite => false;
 
 		/// <summary>Stream length with bitmap header</summary>
-		public override Int64 Length { get { return 14 + this._rtBitmap.Length; } }
+		public override Int64 Length => 14 + this._rtBitmap.Length;
 
 		/// <summary>Current position</summary>
 		public override Int64 Position
 		{
-			get { return this._position; }
+			get => this._position;
 			set
 			{
 				this._position = value;
@@ -85,7 +85,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			if(paletteSize == 0)
 			{// Get the bits per pixel. The bits per pixel is store as an int16 at offset 14
 				this._rtBitmap.Position = 14;
-				int bpp = reader.ReadInt16();
+				Int32 bpp = reader.ReadInt16();
 
 				// Only set the palette size if the bpp < 16
 				if(bpp < 16)
@@ -130,27 +130,19 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		/// <summary>useless</summary>
-		public override void Flush()
-		{
-		}
+		public override void Flush() { }
 
 		/// <summary>not implemented</summary>
 		/// <returns></returns>
 		public override Int64 Seek(Int64 offset, SeekOrigin origin)
-		{
-			throw new NotImplementedException();
-		}
+			=> throw new NotImplementedException();
 
 		/// <summary>not implemented</summary>
 		public override void SetLength(Int64 value)
-		{
-			throw new NotImplementedException();
-		}
+			=> throw new NotImplementedException();
 
 		/// <summary>not implemented</summary>
 		public override void Write(Byte[] buffer, Int32 offset, Int32 count)
-		{
-			throw new NotImplementedException();
-		}
+			=> throw new NotImplementedException();
 	}
 }

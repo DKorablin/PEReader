@@ -10,9 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="cell">Source cell</param>
 		/// <param name="rawValue">Original value from PE file</param>
 		internal MetaCellPointer(MetaCell cell, UInt32 rawValue)
-			: base(cell, rawValue, (Cor.MetaTableType)cell.Column.ColumnType)
-		{
-		}
+			: base(cell, rawValue, (Cor.MetaTableType)cell.Column.ColumnType) { }
 
 		/// <summary>Получить в итерации ряды с индекса на который указывает текущий указатель</summary>
 		/// <remarks>Метод специфичен для определённых таблиц. Поэтому переносить в базовый класс - бессмысленно</remarks>

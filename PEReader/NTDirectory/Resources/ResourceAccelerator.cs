@@ -10,10 +10,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Create instance of accelerators resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceAccelerator(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ACCELERATOR)
-		{
-
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ACCELERATOR) { }
 
 		/// <summary>Get a list of used accelerators</summary>
 		/// <returns>Array of used accelerators</returns>
@@ -26,8 +23,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

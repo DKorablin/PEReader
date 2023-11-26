@@ -16,31 +16,26 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		{
 			get
 			{
-				T result;
 				SortedList<Int32, T> data = this.GetData();
-				return data.TryGetValue(pointer, out result)
+				return data.TryGetValue(pointer, out T result)
 					? result
 					: this.GetDataByPointer(pointer);
 			}
 		}
 
 		/// <summary>heap data</summary>
-		public IEnumerable<T> Data { get { return this.GetData().Values; } }
+		public IEnumerable<T> Data => this.GetData().Values;
 
 		/// <summary>Create instance of the typed stream header</summary>
 		/// <param name="loader">MetaData</param>
 		/// <param name="header">Stream header</param>
 		public StreamHeaderTyped(MetaData loader, Cor.STREAM_HEADER header)
-			: base(loader, header)
-		{
-		}
+			: base(loader, header) { }
 
 		/// <summary>Gets data in the sorted array form</summary>
 		/// <returns>Sorted array from the stream</returns>
 		protected virtual SortedList<Int32, T> GetData()
-		{
-			return this._data ?? (this._data = this.DataBind());
-		}
+			=> this._data ?? (this._data = this.DataBind());
 
 		/// <summary>
 		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.

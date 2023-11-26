@@ -22,21 +22,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <exception cref="NotImplementedException">This method is not implemented</exception>
 		/// <returns>Array of bytes from BLOB heap</returns>
 		protected override Byte[] GetDataByPointer(Int32 pointer)
-		{
-			throw new NotImplementedException();
-		}
+			=> throw new NotImplementedException();
 
 		/// <summary>Binds the data form stream to byte array</summary>
 		protected override SortedList<Int32,Byte[]> DataBind()
 		{
 			SortedList<Int32, Byte[]> result = new SortedList<Int32, Byte[]>();
 
-			Int32 ptr = 0;
 			Byte[] bytes = base.Bytes;
 			for(UInt32 loop = 0;loop < bytes.Length;)
 			{
-				Int32 padding;
-				Int32 length = BlobHeap.GetStreamLength(bytes, loop, out padding);
+				UInt32 length = NativeMethods.GetPackedValue(bytes, loop, out Int32 padding);
 
 				Byte[] b;
 				if(length == 0)
@@ -46,7 +42,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					b = new Byte[length];
 					Array.Copy(bytes, loop + padding, b, 0, length);
 				}
-				ptr = (Int32)loop;
+				Int32 ptr = (Int32)loop;
 				result.Add(ptr, b);
 				loop += (UInt32)(length + padding);
 				//ptr += length + 1;
@@ -64,33 +60,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				if(length > 0)
 					bytes = base.Loader.Directory.Root.Header.ReadBytes(position, length);
 				else
-					bytes = new Byte[] { };
+					bytes = Array.Empty<Byte>();
 				result.Add(bytes);
 
 				position += (UInt32)length;
 				start += length + padding;
 			}*/
 			return result;
-		}
-		internal static Int32 GetStreamLength(Byte[] bytes, UInt32 position, out Int32 padding)
-		{
-			Int32 result = bytes[position];
-			if((result & 0x80) == 0)
-			{
-				padding = 1;
-				return result;
-			} else if((result & 0xC0) == 0x80)
-			{
-				padding = 2;
-				return ((result & 0x3F) << 8) | bytes[position + 1];
-			} else
-			{
-				padding = 4;
-				return ((result & 0x3F) << 24)
-				| (bytes[position + 1] << 16)
-				| (bytes[position + 2] << 8)
-				| bytes[position + 3];
-			}
 		}
 	}
 }

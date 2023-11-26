@@ -13,9 +13,7 @@ namespace AlphaOmega.Debug.PESection
 		/// <summary>Create instance of section header reader class</summary>
 		/// <param name="parent">PE directory</param>
 		public Sections(PEFile parent)
-		{
-			this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
-		}
+			=> this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
 
 		/// <summary>Get section by name</summary>
 		/// <param name="section">Name of required section</param>
@@ -38,8 +36,6 @@ namespace AlphaOmega.Debug.PESection
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

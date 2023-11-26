@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class ClassLayoutRow : BaseMetaRow
 	{
 		/// <summary>A 2-byte constant</summary>
-		public UInt16 PackingSize { get { return base.GetValue<UInt16>(0); } }
+		public UInt16 PackingSize => base.GetValue<UInt16>(0);
 
 		/// <summary>A 4-byte constant</summary>
 		/// <remarks>
@@ -17,15 +17,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// taking account of packing size (default or specified) and natural alignment on the target,
 		/// runtime platform
 		/// </remarks>
-		public UInt32 ClassSize { get { return base.GetValue<UInt32>(1); } }
+		public UInt32 ClassSize => base.GetValue<UInt32>(1);
 
 		/// <summary>An index into the TypeDef table</summary>
-		internal MetaCellPointer ParentI { get { return base.GetValue<MetaCellPointer>(2); } }
+		internal MetaCellPointer ParentI => base.GetValue<MetaCellPointer>(2);
 
 		/// <summary>TypeDef table row</summary>
-		public TypeDefRow Parent
-		{
-			get { return new TypeDefRow() { Row = this.ParentI.TargetRow, }; }
-		}
+		public TypeDefRow Parent => new TypeDefRow() { Row = this.ParentI.TargetRow, };
+
+		/// <summary>Create instance of fields layout definition</summary>
+		public ClassLayoutRow()
+			: base(Cor.MetaTableType.ClassLayout) { }
 	}
 }

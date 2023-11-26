@@ -5,7 +5,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Contains values that describe the relationship between a method and an associated property or event</summary>
 	/// <remarks>http://msdn.microsoft.com/en-us/library/ms232595.aspx</remarks>
 	[Flags]
-	public enum CorMethodSemanticsAttr : short
+	public enum CorMethodSemanticsAttr : Int16
 	{
 		/// <summary>Specifies that the method is a set accessor for a property</summary>
 		msSetter = 0x0001,

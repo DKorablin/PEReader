@@ -23,10 +23,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Get Guid from offset</summary>
 		/// <param name="index">Offset from beggining of the heap</param>
 		/// <returns>Guid</returns>
-		public override Guid this[Int32 index]
-		{
-			get { return index == 0 ? Guid.Empty : base[index - 1]; }
-		}
+		public override Guid this[Int32 index] => index == 0 ? Guid.Empty : base[index - 1];
 
 		/// <summary>
 		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
@@ -35,9 +32,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="pointer">Pointer in the heap</param>
 		/// <returns>Data by pointer</returns>
 		protected override Guid GetDataByPointer(Int32 pointer)
-		{
-			throw new NotImplementedException();
-		}
+			=> throw new NotImplementedException();
 
 		/// <summary>Binds the data form stream to guid array</summary>
 		protected override SortedList<Int32, Guid> DataBind()

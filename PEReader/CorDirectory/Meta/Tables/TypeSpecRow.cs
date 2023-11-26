@@ -9,7 +9,21 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// </summary>
 	public class TypeSpecRow : BaseMetaRow
 	{
-		/// <summary>Banana</summary>
-		public Byte[] Signature { get { return base.GetValue<Byte[]>(0); } }
+		/// <summary>Type specification singnature</summary>
+		public Byte[] Signature => base.GetValue<Byte[]>(0);
+
+		/// <summary>Parsed type specification signature</summary>
+		public ElementType SignatureParsed
+		{
+			get
+			{
+				UInt32 offset = 0;
+				return new ElementType(this.Row.Cells[0], this.Signature, ref offset);
+			}
+		}
+
+		/// <summary>Create instance of type specification row</summary>
+		public TypeSpecRow()
+			: base(Cor.MetaTableType.TypeSpec) { }
 	}
 }

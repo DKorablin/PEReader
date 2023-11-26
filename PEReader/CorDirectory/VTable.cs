@@ -12,9 +12,10 @@ namespace AlphaOmega.Debug.CorDirectory
 	/// Finding the correct v-table slot and calling indirectly through the value held in that slot
 	/// is also done by the compiler.
 	/// </remarks>
-	[DefaultProperty("Header")]
+	[DefaultProperty(nameof(Header))]
 	public class VTable : CorDirectoryBase
 	{//TODO: Не протестировано
+
 		/// <summary>VTable header</summary>
 		public Cor.IMAGE_COR20_VTABLE? Header
 		{
@@ -30,8 +31,6 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <summary>Create instance of VTable class</summary>
 		/// <param name="parent">.NET directory</param>
 		public VTable(ComDescriptor parent)
-			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.VTableFuxups)
-		{
-		}
+			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.VTableFuxups) { }
 	}
 }

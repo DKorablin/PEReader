@@ -10,9 +10,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Create instance of Relocation table class</summary>
 		/// <param name="parent">Data directory</param>
 		public Relocation(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.BASERELOC)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.BASERELOC) { }
 
 		/// <summary>Get all relocations blocks from directory</summary>
 		/// <returns>Relocation blocks</returns>
@@ -41,8 +39,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Get detailed row from metadata table by index</summary>
 		/// <param name="rowIndex">Row index from metadata table</param>
 		/// <returns>Strongly typed detailed row from metadata</returns>
-		public R this[UInt32 rowIndex] { get { return new R() { Row = this.Table[rowIndex], }; } }
+		public R this[UInt32 rowIndex] => new R() { Row = this.Table[rowIndex], };
 
 		/// <summary>Creating an instance of the base class of a detailed description of a table in metadata</summary>
 		/// <param name="stream">Metadata stream</param>
@@ -38,8 +38,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

@@ -21,9 +21,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			{
 				if(this._tables == null)
 					DataBind();
-				MetaTable result;
 
-				return this._tables.TryGetValue(tableType, out result)
+				return this._tables.TryGetValue(tableType, out MetaTable result)
 					? result
 					: null;
 			}
@@ -32,180 +31,125 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Gets total rows in all tables</summary>
 		/// <returns>Total rows count</returns>
 		public UInt32[] TotalRowsCount
-		{
-			get { return this._totalRowsCount ?? (this._totalRowsCount = this.GetRowsCountI()); }
-		}
+			=> this._totalRowsCount ?? (this._totalRowsCount = this.GetRowsCountI());
 
 		#region Tables
 		/// <summary>Module descriptor</summary>
 		public Tables.BaseMetaTable<Tables.ModuleRow> Module
-		{
-			get { return new Tables.BaseMetaTable<Tables.ModuleRow>(this, Cor.MetaTableType.Module); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ModuleRow>(this, Cor.MetaTableType.Module);
 
 		/// <summary>Class reference descriptors</summary>
 		public Tables.BaseMetaTable<Tables.TypeRefRow> TypeRef
-		{
-			get { return new Tables.BaseMetaTable<Tables.TypeRefRow>(this, Cor.MetaTableType.TypeRef); }
-		}
+			=> new Tables.BaseMetaTable<Tables.TypeRefRow>(this, Cor.MetaTableType.TypeRef);
 
 		/// <summary>Class or interface definition descriptors</summary>
 		public Tables.BaseMetaTable<Tables.TypeDefRow> TypeDef
-		{
-			get { return new Tables.BaseMetaTable<Tables.TypeDefRow>(this, Cor.MetaTableType.TypeDef); }
-		}
+			=> new Tables.BaseMetaTable<Tables.TypeDefRow>(this, Cor.MetaTableType.TypeDef);
 
 		/// <summary>A class-to-fields lookup table, whitch does not exist on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.FieldPtrRow> FieldPtr
-		{
-			get { return new Tables.BaseMetaTable<Tables.FieldPtrRow>(this, Cor.MetaTableType.FieldPtr); }
-		}
+			=> new Tables.BaseMetaTable<Tables.FieldPtrRow>(this, Cor.MetaTableType.FieldPtr);
+
 		/// <summary>A field definition descriptos</summary>
 		public Tables.BaseMetaTable<Tables.FieldRow> Field
-		{
-			get { return new Tables.BaseMetaTable<Tables.FieldRow>(this, Cor.MetaTableType.Field); }
-		}
+			=> new Tables.BaseMetaTable<Tables.FieldRow>(this, Cor.MetaTableType.Field);
 
 		/// <summary>A class-to-methods lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.MethodPtrRow> MethodPtr
-		{
-			get { return new Tables.BaseMetaTable<Tables.MethodPtrRow>(this, Cor.MetaTableType.MethodPtr); }
-		}
+			=> new Tables.BaseMetaTable<Tables.MethodPtrRow>(this, Cor.MetaTableType.MethodPtr);
 
 		/// <summary>Method definition descriptors</summary>
 		public Tables.BaseMetaTable<Tables.MethodDefRow> MethodDef
-		{
-			get { return new Tables.BaseMetaTable<Tables.MethodDefRow>(this, Cor.MetaTableType.MethodDef); }
-		}
+			=> new Tables.BaseMetaTable<Tables.MethodDefRow>(this, Cor.MetaTableType.MethodDef);
 
 		/// <summary>A method-to-parameters lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.ParamPtrRow> ParamPtr
-		{
-			get { return new Tables.BaseMetaTable<Tables.ParamPtrRow>(this, Cor.MetaTableType.ParamPtr); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ParamPtrRow>(this, Cor.MetaTableType.ParamPtr);
 
 		/// <summary>Parameter definition descriptors</summary>
 		public Tables.BaseMetaTable<Tables.ParamRow> Param
-		{
-			get { return new Tables.BaseMetaTable<Tables.ParamRow>(this, Cor.MetaTableType.Param); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ParamRow>(this, Cor.MetaTableType.Param);
 
 		/// <summary>Interface implementation descriptors</summary>
 		public Tables.BaseMetaTable<Tables.InterfaceImplRow> InterfaceImpl
-		{
-			get { return new Tables.BaseMetaTable<Tables.InterfaceImplRow>(this, Cor.MetaTableType.InterfaceImpl); }
-		}
+			=> new Tables.BaseMetaTable<Tables.InterfaceImplRow>(this, Cor.MetaTableType.InterfaceImpl);
 
 		/// <summary>Member (field or method) reference descriptors</summary>
 		public Tables.BaseMetaTable<Tables.MemberRefRow> MemberRef
-		{
-			get { return new Tables.BaseMetaTable<Tables.MemberRefRow>(this, Cor.MetaTableType.MemberRef); }
-		}
+			=> new Tables.BaseMetaTable<Tables.MemberRefRow>(this, Cor.MetaTableType.MemberRef);
 
 		/// <summary>Constant value descriptors that map the default values stored in the #Blob stream to respective fields, parameters, and properties</summary>
 		public Tables.BaseMetaTable<Tables.ConstantRow> Constant
-		{
-			get { return new Tables.BaseMetaTable<Tables.ConstantRow>(this, Cor.MetaTableType.Constant); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ConstantRow>(this, Cor.MetaTableType.Constant);
 
 		/// <summary>Custom attribute descriptors</summary>
 		public Tables.BaseMetaTable<Tables.CustomAttributeRow> CustomAttribute
-		{
-			get { return new Tables.BaseMetaTable<Tables.CustomAttributeRow>(this, Cor.MetaTableType.CustomAttribute); }
-		}
+			=> new Tables.BaseMetaTable<Tables.CustomAttributeRow>(this, Cor.MetaTableType.CustomAttribute);
 
 		/// <summary>Field or parameter marshaling descriptors for managed/unmanaged interoperations</summary>
 		public Tables.BaseMetaTable<Tables.FieldMarshalRow> FieldMarshal
-		{
-			get { return new Tables.BaseMetaTable<Tables.FieldMarshalRow>(this, Cor.MetaTableType.FieldMarshal); }
-		}
+			=> new Tables.BaseMetaTable<Tables.FieldMarshalRow>(this, Cor.MetaTableType.FieldMarshal);
 
 		/// <summary>Security descriptors</summary>
 		public Tables.BaseMetaTable<Tables.DeclSecurityRow> DeclSecurity
-		{
-			get { return new Tables.BaseMetaTable<Tables.DeclSecurityRow>(this, Cor.MetaTableType.DeclSecurity); }
-		}
+			=> new Tables.BaseMetaTable<Tables.DeclSecurityRow>(this, Cor.MetaTableType.DeclSecurity);
 
 		/// <summary>Class layout descriptors that hold information about how the loader should lay out respective classes</summary>
 		public Tables.BaseMetaTable<Tables.ClassLayoutRow> ClassLayout
-		{
-			get { return new Tables.BaseMetaTable<Tables.ClassLayoutRow>(this, Cor.MetaTableType.ClassLayout); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ClassLayoutRow>(this, Cor.MetaTableType.ClassLayout);
 
 		/// <summary>Field layout descriptors that specify the offset or ordinal of invidual fields</summary>
 		public Tables.BaseMetaTable<Tables.FieldLayoutRow> FieldLayout
-		{
-			get { return new Tables.BaseMetaTable<Tables.FieldLayoutRow>(this, Cor.MetaTableType.FieldLayout); }
-		}
+			=> new Tables.BaseMetaTable<Tables.FieldLayoutRow>(this, Cor.MetaTableType.FieldLayout);
 
 		/// <summary>
 		/// Stand-alone signature descriptors.
 		/// Signatures per se are used in two capacities: as composite signatures of local variables of methods and as parameters of the call indirect (calli) IL instruction
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.StandAloneSigRow> StandAloneSig
-		{
-			get { return new Tables.BaseMetaTable<Tables.StandAloneSigRow>(this, Cor.MetaTableType.StandAloneSig); }
-		}
+			=> new Tables.BaseMetaTable<Tables.StandAloneSigRow>(this, Cor.MetaTableType.StandAloneSig);
 
 		/// <summary>
 		/// A class-to-events mapping table.
 		/// This is not an intermidate lookup table, and it does not exist in optimized metadata
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.EventMapRow> EventMap
-		{
-			get { return new Tables.BaseMetaTable<Tables.EventMapRow>(this, Cor.MetaTableType.EventMap); }
-		}
+			=> new Tables.BaseMetaTable<Tables.EventMapRow>(this, Cor.MetaTableType.EventMap);
 
 		/// <summary>An event map-to-events lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.EventPtrRow> EventPtr
-		{
-			get { return new Tables.BaseMetaTable<Tables.EventPtrRow>(this, Cor.MetaTableType.EventPtr); }
-		}
+			=> new Tables.BaseMetaTable<Tables.EventPtrRow>(this, Cor.MetaTableType.EventPtr);
 
 		/// <summary>Event descriptors</summary>
 		public Tables.BaseMetaTable<Tables.EventRow> Event
-		{
-			get { return new Tables.BaseMetaTable<Tables.EventRow>(this, Cor.MetaTableType.Event); }
-		}
+			=> new Tables.BaseMetaTable<Tables.EventRow>(this, Cor.MetaTableType.Event);
 
 		/// <summary>
 		/// A class-to-properties mapping table.
 		/// This is not an intermidate lookup table, and it does not exist in optimized metadata
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.PropertyMapRow> PropertyMap
-		{
-			get { return new Tables.BaseMetaTable<Tables.PropertyMapRow>(this, Cor.MetaTableType.PropertyMap); }
-		}
+			=> new Tables.BaseMetaTable<Tables.PropertyMapRow>(this, Cor.MetaTableType.PropertyMap);
 
 		/// <summary>A property map-to-properties lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.PropertyPtrRow> PropertyPtr
-		{
-			get { return new Tables.BaseMetaTable<Tables.PropertyPtrRow>(this, Cor.MetaTableType.PropertyPtr); }
-		}
+			=> new Tables.BaseMetaTable<Tables.PropertyPtrRow>(this, Cor.MetaTableType.PropertyPtr);
 
 		/// <summary>Property descriptors</summary>
 		public Tables.BaseMetaTable<Tables.PropertyRow> Property
-		{
-			get { return new Tables.BaseMetaTable<Tables.PropertyRow>(this, Cor.MetaTableType.Property); }
-		}
+			=> new Tables.BaseMetaTable<Tables.PropertyRow>(this, Cor.MetaTableType.Property);
 
 		/// <summary>Method semantics descriptors that hold information about whitch method is associated with a specific property or event and in what capacity</summary>
 		public Tables.BaseMetaTable<Tables.MethodSemanticsRow> MethodSemantics
-		{
-			get { return new Tables.BaseMetaTable<Tables.MethodSemanticsRow>(this, Cor.MetaTableType.MethodSemantics); }
-		}
+			=> new Tables.BaseMetaTable<Tables.MethodSemanticsRow>(this, Cor.MetaTableType.MethodSemantics);
 
 		/// <summary>Method implementation descriptors</summary>
 		public Tables.BaseMetaTable<Tables.MethodImplRow> MethodImpl
-		{
-			get { return new Tables.BaseMetaTable<Tables.MethodImplRow>(this, Cor.MetaTableType.MethodImpl); }
-		}
+			=> new Tables.BaseMetaTable<Tables.MethodImplRow>(this, Cor.MetaTableType.MethodImpl);
 
 		/// <summary>Module reference descriptors</summary>
 		public Tables.BaseMetaTable<Tables.ModuleRefRow> ModuleRef
-		{
-			get { return new Tables.BaseMetaTable<Tables.ModuleRefRow>(this, Cor.MetaTableType.ModuleRef); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ModuleRefRow>(this, Cor.MetaTableType.ModuleRef);
 
 		/// <summary>
 		/// The TypeSpec table has just one column, which indexes the specification of a Type, stored in the Blob heap.
@@ -217,69 +161,51 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// specifically, castclass, cpobj, initobj, isinst, ldelema, ldobj, mkrefany, newarr, refanyval, sizeof, stobj, box, and unbox.
 		/// </remarks>
 		public Tables.BaseMetaTable<Tables.TypeSpecRow> TypeSpec
-		{
-			get { return new Tables.BaseMetaTable<Tables.TypeSpecRow>(this, Cor.MetaTableType.TypeSpec); }
-		}
+			=> new Tables.BaseMetaTable<Tables.TypeSpecRow>(this, Cor.MetaTableType.TypeSpec);
 
 		/// <summary>Implementation map descriptors used for the platform invocation (P/Invoke) type of managed/unmanaged code interoperation</summary>
 		public Tables.BaseMetaTable<Tables.ImplMapRow> ImplMap
-		{
-			get { return new Tables.BaseMetaTable<Tables.ImplMapRow>(this, Cor.MetaTableType.ImplMap); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ImplMapRow>(this, Cor.MetaTableType.ImplMap);
 
 		/// <summary>Field-to-data mapping descriptors</summary>
 		public Tables.BaseMetaTable<Tables.FieldRVARow> FieldRVA
-		{
-			get { return new Tables.BaseMetaTable<Tables.FieldRVARow>(this, Cor.MetaTableType.FieldRVA); }
-		}
+			=> new Tables.BaseMetaTable<Tables.FieldRVARow>(this, Cor.MetaTableType.FieldRVA);
 
 		/// <summary>
 		/// Edit-and-continue log descriptors that hold information about what changes have been made to specific metadata items during in-memory editing.
 		/// This table does not exist in optimized metadata (#~ stream)
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.ENCLogRow> ENCLog
-		{
-			get { return new Tables.BaseMetaTable<Tables.ENCLogRow>(this, Cor.MetaTableType.ENCLog); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ENCLogRow>(this, Cor.MetaTableType.ENCLog);
 
 		/// <summary>
 		/// Edit-and-continue mapping descriptors.
 		/// This table does not exist in optimized metadata (#~ stream)
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.ENCMapRow> ENCMap
-		{
-			get { return new Tables.BaseMetaTable<Tables.ENCMapRow>(this, Cor.MetaTableType.ENCMap); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ENCMapRow>(this, Cor.MetaTableType.ENCMap);
 
 		/// <summary>The current assembly descriptor, whitch sould appear only in the prime moduel metadata</summary>
 		public Tables.BaseMetaTable<Tables.AssemblyRow> Assembly
-		{
-			get { return new Tables.BaseMetaTable<Tables.AssemblyRow>(this, Cor.MetaTableType.Assembly); }
-		}
+			=> new Tables.BaseMetaTable<Tables.AssemblyRow>(this, Cor.MetaTableType.Assembly);
 
 		/// <summary>
 		/// These records should not be emitted into any PE file.
 		/// However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.AssemblyProcessorRow> AssemblyProcessor
-		{
-			get { return new Tables.BaseMetaTable<Tables.AssemblyProcessorRow>(this, Cor.MetaTableType.AssemblyProcessor); }
-		}
+			=> new Tables.BaseMetaTable<Tables.AssemblyProcessorRow>(this, Cor.MetaTableType.AssemblyProcessor);
 
 		/// <summary>
 		/// These records should not be emitted into any PE file.
 		/// However, if present in a PE file, they should be treated as-if their fields were zero. They should be ignored by the CLI
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.AssemblyOSRow> AssemblyOS
-		{
-			get { return new Tables.BaseMetaTable<Tables.AssemblyOSRow>(this, Cor.MetaTableType.AssemblyOS); }
-		}
+			=> new Tables.BaseMetaTable<Tables.AssemblyOSRow>(this, Cor.MetaTableType.AssemblyOS);
 
 		/// <summary>Assembly reference descriptors</summary>
 		public Tables.BaseMetaTable<Tables.AssemblyRefRow> AssemblyRef
-		{
-			get { return new Tables.BaseMetaTable<Tables.AssemblyRefRow>(this, Cor.MetaTableType.AssemblyRef); }
-		}
+			=> new Tables.BaseMetaTable<Tables.AssemblyRefRow>(this, Cor.MetaTableType.AssemblyRef);
 
 		/// <summary>
 		/// These records should not be emitted into any PE file.
@@ -287,9 +213,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// They should be ignored by the CLI
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.AssemblyRefProcessorRow> AssemblyRefProcessor
-		{
-			get { return new Tables.BaseMetaTable<Tables.AssemblyRefProcessorRow>(this, Cor.MetaTableType.AssemblyRefProcessor); }
-		}
+			=> new Tables.BaseMetaTable<Tables.AssemblyRefProcessorRow>(this, Cor.MetaTableType.AssemblyRefProcessor);
 
 		/// <summary>
 		/// These records should not be emitted into any PE file.
@@ -297,54 +221,38 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// They should be ignored by the CLI
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.AssemblyRefOSRow> AssemblyRefOS
-		{
-			get { return new Tables.BaseMetaTable<Tables.AssemblyRefOSRow>(this, Cor.MetaTableType.AssemblyRefOS); }
-		}
+			=> new Tables.BaseMetaTable<Tables.AssemblyRefOSRow>(this, Cor.MetaTableType.AssemblyRefOS);
 
 		/// <summary>File descriptors that contain information about other files in the current assembly</summary>
 		public Tables.BaseMetaTable<Tables.FileRow> File
-		{
-			get { return new Tables.BaseMetaTable<Tables.FileRow>(this, Cor.MetaTableType.File); }
-		}
+			=> new Tables.BaseMetaTable<Tables.FileRow>(this, Cor.MetaTableType.File);
 
 		/// <summary>
 		/// Exported type descriptors that contain information about public classes exported by the current assembly, whitch are declared in other modules of the assembly.
 		/// Only the prime module of the assembly sould carry this table
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.ExportedTypeRow> ExportedType
-		{
-			get { return new Tables.BaseMetaTable<Tables.ExportedTypeRow>(this, Cor.MetaTableType.ExportedType); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ExportedTypeRow>(this, Cor.MetaTableType.ExportedType);
 
 		/// <summary>Managed resource descriptors</summary>
 		public Tables.BaseMetaTable<Tables.ManifestResourceRow> ManifestResource
-		{
-			get { return new Tables.BaseMetaTable<Tables.ManifestResourceRow>(this, Cor.MetaTableType.ManifestResource); }
-		}
+			=> new Tables.BaseMetaTable<Tables.ManifestResourceRow>(this, Cor.MetaTableType.ManifestResource);
 
 		/// <summary>Nested class descriptors that provide mapping of nested classes to their respective enclosing classes</summary>
 		public Tables.BaseMetaTable<Tables.NestedClassRow> NestedClass
-		{
-			get { return new Tables.BaseMetaTable<Tables.NestedClassRow>(this, Cor.MetaTableType.NestedClass); }
-		}
+			=> new Tables.BaseMetaTable<Tables.NestedClassRow>(this, Cor.MetaTableType.NestedClass);
 
 		/// <summary>Type parameter descriptors for generic (parameterized) classes and methods</summary>
 		public Tables.BaseMetaTable<Tables.GenericParamRow> GenericParam
-		{
-			get { return new Tables.BaseMetaTable<Tables.GenericParamRow>(this, Cor.MetaTableType.GenericParam); }
-		}
+			=> new Tables.BaseMetaTable<Tables.GenericParamRow>(this, Cor.MetaTableType.GenericParam);
 
 		/// <summary>Generic method instantiation descriptors</summary>
 		public Tables.BaseMetaTable<Tables.MethodSpecRow> MethodSpec
-		{
-			get { return new Tables.BaseMetaTable<Tables.MethodSpecRow>(this, Cor.MetaTableType.MethodSpec); }
-		}
+			=> new Tables.BaseMetaTable<Tables.MethodSpecRow>(this, Cor.MetaTableType.MethodSpec);
 
 		/// <summary>Descriptors of constraints specified for type parameters of generic classes and methods</summary>
 		public Tables.BaseMetaTable<Tables.GenericParamConstraintRow> GenericParamConstraint
-		{
-			get { return new Tables.BaseMetaTable<Tables.GenericParamConstraintRow>(this, Cor.MetaTableType.GenericParamConstraint); }
-		}
+			=> new Tables.BaseMetaTable<Tables.GenericParamConstraintRow>(this, Cor.MetaTableType.GenericParamConstraint);
 
 		#endregion Tables
 		/// <summary>Table header</summary>
@@ -362,13 +270,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		}
 
 		/// <summary>Tables position</summary>
-		public override UInt32 Position { get { return base.Position + StreamTables.SizeOfStreamTable; ; } }
+		public override UInt32 Position => base.Position + StreamTables.SizeOfStreamTable;
 
 		/// <summary>Позиция, с которых начинаются данные в таблицах</summary>
 		public UInt32 DataPosition
-		{
-			get { return this.Position + this.StreamTableHeader.PresentTablesCount * sizeof(UInt32); }
-		}
+			=> this.Position + this.StreamTableHeader.PresentTablesCount * sizeof(UInt32);
 
 		/// <summary>Create instance of stream tables class</summary>
 		/// <param name="meta">MetaData directory</param>
@@ -447,9 +353,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="tableType">Table for what gets rows count</param>
 		/// <returns>Rows count from the table</returns>
 		public UInt32 GetRowsCount(Cor.MetaTableType tableType)
-		{
-			return this.TotalRowsCount[(Int32)tableType];
-		}
+			=> this.TotalRowsCount[(Int32)tableType];
 
 		/// <summary>Method to receive unpacked tables</summary>
 		/// <returns>List or unpacked tables</returns>

@@ -73,34 +73,24 @@ namespace AlphaOmega.Debug
 			public UInt32 dwFileDateLS;
 
 			/// <summary>Structure is valid</summary>
-			public Boolean IsValid { get { return this.dwSignature == 0xFEEF04BD; } }
+			public Boolean IsValid => this.dwSignature == 0xFEEF04BD;
 
 			/// <summary>File version number</summary>
 			public Version FileVersion
-			{
-				get
-				{
-					return new Version(
-						NativeMethods.HiWord(this.dwFileVersionMS),
-						NativeMethods.LoWord(this.dwFileVersionMS),
-						NativeMethods.HiWord(this.dwFileVersionLS),
-						NativeMethods.LoWord(this.dwFileVersionLS));
-				}
-			}
+				=> new Version(
+					NativeMethods.HiWord(this.dwFileVersionMS),
+					NativeMethods.LoWord(this.dwFileVersionMS),
+					NativeMethods.HiWord(this.dwFileVersionLS),
+					NativeMethods.LoWord(this.dwFileVersionLS));
 
 			/// <summary>Product version number</summary>
 			public Version ProductVersion
-			{
-				get
-				{
-					return new Version(
-						NativeMethods.HiWord(this.dwProductVersionMS),
-						NativeMethods.LoWord(this.dwProductVersionMS),
-						NativeMethods.HiWord(this.dwProductVersionLS),
-						NativeMethods.LoWord(this.dwProductVersionLS)
-						);
-				}
-			}
+				=> new Version(
+					NativeMethods.HiWord(this.dwProductVersionMS),
+					NativeMethods.LoWord(this.dwProductVersionMS),
+					NativeMethods.HiWord(this.dwProductVersionLS),
+					NativeMethods.LoWord(this.dwProductVersionLS)
+					);
 		}
 
 		/// <summary>Contains a bitmask that specifies the Boolean attributes of the file</summary>

@@ -9,6 +9,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class AssemblyProcessorRow : BaseMetaRow
 	{
 		/// <summary>Banana</summary>
-		public UInt32 Processor { get { return base.GetValue<UInt32>(0); } }
+		public UInt32 Processor => base.GetValue<UInt32>(0);
+
+		/// <summary>Create instance of AssemblyProcessor row</summary>
+		public AssemblyProcessorRow()
+			: base(Cor.MetaTableType.AssemblyProcessor) { }
 	}
 }

@@ -17,9 +17,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class FieldMarshalRow : BaseMetaRow
 	{
 		/// <summary>An index into Field or Param table; more precisely, a HasFieldMarshal (§II.24.2.6) coded index</summary>
-		public MetaCellCodedToken Parent { get { return base.GetValue<MetaCellCodedToken>(0); } }
+		public MetaCellCodedToken Parent => base.GetValue<MetaCellCodedToken>(0);
 
 		/// <summary>An index into the Blob heap</summary>
-		public Byte[] Native { get { return base.GetValue<Byte[]>(1); } }
+		public Byte[] Native => base.GetValue<Byte[]>(1);
+
+		/// <summary>Create instance of FieldMarshal row</summary>
+		public FieldMarshalRow()
+			: base(Cor.MetaTableType.FieldMarshal) { }
 	}
 }

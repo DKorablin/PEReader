@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Impot Address Table class</summary>
-	[DefaultProperty("Count")]
+	[DefaultProperty(nameof(Count))]
 	public class Iat : PEDirectoryBase, IEnumerable<UInt64>
 	{
 		private UInt32 SizeOfStruct {
@@ -20,14 +20,12 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		/// <summary>Pointer count in the directory</summary>
-		public UInt32 Count { get { return base.Directory.IsEmpty ? 0 : base.Directory.Size / this.SizeOfStruct; } }
+		public UInt32 Count => base.Directory.IsEmpty ? 0 : base.Directory.Size / this.SizeOfStruct;
 
 		/// <summary>Create instance of IAT class</summary>
 		/// <param name="parent">Data directory</param>
 		public Iat(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.IAT)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.IAT) { }
 
 		/// <summary>Get pointers array from directory</summary>
 		/// <returns>Array of pointers</returns>
@@ -43,8 +41,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

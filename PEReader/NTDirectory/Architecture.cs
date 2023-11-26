@@ -6,8 +6,6 @@
 		/// <summary>Create instance of Architecture class</summary>
 		/// <param name="root">Data directory</param>
 		public Architecture(PEFile root)
-			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.ARCHITECTURE)
-		{
-		}
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.ARCHITECTURE) { }
 	}
 }

@@ -6,42 +6,42 @@ using System.Reflection;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>Class in the current assembly</summary>
-	[DefaultProperty("TypeName")]
+	[DefaultProperty(nameof(TypeName))]
 	public class TypeDefRow : BaseMetaRow
 	{
 		/// <summary>A 4-byte bit mask of type TypeAttributes (§II.23.1.15)</summary>
-		public TypeAttributes Flags { get { return (TypeAttributes)base.GetValue<UInt32>(0); } }
+		public TypeAttributes Flags => (TypeAttributes)base.GetValue<UInt32>(0);
 
 		/// <summary>Specifies type visibility information</summary>
-		public TypeAttributes VisibilityMask { get { return this.Flags & TypeAttributes.VisibilityMask; } }
+		public TypeAttributes VisibilityMask => this.Flags & TypeAttributes.VisibilityMask;
 
 		/// <summary>Specifies class layout information</summary>
-		public TypeAttributes LayoutMask { get { return this.Flags & TypeAttributes.LayoutMask; } }
+		public TypeAttributes LayoutMask => this.Flags & TypeAttributes.LayoutMask;
 
 		/// <summary>Specifies class semantics information; the current class is contextful (else agile)</summary>
-		public TypeAttributes ClassSemanticsMask { get { return this.Flags & TypeAttributes.ClassSemanticsMask; } }
+		public TypeAttributes ClassSemanticsMask => this.Flags & TypeAttributes.ClassSemanticsMask;
 
 		/// <summary>Used to retrieve string information for native interoperability</summary>
-		public TypeAttributes StringFormatMask { get { return this.Flags & TypeAttributes.StringFormatMask; } }
+		public TypeAttributes StringFormatMask => this.Flags & TypeAttributes.StringFormatMask;
 
 		/// <summary>Attributes reserved for runtime use</summary>
-		public TypeAttributes ReservedMask { get { return this.Flags & TypeAttributes.ReservedMask; } }
+		public TypeAttributes ReservedMask => this.Flags & TypeAttributes.ReservedMask;
 
 		/// <summary>Used to retrieve non-standard encoding information for native interop</summary>
 		/// <remarks>
 		/// The meaning of the values of these 2 bits is unspecified.
 		/// Not used in the Microsoft implementation of the .NET Framework.
 		/// </remarks>
-		public TypeAttributes CustomFormatMask { get { return this.Flags & TypeAttributes.CustomFormatMask; } }
+		public TypeAttributes CustomFormatMask => this.Flags & TypeAttributes.CustomFormatMask;
 
 		/// <summary>Type name</summary>
-		public String TypeName { get { return base.GetValue<String>(1); } }
+		public String TypeName => base.GetValue<String>(1);
 
 		/// <summary>Type namespace</summary>
-		public String TypeNamespace { get { return base.GetValue<String>(2); } }
+		public String TypeNamespace => base.GetValue<String>(2);
 
 		/// <summary>an index into the TypeDef, TypeRef, or TypeSpec table; more precisely, a TypeDefOrRef (#II.24.2.6) coded index</summary>
-		public MetaCellCodedToken Extends { get { return base.GetValue<MetaCellCodedToken>(3); } }
+		public MetaCellCodedToken Extends => base.GetValue<MetaCellCodedToken>(3);
 
 		/// <summary>An index into the Field table; it marks the first of a contiguous run of Fields owned by this Type</summary>
 		/// <remarks>
@@ -49,7 +49,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// The last row of the Field table.
 		/// The next run of Fields, found by inspecting the FieldList of the next row in this TypeDef table
 		/// </remarks>
-		internal MetaCellPointer FieldListI { get { return base.GetValue<MetaCellPointer>(4); } }
+		internal MetaCellPointer FieldListI => base.GetValue<MetaCellPointer>(4);
 
 		/// <summary>An index into the MethodDef table; it marks the first of a continguous run of Methods owned by this Type</summary>
 		/// <remarks>
@@ -57,7 +57,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// The last row of the MethodDef table.
 		/// the next run of Methods, found by inspecting the MethodList of the next row in this TypeDef table
 		/// </remarks>
-		internal MetaCellPointer MethodListI { get { return base.GetValue<MetaCellPointer>(5); } }
+		internal MetaCellPointer MethodListI => base.GetValue<MetaCellPointer>(5);
 
 		/// <summary>Fields rows</summary>
 		public IEnumerable<FieldRow> FieldList
@@ -78,6 +78,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield return new MethodDefRow() { Row = row, };
 			}
 		}
+
+		/// <summary>Create isntance of class in the current assembly</summary>
+		public TypeDefRow()
+			: base(Cor.MetaTableType.TypeDef) { }
 
 		/// <summary>TypeNamespace+"."+TypeName</summary>
 		/// <returns>String</returns>

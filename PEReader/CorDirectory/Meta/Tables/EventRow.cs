@@ -13,23 +13,25 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class EventRow : BaseMetaRow
 	{
 		/// <summary>Attributes of an event</summary>
-		public EventAttributes EventFlags { get { return (EventAttributes)base.GetValue<UInt16>(0); } }
+		public EventAttributes EventFlags => (EventAttributes)base.GetValue<UInt16>(0);
 
 		/// <summary>Event name</summary>
-		public String Name { get { return base.GetValue<String>(1); } }
+		public String Name => base.GetValue<String>(1);
 
 		/// <summary>
 		/// An index into a TypeDef, a TypeRef, or TypeSpec table;
 		/// more precisely, a TypeDefOrRef (§II.24.2.6) coded index.
 		/// </summary>
 		/// <remarks>This corresponds to the Type of the Event; it is not the Type that owns this event</remarks>
-		public MetaCellCodedToken EventType { get { return base.GetValue<MetaCellCodedToken>(2); } }
+		public MetaCellCodedToken EventType => base.GetValue<MetaCellCodedToken>(2);
+
+		/// <summary>Create instance of Event row</summary>
+		public EventRow()
+			: base(Cor.MetaTableType.Event) { }
 
 		/// <summary>Name</summary>
 		/// <returns>String</returns>
 		public override String ToString()
-		{
-			return base.ToString(this.Name);
-		}
+			=> base.ToString(this.Name);
 	}
 }

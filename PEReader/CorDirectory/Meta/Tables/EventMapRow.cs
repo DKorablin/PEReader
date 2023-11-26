@@ -7,16 +7,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class EventMapRow : BaseMetaRow
 	{
 		/// <summary>An index into the TypeDef table</summary>
-		internal MetaCellPointer ParentI { get { return base.GetValue<MetaCellPointer>(0); } }
+		internal MetaCellPointer ParentI => base.GetValue<MetaCellPointer>(0);
 
 		/// <summary>An index into the Event table</summary>
-		internal MetaCellPointer EventListI { get { return base.GetValue<MetaCellPointer>(1); } }
+		internal MetaCellPointer EventListI => base.GetValue<MetaCellPointer>(1);
 
 		/// <summary>Row from TypeDef table</summary>
-		public TypeDefRow Parent
-		{
-			get { return new TypeDefRow() { Row = this.ParentI.TargetRow, }; }
-		}
+		public TypeDefRow Parent => new TypeDefRow() { Row = this.ParentI.TargetRow, };
 
 		/// <summary>Rows from Event table</summary>
 		public IEnumerable<EventRow> EventList
@@ -27,5 +24,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield return new EventRow() { Row = row, };
 			}
 		}
+
+		/// <summary>Create instance of EventMap row</summary>
+		public EventMapRow()
+			: base(Cor.MetaTableType.EventMap) { }
 	}
 }

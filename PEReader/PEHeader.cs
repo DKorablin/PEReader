@@ -17,12 +17,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>PE COFF header</summary>
 		public WinNT.IMAGE_DOS_HEADER HeaderDos
-		{
-			get
-			{
-				return this._headerDOS ?? (this._headerDOS = this.Loader.PtrToStructure<WinNT.IMAGE_DOS_HEADER>(0)).Value;
-			}
-		}
+			=> this._headerDOS ?? (this._headerDOS = this.Loader.PtrToStructure<WinNT.IMAGE_DOS_HEADER>(0)).Value;
 
 		/// <summary>This PE file is extended PE+ file</summary>
 		public Boolean Is64Bit
@@ -33,7 +28,7 @@ namespace AlphaOmega.Debug
 					this._is64Bit = this.IsValid && this.HeaderNT64.OptionalHeader.Magic == WinNT.IMAGE_SIGNATURE.IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 				return this._is64Bit.Value;
 			}
-			private set { this._is64Bit = value; }
+			private set => this._is64Bit = value;
 		}
 
 		/// <summary>Loaded file contains valid DOS header</summary>

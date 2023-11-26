@@ -6,16 +6,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class PropertyMapRow : BaseMetaRow
 	{
 		/// <summary>An index into the TypeDef table</summary>
-		internal MetaCellPointer ParentI { get { return base.GetValue<MetaCellPointer>(0); } }
+		internal MetaCellPointer ParentI => base.GetValue<MetaCellPointer>(0);
 
 		/// <summary>An index into the Property table</summary>
-		internal MetaCellPointer PropertyListI { get { return base.GetValue<MetaCellPointer>(1); } }
+		internal MetaCellPointer PropertyListI => base.GetValue<MetaCellPointer>(1);
 
 		/// <summary>Parent TypeDef table row</summary>
-		public TypeDefRow Parent
-		{
-			get { return new TypeDefRow() { Row = this.ParentI.TargetRow, }; }
-		}
+		public TypeDefRow Parent => new TypeDefRow() { Row = this.ParentI.TargetRow, };
 
 		/// <summary>Property table list</summary>
 		public IEnumerable<PropertyRow> PropertyList
@@ -26,5 +23,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield return new PropertyRow() { Row = row, };
 			}
 		}
+
+		/// <summary>Create isntance of Property map row</summary>
+		public PropertyMapRow()
+			: base(Cor.MetaTableType.PropertyMap) { }
 	}
 }

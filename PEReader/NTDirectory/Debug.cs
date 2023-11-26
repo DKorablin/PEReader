@@ -7,7 +7,7 @@ using System.Collections;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Debug directory class</summary>
-	[DefaultProperty("Count")]
+	[DefaultProperty(nameof(Count))]
 	public class Debug : PEDirectoryBase, IEnumerable<WinNT.IMAGE_DEBUG_DIRECTORY>
 	{//TODO: Необходимо прочитать тип FPO (Если найду такой файл). Спецификация по FPO в 5.1.2. Debug Type (pecoff_v8.docx)
 		private static UInt32 SizeOfDebugDirectory = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_DEBUG_DIRECTORY));
@@ -59,14 +59,12 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		/// <summary>Number of arrays in directory</summary>
-		public UInt32 Count { get { return base.IsEmpty ? 0 : base.Directory.Size / Debug.SizeOfDebugDirectory; } }
+		public UInt32 Count => base.IsEmpty ? 0 : base.Directory.Size / Debug.SizeOfDebugDirectory;
 
 		/// <summary>Create instance of debug directory</summary>
 		/// <param name="root">Data directory</param>
 		public Debug(PEFile root)
-			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.DEBUG)
-		{
-		}
+			: base(root, WinNT.IMAGE_DIRECTORY_ENTRY.DEBUG) { }
 
 		/// <summary>Find debug header by type</summary>
 		/// <param name="type">Type of debug header</param>
@@ -97,8 +95,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

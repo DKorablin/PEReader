@@ -254,12 +254,12 @@ namespace AlphaOmega.Debug
 		/// valid only for the Fat format, that indicate how the method is to be executed.
 		/// </remarks>
 		[Flags]
-		public enum CorILMethod : byte
+		public enum CorILMethod : Byte
 		{
 			/// <summary>Method header is fat</summary>
 			FatFormat = 0x3,
 			/// <summary>Method header is tiny</summary>
-			TinyFormat = 0x2,
+			TinyFormat = 0x02,
 			/// <summary>More sections follow after this header (§II.25.4.5)</summary>
 			MoreSects = 0x8,
 			/// <summary>Call default constructor on all local variables</summary>
@@ -306,7 +306,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Fat method section descriptor</summary>
 		[Flags]
-		public enum CorILMethod_Sect : byte
+		public enum CorILMethod_Sect : Byte
 		{
 			/// <summary>Exception handling data</summary>
 			EHTable = 0x1,
@@ -359,7 +359,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Type of exception-handling clause</summary>
 		[Flags]
-		public enum COR_ILEXCEPTION_CLAUSE : ushort
+		public enum COR_ILEXCEPTION_CLAUSE : UInt16
 		{
 			/// <summary>A typed exception clause</summary>
 			/// <remarks>
@@ -440,9 +440,44 @@ namespace AlphaOmega.Debug
 			public COR_ILEXCEPTION_CLAUSE Flags { get { return (COR_ILEXCEPTION_CLAUSE)this.FlagsI; } }
 		}
 
+		/// <summary>Contains values that describe the types of calling conventions that are made in managed code</summary>
+		[Flags]
+		public enum IMAGE_CEE_CS : Byte
+		{
+			/// <summary>Indicates a default calling convention</summary>
+			DEFAULT = 0x0,
+			/// <summary>Indicates that the method takes a variable number of parameters</summary>
+			VARARG = 0x5,
+			/// <summary>Indicates that the call is to a field</summary>
+			FIELD = 0x6,
+			/// <summary>Indicates that the call is to a local method</summary>
+			LOCAL_SIG = 0x7,
+			/// <summary>Indicates that the call is to a property</summary>
+			PROPERTY = 0x8,
+			/// <summary>Indicates that the call is unmanaged</summary>
+			UNMGD = 0x9,
+			/// <summary>Indicates a generic method instantiation</summary>
+			GENERICINST = 0xA,
+			/// <summary>Indicates a 64-bit PInvoke call to a method that takes a variable number of parameters</summary>
+			NATIVEVARARG = 0xB,
+			/// <summary>Describes an invalid 4-bit value</summary>
+			MAX = 0xC,
+			/// <summary>Indicates that the calling convention is described by the bottom four bits</summary>
+			MASK = 0xF,
+			/// <summary>Indicates that the top bit describes a this parameter</summary>
+			HASTHIS = 0x20,
+			/// <summary>Indicates that a this parameter is explicitly described in the signature</summary>
+			EXPLICITTHIS = 0x40,
+			/// <summary>
+			/// Indicates a generic method signature with an explicit number of type arguments.
+			/// This precedes an ordinary parameter count.
+			/// </summary>
+			GENERIC = 0x10
+		}
+
 		/// <summary>Specifies a common language runtime Type, a type modifier, or information about a type in a metadata type signature</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/ms232600%28v=vs.110%29.aspx</remarks>
-		public enum ELEMENT_TYPE
+		public enum ELEMENT_TYPE : Byte
 		{
 			/// <summary>Marks end of a list</summary>
 			END = 0x00,
@@ -550,7 +585,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>MetaData Table Types</summary>
-		public enum MetaTableType : int
+		public enum MetaTableType : Int32
 		{
 			/// <summary>The rows in the Module table result from .module directives in the Assembly</summary>
 			Module = 0,

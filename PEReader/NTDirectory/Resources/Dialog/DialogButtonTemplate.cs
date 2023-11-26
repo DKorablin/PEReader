@@ -8,12 +8,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Creates a rectangle in which other controls can be grouped</summary>
 		/// <remarks>Any text associated with this style is displayed in the rectangle's upper left corner</remarks>
 		public Boolean IsGroupBox
-		{
-			get
-			{
-				return (((UInt32)base.Styles) & (UInt32)WinUser.BS.GROUPBOX) == (UInt32)WinUser.BS.GROUPBOX;
-			}
-		}
+			=> (((UInt32)base.Styles) & (UInt32)WinUser.BS.GROUPBOX) == (UInt32)WinUser.BS.GROUPBOX;
 
 		/// <summary>
 		/// Creates a small, empty check box with text</summary>
@@ -22,12 +17,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// To display the text to the left of the check box, combine this flag with the BS_LEFTTEXT style (or with the equivalent BS_RIGHTBUTTON style)
 		/// </remarks>
 		public Boolean IsCheckBox
-		{
-			get
-			{
-				return (((UInt32)base.Styles) & (UInt32)WinUser.BS.CHECKBOX) == (UInt32)AlphaOmega.Debug.WinUser.BS.CHECKBOX;
-			}
-		}
+			=> (((UInt32)base.Styles) & (UInt32)WinUser.BS.CHECKBOX) == (UInt32)AlphaOmega.Debug.WinUser.BS.CHECKBOX;
 
 		/// <summary>Creates a small circle with text</summary>
 		/// <remarks>
@@ -60,20 +50,14 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		/// <summary>Creates a push button that posts a WM_COMMAND message to the owner window when the user selects the button</summary>
 		public Boolean IsButton
-		{
-			get { return !this.IsGroupBox && !this.IsCheckBox && !this.IsRadioButton; }
-		}
+			=> !this.IsGroupBox && !this.IsCheckBox && !this.IsRadioButton;
 
 		/// <summary>Specifies that the button is two-dimensional; it does not use the default shading to create a 3-D image</summary>
 		public Boolean IsFlat
-		{
-			get { return (((UInt32)base.Styles) & (UInt32)WinUser.BS.FLAT) == (UInt32)WinUser.BS.FLAT; }
-		}
+			=> (((UInt32)base.Styles) & (UInt32)WinUser.BS.FLAT) == (UInt32)WinUser.BS.FLAT;
 
 		/// <summary>Create instance of dialog button resource control template</summary>
 		public DialogButtonTemplate(WinUser.DLGITEMTEMPLATE? control, WinUser.DLGITEMTEMPLATEEX? controlEx, ResourceBase.SzInt itemClass, ResourceBase.SzInt itemText, Byte[] extraData)
-			: base(control, controlEx, itemClass, itemText, extraData)
-		{
-		}
+			: base(control, controlEx, itemClass, itemText, extraData) { }
 	}
 }

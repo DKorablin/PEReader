@@ -53,9 +53,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Create instance of RT_DLGINIT resource reader class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceDialogInit(ResourceDirectory directory)
-			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT)
-		{
-		}
+			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT) { }
 
 		/// <summary>Get array of MFC dialog init data</summary>
 		/// <returns>MFC dialog init data</returns>
@@ -78,8 +76,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }

@@ -10,15 +10,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class AssemblyRefProcessorRow : BaseMetaRow
 	{
 		/// <summary>a 4-byte constant</summary>
-		public UInt32 Processor { get { return base.GetValue<UInt32>(0); } }
+		public UInt32 Processor => base.GetValue<UInt32>(0);
 
 		/// <summary>an index into the AssemblyRef table</summary>
-		internal MetaCellPointer AssemblyRefI { get { return base.GetValue<MetaCellPointer>(1); } }
+		internal MetaCellPointer AssemblyRefI => base.GetValue<MetaCellPointer>(1);
 
 		/// <summary>Pointer into the AssemblyRef table</summary>
-		public AssemblyRefRow AssemblyRef
-		{//TODO: Not tested. I don't find any file with data in this table
-			get { return new AssemblyRefRow() { Row = this.AssemblyRefI.TargetRow, }; }
-		}
+		public AssemblyRefRow AssemblyRef//TODO: Not tested. I don't find any file with data in this table
+			=> new AssemblyRefRow() { Row = this.AssemblyRefI.TargetRow, };
+
+		/// <summary>Create instance of AssemblyRefProcessor row</summary>
+		public AssemblyRefProcessorRow()
+			: base(Cor.MetaTableType.AssemblyRefProcessor) { }
 	}
 }

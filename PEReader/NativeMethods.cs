@@ -67,6 +67,65 @@ namespace AlphaOmega.Debug
 			return ((Byte)value);
 		}
 
+		/// <summary>Signatures are compressed before being stored into the Blob heap (described below) by compressing the integers embedded in the signature</summary>
+		/// <remarks>
+		/// The maximum encodable unsigned integer is 29 bits long, 0x1FFFFFFF.
+		/// For signed integers, as occur in ArrayShape(§II.23.2.13), the range is -228 (0xF0000000) to 228-1 (0x0FFFFFFF).
+		/// </remarks>
+		/// <param name="bytes"></param>
+		/// <param name="offset"></param>
+		/// <returns></returns>
+		public static UInt32 GetPackedValue(Byte[] bytes, ref UInt32 offset)
+		{
+			UInt32 result = GetPackedValue(bytes, offset, out Int32 padding);
+			offset += (UInt32)padding;
+			return result;
+		}
+
+		public static UInt32 GetPackedValue(Byte[] bytes, UInt32 position, out Int32 padding)
+		{//TODO: It's only for unsigned value
+			UInt32 result = bytes[position];
+			if((result & 0x80) == 0)
+			{
+				padding = 1;
+				return result;
+			} else if((result & 0xC0) == 0x80)
+			{
+				padding = 2;
+				return ((result & 0x3F) << 8) | bytes[position + 1];
+			} else if((result & 0xE0) == 0xC0)
+			{
+				padding = 4;
+				return (((result & 0x3Fu) << 24)
+				| (UInt32)(bytes[position + 1] << 16)
+				| (UInt32)(bytes[position + 2] << 8)
+				| bytes[position + 3]);
+			}
+			else throw new InvalidOperationException();
+		}
+
+		public static Byte[] SetPackedValue(UInt32 value)
+		{
+			if(value <= 0x7F)
+				return new Byte[] { (Byte)value };
+			else if(value <= 0x3FFF)
+				return new Byte[]
+				{
+					(Byte)((value >> 8) | 0x80),
+					(Byte)(value & 0xff),
+				};
+			else if(value > 0x1FFFFFFF)
+				throw new OverflowException($"Too big value to pack: {value}");
+			else
+				return new Byte[]
+				{
+					(Byte)((value >> 24) | 0xC0),
+					(Byte)((value >> 16) & 0xFF),
+					(Byte)((value >> 8)  & 0xFF),
+					(Byte)(value & 0xFF),
+				};
+		}
+
 		/// <summary>Makes a 64 bit long from two 32 bit integers</summary>
 		/// <param name="low">The low order value</param>
 		/// <param name="high">The high order value</param>
@@ -231,7 +290,7 @@ namespace AlphaOmega.Debug
 		public static extern Int32 GetKeyNameText(UInt32 lParam, [Out] StringBuilder lpString, Int32 nSize);
 
 		/// <summary>The translation to be performed</summary>
-		public enum MAPVK : uint
+		public enum MAPVK : UInt32
 		{
 			/// <summary>
 			/// uCode is a virtual-key code and is translated into an unshifted character value in the low-order word of the return value.
@@ -291,7 +350,7 @@ namespace AlphaOmega.Debug
 		/// </summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms684179%28v=vs.85%29.aspx</remarks>
 		[Flags]
-		public enum LoadLibraryFlags : uint
+		public enum LoadLibraryFlags : UInt32
 		{
 			/// <summary>
 			/// If this value is used, and the executable module is a DLL, the system does not call DllMain for process and thread initialization and termination.

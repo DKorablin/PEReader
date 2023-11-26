@@ -12,36 +12,36 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class AssemblyRefRow : BaseMetaRow
 	{
 		/// <summary>Major assembly version</summary>
-		public UInt16 MajorVersion { get { return base.GetValue<UInt16>(0); } }
+		public UInt16 MajorVersion => base.GetValue<UInt16>(0);
 
 		/// <summary>Minor assembly version</summary>
-		public UInt16 MinorVersion { get { return base.GetValue<UInt16>(1); } }
+		public UInt16 MinorVersion => base.GetValue<UInt16>(1);
 
 		/// <summary>Build number</summary>
-		public UInt16 BuildNumber { get { return base.GetValue<UInt16>(2); } }
+		public UInt16 BuildNumber => base.GetValue<UInt16>(2);
 
 		/// <summary>Revision number</summary>
-		public UInt16 RevisionNumber { get { return base.GetValue<UInt16>(3); } }
+		public UInt16 RevisionNumber => base.GetValue<UInt16>(3);
 
 		/// <summary>Assembly flags</summary>
 		/// <remarks>Flags shall have only one bit set, the PublicKey bit (§II.23.1.2). All other bits shall be zero</remarks>
-		public AssemblyNameFlags Flags { get { return (AssemblyNameFlags)base.GetValue<UInt32>(4); } }
-		//public CorAssemblyFlags Flags { get { return (CorAssemblyFlags)base.GetValue<UInt32>(4); } }
+		public AssemblyNameFlags Flags => (AssemblyNameFlags)base.GetValue<UInt32>(4);
+		//public CorAssemblyFlags Flags => (CorAssemblyFlags)base.GetValue<UInt32>(4);
 
 		/// <summary>an index into the Blob heap, indicating the public key or token that identifies the author of this Assembly</summary>
-		public Byte[] PublicKeyOrToken { get { return base.GetValue<Byte[]>(5); } }
+		public Byte[] PublicKeyOrToken => base.GetValue<Byte[]>(5);
 
 		/// <summary>Assembly name</summary>
-		public String Name { get { return base.GetValue<String>(6); } }
+		public String Name => base.GetValue<String>(6);
 
 		/// <summary>Culture</summary>
-		public String Locale { get { return base.GetValue<String>(7); } }
+		public String Locale => base.GetValue<String>(7);
 
 		/// <summary>an index into the Blob heap</summary>
-		public Byte[] HashValue { get { return base.GetValue<Byte[]>(8); } }
+		public Byte[] HashValue => base.GetValue<Byte[]>(8);
 
 		/// <summary>Full assembly version</summary>
-		public Version Version { get { return new Version(this.MajorVersion, this.MinorVersion, this.BuildNumber, this.RevisionNumber); } }
+		public Version Version => new Version(this.MajorVersion, this.MinorVersion, this.BuildNumber, this.RevisionNumber);
 
 		/// <summary>Describes an assembly's unique identity in full</summary>
 		public AssemblyName AssemblyName
@@ -72,11 +72,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			}
 		}
 
+		/// <summary>Create instance of assembly reference row</summary>
+		public AssemblyRefRow()
+			: base(Cor.MetaTableType.AssemblyRef) { }
+
 		/// <summary>Describes an assembly's unique identity in full</summary>
 		/// <returns>String representation of the assembly</returns>
 		public override String ToString()
-		{
-			return this.AssemblyName.ToString();
-		}
+			=> this.AssemblyName.ToString();
 	}
 }

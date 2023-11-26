@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Resource directory</summary>
-	[DefaultProperty("DirectoryEntry")]
+	[DefaultProperty(nameof(DirectoryEntry))]
 	public class ResourceDirectory : IEnumerable<ResourceDirectory>, ISectionData
 	{
 		#region Fields
@@ -29,14 +29,9 @@ namespace AlphaOmega.Debug.NTDirectory
 
 		/// <summary>Описатель директории</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? Directory
-		{
-			get
-			{
-				return this.DirectoryEntry.IsDirectory
-					? this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.DirectoryAddress)
-					: (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null;
-			}
-		}
+			=> this.DirectoryEntry.IsDirectory
+				? this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.DirectoryAddress)
+				: (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null;
 
 		/// <summary>Наименование директории</summary>
 		public String Name
@@ -81,9 +76,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <param name="entry">Directory description</param>
 		/// <param name="root">PE directory</param>
 		public ResourceDirectory(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY entry, Resource root)
-			: this(entry, root, null)
-		{
-		}
+			: this(entry, root, null) { }
 
 		/// <summary>Create instance of resource directory class</summary>
 		/// <param name="entry">Directory description</param>
@@ -126,9 +119,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 
 		/// <summary>Convert langId to string representation</summary>
 		/// <param name="langId">culture identifier</param>

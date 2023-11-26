@@ -10,9 +10,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Method body descriptor</summary>
 	public class MethodBody
 	{
-		private static UInt32 SizeOfMethodSection = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodSection));
-		private static UInt32 SizeOfMethodExceptionFat = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionFat));
-		private static UInt32 SizeOfMethodExceptionSmall = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionSmall));
+		private static readonly UInt32 SizeOfMethodSection = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodSection));
+		private static readonly UInt32 SizeOfMethodExceptionFat = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionFat));
+		private static readonly UInt32 SizeOfMethodExceptionSmall = (UInt32)Marshal.SizeOf(typeof(Cor.CorILMethodExceptionSmall));
 
 		private static Dictionary<Int16, OpCode> _opCodeList;
 		private Cor.CorILMethodHeader? _header;
@@ -44,25 +44,30 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				{
 					PEHeader header = this.Row.Row.Table.Root.Parent.Parent.Parent.Header;
 					Byte check = header.ReadBytes(this.Row.RVA, 1)[0];
-					Boolean isFatFormat = (check & (Byte)Cor.CorILMethod.FatFormat) == (Byte)Cor.CorILMethod.FatFormat;
 
-					if(isFatFormat)
+					if((check & (Byte)Cor.CorILMethod.FatFormat) == (Byte)Cor.CorILMethod.FatFormat)
 						this._header = header.PtrToStructure<Cor.CorILMethodHeader>(this.Row.RVA);
-					else
+					else if((check & (Byte)Cor.CorILMethod.TinyFormat) == (Byte)Cor.CorILMethod.TinyFormat)
 						this._header = new Cor.CorILMethodHeader()
 						{
 							Format = Cor.CorILMethod.TinyFormat,
-							CodeSize = ((UInt32)check >> 2),//Пропускаю первые 2 бита с флагами
+							CodeSize = ((UInt32)check >> 2),//Skip first 2 bits with flags
 						};
+					else
+					{//Empty method without body (Yes. It could be like that)
+						this._header = new Cor.CorILMethodHeader()
+						{
+							Format = (Cor.CorILMethod)0,
+							CodeSize = 0,
+						};
+					}
 				}
 				return this._header.Value;
 			}
 		}
 
 		internal MethodBody(MethodDefRow row)
-		{
-			this.Row = row ?? throw new ArgumentNullException(nameof(row));
-		}
+			=> this.Row = row ?? throw new ArgumentNullException(nameof(row));
 
 		/// <summary>Gets method body</summary>
 		/// <returns>Byte array describes CIL</returns>
@@ -85,6 +90,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 			for(Int32 loop = 0; loop < data.Length; loop++)
 			{
+				Int32 line = loop;//Instruction line index
 				OpCode il = MethodBody.OpCodeList[data[loop]];
 				switch(il.Name)
 				{
@@ -102,58 +108,247 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				case "ldfld":
 				case "stfld":
 				case "call":
+				case "callvirt":
 				case "newobj":
+				case "newarr":
+				case "ldtoken":
+				case "ldsfld":
+				case "castclass":
+				case "isinst":
+				case "stelem":
+				case "box":
+				case "unbox.any":
+				case "ldelem":
+				case "stsfld":
+				case "ldftn":
+				case "ldelema":
+				case "stobj":
+				case "ldflda":
+				case "initobj":
+				case "ldobj":
+				case "ldsflda":
+				case "ldvirtftn":
+				case "constrained.":
 					UInt32 rawValue = BitConverter.ToUInt32(data, loop + 1);
 					MetaCellCodedToken token = new MetaCellCodedToken(cell, rawValue);
-					yield return new MethodLine(loop, il, token);
+					yield return new MethodLine(line, il, token);
 					loop += 4;
 					break;
-				//case "brfalse": (Вероятно тут не int)
-				case "ldc.i4":
+				case "brfalse":
+				case "brtrue":
+				case "br":
+				case "leave":
+				case "bne.un":
+				case "ble.un":
+				case "blt.un":
+				case "bge.un":
+				case "bgt.un":
+				case "blt":
+				case "ble":
+				case "beq":
+				case "bge":
+				case "bgt":
 					Int32 offset = BitConverter.ToInt32(data, loop + 1);
 					offset = (loop + 1) + sizeof(UInt32) + offset;
-					yield return new MethodLine(loop, il, offset);
+					yield return new MethodLine(line, il, new Int32[] { offset });
 					loop += 4;
 					break;
-				case "brtrue.s":
-					Byte offsetS = data[loop + 1];
-					yield return new MethodLine(loop, il, offsetS);
-					loop += 1;
-					break;
+				case "ldc.i4.s":
+				case "ldloca.s":
 				case "stloc.s":
 				case "ldloc.s":
-				case "ldc.i4.s":
-					Int32 vListIndex = data[loop + 1];
-					yield return new MethodLine(loop, il, vListIndex);
-					loop += 1;
+					yield return new MethodLine(line, il, (SByte)data[loop + 1]);
+					loop++;
+					break;
+				case "ldc.i4":
+					Int32 i4Value = BitConverter.ToInt32(data, loop + 1);
+					yield return new MethodLine(line, il, i4Value);
+					loop += sizeof(Int32);
+					break;
+				case "ldc.i8":
+					Int64 i8Value = BitConverter.ToInt64(data, loop + 1);
+					yield return new MethodLine(line, il, i8Value);
+					loop += sizeof(Int64);
+					break;
+				case "ldc.r4":
+					Single r4Value = BitConverter.ToSingle(data, loop + 1);
+					yield return new MethodLine(line, il, r4Value);
+					loop += sizeof(Single);
+					break;
+				case "ldc.r8":
+					Double r8Value = BitConverter.ToDouble(data, loop + 1);
+					yield return new MethodLine(line, il, r8Value);
+					loop += sizeof(Double);
+					break;
+				case "br.s":
+					yield return new MethodLine(line, il, new Int32[] { loop + 2 + data[loop + 1] });
+					loop++;
+					break;
+				case "blt.s":
+				case "bge.s":
+				case "beq.s":
+				case "bgt.s":
+				case "ble.s":
+				case "leave.s":
+				case "brfalse.s":
+				case "brtrue.s":
+				case "bgt.un.s":
+				case "bge.un.s":
+				case "bne.un.s":
+				case "ble.un.s":
+				case "blt.un.s":
+					yield return new MethodLine(line, il, new Int32[] { loop + 2 + (SByte)data[loop + 1] });
+					loop++;
+					break;
+				case "ldarg.s":
+				case "starg.s"://Load argument by sequence index
+					UInt16 argSequence = data[loop + 1];
+					foreach(MemberArgument item in this.Row.ParamList)
+						if(item.Sequence == argSequence)
+						{
+							yield return new MethodLine(line, il, item);
+							break;
+						}
+					loop++;
+					break;
+				case "ldarga.s"://Load argument by index
+					UInt16 argIndex = data[loop + 1];
+					UInt16 index = 0;
+					foreach(MemberArgument item in this.Row.ParamList)
+						if(argIndex == index++)
+						{
+							yield return new MethodLine(line, il, item);
+							break;
+						}
+					loop++;
+					break;
+				case "switch":
+					UInt32 count = BitConverter.ToUInt32(data, loop + 1);
+					Int32 sOffset = loop + sizeof(UInt32);//CHECK: Loop points to instruction here
+					Int32[] offsets = new Int32[count];
+					for(Int32 o = 0; o < offsets.Length; o++)
+					{
+						offsets[o] = BitConverter.ToInt32(data, sOffset);
+						sOffset += sizeof(Int32);
+					}
+					yield return new MethodLine(line, il, offsets);
+					loop = sOffset;
 					break;
 				case "ldstr":
 					Int32 rawValue1 = BitConverter.ToInt32(data, loop + 1);
 					Int32 usOffset = rawValue1 & 0xFFFFFF;
 					String str = cell.Table.Root.Parent.USHeap[usOffset];
-					yield return new MethodLine(loop, il, str);
+					yield return new MethodLine(line, il, str);
 					loop += 4;
 					break;
+				case "conv.i":
+				case "conv.i1":
+				case "conv.i2":
+				case "conv.i4":
+				case "conv.i8":
+				case "conv.u":
+				case "conv.u1":
+				case "conv.u2":
+				case "conv.u4":
+				case "conv.u8":
+				case "conv.r4":
+				case "conv.r8":
+				case "conv.ovf.i":
+				case "conv.r.un":
+				case "ldnull":
+				case "ldlen":
+				case "ldind.i1":
+				case "ldind.i2":
+				case "ldind.i4":
+				case "ldind.i8":
+				case "ldind.u1":
+				case "ldind.u2":
+				case "ldind.u4":
+				case "ldind.r4":
+				case "ldind.r8":
+				case "ldind.ref":
 				case "ldarg.0":
 				case "ldarg.1":
 				case "ldarg.2":
-				case "ldnull":
+				case "ldarg.3":
 				case "ldc.i4.0":
 				case "ldc.i4.1":
-				case "ret":
-				case "nop":
-				case "ceq":
-				case "throw":
+				case "ldc.i4.2":
+				case "ldc.i4.3":
+				case "ldc.i4.4":
+				case "ldc.i4.5":
+				case "ldc.i4.6":
+				case "ldc.i4.7":
+				case "ldc.i4.8":
+				case "ldc.i4.m1":
+				case "ldloc.0":
+				case "ldloc.1":
+				case "ldloc.2":
+				case "ldloc.3":
+				case "ldelem.i1":
+				case "ldelem.i2":
+				case "ldelem.i4":
+				case "ldelem.i8":
+				case "ldelem.u1":
+				case "ldelem.u2":
+				case "ldelem.u4":
+				case "ldelem.r4":
+				case "ldelem.r8":
+				case "ldelem.ref":
 				case "stloc.0":
 				case "stloc.1":
 				case "stloc.2":
 				case "stloc.3":
-				case "conv.u8":
+				case "stelem.i1":
+				case "stelem.i2":
+				case "stelem.i4":
+				case "stelem.i8":
+				case "stelem.r4":
+				case "stelem.r8":
+				case "stelem.ref":
+				case "stind.i1":
+				case "stind.i2":
+				case "stind.i4":
+				case "stind.i8":
+				case "stind.r4":
+				case "stind.r8":
+				case "stind.ref":
+				case "add":
+				case "add.ovf":
+				case "shr":
+				case "shr.un":
+				case "div":
+				case "div.un":
+				case "cgt":
+				case "cgt.un":
+				case "clt":
+				case "clt.un":
+				case "rem":
+				case "rem.un":
+				case "mul":
+				case "mul.ovf":
+				case "ret":
+				case "nop":
+				case "ceq":
+				case "dup":
+				case "neg":
+				case "xor":
+				case "and":
+				case "or":
+				case "not":
+				case "pop":
+				case "shl":
+				case "volatile.":
+				case "sub":
+				case "endfinally":
+				case "endfilter":
+				case "throw":
+				case "rethrow":
 					//if(il.OpCodeType)
-					yield return new MethodLine(loop, il);
+					yield return new MethodLine(line, il);
 					break;
 				default:
-					throw new NotImplementedException();
+					throw new NotImplementedException(il.Name);
 				}
 			}
 		}

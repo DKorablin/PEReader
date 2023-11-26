@@ -8,29 +8,22 @@ using System.Runtime.InteropServices;
 namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>Impot directory</summary>
-	[DefaultProperty("Header")]
-	[DebuggerDisplay("Header={Header}")]
+	[DefaultProperty(nameof(Header))]
+	[DebuggerDisplay("Header={"+nameof(Header)+"}")]
 	public class Import : PEDirectoryBase, IEnumerable<ImportModule>
 	{
 		private static readonly UInt32 SizeOfHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_IMPORT_DESCRIPTOR));
 
 		/// <summary>First descriptor of import functions</summary>
 		public WinNT.IMAGE_IMPORT_DESCRIPTOR? Header
-		{
-			get
-			{
-				return base.IsEmpty
+			=> base.IsEmpty
 					? (WinNT.IMAGE_IMPORT_DESCRIPTOR?)null
 					: this.Parent.Header.PtrToStructure<WinNT.IMAGE_IMPORT_DESCRIPTOR>(this.Directory.VirtualAddress);
-			}
-		}
 
 		/// <summary>Create instance of Import directory class</summary>
 		/// <param name="parent">Data directory</param>
 		public Import(PEFile parent)
-			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.IMPORT)
-		{
-		}
+			: base(parent, WinNT.IMAGE_DIRECTORY_ENTRY.IMPORT) { }
 
 		/// <summary>Get all import modules from image</summary>
 		/// <returns>Import modules</returns>
@@ -50,8 +43,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator();
-		}
+			=> this.GetEnumerator();
 	}
 }
