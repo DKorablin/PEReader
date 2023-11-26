@@ -23,7 +23,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Array of columns in a table</summary>
 		public MetaColumn[] Columns { get; }
-		IColumn[] ITable.Columns => this.Columns;
+		IColumn[] ITable.Columns { get { return this.Columns; } }
 
 		/// <summary>Array of rows in a table</summary>
 		private MetaRow[] RowsI => this._rows ?? (this._rows = new MetaRow[this.Root.GetRowsCount(this.TableType)]);
@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Table type</summary>
 		public Cor.MetaTableType TableType { get; }
-		Cor.MetaTableType ITable.Type => this.TableType;
+		Object ITable.Type => this.TableType;
 
 		/// <summary>The size of the entire data table</summary>
 		public UInt32 TableSize => this.RowSize * (UInt32)this.RowsI.Length;
