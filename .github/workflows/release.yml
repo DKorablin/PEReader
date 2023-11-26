@@ -73,7 +73,7 @@ jobs:
     - name: Setup .NET
       uses: microsoft/setup-msbuild@v1.1
     - name: Build .NET v2.0
-      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}35.sln" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/" -property:Version=${{needs.version.outputs.new_version}} -property:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
+      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}\${{env.SolutionName}}35.csproj" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/" -property:Version=${{needs.version.outputs.new_version}} -property:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -102,7 +102,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{env.SolutionName}}.sln
     - name: Build .NET Standard v2.0
-      run: dotnet build ${{env.SolutionName}}.sln --configuration Release --no-restore /p:OutputPath="../bin/" /p:DocumentationFile="../bin/${{env.SolutionName}}.xml" /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{steps.sign_key_file.outputs.filePath}}" /p:AssemblyVersion=${{needs.version.outputs.new_version}} /p:FileVersion=${{needs.version.outputs.new_version}} /p:InformationalVersion=${{needs.version.outputs.new_version}}
+      run: dotnet build ${{env.SolutionName}}\${{env.SolutionName}}.csproj --configuration Release --no-restore /p:OutputPath="../bin/" /p:DocumentationFile="../bin/${{env.SolutionName}}.xml" /p:SignAssembly=true /p:AssemblyOriginatorKeyFile="${{steps.sign_key_file.outputs.filePath}}" /p:AssemblyVersion=${{needs.version.outputs.new_version}} /p:FileVersion=${{needs.version.outputs.new_version}} /p:InformationalVersion=${{needs.version.outputs.new_version}}
     - name: Deploy artifacts
       uses: actions/upload-artifact@v3
       with:
