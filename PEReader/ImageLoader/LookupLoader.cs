@@ -29,11 +29,7 @@ namespace AlphaOmega.Debug
 		/// <param name="padding">Padding from the beginning of the image</param>
 		/// <returns>Readed structure from image</returns>
 		public override T PtrToStructure<T>(UInt32 padding)
-		{
-			T result = base.PtrToStructure<T>(padding);
-
-			return result;
-		}
+			=> base.PtrToStructure<T>(padding);
 
 		/// <summary>Get bytes from specific padding and specific length</summary>
 		/// <param name="padding">Padding from the beginning of the image</param>

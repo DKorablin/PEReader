@@ -28,6 +28,7 @@ namespace AlphaOmega.Debug
 				//String dll = @"C:\Program Files\HOMM_3.5\Data\zvs\h3blade.exe";
 				//String dll = @"C:\WINDOWS\WinSxS\x86_Microsoft.Tools.VisualCPlusPlus.Runtime-Libraries_6595b64144ccf1df_6.0.9792.0_x-ww_08a6620a\atl.dll";
 				//String dll = @"C:\Visual Studio Projects\Tests\ConsoleApp2\bin\Debug\net7.0\ConsoleApp2.dll";
+				//String dll = @"C:\Visual Studio Projects\Tests\EnumTestApp\EnumTestApp\bin\Debug\net7.0\ConsoleApp.bat.exe";
 
 				//TODO: INVALID. MetaData Address: 0x52463C Resources Address: 0x20780
 				//String dll = @"C:\Visual Studio Projects\C#\Shared.Classes\AjaxControlToolkit.dll";

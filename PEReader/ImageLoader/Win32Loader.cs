@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug
 {
 	/// <summary>HMODULE loader class</summary>
 	[DefaultProperty(nameof(BaseAddress))]
-	[DebuggerDisplay("BaseAddress={BaseAddress}")]
+	[DebuggerDisplay("BaseAddress={"+nameof(BaseAddress)+"}")]
 	public class Win32Loader : IImageLoader
 	{
 		internal class HModuleHandle : SafeHandleZeroOrMinusOneIsInvalid
@@ -21,31 +21,24 @@ namespace AlphaOmega.Debug
 
 			[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 			protected override Boolean ReleaseHandle()
-			{
-				return NativeMethods.FreeLibrary(base.handle);
-			}
+				=> NativeMethods.FreeLibrary(base.handle);
 		}
 
-		private Boolean _freeOnClose = false;
+		private readonly Boolean _freeOnClose = false;
 		private IntPtr? _hModule;
 
 		/// <summary>Required endianness</summary>
 		public EndianHelper.Endian Endianness { get; set; }
 
 		/// <summary>Module mapped to memory</summary>
-		public Boolean IsModuleMapped { get { return true; } }
-		/// <summary>Базовый адрес загруженного модуля</summary>
+		public Boolean IsModuleMapped => true;
+
+		/// <summary>Loaded module base address</summary>
 		/// <exception cref="ObjectDisposedException">Object disposed</exception>
 		public Int64 BaseAddress
-		{
-			get
-			{
-				if(this._hModule == null)
-					throw new ObjectDisposedException(nameof(_hModule));
-
-				return this._hModule.Value.ToInt64();
-			}
-		}
+			=> this._hModule == null
+				? throw new ObjectDisposedException(nameof(_hModule))
+				: this._hModule.Value.ToInt64();
 
 		/*public Win32Loader(String filePath)
 		{
@@ -91,8 +84,7 @@ namespace AlphaOmega.Debug
 		/// <returns>Loader</returns>
 		public static Win32Loader FromModule(ProcessModule module)
 		{
-			if(module == null)
-				throw new ArgumentNullException(nameof(module));
+			_ = module ?? throw new ArgumentNullException(nameof(module));
 
 			return new Win32Loader(module.BaseAddress, false);
 		}
@@ -101,8 +93,7 @@ namespace AlphaOmega.Debug
 		/// <param name="hModule">HMODULE</param>
 		public Win32Loader(IntPtr hModule)
 			: this(hModule, false)
-		{
-		}
+		{ }
 
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
@@ -113,14 +104,15 @@ namespace AlphaOmega.Debug
 		{
 			if(hModule == IntPtr.Zero)
 				throw new ArgumentNullException(nameof(hModule));
+
 			this._hModule = hModule;
 			this._freeOnClose = freeOnClode;
 		}
 
-		/// <summary>Получить массив байт с начала отступа</summary>
-		/// <param name="padding">Отступ от начала файла или RVA</param>
-		/// <param name="length">Читаемый размер</param>
-		/// <returns>Получить массив байт с отступа</returns>
+		/// <summary>Gets bytes array from padding</summary>
+		/// <param name="padding">Start of file offset or RVA</param>
+		/// <param name="length">Read length</param>
+		/// <returns>Read byte array from padding</returns>
 		public Byte[] ReadBytes(UInt32 padding, UInt32 length)
 		{
 			IntPtr target = new IntPtr(this.BaseAddress + padding);
@@ -130,23 +122,21 @@ namespace AlphaOmega.Debug
 			return result;
 		}
 
-		/// <summary>Получить структуру с определённого отступа</summary>
-		/// <typeparam name="T">Структура</typeparam>
-		/// <param name="padding">Отступ от начала файла или RVA</param>
-		/// <returns>Прочитанная структура</returns>
+		/// <summary>Gets the structure from padding</summary>
+		/// <typeparam name="T">Structure type</typeparam>
+		/// <param name="padding">Start of file offset or RVA</param>
+		/// <returns>Read structure</returns>
 		public T PtrToStructure<T>(UInt32 padding) where T : struct
 		{
 			IntPtr target = new IntPtr(this.BaseAddress + padding);
 			return (T)Marshal.PtrToStructure(target, typeof(T));
 		}
 
-		/// <summary>Получить строку с отпределённого отступа</summary>
-		/// <param name="padding">Отступ от начала файла или RVA</param>
-		/// <returns>Прочитанная строка</returns>
+		/// <summary>Gets the string from padding</summary>
+		/// <param name="padding">Start of file offset or RVA</param>
+		/// <returns>Read string</returns>
 		public String PtrToStringAnsi(UInt32 padding)
-		{
-			return Marshal.PtrToStringAnsi(new IntPtr(this.BaseAddress + padding));
-		}
+			=> Marshal.PtrToStringAnsi(new IntPtr(this.BaseAddress + padding));
 
 		/// <summary>Free HMODULE</summary>
 		/// <exception cref="Win32Exception">Can't unload library</exception>
