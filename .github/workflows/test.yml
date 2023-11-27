@@ -68,4 +68,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{env.SolutionName}}.sln
     - name: Build .NET Standard v2.0
-      run: dotnet build ${{env.SolutionName}}\${{env.SolutionName}}.csproj --configuration Release --no-restore /p:OutputPath="../bin/" /p:SignAssembly=false /p:DocumentationFile="../bin/${{env.SolutionName}}.xml"
+      run: dotnet build "${{github.workspace}}\${{env.SolutionName}}\${{env.SolutionName}}.csproj" --configuration Release --no-restore /p:OutputPath="../bin/" /p:SignAssembly=false /p:DocumentationFile="../bin/${{env.SolutionName}}.xml"
