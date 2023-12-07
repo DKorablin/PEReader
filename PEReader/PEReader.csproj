@@ -1,64 +1,60 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>AlphaOmega.Debug</RootNamespace>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <AssemblyTitle>PEReader</AssemblyTitle>
-    <Company>Danila Korablin</Company>
-    <Product>Portable Executable Reader</Product>
-    <Copyright>Copyright © Danila Korablin 2012-2023</Copyright>
-    <Configuration>Debug</Configuration>
-    <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <Deterministic>false</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
-    <DocumentationFile>..\..\bin\PEReader.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CopyLocalLockFileAssemblies>True</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-<PropertyGroup>
-    <SignAssembly>False</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\..\..\AlphaOmega (NoPwd).snk</AssemblyOriginatorKeyFile>
-</PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\FileReader.Shared\ImageData\IBaseRow.cs">
-      <Link>CorDirectory\Interface\IBaseRow.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageData\ICell.cs">
-      <Link>CorDirectory\Interface\ICell.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageData\IColumn.cs">
-      <Link>CorDirectory\Interface\IColumn.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageData\IRow.cs">
-      <Link>CorDirectory\Interface\IRow.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageData\IRowPointer.cs">
-      <Link>CorDirectory\Interface\IRowPointer.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageData\ITable.cs">
-      <Link>CorDirectory\Interface\ITable.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageData\ITables.cs">
-      <Link>CorDirectory\Interface\ITables.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageLoader\BinaryEndianReader.cs">
-      <Link>ImageLoader\BinaryEndianReader.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageLoader\EndianHelper.cs">
-      <Link>ImageLoader\EndianHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageLoader\IImageLoader.cs">
-      <Link>ImageLoader\IImageLoader.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageLoader\PinnedBufferReader.cs">
-      <Link>ImageLoader\PinnedBufferReader.cs</Link>
-    </Compile>
-    <Compile Include="..\FileReader.Shared\ImageLoader\StreamLoader.cs">
-      <Link>ImageLoader\StreamLoader.cs</Link>
-    </Compile>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<OutputType>Library</OutputType>
+		<RootNamespace>AlphaOmega.Debug</RootNamespace>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<AssemblyTitle>PEReader</AssemblyTitle>
+		<Company>Danila Korablin</Company>
+		<Product>Portable Executable Reader</Product>
+		<Copyright>Copyright © Danila Korablin 2012-2023</Copyright>
+		<Configuration>Debug</Configuration>
+		<AssemblyVersion>1.0.*</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<Deterministic>false</Deterministic>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<OutputPath>..\..\bin\</OutputPath>
+		<DocumentationFile>..\..\bin\PEReader.xml</DocumentationFile>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<CopyLocalLockFileAssemblies>True</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\FileReader.Shared\ImageData\IBaseRow.cs">
+			<Link>CorDirectory\Interface\IBaseRow.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageData\ICell.cs">
+			<Link>CorDirectory\Interface\ICell.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageData\IColumn.cs">
+			<Link>CorDirectory\Interface\IColumn.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageData\IRow.cs">
+			<Link>CorDirectory\Interface\IRow.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageData\IRowPointer.cs">
+			<Link>CorDirectory\Interface\IRowPointer.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageData\ITable.cs">
+			<Link>CorDirectory\Interface\ITable.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageData\ITables.cs">
+			<Link>CorDirectory\Interface\ITables.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageLoader\BinaryEndianReader.cs">
+			<Link>ImageLoader\BinaryEndianReader.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageLoader\EndianHelper.cs">
+			<Link>ImageLoader\EndianHelper.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageLoader\IImageLoader.cs">
+			<Link>ImageLoader\IImageLoader.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageLoader\PinnedBufferReader.cs">
+			<Link>ImageLoader\PinnedBufferReader.cs</Link>
+		</Compile>
+		<Compile Include="..\FileReader.Shared\ImageLoader\StreamLoader.cs">
+			<Link>ImageLoader\StreamLoader.cs</Link>
+		</Compile>
+	</ItemGroup>
 </Project>

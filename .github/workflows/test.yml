@@ -1,11 +1,11 @@
-name: Test & Buid
+name: Test, Buid
 
 on:
   pull_request:
     branches: [ "master" ]
 
 env:
-  SolutionName: PEReader
+  SolutionName: ${{github.event.repository.name}}
 
 jobs:
   test_net_standard20_windows:
