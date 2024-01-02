@@ -104,7 +104,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				}
 
 				switch(il.Name)
-				{
+				{//This is a test code of all tested OpCodes
 				case "ldfld":
 				case "stfld":
 				case "call":

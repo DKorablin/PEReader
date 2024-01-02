@@ -96,5 +96,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 					if(row.Parent.TargetRow == this.TypeDef)
 						yield return new AttributeReader(row);
 		}
+
+		/// <summary>Gets all the interfaces implemented or inherited by the current type</summary>
+		/// <returns>A list of <see cref="InterfaceImplRow"/> that describres all inherited interfaces for current type</returns>
+		public IEnumerable<InterfaceImplRow> GetInterfaces()
+		{
+			foreach(InterfaceImplRow row in this.TypeDef.Row.Table.Root.InterfaceImpl)
+				if(row.Class == this.TypeDef)
+					yield return row;
+		}
 	}
 }
