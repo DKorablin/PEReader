@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using AlphaOmega.Debug.CorDirectory.Meta.Reader;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
@@ -37,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			get
 			{
 				if(this._fixedArgs == null)
-					ParseSignature(out this._fixedArgs, out this._namedArgs);
+					this.ParseSignature(out this._fixedArgs, out this._namedArgs);
 				return this._fixedArgs;
 			}
 		}
@@ -48,8 +49,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			get
 			{
 				if(this._namedArgs == null)
-					ParseSignature(out this._fixedArgs, out this._namedArgs);
-				return this._namedArgs; ;
+					this.ParseSignature(out this._fixedArgs, out this._namedArgs);
+				return this._namedArgs;
 			}
 		}
 
@@ -70,7 +71,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			case Cor.MetaTableType.MethodDef:
 				MethodDefRow row1 = this.Type.GetTargetRowTyped<MethodDefRow>();
 				foreach(MemberArgument arg in row1.ParamList)
-					lArgs.Add(new MemberArgument(arg.Type, arg.Name, arg.Sequence) { Flags = arg.Flags, });
+				{
+					if(arg.ParamRow == null)//ParamRow can be null here
+						lArgs.Add(new MemberArgument(arg.Type, arg.Name, arg.Sequence) { Flags = arg.Flags, });
+					else
+						lArgs.Add(new MemberArgument(arg.Type, arg.ParamRow) { Flags = arg.Flags, });
+				}
 				break;
 			case Cor.MetaTableType.MemberRef:
 				MemberRefRow row2 = this.Type.GetTargetRowTyped<MemberRefRow>();
@@ -84,7 +90,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 			foreach(MemberArgument arg in lArgs)
 			{
-				Object value = ParseTypedValue(arg.Type, signature,out String enumType, ref offset);
+				Object value = this.ParseTypedValue(arg.Type, signature,out String enumType, ref offset);
 				arg.EnumType = enumType;
 				arg.Value = value;
 			}
@@ -100,24 +106,24 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				case Cor.ELEMENT_TYPE.FIELD:
 					ElementType element = new ElementType(this.Row.Cells[0], signature, ref offset);
 
-					String enumType;
+					String enumTypeName;
 					String elementName;
 					Object elementValue;
 					switch(element.Type)
 					{
-					case Cor.ELEMENT_TYPE.ENUM://Enum stored as: {.NET Type} + {Property/Field name} + {EnumValue (Int32)} - We can get size of enum only from TypeDef otherwise we have to load external assembly...
-						enumType = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
+					case Cor.ELEMENT_TYPE.ENUM:
+						enumTypeName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
 						elementName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
-						elementValue = ParseTypedValue(Cor.ELEMENT_TYPE.I4, signature, ref offset);//BUG: (2 places) We can't read size of VALUETYPE if ENUM defined in external assembly
+						elementValue = ParseTypedValue(this.FindEnumBaseType(enumTypeName), signature, ref offset);
 						break;
 					default:
-						enumType = null;
+						enumTypeName = null;
 						elementName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
-						elementValue = ParseTypedValue(element, signature, out enumType, ref offset);
+						elementValue = this.ParseTypedValue(element, signature, out enumTypeName, ref offset);
 						break;
 					}
 					
-					lMembers.Add(new MemberElement(type, element, elementName) { EnumType = enumType, Value = elementValue});
+					lMembers.Add(new MemberElement(type, element, elementName) { EnumType = enumTypeName, Value = elementValue});
 					break;
 				default:
 					throw new InvalidOperationException($"Attribute value can contain only {Cor.ELEMENT_TYPE.PROPERTY} or {Cor.ELEMENT_TYPE.FIELD}. Got: {type}");
@@ -134,9 +140,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			members = lMembers.ToArray();
 		}
 
-		private Object ParseTypedValue(ElementType type, Byte[] value, out String enumType, ref UInt32 offset)
+		private Object ParseTypedValue(ElementType type, Byte[] value, out String enumTypeName, ref UInt32 offset)
 		{
-			enumType = null;
+			enumTypeName = null;
 
 			if(type.IsArray)
 			{//TODO: We will nedd to parse subsequent bytes with respect of types described int the ELSE block lower
@@ -153,13 +159,33 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				case Cor.ELEMENT_TYPE.OBJECT:
 				case Cor.ELEMENT_TYPE.BOXED://Yup. Both OBJECT and BOXED can contains ENUM type
 					ElementType objType = new ElementType(this.Row.Cells[0], value, ref offset);
-					return ParseTypedValue(objType, value, out enumType, ref offset);
+					return this.ParseTypedValue(objType, value, out enumTypeName, ref offset);
 				case Cor.ELEMENT_TYPE.ENUM:
-					enumType = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, value, ref offset);
-					return ParseTypedValue(Cor.ELEMENT_TYPE.I4, value, ref offset);//BUG: (2 places) We can't read size of VALUETYPE if ENUM defined in external assembly
+					enumTypeName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, value, ref offset);
+					return ParseTypedValue(this.FindEnumBaseType(enumTypeName), value, ref offset);
 				default:
 					return ParseTypedValue(type.Type, value, ref offset);
 				}
+			}
+		}
+
+		private Cor.ELEMENT_TYPE FindEnumBaseType(String enumTypeName)
+		{
+			if(enumTypeName.IndexOf(',') > -1)
+			{
+				//Enum stored as: {.NET Type} + {Property/Field name} + {EnumValue (Int32)} - We can get size of enum only from TypeDef otherwise we have to load external assembly...
+				//BUG: We can't read size of VALUETYPE if ENUM defined in external assembly
+				return Cor.ELEMENT_TYPE.I4;
+			} else
+			{
+				foreach(TypeDefRow typeDef in this.Row.Table.Root.TypeDef)
+					if(new TypeReader(typeDef).FullName == enumTypeName)
+					{
+						foreach(FieldRow field in typeDef.FieldList)
+							if(field.Name == "value__" && field.ReturnType.Type != Cor.ELEMENT_TYPE.VALUETYPE)
+								return field.ReturnType.Type;//TODO: We need to check field type related to the official docs
+					}
+				throw new NotSupportedException($"Valuetype for enum {enumTypeName} is required to read value for attribute argument value but it's not found");
 			}
 		}
 

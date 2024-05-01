@@ -7,7 +7,6 @@ namespace AlphaOmega.Debug
 	/// <summary>PE/PE+ file description</summary>
 	public class PEFile : IDisposable
 	{
-
 		#region Fields
 		private Sections _sections;
 

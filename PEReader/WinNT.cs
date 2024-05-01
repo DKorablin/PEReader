@@ -2596,6 +2596,62 @@ namespace AlphaOmega.Debug
 		/// <summary>Load config headers</summary>
 		public struct LoadConfig
 		{
+			/// <summary>Control Flow Guard</summary>
+			[Flags]
+			public enum IMAGE_GUARD : UInt32
+			{
+				/// <summary>Module performs control flow integrity checks using system-supplied support</summary>
+				CF_INSTRUMENTED = 0x00000100,
+				/// <summary>Module performs control flow and write integrity checks</summary>
+				CFW_INSTRUMENTED = 0x00000200,
+				/// <summary>Module contains valid control flow target metadata</summary>
+				CF_FUNCTION_TABLE_PRESENT = 0x00000400,
+				/// <summary>Module does not make use of the /GS security cookie</summary>
+				SECURITY_COOKIE_UNUSED = 0x00000800,
+				/// <summary>Module supports read only delay load IAT</summary>
+				PROTECT_DELAYLOAD_IAT = 0x00001000,
+				/// <summary>Delayload import table in its own .didat section (with nothing else in it) that can be freely reprotected</summary>
+				DELAYLOAD_IAT_IN_ITS_OWN_SECTION = 0x00002000,
+				/// <summary>Module contains suppressed export information</summary>
+				/// <remarks>This also infers that the address taken IAT table is also present in the load config</remarks>
+				CF_EXPORT_SUPPRESSION_INFO_PRESENT = 0x00004000,
+				/// <summary>Module enables suppression of exports</summary>
+				CF_ENABLE_EXPORT_SUPPRESSION = 0x00008000,
+				/// <summary>Module contains longjmp target information</summary>
+				CF_LONGJUMP_TABLE_PRESENT = 0x00010000,
+				/// <summary>banana</summary>
+				RF_INSTRUMENTED = 0x00020000,
+				/// <summary>banana</summary>
+				RF_ENABLE = 0x00040000,
+				/// <summary>banana</summary>
+				RF_STRICT = 0x00080000,
+				/// <summary>banana</summary>
+				RETPOLINE_PRESENT = 0x00100000,
+				/// <summary>Module contains EH continuation target information</summary>
+				EH_CONTINUATION_TABLE_PRESENT = 0x00400000,
+				/// <summary>banana</summary>
+				XFG_ENABLED = 0x00800000,
+				/// <summary>Mask for the subfield that contains the stride of Control Flow Guard function table entries (that is, the additional count of bytes per table entry).</summary>
+				CF_FUNCTION_TABLE_SIZE_MASK = 0xF0000000,
+				/// <summary>banana</summary>
+				CF_FUNCTION_TABLE_SIZE_SHIFT = 28,//TODO: CF_FUNCTION_TABLE_SIZE_5BYTES->CF_FUNCTION_TABLE_SIZE_19BYTES
+			}
+
+			/// <summary>Redefinition of the IMAGE_LOAD_CONFIG_CODE_INTEGRITY structure.</summary>
+			/// <remarks>This corresponds to the structure as encountered in the version 10.0+ of the Windows SDK.</remarks>
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IMAGE_LOAD_CONFIG_CODE_INTEGRITY
+			{
+				/// <summary>Flags to indicate if CI information is available, etc.</summary>
+				public UInt16 Flags;
+				/// <summary>0xFFFF means not available</summary>
+				public UInt16 Catalog;
+				/// <summary>banana</summary>
+				public UInt32 CatalogOffset;
+				/// <summary>Additional bitmask to be defined later</summary>
+				public UInt32 Reserved;
+			}
+
 			/// <summary>Load Configuration Directory Entry</summary>
 			/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms680328%28v=vs.85%29.aspx</remarks>
 			[StructLayout(LayoutKind.Sequential)]
@@ -2623,8 +2679,8 @@ namespace AlphaOmega.Debug
 				/// <summary>The global flags that control system behavior</summary>
 				/// <remarks>For more information, see Gflags.exe</remarks>
 				public UInt32 GlobalFlagsSet;
-				
-				/// <summary>The critical section default time-out value</summary>
+
+				/// <summary>The default timeout value to use for this process's critical sections that are abandoned</summary>
 				public UInt32 CriticalSectionDefaultTimeout;
 				
 				/// <summary>The size of the minimum block that must be freed before it is freed (de-committed), in bytes</summary>
@@ -2679,11 +2735,102 @@ namespace AlphaOmega.Debug
 				/// <remarks>This member is available only for x86</remarks>
 				public UInt32 SEHandlerCount;
 
+				#region Windows SDK v8.1+
+				/// <summary>The VA where Control Flow Guard check-function pointer is stored</summary>
+				public UInt32 GuardCFCheckFunctionPointer;
+
+				/// <summary>The VA where Control Flow Guard dispatch-function pointer is stored</summary>
+				public UInt32 GuardCFDispatchFunctionPointer;
+
+				/// <summary>The VA of the sorted table of RVAs of each Control Flow Guard function in the image</summary>
+				public UInt32 GuardCFFunctionTable;
+
+				/// <summary>The count of unique RVAs in the above table</summary>
+				public UInt32 GuardCFFunctionCount;
+
+				/// <summary>Control Flow Guard related flags</summary>
+				public IMAGE_GUARD GuardFlags;
+				#endregion Windows SDK v8.1+
+
+				#region Windows SDK v10.0.10586.0+
+				/// <summary>Code integrity information</summary>
+				public IMAGE_LOAD_CONFIG_CODE_INTEGRITY CodeIntegrity;
+
+				/// <summary>The VA where Control Flow Guard address taken IAT table is stored</summary>
+				public UInt32 GuardAddressTakenIatEntryTable;
+
+				/// <summary>The count of unique RVAs in the above table</summary>
+				public UInt32 GuardAddressTakenIatEntryCount;
+
+				/// <summary>The VA where Control Flow Guard long jump target table is stored</summary>
+				public UInt32 GuardLongJumpTargetTable;
+
+				/// <summary>The count of unique RVAs in the above table</summary>
+				public UInt32 GuardLongJumpTargetCount;
+
+				/// <summary>DynamicValue relocation table</summary>
+				public UInt32 DynamicValueRelocTable;
+
+				/// <summary>Hybrid metadata pointer</summary>
+				public UInt32 CHPEMetadataPointer;
+				#endregion Windows SDK v10.0.10586.0+
+
+				#region Windows SDK v10.0.15063.468+
+				/// <summary>GuardRF failure-function routine</summary>
+				public UInt32 GuardRFFailureRoutine;
+				/// <summary>GuardRF failure-function pointer</summary>
+				public UInt32 GuardRFFailureRoutineFunctionPointer;
+				/// <summary>DynamicValue relocation table offset</summary>
+				public UInt32 DynamicValueRelocTableOffset;
+				/// <summary>DynamicValue relocation section</summary>
+				public UInt16 DynamicValueRelocTableSection;
+				/// <summary>This field is reserved for the future use</summary>
+				public UInt16 Reserved2;
+				/// <summary>GuardRF verify-stack pointer</summary>
+				public UInt32 GuardRFVerifyStackPointerFunctionPointer;
+				/// <summary>Hot patching table offset</summary>
+				public UInt32 HotPatchTableOffset;
+				#endregion Windows SDK v10.0.15063.468+
+
+				/// <summary>This field is reserved for the future use</summary>
+				public UInt32 Reserved3;
+				/// <summary>Enclave configuration pointer</summary>
+				public UInt32 EnclaveConfigurationPointer;
+				/// <summary>Volatile metadata pointer</summary>
+				public UInt32 VolatileMetadataPointer;
+				/// <summary>Guard EH Continuation table</summary>
+				public UInt32 GuardEHContinuationTable;
+				/// <summary>Guard EH Continuation table entry count</summary>
+				public UInt32 GuardEHContinuationCount;
+				/// <summary>XFG check-function pointer</summary>
+				public UInt32 GuardXFGCheckFunctionPointer;
+				/// <summary>XFG dispatch-function pointer</summary>
+				public UInt32 GuardXFGDispatchFunctionPointer;
+				/// <summary>XFG table dispatch-function pointer</summary>
+				public UInt32 GuardXFGTableDispatchFunctionPointer;
+				/// <summary>Cast guard failure mode</summary>
+				public UInt32 CastGuardOsDeterminedFailureMode;
+				/// <summary>Guard memcpy function pointer</summary>
+				public UInt32 GuardMemcpyFunctionPointer;
+
 				/// <summary>The date and time stamp value</summary>
 				public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 				
 				/// <summary>Version number</summary>
 				public Version Version => new Version(this.MajorVersion, this.MinorVersion);
+
+				/// <summary>The initial minimum size</summary>
+				public static UInt32 Size80 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32.GuardCFCheckFunctionPointer)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v8.1+</summary>
+				public static UInt32 Size81 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32.CodeIntegrity)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v10.0.10586.0+ without code integrity</summary>
+				public static UInt32 Size100WithoutCodeIntegrity => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32.CodeIntegrity)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v10.0.10586.0+ with code integrity</summary>
+				public static UInt32 Size100NoCFG => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32.GuardAddressTakenIatEntryTable)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v10.0.15063.468+</summary>
+				public static UInt32 SizeSize10010586 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32.GuardRFFailureRoutine)).ToInt32();
+				/// <summary>The size of the latest known structure</summary>
+				public static UInt32 SizeSize10015063 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY32.Reserved3)).ToInt32();
 			}
 
 			/// <summary>Load Configuration Directory Entry</summary>
@@ -2715,8 +2862,8 @@ namespace AlphaOmega.Debug
 				/// <summary>The global flags that control system behavior</summary>
 				/// <remarks>For more information, see Gflags.exe</remarks>
 				public UInt32 GlobalFlagsSet;
-				
-				/// <summary>The critical section default time-out value</summary>
+
+				/// <summary>The default timeout value to use for this process's critical sections that are abandoned</summary>
 				public UInt32 CriticalSectionDefaultTimeout;
 
 				/// <summary>The size of the minimum block that must be freed before it is freed (de-committed), in bytes</summary>
@@ -2768,12 +2915,210 @@ namespace AlphaOmega.Debug
 				/// <summary>The count of unique handlers in the table</summary>
 				/// <remarks>This member is available only for x86</remarks>
 				public UInt64 SEHandlerCount;
-				
+
+				#region Windows SDK v8.1+
+				/// <summary>The VA where Control Flow Guard check-function pointer is stored</summary>
+				public UInt64 GuardCFCheckFunctionPointer;
+
+				/// <summary>The VA where Control Flow Guard dispatch-function pointer is stored</summary>
+				public UInt64 GuardCFDispatchFunctionPointer;
+
+				/// <summary>The VA of the sorted table of RVAs of each Control Flow Guard function in the image</summary>
+				public UInt64 GuardCFFunctionTable;
+
+				/// <summary>The count of unique RVAs in the above table</summary>
+				public UInt64 GuardCFFunctionCount;
+
+				/// <summary>Control Flow Guard related flags</summary>
+				public IMAGE_GUARD GuardFlags;
+				#endregion Windows SDK v8.1+
+
+				#region Windows SDK v10.0.10586.0+
+				/// <summary>Code integrity information</summary>
+				public IMAGE_LOAD_CONFIG_CODE_INTEGRITY CodeIntegrity;
+
+				/// <summary>The VA where Control Flow Guard address taken IAT table is stored</summary>
+				public UInt64 GuardAddressTakenIatEntryTable;
+
+				/// <summary>The count of unique RVAs in the above table</summary>
+				public UInt64 GuardAddressTakenIatEntryCount;
+
+				/// <summary>The VA where Control Flow Guard long jump target table is stored</summary>
+				public UInt64 GuardLongJumpTargetTable;
+
+				/// <summary>The count of unique RVAs in the above table</summary>
+				public UInt64 GuardLongJumpTargetCount;
+
+				/// <summary>DynamicValue relocation table</summary>
+				public UInt64 DynamicValueRelocTable;
+
+				/// <summary>Hybrid metadata pointer</summary>
+				public UInt64 CHPEMetadataPointer;
+				#endregion Windows SDK v10.0.10586.0+
+
+				#region Windows SDK v10.0.15063.468+
+				/// <summary>GuardRF failure-function routine</summary>
+				public UInt64 GuardRFFailureRoutine;
+				/// <summary>GuardRF failure-function pointer</summary>
+				public UInt64 GuardRFFailureRoutineFunctionPointer;
+				/// <summary>DynamicValue relocation table offset</summary>
+				public UInt32 DynamicValueRelocTableOffset;
+				/// <summary>DynamicValue relocation section</summary>
+				public UInt16 DynamicValueRelocTableSection;
+				/// <summary>This field is reserved for the future use</summary>
+				public UInt16 Reserved2;
+				/// <summary>GuardRF verify-stack pointer</summary>
+				public UInt64 GuardRFVerifyStackPointerFunctionPointer;
+				/// <summary>Hot patching table offset</summary>
+				public UInt32 HotPatchTableOffset;
+				#endregion Windows SDK v10.0.15063.468+
+
+				/// <summary>This field is reserved for the future use</summary>
+				public UInt32 Reserved3;
+				/// <summary>Enclave configuration pointer</summary>
+				public UInt64 EnclaveConfigurationPointer;
+				/// <summary>Volatile metadata pointer</summary>
+				public UInt64 VolatileMetadataPointer;
+				/// <summary>Guard EH Continuation table</summary>
+				public UInt64 GuardEHContinuationTable;
+				/// <summary>Guard EH Continuation table entry count</summary>
+				public UInt64 GuardEHContinuationCount;
+				/// <summary>XFG check-function pointer</summary>
+				public UInt64 GuardXFGCheckFunctionPointer;
+				/// <summary>XFG dispatch-function pointer</summary>
+				public UInt64 GuardXFGDispatchFunctionPointer;
+				/// <summary>XFG table dispatch-function pointer</summary>
+				public UInt64 GuardXFGTableDispatchFunctionPointer;
+				/// <summary>Cast guard failure mode</summary>
+				public UInt64 CastGuardOsDeterminedFailureMode;
+				/// <summary>Guard memcpy function pointer</summary>
+				public UInt64 GuardMemcpyFunctionPointer;
+
 				/// <summary>The date and time stamp value</summary>
 				public DateTime? TimeDate => NativeMethods.ConvertTimeDateStamp(this.TimeDateStamp);
 				
 				/// <summary>Version number</summary>
 				public Version Version => new Version(this.MajorVersion, this.MinorVersion);
+
+				/// <summary>The initial minimum size</summary>
+				public static UInt32 Size80 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64.GuardCFCheckFunctionPointer)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v8.1+</summary>
+				public static UInt32 Size81 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64.CodeIntegrity)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v10.0.10586.0+ without code integrity</summary>
+				public static UInt32 Size100WithoutCodeIntegrity => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64.CodeIntegrity)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v10.0.10586.0+ with code integrity</summary>
+				public static UInt32 Size100NoCFG=> (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64.GuardAddressTakenIatEntryTable)).ToInt32();
+				/// <summary>The size of the structure added from Windows SDK v10.0.15063.468+</summary>
+				public static UInt32 SizeSize10010586 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64.GuardRFFailureRoutine)).ToInt32();
+				/// <summary>The size of the latest known structure</summary>
+				public static UInt32 SizeSize10015063 => (UInt32)Marshal.OffsetOf(typeof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64), nameof(WinNT.LoadConfig.IMAGE_LOAD_CONFIG_DIRECTORY64.Reserved3)).ToInt32();
+			}
+		}
+
+		/// <summary>Describes the identity of the primary module of an enclave</summary>
+		public static class ImageEnclave
+		{
+			/// <summary>banana</summary>
+			public const Int32 IMAGE_ENCLAVE_LONG_ID_LENGTH = 32;
+			/// <summary>banana</summary>
+			public const Int32 IMAGE_ENCLAVE_SHORT_ID_LENGTH = 16;
+
+			/// <summary>A flag that indicates whether the enclave permits debugging</summary>
+			public enum PolicyFlags : UInt32
+			{
+				/// <summary>The enclave does not permit debugging</summary>
+				None = 0x00000000,
+				/// <summary>The enclave permits debugging</summary>
+				DEBUGGABLE = 0x00000001,
+			}
+
+			/// <summary>A flag that indicates whether the image is suitable for use as the primary image in the enclave</summary>
+			public enum EnclaveFlags : UInt32
+			{
+				/// <summary>The image is not suitable for use as the primary image in the enclave</summary>
+				None = 0x00000000,
+				/// <summary>The image is suitable for use as the primary image in the enclave</summary>
+				PRIMARY_IMAGE = 0x00000001,
+			}
+
+			/// <summary>Defines the format of the enclave configuration for systems running 32-bit Windows</summary>
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IMAGE_ENCLAVE_CONFIG32
+			{
+				/// <summary>The size of the IMAGE_ENCLAVE_CONFIG32 structure, in bytes</summary>
+				public UInt32 Size;
+				/// <summary>The minimum size of the IMAGE_ENCLAVE_CONFIG32 structure that the image loader must be able to process in order for the enclave to be usable</summary>
+				/// <remarks>
+				/// This member allows an enclave to inform an earlier version of the image loader that the image loader can safely load the enclave and ignore optional members added to IMAGE_ENCLAVE_CONFIG32 for later versions of the enclave.
+				/// If the size of IMAGE_ENCLAVE_CONFIG32 that the image loader can process is less than MinimumRequiredConfigSize, the enclave cannot be run securely.
+				/// 
+				/// If MinimumRequiredConfigSize is zero, the minimum size of the IMAGE_ENCLAVE_CONFIG32 structure that the image loader must be able to process in order for the enclave to be usable is assumed to be the size of the structure through and including the MinimumRequiredConfigSize member.
+				/// </remarks>
+				public UInt32 MinimumRequiredConfigSize;
+				/// <summary>A flag that indicates whether the enclave permits debugging</summary>
+				public PolicyFlags PolicyFlags;
+				/// <summary>The number of images in the array of images that the ImportList member points to</summary>
+				public UInt32 NumberOfImports;
+				/// <summary>The relative virtual address of the array of images that the enclave image may import, with identity information for each image</summary>
+				public UInt32 ImportList;
+				/// <summary>The size of each image in the array of images that the ImportList member points to</summary>
+				public UInt32 ImportEntrySize;
+				/// <summary>The family identifier that the author of the enclave assigned to the enclave</summary>
+				[MarshalAs(UnmanagedType.ByValArray, SizeConst = IMAGE_ENCLAVE_SHORT_ID_LENGTH)]
+				public Byte[] FamilyID;
+				/// <summary>The image identifier that the author of the enclave assigned to the enclave</summary>
+				[MarshalAs(UnmanagedType.ByValArray, SizeConst = IMAGE_ENCLAVE_SHORT_ID_LENGTH)]
+				public Byte[] ImageID;
+				/// <summary>The version number that the author of the enclave assigned to the enclave</summary>
+				public UInt32 ImageVersion;
+				/// <summary>The security version number that the author of the enclave assigned to the enclave</summary>
+				public UInt32 SecurityVersion;
+				/// <summary>The expected virtual size of the private address range for the enclave, in bytes</summary>
+				public UInt32 EnclaveSize;
+				/// <summary>The maximum number of threads that can be created within the enclave</summary>
+				public UInt32 NumberOfThreads;
+				/// <summary>A flag that indicates whether the image is suitable for use as the primary image in the enclave</summary>
+				public EnclaveFlags EnclaveFlags;
+			}
+
+			/// <summary>Defines the format of the enclave configuration for systems running 32-bit Windows</summary>
+			[StructLayout(LayoutKind.Sequential)]
+			public struct IMAGE_ENCLAVE_CONFIG64
+			{
+				/// <summary>The size of the IMAGE_ENCLAVE_CONFIG64 structure, in bytes</summary>
+				public UInt32 Size;
+				/// <summary>The minimum size of the IMAGE_ENCLAVE_CONFIG64 structure that the image loader must be able to process in order for the enclave to be usable</summary>
+				/// <remarks>
+				/// This member allows an enclave to inform an earlier version of the image loader that the image loader can safely load the enclave and ignore optional members added to IMAGE_ENCLAVE_CONFIG64 for later versions of the enclave.
+				/// If the size of IMAGE_ENCLAVE_CONFIG64 that the image loader can process is less than MinimumRequiredConfigSize, the enclave cannot be run securely.
+				/// 
+				/// If MinimumRequiredConfigSize is zero, the minimum size of the IMAGE_ENCLAVE_CONFIG64 structure that the image loader must be able to process in order for the enclave to be usable is assumed to be the size of the structure through and including the MinimumRequiredConfigSize member.
+				/// </remarks>
+				public UInt32 MinimumRequiredConfigSize;
+				/// <summary>A flag that indicates whether the enclave permits debugging</summary>
+				public PolicyFlags PolicyFlags;
+				/// <summary>The number of images in the array of images that the ImportList member points to</summary>
+				public UInt32 NumberOfImports;
+				/// <summary>The relative virtual address of the array of images that the enclave image may import, with identity information for each image</summary>
+				public UInt32 ImportList;
+				/// <summary>The size of each image in the array of images that the ImportList member points to</summary>
+				public UInt32 ImportEntrySize;
+				/// <summary>The family identifier that the author of the enclave assigned to the enclave</summary>
+				[MarshalAs(UnmanagedType.ByValArray, SizeConst = IMAGE_ENCLAVE_SHORT_ID_LENGTH)]
+				public Byte[] FamilyID;
+				/// <summary>The image identifier that the author of the enclave assigned to the enclave</summary>
+				[MarshalAs(UnmanagedType.ByValArray, SizeConst = IMAGE_ENCLAVE_SHORT_ID_LENGTH)]
+				public Byte[] ImageID;
+				/// <summary>The version number that the author of the enclave assigned to the enclave</summary>
+				public UInt32 ImageVersion;
+				/// <summary>The security version number that the author of the enclave assigned to the enclave</summary>
+				public UInt32 SecurityVersion;
+				/// <summary>The expected virtual size of the private address range for the enclave, in bytes</summary>
+				public UInt64 EnclaveSize;
+				/// <summary>The maximum number of threads that can be created within the enclave</summary>
+				public UInt32 NumberOfThreads;
+				/// <summary>A flag that indicates whether the image is suitable for use as the primary image in the enclave</summary>
+				public EnclaveFlags EnclaveFlags;
 			}
 		}
 
@@ -2909,7 +3254,6 @@ namespace AlphaOmega.Debug
 						Byte[] secondHeader = BitConverter.GetBytes(this.secondPart);
 						Byte[] thirdHeader = BitConverter.GetBytes(this.thirdPart);
 						Byte[] fourthHeader = BitConverter.GetBytes(this.fourthPart);
-
 
 						Byte[] finalGuid = new Byte[16];
 

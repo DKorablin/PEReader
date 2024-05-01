@@ -239,10 +239,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		private VersionItem GetStringVersionItem(PinnedBufferReader reader, ref UInt32 padding)
 		{
-			VersionItem result = new VersionItem();
-
-			result.Item = reader.BytesToStructure<WinNT.Resource.V_STRING>(ref padding);
-			result.szKey = reader.BytesToStringUni(ref padding);
+			VersionItem result = new VersionItem
+			{
+				Item = reader.BytesToStructure<WinNT.Resource.V_STRING>(ref padding),
+				szKey = reader.BytesToStringUni(ref padding)
+			};
 
 			padding = NativeMethods.AlignToInt(padding);
 

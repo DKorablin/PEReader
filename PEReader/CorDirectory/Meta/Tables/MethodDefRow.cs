@@ -66,14 +66,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 					yield break;
 
 				UInt16 argsIndex = 0;
-				foreach(MetaRow row in ParamListI.GetTargetRowsIt())
+				foreach(MetaRow row in this.ParamListI.GetTargetRowsIt())
 				{
 					ParamRow param = new ParamRow { Row = row, };
 					if(param.Sequence == 0x00)//TODO: This param applied to return object
 						continue;
 
 					ElementType argument = this.SignatureI.ArgumentsTypes[argsIndex++];
-					yield return new MemberArgument(argument, param.Name, param.Sequence) { Flags = param.Flags, };
+					yield return new MemberArgument(argument, param) { Flags = param.Flags, };
 				}
 
 				if(argsIndex == 0 && this.SignatureI.ArgumentsTypes.Length > 0)//Arguments without reference to MetaTable

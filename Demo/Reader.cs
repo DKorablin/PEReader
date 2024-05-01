@@ -16,14 +16,12 @@ namespace AlphaOmega.Debug
 		private readonly ConsoleWriter _console;
 
 		public Reader(ConsoleWriter console)
-		{
-			this._console = console;
-		}
+			=> this._console = console;
 
 		public void ReadPeInfo2(String dll, Boolean showDllName)
 		{
 			if(showDllName)
-				_console.WriteLine($"Reading file: {dll}");
+				this._console.WriteLine($"Reading file: {dll}");
 
 			using(PEFile info = new PEFile(dll, StreamLoader.FromFile(dll)))
 			{
@@ -32,35 +30,35 @@ namespace AlphaOmega.Debug
 					WinNT.IMAGE_FILE_HEADER fileHeader = info.Header.Is64Bit
 					? info.Header.HeaderNT64.FileHeader
 					: info.Header.HeaderNT32.FileHeader;
-					_console.ConsoleWriteMembers(fileHeader);
+					this._console.ConsoleWriteMembers(fileHeader);
 
 					foreach(var section in info.Sections)
 					{
 						if(section.Header.Section != null && section.Description == null)
-							_console.WriteLine($"Unknown section name: {section.Header.Section}");
+							this._console.WriteLine($"Unknown section name: {section.Header.Section}");
 
-						_console.ConsoleWriteMembers(section);
+						this._console.ConsoleWriteMembers(section);
 					}
 
 					if(info.Header.SymbolTable != null)
-						_console.ConsoleWriteMembers(info.Header.SymbolTable.Value);
+						this._console.ConsoleWriteMembers(info.Header.SymbolTable.Value);
 
 					if(!info.Resource.IsEmpty)
 					{
-						_console.WriteLine("===Resources===");
+						this._console.WriteLine("===Resources===");
 						Int32 directoriesCount = 0;
 
 						foreach(var dir in info.Resource)
 						{
 							directoriesCount++;
 							//_console.WriteLine($"dir: {dir.NameAddress}");
-							_console.WriteLine($"Resource dir: {dir.Name}");
+							this._console.WriteLine($"Resource dir: {dir.Name}");
 							foreach(var dir1 in dir)
 							{
-								_console.WriteLine($"----- {dir1.Name}");
+								this._console.WriteLine($"----- {dir1.Name}");
 								foreach(var dir2 in dir1)
 								{
-									_console.WriteLine($"-------- {dir2.Name}");
+									this._console.WriteLine($"-------- {dir2.Name}");
 									if(dir2.DirectoryEntry.IsDataEntry)
 									{
 										switch(dir.DirectoryEntry.NameType)
@@ -68,20 +66,20 @@ namespace AlphaOmega.Debug
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_VERSION:
 											var version1 = new AlphaOmega.Debug.NTDirectory.Resources.ResourceVersion(dir2);
 											var strFileInfo = version1.GetFileInfo();
-											_console.ConsoleWriteMembers(version1.FileInfo.Value);
+											this._console.ConsoleWriteMembers(version1.FileInfo.Value);
 
 											//WinNT.StringFileInfo fInfo = NativeMethods.BytesToStructure<WinNT.StringFileInfo>(bytesV, ptr);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING:
 											var strings = new AlphaOmega.Debug.NTDirectory.Resources.ResourceString(dir2);
 											foreach(var entry in strings)
-												_console.ConsoleWriteMembers(entry);
+												this._console.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ACCELERATOR:
 											var acc = new AlphaOmega.Debug.NTDirectory.Resources.ResourceAccelerator(dir2).ToArray();
 											String testAcc = String.Empty;
 											foreach(var a in acc)
-												_console.ConsoleWriteMembers(a);
+												this._console.ConsoleWriteMembers(a);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MANIFEST:
 											Byte[] bytesM = dir2.GetData();//http://msdn.microsoft.com/ru-ru/library/eew13bza.aspx
@@ -90,28 +88,28 @@ namespace AlphaOmega.Debug
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MESSAGETABLE:
 											var messageTable = new AlphaOmega.Debug.NTDirectory.Resources.ResourceMessageTable(dir2);
 											foreach(var entry in messageTable)
-												_console.ConsoleWriteMembers(entry);
+												this._console.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_MENU:
 											var resMenu = new AlphaOmega.Debug.NTDirectory.Resources.ResourceMenu(dir2);
 											foreach(var entry in resMenu.GetMenuTemplate())
-												_console.ConsoleWriteMembers(entry);
+												this._console.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_TOOLBAR:
 											var resToolbar = new AlphaOmega.Debug.NTDirectory.Resources.ResourceToolBar(dir2);
-											_console.ConsoleWriteMembers(resToolbar.Header);
+											this._console.ConsoleWriteMembers(resToolbar.Header);
 
 											foreach(var entry in resToolbar.GetToolBarTemplate())
-												_console.ConsoleWriteMembers(entry);
+												this._console.ConsoleWriteMembers(entry);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONTDIR:
 											var resFontDir = new AlphaOmega.Debug.NTDirectory.Resources.ResourceFontDir(dir2);
 											foreach(var fontItem in resFontDir)
-												_console.ConsoleWriteMembers(fontItem);
+												this._console.ConsoleWriteMembers(fontItem);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_FONT:
 											var resFont = new AlphaOmega.Debug.NTDirectory.Resources.ResourceFont(dir2);
-											_console.ConsoleWriteMembers(resFont.Font);
+											this._console.ConsoleWriteMembers(resFont.Font);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_BITMAP:
 											//TODO:
@@ -124,10 +122,10 @@ namespace AlphaOmega.Debug
 											var resBitmap = new AlphaOmega.Debug.NTDirectory.Resources.ResourceBitmap(dir2);
 											try
 											{
-												_console.ConsoleWriteMembers(resBitmap.Header);
+												this._console.ConsoleWriteMembers(resBitmap.Header);
 											} catch(ArgumentOutOfRangeException exc)
 											{
-												_console.ConsoleWriteError(exc, "ArgumentOutOfRangeException (Corrupt bitmap)", true);
+												this._console.ConsoleWriteError(exc, "ArgumentOutOfRangeException (Corrupt bitmap)", true);
 											}
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON:
@@ -152,12 +150,12 @@ namespace AlphaOmega.Debug
 											bytes.AddRange(PinnedBufferReader.StructureToArray<WinGdi.ICONDIRENTRY>(icoEntry));
 											bytes.AddRange(payload);
 											File.WriteAllBytes(@"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\res\RT_ICON.ico", bytes.ToArray());*/
-											_console.ConsoleWriteMembers(resIcon.Header);
+											this._console.ConsoleWriteMembers(resIcon.Header);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT:
 											var dlgInit = new AlphaOmega.Debug.NTDirectory.Resources.ResourceDialogInit(dir2);
 											foreach(var initData in dlgInit)
-												_console.ConsoleWriteMembers(initData);
+												this._console.ConsoleWriteMembers(initData);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DIALOG:
 											var dialog = new AlphaOmega.Debug.NTDirectory.Resources.ResourceDialog(dir2);
@@ -166,15 +164,15 @@ namespace AlphaOmega.Debug
 												var template = dialog.GetDialogTemplate();
 												foreach(var ctrl in template.Controls)
 													if(ctrl.CX < 0 || ctrl.CY < 0 || ctrl.X < 0 || ctrl.Y < 0)
-														_console.ConsoleWriteError(true, $"???Invalid position? ({template.Title}) CX: {ctrl.CX} CY: {ctrl.CY} X: {ctrl.X} Y: {ctrl.Y}");
+														this._console.ConsoleWriteError(true, $"???Invalid position? ({template.Title}) CX: {ctrl.CX} CY: {ctrl.CY} X: {ctrl.X} Y: {ctrl.Y}");
 													else
-														_console.ConsoleWriteMembers(ctrl);
+														this._console.ConsoleWriteMembers(ctrl);
 											} catch(IndexOutOfRangeException exc)
 											{
-												_console.ConsoleWriteError(exc, "IndexOutOfRangeException (Corrupt dialog)", true);
+												this._console.ConsoleWriteError(exc, "IndexOutOfRangeException (Corrupt dialog)", true);
 											} catch(ArgumentException exc)
 											{
-												_console.ConsoleWriteError(exc, "ArgumentException (Corrupt dialog)", true);
+												this._console.ConsoleWriteError(exc, "ArgumentException (Corrupt dialog)", true);
 											}
 											break;
 										}
@@ -182,49 +180,47 @@ namespace AlphaOmega.Debug
 								}
 							}
 						}
-						_console.WriteLine($"Total dirs: {directoriesCount}");
-						_console.PauseOnDir();
+						this._console.WriteLine($"Total dirs: {directoriesCount}");
+						this._console.PauseOnDir();
 					}
 
 					if(info.ComDescriptor != null)
-					{//.NET Framework
+					{//.NET Framework & .NET
 						if(info.ComDescriptor.Resources != null)
 						{
 							if(info.ComDescriptor.Resources.Header.IsValid)
 							{
 								foreach(var item in info.ComDescriptor.Resources)
 								{
-									_console.WriteLine($"Resource Item: {item.Name}");
+									this._console.WriteLine($"Resource Item: {item.Name}");
 									if(item.CanRead)
 										foreach(var row in item)
-											_console.WriteLine($"\tResource row: {row.Name} {row.Type}");
+											this._console.WriteLine($"\tResource row: {row.Name} {row.Type}");
 									else
-										_console.WriteLine("\t---Some object---");
+										this._console.WriteLine("\t---Some object---");
 								}
-							} else
-							{//TODO: AjaxControlToolkit.dll
-								_console.ConsoleWriteError(true,
+							} else//TODO: AjaxControlToolkit.dll
+								this._console.ConsoleWriteError(true,
 									$"INVALID. MetaData Address: 0x{info.ComDescriptor.MetaData.Directory.VirtualAddress:X} Resources Address: 0x{info.ComDescriptor.Resources.Directory.VirtualAddress:X}");
-							}
 						}
 
 						var meta = info.ComDescriptor.MetaData;
-						_console.ConsoleWriteMembers("MetaData", meta.Header.Value);
+						this._console.ConsoleWriteMembers("MetaData", meta.Header.Value);
 
 						foreach(var header in meta)
 						{
-							_console.WriteLine(Utils.GetReflectedMembers(header.Header));
+							this._console.WriteLine(Utils.GetReflectedMembers(header.Header));
 							switch(header.Header.Type)
 							{
 							case Cor.StreamHeaderType.StreamTable:
 								var table = (StreamTables)header;
 
-								_console.WriteLine(Utils.GetReflectedMembers(table.StreamTableHeader));
+								this._console.WriteLine(Utils.GetReflectedMembers(table.StreamTableHeader));
 
 								Array enums = Enum.GetValues(typeof(Cor.MetaTableType));
 								foreach(Cor.MetaTableType type in enums)
 								{
-									//Пробежка по всем именованным таблицам
+									//Enumerate all named tables
 									PropertyInfo property = table.GetType().GetProperty(type.ToString(), BindingFlags.Instance | BindingFlags.Public);
 									foreach(var row in (IEnumerable)property.GetValue(table, null))
 									{
@@ -234,15 +230,21 @@ namespace AlphaOmega.Debug
 											{
 												AttributeReader attrReader = new AttributeReader((CustomAttributeRow)row);
 												List<String> arguments = new List<String>();
-												foreach(MemberArgument value in attrReader.Attribute.FixedArgs)
-													arguments.Add($"{value.Type.ToStringTyped()} {value.Name} = {Utils.ValueToString(value.Value)}");
-												_console.WriteLine($"{attrReader.FullName}({String.Join(", ", arguments.ToArray())})");
-												
-												arguments.Clear();
-												foreach(MemberElement value in attrReader.Attribute.NamedArgs)
-													arguments.Add($"\t{value.Type.ToStringTyped()} ({value.ElementType}) {value.Name} = {Utils.ValueToString(value.Value)}");
-												if(arguments.Count > 0)
-													_console.WriteLine("{\r\n" + String.Join(Environment.NewLine, arguments.ToArray()) + "\r\n}");
+												try
+												{
+													foreach(MemberArgument value in attrReader.Attribute.FixedArgs)
+														arguments.Add($"{value.Type.ToStringTyped()} {value.Name} = {Utils.ValueToString(value.Value)}");
+													this._console.WriteLine($"{attrReader.FullName}({String.Join(", ", arguments.ToArray())})");
+
+													arguments.Clear();
+													foreach(MemberElement value in attrReader.Attribute.NamedArgs)
+														arguments.Add($"\t{value.Type.ToStringTyped()} ({value.ElementType}) {value.Name} = {Utils.ValueToString(value.Value)}");
+													if(arguments.Count > 0)
+														this._console.WriteLine("{\r\n" + String.Join(Environment.NewLine, arguments.ToArray()) + "\r\n}");
+												} catch(InvalidOperationException exc)
+												{
+													this._console.ConsoleWriteError(exc, "Due to the enum type stored in the shared assembly", true);
+												}
 												break;
 											}
 										case Cor.MetaTableType.NestedClass:
@@ -253,7 +255,7 @@ namespace AlphaOmega.Debug
 												String typeName = parentTypeRow.TypeNamespace + "." + parentTypeRow.TypeName + " {\r\n";
 												typeName += "\tclass " + childTypeRow.TypeName + " {...}\r\n";
 												typeName += "}";
-												_console.WriteLine($"{type}: {typeName}");
+												this._console.WriteLine($"{type}: {typeName}");
 											}
 											break;
 										case Cor.MetaTableType.FieldRVA:
@@ -261,7 +263,7 @@ namespace AlphaOmega.Debug
 												FieldRVARow fieldRVARow = (FieldRVARow)row;
 												FieldRow fieldRow = fieldRVARow.Field;
 												String fieldName = fieldRow.Name + " -> 0x" + fieldRVARow.RVA.ToString("X8");
-												_console.WriteLine($"{type}: {fieldName}");
+												this._console.WriteLine($"{type}: {fieldName}");
 											}
 											break;
 										case Cor.MetaTableType.ImplMap:
@@ -269,7 +271,7 @@ namespace AlphaOmega.Debug
 												ImplMapRow implMapRow = (ImplMapRow)row;
 												ModuleRefRow moduleRow = implMapRow.ImportScope;
 												String moduleName = moduleRow.Name + "-> " + implMapRow.ImportName;
-												_console.WriteLine($"{type}: {moduleName}");
+												this._console.WriteLine($"{type}: {moduleName}");
 											}
 											break;
 										case Cor.MetaTableType.MethodImpl:
@@ -277,7 +279,7 @@ namespace AlphaOmega.Debug
 												MethodImplRow methodImplRow = (MethodImplRow)row;
 												TypeDefRow typeRow = methodImplRow.Class;
 												String typeName = typeRow.TypeNamespace + "." + typeRow.TypeName;
-												_console.WriteLine($"{type}: {typeName}");
+												this._console.WriteLine($"{type}: {typeName}");
 											}
 											break;
 										case Cor.MetaTableType.PropertyMap:
@@ -288,7 +290,7 @@ namespace AlphaOmega.Debug
 												foreach(PropertyRow propertyRow in propertyMapRow.PropertyList)
 													typeName += "\t" + propertyRow.Name + ";\r\n";
 												typeName += "}";
-												_console.WriteLine($"{type}: {typeName}");
+												this._console.WriteLine($"{type}: {typeName}");
 											}
 											break;
 										case Cor.MetaTableType.EventMap:
@@ -299,7 +301,7 @@ namespace AlphaOmega.Debug
 												foreach(EventRow eventRow in eventMapRow.EventList)
 													typeName += "\tevent " + eventRow.Name + ";\r\n";
 												typeName += "}";
-												_console.WriteLine($"{type}: {typeName}");
+												this._console.WriteLine($"{type}: {typeName}");
 											}
 											break;
 										case Cor.MetaTableType.FieldLayout:
@@ -307,7 +309,7 @@ namespace AlphaOmega.Debug
 												FieldLayoutRow fieldLayoutRow = (FieldLayoutRow)row;
 												FieldRow fieldRow = fieldLayoutRow.Field;
 												String fieldName = fieldRow.Name;
-												_console.WriteLine($"{type}: {fieldName}");
+												this._console.WriteLine($"{type}: {fieldName}");
 											}
 											break;
 										case Cor.MetaTableType.ClassLayout:
@@ -315,7 +317,7 @@ namespace AlphaOmega.Debug
 												ClassLayoutRow classLayoutRow = (ClassLayoutRow)row;
 												TypeDefRow typeRow = classLayoutRow.Parent;
 												String typeName = typeRow.TypeNamespace + "." + typeRow.TypeName;
-												_console.WriteLine($"{type}: {typeName}");
+												this._console.WriteLine($"{type}: {typeName}");
 											}
 											break;
 										case Cor.MetaTableType.InterfaceImpl:
@@ -323,25 +325,25 @@ namespace AlphaOmega.Debug
 												InterfaceImplRow interfaceRow = (InterfaceImplRow)row;
 												TypeDefRow typeRow = interfaceRow.Class;
 												String typeName = typeRow.TypeNamespace + "." + typeRow.TypeName;
-												_console.WriteLine($"{type}: {typeName}");
+												this._console.WriteLine($"{type}: {typeName}");
 											}
 											break;
 										case Cor.MetaTableType.TypeDef:
 											{
 												TypeReader typeRow = new TypeReader((TypeDefRow)row);
-												_console.WriteLine($"{type}: {typeRow.FullName} {{");
-												
+												this._console.WriteLine($"{type}: {typeRow.FullName} {{");
+
 												foreach(FieldRow fieldRow in typeRow.GetFields())
-													_console.WriteLine("\t" + fieldRow.ReturnType.ToStringTyped() + " " + fieldRow.Name + ";");
+													this._console.WriteLine("\t" + fieldRow.ReturnType.ToStringTyped() + " " + fieldRow.Name + ";");
 
 												foreach(PropertyReader propertyRow in typeRow.GetProperties())
-													_console.WriteLine($"\t{propertyRow.Return.ToStringTyped()} {propertyRow.Name} {{ {(propertyRow.CanRead ? "get; " : String.Empty)}{(propertyRow.CanWrite ? "set; " : String.Empty)}}}");
+													this._console.WriteLine($"\t{propertyRow.Return.ToStringTyped()} {propertyRow.Name} {{ {(propertyRow.CanRead ? "get; " : String.Empty)}{(propertyRow.CanWrite ? "set; " : String.Empty)}}}");
 
 												foreach(MethodReader methodRow in typeRow.GetMembers().Where(m => m.IsProperty == false))
-													_console.WriteLine("\t" + methodRow.Return.ToStringTyped() + " " + methodRow.Name
+													this._console.WriteLine("\t" + methodRow.Return.ToStringTyped() + " " + methodRow.Name
 														+ "(" + String.Join(", ", methodRow.GetArguments().Select(a => a.Type.ToStringTyped() + " " + a.Name).ToArray()) + ");");
 
-												_console.WriteLine("}");
+												this._console.WriteLine("}");
 												break;
 											}
 										case Cor.MetaTableType.MethodDef:
@@ -355,11 +357,14 @@ namespace AlphaOmega.Debug
 												{
 													ElementType typeEnum = reader.MethodDef.ArgsType[index++];
 													String typeString = typeEnum.ToStringTyped();
-													methodName = methodName + typeString + " " + paramRow2.Name + ", ";
+													String argumentAttributes = String.Join(", ", paramRow2.GetCustomAttributes().Select(a => a.FullName).ToArray());
+													if(argumentAttributes.Length > 0)
+														argumentAttributes = "[" + argumentAttributes + "] ";
+													methodName = methodName + argumentAttributes + typeString + " " + paramRow2.Name + ", ";
 												}
 
 												methodName = methodName.TrimEnd(',', '"', ' ') + ")";
-												_console.WriteLine($"{type}: {methodName}");
+												this._console.WriteLine($"{type}: {methodName}");
 
 												UInt32 rva = reader.MethodDef.RVA;
 												Byte flags = info.Header.PtrToStructure<Byte>(rva++);
@@ -381,8 +386,8 @@ namespace AlphaOmega.Debug
 														throw new InvalidOperationException("Bit InitLocals set to TRUE but flag marked as FALSE");
 												}
 
-												_console.WriteLine($"Method begins at RVA: 0x{reader.MethodDef.RVA:X}");
-												_console.WriteLine($"Code size: 0x{methodHeader.CodeSize:X}");
+												this._console.WriteLine($"Method begins at RVA: 0x{reader.MethodDef.RVA:X}");
+												this._console.WriteLine($"Code size: 0x{methodHeader.CodeSize:X}");
 												try
 												{
 													foreach(MethodLine ilLine in reader.MethodDef.Body.GetMethodBody2())
@@ -472,16 +477,16 @@ namespace AlphaOmega.Debug
 														} else if(ilLine.ConstantValue != null)
 															line.Append(" " + ilLine.ConstantValue);
 
-														_console.ConsolWriteInstruction(ilLine.Line, ilLine.IL, line.ToString());
+														this._console.ConsolWriteInstruction(ilLine.Line, ilLine.IL, line.ToString());
 													}
 												} catch(Exception exc)
 												{
-													_console.ConsoleWriteError(exc, "Error reading method body");
+													this._console.ConsoleWriteError(exc, "Error reading method body");
 												}
 												break;
 											}
 										default:
-											_console.ConsoleWriteMembers(row);
+											this._console.ConsoleWriteMembers(row);
 											break;
 										}
 									}
@@ -489,16 +494,16 @@ namespace AlphaOmega.Debug
 									//Пробежка по всем таблицам
 									MetaTable moduleTable = table[type];
 
-									_console.WriteLine($"==MetaTableType.{type} Contents:");
+									this._console.WriteLine($"==MetaTableType.{type} Contents:");
 									foreach(MetaRow row in moduleTable.Rows)
 									{
 										StringBuilder result = new StringBuilder();
 										foreach(MetaCell cell in row)
 											result.AppendFormat("{0}:\t{1}", cell.Column.Name, cell.Value);
 										result.AppendLine();
-										_console.WriteLine(result.ToString());
+										this._console.WriteLine(result.ToString());
 									}
-									_console.WriteLine($"==MetaTableType.{type} End");
+									this._console.WriteLine($"==MetaTableType.{type} End");
 								}
 								break;
 							case Cor.StreamHeaderType.Guid:
@@ -519,34 +524,34 @@ namespace AlphaOmega.Debug
 								break;
 							}
 						}
-						_console.PauseOnDir();
+						this._console.PauseOnDir();
 					}
 
 					if(!info.ExceptionTable.IsEmpty)
 					{//TODO: Ошибка при чтении
-						_console.WriteLine("===Exception Table===");
+						this._console.WriteLine("===Exception Table===");
 						try
 						{
 							foreach(var entry in info.ExceptionTable)
-								_console.ConsoleWriteMembers(entry);
+								this._console.ConsoleWriteMembers(entry);
 						} catch(ArgumentOutOfRangeException exc)
 						{
-							_console.ConsoleWriteError(exc, "Exception", true);
+							this._console.ConsoleWriteError(exc, "Exception", true);
 						}
-						_console.PauseOnDir();
+						this._console.PauseOnDir();
 					}
 					if(!info.Iat.IsEmpty)
 					{
-						_console.WriteLine("===Import Address Table===");
+						this._console.WriteLine("===Import Address Table===");
 						foreach(UInt32 addr in info.Iat)
-							_console.WriteLine($"Addr: {addr:X8}");
-						_console.PauseOnDir();
+							this._console.WriteLine($"Addr: {addr:X8}");
+						this._console.PauseOnDir();
 					}
 
 					if(!info.Tls.IsEmpty)
 					{
-						_console.WriteLine("===Thread Local Storage===");
-						_console.PauseOnDir();
+						this._console.WriteLine("===Thread Local Storage===");
+						this._console.PauseOnDir();
 					}
 					if(!info.Certificate.IsEmpty)
 					{
@@ -554,33 +559,33 @@ namespace AlphaOmega.Debug
 						{
 							var cert = info.Certificate.Certificate.Value;
 							var x509 = info.Certificate.X509;
-							_console.WriteLine("===Security===");
-							_console.ConsoleWriteMembers(cert);
-							_console.WriteLine($"Certificate: {(x509 == null ? "NULL" : x509.ToString())}");
+							this._console.WriteLine("===Security===");
+							this._console.ConsoleWriteMembers(cert);
+							this._console.WriteLine($"Certificate: {(x509 == null ? "NULL" : x509.ToString())}");
 						} catch(ArgumentOutOfRangeException exc)
 						{
-							_console.ConsoleWriteError(exc, "OverflowException (Corrupted section)", true);
+							this._console.ConsoleWriteError(exc, "OverflowException (Corrupted section)", true);
 						}
-						_console.PauseOnDir();
+						this._console.PauseOnDir();
 					}
 
 					if(!info.DelayImport.IsEmpty)
 					{
-						_console.WriteLine("===Delay Import===");
+						this._console.WriteLine("===Delay Import===");
 						foreach(var module in info.DelayImport)
-							_console.WriteLine($"Module Name: {module.ModuleName}\tCount: {module.Count()}");
-						_console.PauseOnDir();
+							this._console.WriteLine($"Module Name: {module.ModuleName}\tCount: {module.Count()}");
+						this._console.PauseOnDir();
 					}
 
 					if(!info.Relocations.IsEmpty)
 					{//File contains relocation table
-						_console.WriteLine("===Relocations===");
+						this._console.WriteLine("===Relocations===");
 						foreach(var block in info.Relocations)
 						{
-							_console.ConsoleWriteMembers(block.Block);
+							this._console.ConsoleWriteMembers(block.Block);
 							foreach(var section in block)
 							{
-								_console.ConsoleWriteMembers(section);
+								this._console.ConsoleWriteMembers(section);
 								/*if(!Enum.IsDefined(typeof(WinNT.IMAGE_REL_BASED), section.Type))
 								{
 									_console.WriteLine($"Enum {section.Type} not defined");
@@ -588,71 +593,71 @@ namespace AlphaOmega.Debug
 								}*/
 							}
 						}
-						_console.PauseOnDir();
+						this._console.PauseOnDir();
 					}
 
 					if(!info.Debug.IsEmpty)
 					{//В файле есть инормация для дебага
-						_console.WriteLine("===Debug info===");
+						this._console.WriteLine("===Debug info===");
 						foreach(var debug in info.Debug)
-							_console.ConsoleWriteMembers(debug);
+							this._console.ConsoleWriteMembers(debug);
 						var pdb7 = info.Debug.Pdb7CodeView;
 						if(pdb7.HasValue)
-							_console.ConsoleWriteMembers(pdb7.Value);
+							this._console.ConsoleWriteMembers(pdb7.Value);
 						var pdb2 = info.Debug.Pdb2CodeView;
 						if(pdb2.HasValue)
-							_console.ConsoleWriteMembers(pdb2.Value);
+							this._console.ConsoleWriteMembers(pdb2.Value);
 						var misc = info.Debug.Misc;
 						if(misc.HasValue)
-							_console.ConsoleWriteMembers(misc.Value);
-						_console.PauseOnDir();
+							this._console.ConsoleWriteMembers(misc.Value);
+						this._console.PauseOnDir();
 					}
 
 					if(!info.LoadConfig.IsEmpty)
 					{
-						_console.WriteLine("===Load Config===");
+						this._console.WriteLine("===Load Config===");
 						if(info.LoadConfig.Directory32.HasValue)
 						{
 							var directory = info.LoadConfig.Directory32.Value;
-							_console.ConsoleWriteMembers(directory);
+							this._console.ConsoleWriteMembers(directory);
 						} else if(info.LoadConfig.Directory64.HasValue)
 						{
 							var directory = info.LoadConfig.Directory64.Value;
-							_console.ConsoleWriteMembers(directory);
+							this._console.ConsoleWriteMembers(directory);
 						} else
 							throw new NotImplementedException();
-						_console.PauseOnDir();
+						this._console.PauseOnDir();
 					}
 
 					if(!info.BoundImport.IsEmpty)
 					{
-						_console.WriteLine("===Bound Import===");
-						_console.WriteLine($"ModuleName: {info.BoundImport.ModuleName}");
+						this._console.WriteLine("===Bound Import===");
+						this._console.WriteLine($"ModuleName: {info.BoundImport.ModuleName}");
 						foreach(var ffRef in info.BoundImport)
-							_console.ConsoleWriteMembers(ffRef);
-						_console.PauseOnDir();
+							this._console.ConsoleWriteMembers(ffRef);
+						this._console.PauseOnDir();
 					}
 
 					if(!info.Export.IsEmpty)
 					{//В файле есть информация о экспортируемых функциях
-						_console.WriteLine("===Export Functions===");
-						_console.WriteLine($"Module name: {info.Export.DllName}");
+						this._console.WriteLine("===Export Functions===");
+						this._console.WriteLine($"Module name: {info.Export.DllName}");
 
 						foreach(var func in info.Export.GetExportFunctions())
-							_console.ConsoleWriteMembers(func);
-						_console.PauseOnDir();
+							this._console.ConsoleWriteMembers(func);
+						this._console.PauseOnDir();
 					}
 
 					if(!info.Import.IsEmpty)
 					{//В файле есть информация о импортиуемых модулях
-						_console.WriteLine("===Import Modules===");
+						this._console.WriteLine("===Import Modules===");
 						foreach(var module in info.Import)
 						{
-							_console.WriteLine($"Module name: {module.ModuleName}");
+							this._console.WriteLine($"Module name: {module.ModuleName}");
 							foreach(var func in module)
-								_console.ConsoleWriteMembers(func);
+								this._console.ConsoleWriteMembers(func);
 						}
-						_console.PauseOnDir();
+						this._console.PauseOnDir();
 					}
 				}
 			}
@@ -664,14 +669,14 @@ namespace AlphaOmega.Debug
 			{
 				if(info.IsValid)//Проверка на валидность загруженного файла
 				{
-					_console.ConsoleWriteMembers(info.FileHeader);
+					this._console.ConsoleWriteMembers(info.FileHeader);
 
 					foreach(var section in info.Sections)
-						_console.ConsoleWriteMembers(section);
+						this._console.ConsoleWriteMembers(section);
 
 					foreach(var symbol in info.Symbols)
 					{
-						_console.ConsoleWriteMembers(symbol);
+						this._console.ConsoleWriteMembers(symbol);
 						/*if(symbol.Name.Short == 0 && symbol.Name.Long != 0)
 							Console.WriteLine(info.StringTable[symbol.Name.Long]);*/
 					}

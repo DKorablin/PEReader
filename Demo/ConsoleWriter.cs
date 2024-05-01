@@ -6,27 +6,25 @@ namespace AlphaOmega.Debug
 	internal class ConsoleWriter
 	{
 		private volatile Boolean _pause = false;
-		private ManualResetEvent _pauseEvent = new ManualResetEvent(false);
-		private ManualResetEvent _exitEvent = new ManualResetEvent(false);
+		private readonly ManualResetEvent _pauseEvent = new ManualResetEvent(false);
+		private readonly ManualResetEvent _exitEvent = new ManualResetEvent(false);
 
 		private readonly Boolean _pauseOnDir;
 		private Boolean Pause
 		{
-			get { return _pause; }
+			get { return this._pause; }
 			set
 			{
-				_pause = value;
+				this._pause = value;
 				if(value)
-					_pauseEvent.Reset();
+					this._pauseEvent.Reset();
 				else
-					_pauseEvent.Set();
+					this._pauseEvent.Set();
 			}
 		}
 
 		public ConsoleWriter(Boolean pauseOnDir)
-		{
-			this._pauseOnDir = pauseOnDir;
-		}
+			=> this._pauseOnDir = pauseOnDir;
 
 		public void StartThreadAsync(Action func)
 		{
@@ -59,9 +57,7 @@ namespace AlphaOmega.Debug
 		}
 
 		public void Stop()
-		{
-			this._exitEvent.Set();
-		}
+			=> this._exitEvent.Set();
 
 		public void PauseOnDir()
 		{
@@ -84,12 +80,11 @@ namespace AlphaOmega.Debug
 		}
 
 		public void ConsoleWriteError(Exception exc, String title, Boolean waitForInput = false)
-		{
-			ConsoleWriteError(waitForInput,
+			=> this.ConsoleWriteError(waitForInput,
 				title + ": " + exc.Message,
 				"========================",
+				exc.Data == null ? String.Empty : String.Join(Environment.NewLine, exc.Data.Keys.Cast<Object>().Select(k => k.ToString() + ": " + exc.Data[k].ToString())),
 				exc.StackTrace);
-		}
 
 		public void ConsoleWriteError(Boolean waitForInput, params String[] lines)
 		{
@@ -112,9 +107,8 @@ namespace AlphaOmega.Debug
 		}
 
 		public void ConsoleWriteMembers(Object obj)
-		{
-			this.ConsoleWriteMembers(null, obj);
-		}
+			=> this.ConsoleWriteMembers(null, obj);
+
 		public void ConsoleWriteMembers(String title, Object obj)
 		{
 			if(!String.IsNullOrEmpty(title))
