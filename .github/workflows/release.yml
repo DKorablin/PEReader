@@ -18,10 +18,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Restoring dependencies
       run: dotnet restore ${{env.SolutionName}}.sln
-    - name: Testing .NET Standard v2.0
+    - name: Testing .NET
       run: dotnet test ${{env.SolutionName}}.sln --no-build --verbosity normal
 
   test_net_ubuntu:
@@ -34,10 +34,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Restoring dependencies
       run: dotnet restore ${{env.SolutionName}}.sln
-    - name: Testing .NET Standard v2.0
+    - name: Testing .NET
       run: dotnet test ${{env.SolutionName}}.sln --no-build --verbosity normal
 
   version:
@@ -47,9 +47,9 @@ jobs:
     outputs:
       new_version: ${{steps.tag_version.outputs.new_version}}
       new_tag: ${{steps.tag_version.outputs.new_tag}}
-      changelog:  ${{steps.tag_version.outputs.changelog}}
+      changelog: ${{steps.tag_version.outputs.changelog}}
     steps:
-    - name: Update version number
+    - name: Updating version number
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.2
       with:
@@ -61,7 +61,7 @@ jobs:
     needs: [version]
     runs-on: windows-latest
     steps:
-    - name: Decode SNK
+    - name: Decoding SNK
       id: sign_key_file
       uses: timheuer/base64-to-file@v1.2
       with:
@@ -70,11 +70,13 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
-    - name: Setup .NET Framework
+    - name: Setup .NET
       uses: microsoft/setup-msbuild@v2
+    - name: Restoring NuGet packages
+      run: nuget restore "${{github.workspace}}\${{env.SolutionName}}.sln"
     - name: Building .NET Framework
       run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}\${{env.SolutionName}}35.csproj" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/" -property:Version=${{needs.version.outputs.new_version}} -property:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
-    - name: Deploy artifacts
+    - name: Deploying artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Net20
@@ -86,7 +88,7 @@ jobs:
     needs: [version]
     runs-on: ubuntu-latest
     steps:
-    - name: Decode SNK
+    - name: Decoding SNK
       id: sign_key_file
       uses: timheuer/base64-to-file@v1.2
       with:
@@ -98,7 +100,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Restoring dependencies
       run: dotnet restore ${{env.SolutionName}}.sln
     - name: Building .NET
@@ -110,17 +112,36 @@ jobs:
         path: ${{github.workspace}}/bin/*
         if-no-files-found: error
 
-  deploy_nuget:
-    name: Deploying NuGet package
+  deploy_release:
+    name: Deploying release
     needs: [version, build_net_framework, build_net]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Extracting all artifacts
       uses: actions/download-artifact@v4
       with:
         path: bin
-    - name: Checkout nessesary files from repo
+    - name: Zipping artifacts
+      run: zip -qq -r ${{github.event.repository.name}}_${{needs.version.outputs.new_tag}}.zip *
+      working-directory: ${{github.workspace}}/bin
+    - name: Deploying GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: ${{github.workspace}}/bin/${{github.event.repository.name}}_${{needs.version.outputs.new_tag}}.zip
+        tag: ${{needs.version.outputs.new_tag}}
+        name: Auto ${{needs.version.outputs.new_tag}}
+        body: ${{needs.version.outputs.changelog}}
+        artifactErrorsFailBuild: true
+        generateReleaseNotes: true
+
+  deploy_nuget:
+    name: Deploying NuGet package
+    needs: [version, build_net_framework, build_net]
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout nessesary files from repository
       uses: actions/checkout@v4
       with:
         sparse-checkout: |
@@ -137,26 +158,3 @@ jobs:
       run: dotnet nuget add source --username DKorablin --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DKorablin/index.json"
     - name: Deploying package to GitHub
       run: dotnet nuget push nupkg\*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
-
-  deploy_release:
-    name: Deploying artifacts
-    needs: [version, build_net_framework, build_net]
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Extracting all artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: bin
-    - name: Zipping artifacts
-      run: zip -qq -r release.zip bin
-      working-directory: ${{github.workspace}}
-    - name: Deploying release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: ${{github.workspace}}/release.zip
-        tag: ${{ needs.version.outputs.new_tag }}
-        name: Auto ${{ needs.version.outputs.new_tag }}
-        body: ${{ needs.version.outputs.changelog }}
-        artifactErrorsFailBuild: true
-        generateReleaseNotes: true
