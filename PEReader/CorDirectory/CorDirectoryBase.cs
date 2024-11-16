@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using ComDescriptor = AlphaOmega.Debug.NTDirectory.ComDescriptor;
+using AlphaOmega.Debug.NTDirectory;
 
 namespace AlphaOmega.Debug.CorDirectory
 {

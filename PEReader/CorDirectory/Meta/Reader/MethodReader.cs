@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 {
 	/// <summary>Create instance if class method builder based on strongly typed metadata <see cref="Cor.MetaTableType.MethodDef"/> row</summary>
+	[DebuggerDisplay(nameof(Name) + " = {" + nameof(Name) + "}")]
 	public class MethodReader
 	{
 		/// <summary>Method definition description</summary>
@@ -54,12 +56,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <summary>Method return type</summary>
 		public virtual ElementType Return => this.MethodDef.ReturnType;
 
+		/// <summary>MetaData from current assembly</summary>
+		protected internal StreamTables MetaData => this.MethodDef.Row.Table.Root;
+
 		/// <summary>Gets the type that declares the current nested type or generic type parameter.</summary>
 		public TypeReader DeclaringType
 		{
 			get
 			{
-				foreach(TypeDefRow row in this.MethodDef.Row.Table.Root.TypeDef)
+				foreach(TypeDefRow row in this.MetaData.TypeDef)
 					foreach(MethodDefRow method in row.MethodList)
 						if(method == this.MethodDef)
 							return new TypeReader(row);
@@ -86,16 +91,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <returns>List of <see cref="GenericParamRow"/> describing all method generic parameters</returns>
 		public IEnumerable<GenericParamRow> GetGenericArguments()
 		{
-			foreach(GenericParamRow row in this.MethodDef.Row.Table.Root.GenericParam)
+			foreach(GenericParamRow row in this.MetaData.GenericParam)
 				if(row.Owner.TargetRow == this.MethodDef)
 					yield return row;
 		}
 
 		/// <summary>Gets list of attributes applied to current method</summary>
 		/// <returns>List of <see cref="AttributeReader"/> instances related to current method</returns>
-		public IEnumerable<AttributeReader> GetCustomAttributes()
+		public virtual IEnumerable<AttributeReader> GetCustomAttributes()
 		{
-			foreach(CustomAttributeRow row in this.MethodDef.Row.Table.Root.CustomAttribute)
+			foreach(CustomAttributeRow row in this.MetaData.CustomAttribute)
 				if(row.Parent.TableType == Cor.MetaTableType.MethodDef)
 					if(row.Parent.TargetRow == this.MethodDef)
 						yield return new AttributeReader(row);

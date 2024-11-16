@@ -8,6 +8,7 @@ namespace AlphaOmega.Debug
 	public class PEFile : IDisposable
 	{
 		#region Fields
+		private Boolean _disposed;
 		private Sections _sections;
 
 		private Architecture _architecture;
@@ -129,6 +130,10 @@ namespace AlphaOmega.Debug
 			this.Header = new PEHeader(loader);
 		}
 
+		/// <summary>Desctructor for <see cref="Header"/> if user forgets to dispose this object</summary>
+		~PEFile()
+			=> this.Dispose(false);
+
 		/// <summary>Close loader</summary>
 		public void Dispose()
 		{
@@ -140,11 +145,12 @@ namespace AlphaOmega.Debug
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
-			if(disposing && this.Header != null)
-			{
-				this.Header.Dispose();
-				this.Header = null;
-			}
+			if(this._disposed)
+				return;
+
+			this.Header?.Dispose();
+			this.Header = null;
+			this._disposed = true;
 		}
 	}
 }

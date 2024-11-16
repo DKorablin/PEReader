@@ -80,6 +80,7 @@
     <Compile Include="CorDirectory\Eat.cs" />
     <Compile Include="CorDirectory\ManagedNativeHeader.cs" />
     <Compile Include="CorDirectory\Meta\Member\MemberValueBase.cs" />
+    <Compile Include="CorDirectory\Meta\Reader\AssemblyRefReader.cs" />
     <Compile Include="CorDirectory\Meta\Reader\AttributeReader.cs" />
     <Compile Include="CorDirectory\Meta\Reader\FieldReader.cs" />
     <Compile Include="CorDirectory\Meta\Reader\MethodReader.cs" />

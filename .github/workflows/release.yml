@@ -56,9 +56,35 @@ jobs:
         github_token: ${{secrets.GITHUB_TOKEN}}
         #custom_tag: 1.3.1
 
+  files_exists:
+    name: Checking project existence
+    needs: [version]
+    runs-on: ubuntu-latest
+    outputs:
+      net_framework_project_exists: ${{steps.net_framework.outputs.files_exists}}
+      net_project_exists: ${{steps.net.outputs.files_exists}}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{secrets.SUBMODULE_TOKEN}}
+        submodules: false
+    - name: .NET Framework project exists
+      id: net_framework
+      uses: andstor/file-existence-action@v3
+      with:
+        files: "${{github.workspace}}/${{env.SolutionName}}/${{env.SolutionName}}35.csproj"
+        ignore_case: true
+    - name: .NET project exists
+      id: net
+      uses: andstor/file-existence-action@v3
+      with:
+        files: "${{github.workspace}}/${{env.SolutionName}}/${{env.SolutionName}}.csproj"
+        ignore_case: true
+
   build_net_framework:
     name: Building .NET Framework assembly
-    needs: [version]
+    needs: [version,files_exists]
+    if: needs.files_exists.outputs.net_framework_project_exists == 'true'
     runs-on: windows-latest
     steps:
     - name: Decoding SNK
@@ -85,7 +111,8 @@ jobs:
 
   build_net:
     name: Building .NET assembly
-    needs: [version]
+    needs: [version,files_exists]
+    if: needs.files_exists.outputs.net_project_exists == 'true'
     runs-on: ubuntu-latest
     steps:
     - name: Decoding SNK
@@ -114,7 +141,14 @@ jobs:
 
   deploy_release:
     name: Deploying release
-    needs: [version, build_net_framework, build_net]
+    needs:
+      - version
+      - build_net_framework
+      - build_net
+    if: |
+        always() &&
+        (needs.build_net_framework.result == 'skipped' || needs.build_net_framework.result == 'success') &&
+        (needs.build_net.result == 'skipped' || needs.build_net.result == 'success')
     runs-on: ubuntu-latest
 
     steps:
@@ -158,3 +192,25 @@ jobs:
       run: dotnet nuget add source --username DKorablin --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DKorablin/index.json"
     - name: Deploying package to GitHub
       run: dotnet nuget push nupkg\*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+
+  failure_cleanup:
+  #error: tag '${{needs.version.outputs.new_tag}}' not found.
+    name: Remove version tag on failure
+    needs:
+      - version
+      - build_net_framework
+      - build_net
+    if: |
+      always() &&
+      needs.build_net_framework.result != 'success' &&
+      needs.build_net.result != 'success'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{secrets.SUBMODULE_TOKEN}}
+        submodules: false
+        fetch-depth: 0 #Fetch all history for all tags and branches
+    - name: Removing version tag
+      run: |
+        git tag -d ${{needs.version.outputs.new_tag}}

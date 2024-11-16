@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 namespace AlphaOmega.Debug
@@ -83,7 +84,7 @@ namespace AlphaOmega.Debug
 			=> this.ConsoleWriteError(waitForInput,
 				title + ": " + exc.Message,
 				"========================",
-				exc.Data == null ? String.Empty : String.Join(Environment.NewLine, exc.Data.Keys.Cast<Object>().Select(k => k.ToString() + ": " + exc.Data[k].ToString())),
+				exc.Data == null ? String.Empty : String.Join(Environment.NewLine, exc.Data.Keys.Cast<Object>().Select(k => k.ToString() + ": " + exc.Data[k].ToString()).ToArray()),
 				exc.StackTrace);
 
 		public void ConsoleWriteError(Boolean waitForInput, params String[] lines)

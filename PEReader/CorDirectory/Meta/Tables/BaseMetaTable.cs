@@ -29,6 +29,20 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			this.Table = stream[this.TableType];
 		}
 
+		/// <summary>Search for row</summary>
+		/// <param name="predicate">Search conditions</param>
+		/// <remarks>Remove this after the end of support .NET Framework 2.0</remarks>
+		/// <returns>Found row or exception</returns>
+		/// <exception cref="ArgumentException">Row that meets exact requiremens is not found</exception>
+		public R Single(Predicate<R> predicate)
+		{
+			foreach(var row in this)
+				if(predicate(row))
+					return row;
+
+			throw new ArgumentException($"Row {typeof(R)} not found");
+		}
+
 		/// <summary>Get in iteration a list of all rows in a metadata table</summary>
 		/// <returns>A set of metadata detailing the structure of a table</returns>
 		public IEnumerator<R> GetEnumerator()

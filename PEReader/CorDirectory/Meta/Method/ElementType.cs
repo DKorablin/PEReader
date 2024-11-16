@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>Type of method element type</summary>
+	[DebuggerDisplay("TypeName={TypeName}")]
 	public struct ElementType
 	{
 		/// <summary>Common language runtime Type</summary>
@@ -101,11 +103,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				this.GenericArguments = null;
 		}
 
-		/// <summary>Format element type as string representation</summary>
-		/// <returns></returns>
-		public override String ToString()
-			=> this.ToStringTyped();
-
 		/// <summary>Formats element as it storead in CLI</summary>
 		/// <returns>String representation</returns>
 		public String ToStringOriginal()
@@ -122,91 +119,94 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Formats element more precisely to .NET code</summary>
 		/// <returns>String representation</returns>
 		/// <exception cref="InvalidOperationException"></exception>
-		public String ToStringTyped()
+		public String TypeName
 		{
-			String sType;
-			switch(this.Type)
+			get
 			{
-			case Cor.ELEMENT_TYPE.OBJECT:
-				sType = typeof(Object).Name;
-				break;
-			case Cor.ELEMENT_TYPE.BOOLEAN:
-				sType = typeof(Boolean).Name;
-				break;
-			case Cor.ELEMENT_TYPE.STRING:
-				sType = typeof(String).Name;
-				break;
-			case Cor.ELEMENT_TYPE.I:
-				sType = typeof(IntPtr).Name;
-				break;
-			case Cor.ELEMENT_TYPE.I2:
-				sType = typeof(Int16).Name;
-				break;
-			case Cor.ELEMENT_TYPE.I4:
-				sType = typeof(Int32).Name;
-				break;
-			case Cor.ELEMENT_TYPE.I8:
-				sType = typeof(Int64).Name;
-				break;
-			case Cor.ELEMENT_TYPE.U:
-				sType = typeof(UIntPtr).Name;
-				break;
-			case Cor.ELEMENT_TYPE.U1:
-				sType = typeof(Byte).Name;
-				break;
-			case Cor.ELEMENT_TYPE.U2:
-				sType = typeof(UInt16).Name;
-				break;
-			case Cor.ELEMENT_TYPE.U4:
-				sType = typeof(UInt32).Name;
-				break;
-			case Cor.ELEMENT_TYPE.U8:
-				sType = typeof(UInt64).Name;
-				break;
-			case Cor.ELEMENT_TYPE.VOID:
-				sType = typeof(void).Name;
-				break;
-			case Cor.ELEMENT_TYPE.CLASS:
-			case Cor.ELEMENT_TYPE.VALUETYPE:
-				switch(this.TypeDefOrRef.TableType)
+				String sType;
+				switch(this.Type)
 				{
-				case Cor.MetaTableType.TypeDef:
-					TypeDefRow typeDef = this.TypeDefOrRef.GetTargetRowTyped<TypeDefRow>();
-					sType = typeDef.TypeNamespace == String.Empty
-						? typeDef.TypeName
-						: String.Join(".", new String[] { typeDef.TypeNamespace, typeDef.TypeName });
+				case Cor.ELEMENT_TYPE.OBJECT:
+					sType = typeof(Object).Name;
 					break;
-				case Cor.MetaTableType.TypeRef:
-					TypeRefRow typeRef = this.TypeDefOrRef.GetTargetRowTyped<TypeRefRow>();
-					sType = typeRef.TypeNamespace == String.Empty
-						? typeRef.TypeName
-						: String.Join(".", new String[] { typeRef.TypeNamespace, typeRef.TypeName });
+				case Cor.ELEMENT_TYPE.BOOLEAN:
+					sType = typeof(Boolean).Name;
 					break;
-				case Cor.MetaTableType.TypeSpec:
-					TypeSpecRow typeSpec = this.TypeDefOrRef.GetTargetRowTyped<TypeSpecRow>();
-					sType = this.Type.ToString() + ".???.TYPESPEC.???";//TODO: Need to validate it
+				case Cor.ELEMENT_TYPE.STRING:
+					sType = typeof(String).Name;
 					break;
+				case Cor.ELEMENT_TYPE.I:
+					sType = typeof(IntPtr).Name;
+					break;
+				case Cor.ELEMENT_TYPE.I2:
+					sType = typeof(Int16).Name;
+					break;
+				case Cor.ELEMENT_TYPE.I4:
+					sType = typeof(Int32).Name;
+					break;
+				case Cor.ELEMENT_TYPE.I8:
+					sType = typeof(Int64).Name;
+					break;
+				case Cor.ELEMENT_TYPE.U:
+					sType = typeof(UIntPtr).Name;
+					break;
+				case Cor.ELEMENT_TYPE.U1:
+					sType = typeof(Byte).Name;
+					break;
+				case Cor.ELEMENT_TYPE.U2:
+					sType = typeof(UInt16).Name;
+					break;
+				case Cor.ELEMENT_TYPE.U4:
+					sType = typeof(UInt32).Name;
+					break;
+				case Cor.ELEMENT_TYPE.U8:
+					sType = typeof(UInt64).Name;
+					break;
+				case Cor.ELEMENT_TYPE.VOID:
+					sType = typeof(void).Name;
+					break;
+				case Cor.ELEMENT_TYPE.CLASS:
+				case Cor.ELEMENT_TYPE.VALUETYPE:
+					switch(this.TypeDefOrRef.TableType)
+					{
+					case Cor.MetaTableType.TypeDef:
+						TypeDefRow typeDef = this.TypeDefOrRef.GetTargetRowTyped<TypeDefRow>();
+						sType = typeDef.TypeNamespace == String.Empty
+							? typeDef.TypeName
+							: String.Join(".", new String[] { typeDef.TypeNamespace, typeDef.TypeName });
+						break;
+					case Cor.MetaTableType.TypeRef:
+						TypeRefRow typeRef = this.TypeDefOrRef.GetTargetRowTyped<TypeRefRow>();
+						sType = typeRef.TypeNamespace == String.Empty
+							? typeRef.TypeName
+							: String.Join(".", new String[] { typeRef.TypeNamespace, typeRef.TypeName });
+						break;
+					case Cor.MetaTableType.TypeSpec:
+						TypeSpecRow typeSpec = this.TypeDefOrRef.GetTargetRowTyped<TypeSpecRow>();
+						sType = this.Type.ToString() + ".???.TYPESPEC.???";//TODO: Need to validate it
+						break;
+					default:
+						throw new InvalidOperationException();
+					}
+					break;
+				case Cor.ELEMENT_TYPE.MVAR:
+					sType = "!" + this.RawPointer;
+					break;
+				case Cor.ELEMENT_TYPE.VAR:
+					goto default;
 				default:
-					throw new InvalidOperationException();
+					sType = this.Type.ToString();
+					break;
 				}
-				break;
-			case Cor.ELEMENT_TYPE.MVAR:
-				sType = "!" + this.RawPointer;
-				break;
-			case Cor.ELEMENT_TYPE.VAR:
-				goto default;
-			default:
-				sType = this.Type.ToString();
-				break;
+				String generic = this.GenericArguments == null
+					? String.Empty
+					: "<" + String.Join(", ", Array.ConvertAll(this.GenericArguments, a => a.TypeName)) + ">";
+				return sType
+				+ generic
+					+ (this.IsArray ? String.Join(String.Empty, Array.ConvertAll(new Object[this.MultiArray], o => { return "[]"; })) : String.Empty)
+					+ (this.IsByRef ? "&" : String.Empty)
+					+ (this.IsPointer ? "*" : String.Empty);
 			}
-			String generic = this.GenericArguments == null
-				? String.Empty
-				: "<" + String.Join(", ", Array.ConvertAll(this.GenericArguments, a => a.ToStringTyped())) + ">";
-			return sType
-			+ generic
-				+ (this.IsArray ? String.Join(String.Empty, Array.ConvertAll(new Object[this.MultiArray], o => { return "[]"; })) : String.Empty)
-				+ (this.IsByRef ? "&" : String.Empty)
-				+ (this.IsPointer ? "*" : String.Empty);
 		}
 	}
 }

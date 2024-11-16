@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AlphaOmega.Debug.CorDirectory.Meta.Tables;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 {
 	/// <summary>Class reader based on strongly typed metadata <see cref="Cor.MetaTableType.TypeDef"/> table</summary>
+	[DebuggerDisplay(nameof(FullName) + " = {" + nameof(FullName) + "}")]
 	public class TypeReader
 	{
 		/// <summary>Class in current assembly</summary>
@@ -53,11 +55,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 				if(getProperty != null)
 				{
 					if(result.IsProperty && getProperty.Name == result.Name)
-					{
-						yield return new PropertyReader(getProperty.MethodDef, row);
+					{//TODO: We need to find different approach because we don't see cuastom attribute on generated properties...
+						yield return new PropertyReader(this.TypeDef, getProperty.MethodDef, row);
 						result = null;
 					} else
-						yield return new PropertyReader(getProperty.MethodDef, null);
+						yield return new PropertyReader(this.TypeDef, getProperty.MethodDef, null);
 					getProperty = null;
 				}
 
