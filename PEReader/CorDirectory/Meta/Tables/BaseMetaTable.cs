@@ -26,7 +26,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			_ = stream ?? throw new ArgumentNullException(nameof(stream));
 
 			this.TableType = type;
-			this.Table = stream[this.TableType];
+			this.Table = stream[type] ?? throw new ArgumentNullException("stream[this.TableType]", $"Table type {type} not found in the stream");
 		}
 
 		/// <summary>Search for row</summary>

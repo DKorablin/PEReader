@@ -1,8 +1,7 @@
 name: Test, Buid, Release
 
 on:
-  push:
-    branches: [ "master" ]
+  workflow_dispatch:
 
 env:
   SolutionName: ${{github.event.repository.name}}
@@ -100,7 +99,7 @@ jobs:
     - name: Restoring NuGet packages
       run: nuget restore "${{github.workspace}}\${{env.SolutionName}}.sln"
     - name: Building .NET Framework
-      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}\${{env.SolutionName}}35.csproj" /property:Configuration=Release -property:OutputPath="${{github.workspace}}/bin/" -property:Version=${{needs.version.outputs.new_version}} -property:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
+      run: MSBuild -nologo -restore "${{github.workspace}}\${{env.SolutionName}}\${{env.SolutionName}}35.csproj" /property:Configuration=Release -property:OutputPath="${{github.workspace}}\bin\" -property:Version=${{needs.version.outputs.new_version}} -property:AssemblyOriginatorKeyFile="${{ steps.sign_key_file.outputs.filePath }}"
     - name: Deploying artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -149,7 +148,6 @@ jobs:
         (needs.build_net_framework.result == 'skipped' || needs.build_net_framework.result == 'success') &&
         (needs.build_net.result == 'skipped' || needs.build_net.result == 'success')
     runs-on: ubuntu-latest
-
     steps:
     - name: Extracting all artifacts
       uses: actions/download-artifact@v4
@@ -170,7 +168,14 @@ jobs:
 
   deploy_nuget:
     name: Deploying NuGet package
-    needs: [version, build_net_framework, build_net]
+    needs:
+        - version
+        - build_net_framework
+        - build_net
+    if: |
+        always() &&
+        (needs.build_net_framework.result == 'skipped' || needs.build_net_framework.result == 'success') &&
+        (needs.build_net.result == 'skipped' || needs.build_net.result == 'success')
     runs-on: windows-latest
 
     steps:
@@ -187,10 +192,10 @@ jobs:
         path: bin
     - name: Packing artifacts
       run: nuget pack ${{env.SolutionName}}.dll.nuspec -Version ${{needs.version.outputs.new_version}} -OutputDirectory nupkg
-    - name: Peparing package source
-      run: dotnet nuget add source --username DKorablin --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/DKorablin/index.json"
-    - name: Deploying package to GitHub
-      run: dotnet nuget push nupkg\*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+    - name: Deploying to GitHub
+      run: dotnet nuget push nupkg\*.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/DKorablin/index.json
+    - name: Deploying to NuGet
+      run: dotnet nuget push nupkg\*.nupkg --skip-duplicate --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
 
   failure_cleanup:
   #error: tag '${{needs.version.outputs.new_tag}}' not found.
@@ -207,7 +212,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        token: ${{secrets.SUBMODULE_TOKEN}}
         submodules: false
         fetch-depth: 0 #Fetch all history for all tags and branches
     - name: Removing version tag

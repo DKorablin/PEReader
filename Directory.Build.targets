@@ -1,0 +1,41 @@
+<Project>
+	<Target Name="BeforeBuild">
+		<ItemGroup>
+			<AssemblyAttributes Include="AssemblyVersion">
+				<_Parameter1>$(Version)</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyFileVersion">
+				<_Parameter1>$(Version)</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyInformationalVersion">
+				<_Parameter1>$(Version)</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyConfiguration">
+				<_Parameter1>$(Configuration)</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyCopyright">
+				<_Parameter1>Copyright © Danila Korablin 2012-2024</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyProduct">
+				<_Parameter1>Portable Executable Reader</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyTitle">
+				<_Parameter1>PE Reader</_Parameter1>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyCompany">
+				<_Parameter1>Danila Korablin</_Parameter1>
+			</AssemblyAttributes>
+		</ItemGroup>
+		<ItemGroup Condition="'$(TargetFramework)' != 'net20'">
+			<AssemblyAttributes Include="AssemblyMetadata">
+				<_Parameter1>RepositoryUrl</_Parameter1>
+				<_Parameter2>https://github.com/DKorablin/PEReader</_Parameter2>
+			</AssemblyAttributes>
+		</ItemGroup>
+		<MakeDir Directories="$(IntermediateOutputPath)" />
+		<WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)Version.cs" AssemblyAttributes="@(AssemblyAttributes)" />
+		<ItemGroup>
+			<Compile Include="$(IntermediateOutputPath)Version.cs" />
+		</ItemGroup>
+	</Target>
+</Project>

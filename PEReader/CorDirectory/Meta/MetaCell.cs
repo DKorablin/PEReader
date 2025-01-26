@@ -59,7 +59,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				break;
 			case MetaColumnType.Blob:
 				this.RawValue = this.Table.Root.StreamTableHeader.BlobIndexSize == 2 ? (UInt32)reader.ReadUInt16() : reader.ReadUInt32();
-				this.Value = this.Table.Root.Parent.BlobHeap[(Int32)this.RawValue];
+				this.Value = this.Table.Root.Parent.BlobHeap?[(Int32)this.RawValue];//BLOB could be null for assemblies with resources
 				break;
 			/*case MetaColumnType.UserString:
 				this._value = this.Table.Root.MetaData.USHeap[(Int32)this.RawValue];
@@ -70,7 +70,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					MetaTable refTable = this.Table.Root[(Cor.MetaTableType)this.Column.ColumnType];
 					this.RawValue = ((refTable.RowsCount < 65536) ? reader.ReadUInt16() : reader.ReadUInt32());
 					this.Value = new MetaCellPointer(this, this.RawValue);
-					//TODO: Не понял необходимость сдвига исходя из типа таблицы.
+					//TODO: Don't yet understant requirement for this offset based on table type.
 					//this.RawValue = (((uint)this.Column.Type << 24) | ((refTable.RowsCount < 65536) ? reader.ReadUInt16() : reader.ReadUInt32()));
 				} else if(this.Column.IsCodedToken)//Coded token
 				{// Coded token (may need to be uncompressed from 2-byte form)

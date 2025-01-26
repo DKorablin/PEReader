@@ -233,12 +233,12 @@ namespace AlphaOmega.Debug
 												try
 												{
 													foreach(MemberArgument value in attrReader.Attribute.FixedArgs)
-														arguments.Add($"{value.Type.ToStringTyped()} {value.Name} = {Utils.ValueToString(value.Value)}");
+														arguments.Add($"{value.Type.ToStringOriginal()} {value.Name} = {Utils.ValueToString(value.Value)}");
 													this._console.WriteLine($"{attrReader.FullName}({String.Join(", ", arguments.ToArray())})");
 
 													arguments.Clear();
 													foreach(MemberElement value in attrReader.Attribute.NamedArgs)
-														arguments.Add($"\t{value.Type.ToStringTyped()} ({value.ElementType}) {value.Name} = {Utils.ValueToString(value.Value)}");
+														arguments.Add($"\t{value.Type.ToStringOriginal()} ({value.ElementType}) {value.Name} = {Utils.ValueToString(value.Value)}");
 													if(arguments.Count > 0)
 														this._console.WriteLine("{\r\n" + String.Join(Environment.NewLine, arguments.ToArray()) + "\r\n}");
 												} catch(InvalidOperationException exc)
@@ -334,14 +334,14 @@ namespace AlphaOmega.Debug
 												this._console.WriteLine($"{type}: {typeRow.FullName} {{");
 
 												foreach(FieldRow fieldRow in typeRow.GetFields())
-													this._console.WriteLine("\t" + fieldRow.ReturnType.ToStringTyped() + " " + fieldRow.Name + ";");
+													this._console.WriteLine("\t" + fieldRow.ReturnType.ToStringOriginal() + " " + fieldRow.Name + ";");
 
 												foreach(PropertyReader propertyRow in typeRow.GetProperties())
-													this._console.WriteLine($"\t{propertyRow.Return.ToStringTyped()} {propertyRow.Name} {{ {(propertyRow.CanRead ? "get; " : String.Empty)}{(propertyRow.CanWrite ? "set; " : String.Empty)}}}");
+													this._console.WriteLine($"\t{propertyRow.Return.ToStringOriginal()} {propertyRow.Name} {{ {(propertyRow.CanRead ? "get; " : String.Empty)}{(propertyRow.CanWrite ? "set; " : String.Empty)}}}");
 
 												foreach(MethodReader methodRow in typeRow.GetMembers().Where(m => m.IsProperty == false))
-													this._console.WriteLine("\t" + methodRow.Return.ToStringTyped() + " " + methodRow.Name
-														+ "(" + String.Join(", ", methodRow.GetArguments().Select(a => a.Type.ToStringTyped() + " " + a.Name).ToArray()) + ");");
+													this._console.WriteLine("\t" + methodRow.Return.ToStringOriginal() + " " + methodRow.Name
+														+ "(" + String.Join(", ", methodRow.GetArguments().Select(a => a.Type.ToStringOriginal() + " " + a.Name).ToArray()) + ");");
 
 												this._console.WriteLine("}");
 												break;
@@ -349,14 +349,14 @@ namespace AlphaOmega.Debug
 										case Cor.MetaTableType.MethodDef:
 											{
 												MethodReader reader = new MethodReader((MethodDefRow)row);
-												String methodName = reader.Return.ToStringTyped()
+												String methodName = reader.Return.ToStringOriginal()
 													+ " " + reader.DeclaringType.FullName
 													+ "." + reader.Name + "(";
 												Int32 index = 0;
 												foreach(MemberArgument paramRow2 in reader.GetArguments())
 												{
 													ElementType typeEnum = reader.MethodDef.ArgsType[index++];
-													String typeString = typeEnum.ToStringTyped();
+													String typeString = typeEnum.ToStringOriginal();
 													String argumentAttributes = String.Join(", ", paramRow2.GetCustomAttributes().Select(a => a.FullName).ToArray());
 													if(argumentAttributes.Length > 0)
 														argumentAttributes = "[" + argumentAttributes + "] ";
@@ -409,7 +409,7 @@ namespace AlphaOmega.Debug
 															case Cor.MetaTableType.Field:
 																{
 																	FieldRow fieldRow = ilLine.Token.GetTargetRowTyped<FieldRow>();
-																	line.Append(" " + fieldRow.ReturnType.ToStringTyped() + " " + fieldRow.Name);
+																	line.Append(" " + fieldRow.ReturnType.ToStringOriginal() + " " + fieldRow.Name);
 																	break;
 																}
 															case Cor.MetaTableType.MemberRef:
@@ -426,7 +426,7 @@ namespace AlphaOmega.Debug
 																		break;
 																	case Cor.MetaTableType.TypeSpec:
 																		TypeSpecRow typeSpecRow1 = memberRefRow.Class.GetTargetRowTyped<TypeSpecRow>();
-																		line.Append(" " + typeSpecRow1.SignatureParsed.ToStringTyped() + "::" + memberRefRow.Name);
+																		line.Append(" " + typeSpecRow1.SignatureParsed.ToStringOriginal() + "::" + memberRefRow.Name);
 																		break;
 																	default:
 																		throw new NotImplementedException($"Unknown reference from MemberRef table: {ilLine.Token.TableType}");
@@ -440,8 +440,8 @@ namespace AlphaOmega.Debug
 															case Cor.MetaTableType.MethodDef:
 																{
 																	MethodDefRow methodDefRow = ilLine.Token.GetTargetRowTyped<MethodDefRow>();
-																	line.Append(" " + methodDefRow.ReturnType.ToStringTyped() + " " + methodDefRow.Name);
-																	line.Append("(" + String.Join(", ", methodDefRow.ParamList.Select(p => p.Type.ToStringTyped() + " " + p.Name).ToArray()) + ")");
+																	line.Append(" " + methodDefRow.ReturnType.ToStringOriginal() + " " + methodDefRow.Name);
+																	line.Append("(" + String.Join(", ", methodDefRow.ParamList.Select(p => p.Type.ToStringOriginal() + " " + p.Name).ToArray()) + ")");
 																	break;
 																}
 															case Cor.MetaTableType.TypeDef:
@@ -450,7 +450,7 @@ namespace AlphaOmega.Debug
 																break;
 															case Cor.MetaTableType.TypeSpec:
 																TypeSpecRow typeSpecRow = ilLine.Token.GetTargetRowTyped<TypeSpecRow>();
-																line.Append(" " + typeSpecRow.SignatureParsed.ToStringTyped());
+																line.Append(" " + typeSpecRow.SignatureParsed.ToStringOriginal());
 																break;
 															case Cor.MetaTableType.MethodSpec:
 																{
@@ -459,16 +459,16 @@ namespace AlphaOmega.Debug
 																	{
 																	case Cor.MetaTableType.MethodDef:
 																		MethodDefRow methodDefRow = methodSpecRow.Method.GetTargetRowTyped<MethodDefRow>();
-																		line.Append(" " + methodDefRow.ReturnType.ToStringTyped() + " " + methodDefRow.Name);
+																		line.Append(" " + methodDefRow.ReturnType.ToStringOriginal() + " " + methodDefRow.Name);
 																		break;
 																	case Cor.MetaTableType.MemberRef:
 																		MemberRefRow memberRef = methodSpecRow.Method.GetTargetRowTyped<MemberRefRow>();
-																		line.Append(" " + memberRef.ReturnType.ToStringTyped() + " " + memberRef.Name);
+																		line.Append(" " + memberRef.ReturnType.ToStringOriginal() + " " + memberRef.Name);
 																		break;
 																	default:
 																		throw new NotImplementedException();
 																	}
-																	line.Append("<" + String.Join(", ", methodSpecRow.GenArgs.Select(a => a.ToStringTyped()).ToArray()) + ">");
+																	line.Append("<" + String.Join(", ", methodSpecRow.GenArgs.Select(a => a.ToStringOriginal()).ToArray()) + ">");
 																	break;
 																}
 															default:

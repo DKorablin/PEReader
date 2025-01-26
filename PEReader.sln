@@ -9,16 +9,22 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PEReader", "PEReader\PERead
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E285453-C2E0-4ADA-B2FC-DD759A3D11CA}"
 	ProjectSection(SolutionItems) = preProject
-		.github\dependabot.yml = .github\dependabot.yml
+		.editorconfig = .editorconfig
+		Directory.Build.targets = Directory.Build.targets
 		PEReader.dll.nuspec = PEReader.dll.nuspec
 		README.md = README.md
-		.github\workflows\release.yml = .github\workflows\release.yml
-		.github\workflows\test.yml = .github\workflows\test.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEReader35", "PEReader\PEReader35.csproj", "{0AE5063A-7A43-4950-9300-1EBEA70FF36D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo35", "Demo\Demo35.csproj", "{195B264C-8735-4FDF-97B9-D0A8D6538563}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{DCB5C0CE-69CB-45CE-8CAB-7A4445EECC48}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+		.github\workflows\test.yml = .github\workflows\test.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DCB5C0CE-69CB-45CE-8CAB-7A4445EECC48} = {3E285453-C2E0-4ADA-B2FC-DD759A3D11CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D63502B-B211-4233-84A1-EF2F0BCCDD3D}

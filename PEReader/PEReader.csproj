@@ -3,14 +3,8 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<RootNamespace>AlphaOmega.Debug</RootNamespace>
-		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<AssemblyTitle>PEReader</AssemblyTitle>
-		<Company>Danila Korablin</Company>
-		<Product>Portable Executable Reader</Product>
-		<Copyright>Copyright © Danila Korablin 2012-2023</Copyright>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Configuration>Debug</Configuration>
-		<AssemblyVersion>1.0.*</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
 		<Deterministic>false</Deterministic>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
