@@ -14,6 +14,12 @@
 		<CopyLocalLockFileAssemblies>True</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="10.9.0.115408">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
 		<Compile Include="..\FileReader.Shared\ImageData\IBaseRow.cs">
 			<Link>CorDirectory\Interface\IBaseRow.cs</Link>
 		</Compile>

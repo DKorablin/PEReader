@@ -63,7 +63,11 @@ namespace AlphaOmega.Debug
 
 				String[] EnumerateFiles(String path)
 				{
+#if NETCOREAPP
 					IEnumerator<String> enumerator = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories).GetEnumerator();
+#else
+					IEnumerator<String> enumerator = (IEnumerator<String>)Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).GetEnumerator();
+#endif
 					List<String> result = new List<String>();
 					while(true)
 					{
