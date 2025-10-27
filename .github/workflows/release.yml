@@ -184,8 +184,8 @@ jobs:
         user: ${{secrets.NUGET_USER}}
     - name: Deploying to GitHub
       run: dotnet nuget push ${{env.ArtifactsDir}}\nupkg\ --skip-duplicate --api-key ${{secrets.GITHUB_TOKEN}} --source https://nuget.pkg.github.com/DKorablin/index.json
-#    - name: Deploying to NuGet
-#      run: dotnet nuget push ${{env.ArtifactsDir}}\nupkg\*.nupkg --skip-duplicate --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+    - name: Deploying to NuGet
+      run: dotnet nuget push ${{env.ArtifactsDir}}\nupkg\*.nupkg --skip-duplicate --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
 
   failure_cleanup:
     name: Cleanup Tag On Failure
