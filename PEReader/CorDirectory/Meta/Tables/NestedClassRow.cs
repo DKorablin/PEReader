@@ -10,10 +10,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class NestedClassRow : BaseMetaRow
 	{
 		/// <summary>An index into the TypeDef table</summary>
-		internal MetaCellPointer NestedClassI => base.GetValue<MetaCellPointer>(0);
+		internal MetaCellPointer NestedClassI => this.GetValue<MetaCellPointer>(0);
 
 		/// <summary>An index into the TypeDef table</summary>
-		internal MetaCellPointer EnclosingClassI => base.GetValue<MetaCellPointer>(1);
+		internal MetaCellPointer EnclosingClassI => this.GetValue<MetaCellPointer>(1);
 
 		/// <summary>Child class row from TypeDef table</summary>
 		public TypeDefRow NestedClass => new TypeDefRow() { Row = this.NestedClassI.TargetRow, };

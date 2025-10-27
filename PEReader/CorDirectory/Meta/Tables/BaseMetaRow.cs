@@ -2,7 +2,7 @@
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
-	/// <summary>Basic class to descibe any metadata table row</summary>
+	/// <summary>Basic class to describe any metadata table row</summary>
 	public class BaseMetaRow : IEquatable<BaseMetaRow>
 	{
 		private MetaRow _row;
@@ -47,7 +47,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <param name="obj">Object to compare with current field</param>
 		/// <returns>Objects are equals</returns>
 		public override Boolean Equals(Object obj)
-			=> Equals(obj as BaseMetaRow);
+			=> this.Equals(obj as BaseMetaRow);
 
 		/// <summary>Compare two rows by table type and index fields</summary>
 		/// <param name="row">Row to compare with current row</param>
@@ -93,6 +93,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Gets unique identifier for current row in current table</summary>
 		/// <returns></returns>
 		public override Int32 GetHashCode()
-			=> (Int32)this.Row.Table.TableType.GetHashCode() ^ (Int32)this.Index;
+			=> this.Row.Table.TableType.GetHashCode() ^ (Int32)this.Index;
 	}
 }

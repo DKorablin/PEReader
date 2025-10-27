@@ -14,7 +14,7 @@ namespace AlphaOmega.Debug.CorDirectory
 	/// </remarks>
 	[DefaultProperty(nameof(Header))]
 	public class VTable : CorDirectoryBase
-	{//TODO: Не протестировано
+	{//TODO: Not tested
 
 		/// <summary>VTable header</summary>
 		public Cor.IMAGE_COR20_VTABLE? Header
@@ -28,7 +28,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				return base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_VTABLE>(position);
 			}
 		}
-		/// <summary>Create instance of VTable class</summary>
+		/// <summary>Create instance of <see cref="VTable"/> class</summary>
 		/// <param name="parent">.NET directory</param>
 		public VTable(ComDescriptor parent)
 			: base(parent, WinNT.COR20_DIRECTORY_ENTRY.VTableFuxups) { }

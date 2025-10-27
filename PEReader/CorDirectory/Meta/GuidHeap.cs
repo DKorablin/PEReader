@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Guid heap class</summary>
 	public class GuidHeap : StreamHeaderTyped<Guid>
 	{
-		private static UInt32 SizeOfGuid = (UInt32)Marshal.SizeOf(typeof(Guid));
+		private static readonly UInt32 SizeOfGuid = (UInt32)Marshal.SizeOf(typeof(Guid));
 
 		/// <summary>Create instance of Guid heap class</summary>
 		/// <param name="meta">MetaData directory</param>
@@ -21,12 +21,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		}
 
 		/// <summary>Get Guid from offset</summary>
-		/// <param name="index">Offset from beggining of the heap</param>
+		/// <param name="index">Offset from beginning of the heap</param>
 		/// <returns>Guid</returns>
 		public override Guid this[Int32 index] => index == 0 ? Guid.Empty : base[index - 1];
 
 		/// <summary>
-		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to the start of a string.
 		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other
 		/// </summary>
 		/// <param name="pointer">Pointer in the heap</param>

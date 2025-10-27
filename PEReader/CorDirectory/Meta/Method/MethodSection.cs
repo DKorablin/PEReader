@@ -7,8 +7,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	{
 		/// <summary>Method header section descriptor</summary>
 		public Cor.CorILMethodSection Section { get; private set; }
+
 		/// <summary>Fat exception handling clause</summary>
 		public Cor.CorILMethodExceptionFat[] Fat { get; private set; }
+
 		/// <summary>Small exception handling clause</summary>
 		public Cor.CorILMethodExceptionSmall[] Small { get; private set; }
 

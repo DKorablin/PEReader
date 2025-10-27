@@ -13,7 +13,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		private TypeReader _typeDef;
 		private AssemblyRefReader _assemblyRef;
 
-		/// <summary>Class refernce from current assembly</summary>
+		/// <summary>Class reference from current assembly</summary>
 		public TypeRefRow TypeRef { get; }
 
 		/// <summary>Class from referenced assembly</summary>
@@ -56,7 +56,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 
 		/// <summary>Create instance of <see cref="TypeRefReader"/></summary>
 		/// <param name="typeRef">Strongly typed metadata <see cref="Cor.MetaTableType.TypeRef"/> row</param>
-		/// <exception cref="ArgumentNullException"><c>typeRef</c> is required</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="typeRef"/> is required</exception>
 		public TypeRefReader(TypeRefRow typeRef)
 			=> this.TypeRef = typeRef ?? throw new ArgumentNullException(nameof(typeRef));
 
@@ -106,7 +106,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		}
 
 		#region IDisposable
-		/// <summary>Desctructor for <see cref="TypeRefReader"/> if user forgets to dispose this object</summary>
+		/// <summary>Destructor for <see cref="TypeRefReader"/> if user forgets to dispose this object</summary>
 		~TypeRefReader()
 			=> this.Dispose(false);
 
@@ -117,7 +117,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			GC.SuppressFinalize(this);
 		}
 
-		/// <summary><see cref="IDisposable"/> pattern implemntation</summary>
+		/// <summary><see cref="IDisposable"/> pattern implementation</summary>
 		/// <param name="disposing">Is object disposing or called from destructor</param>
 		protected virtual void Dispose(Boolean disposing)
 			=> this._assemblyRef?.Dispose();

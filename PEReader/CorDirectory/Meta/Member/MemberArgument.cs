@@ -38,8 +38,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				yield break;
 
 			foreach(CustomAttributeRow row in this.ParamRow.Row.Table.Root.CustomAttribute)
-				if(row.Parent.TableType == Cor.MetaTableType.Param)
-					if(row.Parent.TargetRow == this.ParamRow)
+				if(row.Parent.TableType == Cor.MetaTableType.Param
+					&& row.Parent.TargetRow == this.ParamRow)
 						yield return new AttributeReader(row);
 		}
 	}

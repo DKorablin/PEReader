@@ -5,10 +5,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	/// <summary>Win32 API dialog template descriptor</summary>
 	public class DialogTemplate
 	{
-		#region Fields
 		private ResourceBase.SzInt? _menu;
 		private ResourceBase.SzInt? _windowName;
-		#endregion Fields
 
 		/// <summary>Template version</summary>
 		public UInt16? Version;
@@ -43,7 +41,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			get => this._menu;
 			set
 			{
-				if(value != null && value.Value.IsEmpty == false)
+				if(value != null && !value.Value.IsEmpty)
 					this._menu = value;
 			}
 		}
@@ -54,7 +52,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			get => this._windowName;
 			set
 			{
-				if(value != null && value.Value.IsEmpty == false)
+				if(value != null && !value.Value.IsEmpty)
 					this._windowName = value;
 			}
 		}

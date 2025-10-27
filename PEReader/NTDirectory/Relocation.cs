@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <returns>Relocation blocks</returns>
 		public IEnumerator<RelocationBlock> GetEnumerator()
 		{
-			if(!IsEmpty)
+			if(!this.IsEmpty)
 			{
 				UInt32 position = base.Directory.VirtualAddress;
 				UInt32 end = position + base.Directory.Size;

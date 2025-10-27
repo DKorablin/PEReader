@@ -12,28 +12,28 @@ namespace AlphaOmega.Debug.NTDirectory
 	public class ResourceDirectory : IEnumerable<ResourceDirectory>, ISectionData
 	{
 		#region Fields
-		internal static UInt32 DirectorySize = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY));
-		internal static UInt32 DirectoryEntrySize = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY));
+		internal static readonly UInt32 DirectorySize = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY));
+		internal static readonly UInt32 DirectoryEntrySize = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY));
 
 		private WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY? _dataEntry;
 		#endregion Fields
 		#region Properties
-		/// <summary>Корневой узел ресурсов</summary>
+		/// <summary>Root node of resources</summary>
 		public Resource Root { get; }
 
-		/// <summary>Родительская директория к текущей директории</summary>
+		/// <summary>Parent directory of the current directory</summary>
 		public ResourceDirectory Parent { get; }
 
 		/// <summary>Directory description</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY DirectoryEntry { get; }
 
-		/// <summary>Описатель директории</summary>
+		/// <summary>Directory descriptor</summary>
 		public WinNT.Resource.IMAGE_RESOURCE_DIRECTORY? Directory
 			=> this.DirectoryEntry.IsDirectory
 				? this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.DirectoryAddress)
 				: (WinNT.Resource.IMAGE_RESOURCE_DIRECTORY?)null;
 
-		/// <summary>Наименование директории</summary>
+		/// <summary>The name of the directory</summary>
 		public String Name
 		{
 			get
@@ -43,7 +43,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_STRING result = this.Root.Parent.Header.PtrToStructure<WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_STRING>(this.Root.Directory.VirtualAddress + this.DirectoryEntry.NameAddress);
 					return result.Name;
 				} else if(this.Parent == null)
-				{//Только для корневой папки может быть указано константное наименование
+				{//Only the root folder can have a constant name specified.
 					switch(this.DirectoryEntry.NameType)
 					{
 					case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.Undefined:
@@ -91,8 +91,8 @@ namespace AlphaOmega.Debug.NTDirectory
 
 		/// <summary>Get all data in directory</summary>
 		public Byte[] GetData()
-		{//TODO: Не внедрён VS_VERSIONINFO. Вся информация тут: http://msdn.microsoft.com/en-us/library/ms647001%28v=vs.85%29.aspx
-			//TODO: Не внедрён RT_ICON. Вся информация тут http://www.codeproject.com/Articles/30644/Replacing-ICON-resources-in-EXE-and-DLL-files
+		{//TODO: Not implemented VS_VERSIONINFO. All information is here: http://msdn.microsoft.com/en-us/library/ms647001%28v=vs.85%29.aspx
+		 //TODO: Not implemented RT_ICON. All information is here: http://www.codeproject.com/Articles/30644/Replacing-ICON-resources-in-EXE-and-DLL-files
 			WinNT.Resource.IMAGE_RESOURCE_DATA_ENTRY? dataEntry = this.DataEntry;
 			return dataEntry == null
 				? null

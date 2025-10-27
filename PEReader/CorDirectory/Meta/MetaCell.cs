@@ -70,7 +70,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					MetaTable refTable = this.Table.Root[(Cor.MetaTableType)this.Column.ColumnType];
 					this.RawValue = ((refTable.RowsCount < 65536) ? reader.ReadUInt16() : reader.ReadUInt32());
 					this.Value = new MetaCellPointer(this, this.RawValue);
-					//TODO: Don't yet understant requirement for this offset based on table type.
+					//TODO: Don't yet understand requirement for this offset based on table type.
 					//this.RawValue = (((uint)this.Column.Type << 24) | ((refTable.RowsCount < 65536) ? reader.ReadUInt16() : reader.ReadUInt32()));
 				} else if(this.Column.IsCodedToken)//Coded token
 				{// Coded token (may need to be uncompressed from 2-byte form)

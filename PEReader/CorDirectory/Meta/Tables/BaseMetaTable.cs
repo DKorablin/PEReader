@@ -20,20 +20,20 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 
 		/// <summary>Creating an instance of the base class of a detailed description of a table in metadata</summary>
 		/// <param name="stream">Metadata stream</param>
-		/// <param name="type">Stronglt typed table type</param>
+		/// <param name="type">Strongly typed table type</param>
 		internal BaseMetaTable(StreamTables stream, Cor.MetaTableType type)
 		{
 			_ = stream ?? throw new ArgumentNullException(nameof(stream));
 
 			this.TableType = type;
-			this.Table = stream[type] ?? throw new ArgumentNullException("stream[this.TableType]", $"Table type {type} not found in the stream");
+			this.Table = stream[type] ?? throw new ArgumentException($"Table type {type} not found in the stream", "stream[this.TableType]");
 		}
 
 		/// <summary>Search for row</summary>
 		/// <param name="predicate">Search conditions</param>
 		/// <remarks>Remove this after the end of support .NET Framework 2.0</remarks>
 		/// <returns>Found row or exception</returns>
-		/// <exception cref="ArgumentException">Row that meets exact requiremens is not found</exception>
+		/// <exception cref="ArgumentException">Row that meets exact requirements is not found</exception>
 		public R Single(Predicate<R> predicate)
 		{
 			foreach(var row in this)

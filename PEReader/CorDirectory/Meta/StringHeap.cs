@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		}
 
 		/// <summary>
-		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to the start of a string.
 		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
 		/// </summary>
 		/// <param name="pointer">Pointer to heap</param>

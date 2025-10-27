@@ -12,8 +12,8 @@ namespace AlphaOmega.Debug.CorDirectory
 	[DefaultProperty(nameof(Header))]
 	public class MetaData : CorDirectoryBase, IEnumerable<StreamHeader>
 	{
-		private static UInt32 SizeOfCor20Metadata1 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1));
-		private static UInt32 SizeOfCor20MetaData2 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA2));
+		private static readonly UInt32 SizeOfCor20Metadata1 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA1));
+		private static readonly UInt32 SizeOfCor20MetaData2 = (UInt32)Marshal.SizeOf(typeof(Cor.IMAGE_COR20_METADATA2));
 
 		private Cor.IMAGE_COR20_METADATA? _metaData;
 		private Dictionary<Cor.StreamHeaderType, StreamHeader> _streams;
@@ -36,14 +36,14 @@ namespace AlphaOmega.Debug.CorDirectory
 				Cor.IMAGE_COR20_METADATA1 meta1;
 				Cor.IMAGE_COR20_METADATA2 meta2;
 				String version;
-				//Первый блок структуры описания метаданных
+				//The first block of the metadata description structure
 				meta1 = base.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA1>(base.Directory.VirtualAddress);
 
-				//Версия блока структуры описания метаданных
+				//Metadata Description Structure Block Version
 				UInt32 position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1;
 				version = this.Parent.Parent.Header.PtrToStringAnsi(position);
 
-				//Второй блок структуры описания метаданных
+				//The second block of the metadata description structure
 				position = base.Directory.VirtualAddress + MetaData.SizeOfCor20Metadata1 + meta1.Length;
 				meta2 = this.Parent.Parent.Header.PtrToStructure<Cor.IMAGE_COR20_METADATA2>(position);
 
@@ -96,7 +96,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				? (GuidHeap)result
 				: null;
 
-		/// <summary>Bloab heap</summary>
+		/// <summary>Blob heap</summary>
 		public BlobHeap BlobHeap
 			=> this.Streams.TryGetValue(Cor.StreamHeaderType.Blob, out StreamHeader result)
 				? (BlobHeap)result
@@ -114,7 +114,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				? (USHeap)result
 				: null;
 
-		/// <summary>Get array of all heaps in MedaData directory</summary>
+		/// <summary>Get array of all heaps in MetaData directory</summary>
 		/// <returns>Heaps in MetaData directory</returns>
 		public IEnumerator<StreamHeader> GetEnumerator()
 		{
@@ -142,7 +142,7 @@ namespace AlphaOmega.Debug.CorDirectory
 				switch(header.Type)
 				{
 				case Cor.StreamHeaderType.StreamTable:
-				case Cor.StreamHeaderType.StreamTableUnoptimized://TODO: Не проверено. Пока ещё не нашёл ни одного файла с таким заголовком
+				case Cor.StreamHeaderType.StreamTableUnoptimized://TODO: Not verified. I haven't found any files with this header yet.
 					yield return new StreamTables(this, header);
 					break;
 				case Cor.StreamHeaderType.Guid:

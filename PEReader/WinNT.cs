@@ -5,8 +5,8 @@ using System.Diagnostics;
 
 namespace AlphaOmega.Debug
 {
-	/// <summary>Структуры COFF/PE файла</summary>
-	/// <remarks>Описание в WinNT.h</remarks>
+	/// <summary>COFF/PE file structures</summary>
+	/// <remarks>Description in WinNT.h</remarks>
 	public struct WinNT
 	{
 		/// <summary>4 byte packing is the default</summary>
@@ -214,11 +214,11 @@ namespace AlphaOmega.Debug
 		[Flags]
 		public enum COMIMAGE_FLAGS : UInt32
 		{
-			/// <summary>The image contains IL code only, with no embedded native unmanaged code except the start-up stub (whitch simply executes an indirect jump to the CLR entry point)</summary>
+			/// <summary>The image contains IL code only, with no embedded native unmanaged code except the start-up stub (which simply executes an indirect jump to the CLR entry point)</summary>
 			/// <remarks>
 			/// Common language runtime-aware operating systems (such as Windows XP and newer) ignore the start-up stub and invoke the CLR automatically, so for all practical purposes the file can be considered pure IL.
 			/// Howewer, setting this flag can cause certain problems when running under Windows XP and newer.
-			/// If this flag is set, the OS loader of Windows XP and newer ignores not only the start-up stub but also the .reloc section, whitch in this case contains single relocation (or single pair of relocations in IA64-specific images) for the CLR entry point.
+			/// If this flag is set, the OS loader of Windows XP and newer ignores not only the start-up stub but also the .reloc section, which in this case contains single relocation (or single pair of relocations in IA64-specific images) for the CLR entry point.
 			/// However, the .reloc section can contain relocations for the beginning and end of the .tls section as well as relocations for what is referred to as "data on data" (that is, data constants that are pointers to other data constants).
 			/// Among existing managed compilers, only the VC++ and the IL assembler can produce this items.
 			/// The VC++ of v7.0 and v7.1 (corresponding to CLR version 1.0 and 1.1) newer set this flag because the image file it generated was newer pure IL.
@@ -239,7 +239,7 @@ namespace AlphaOmega.Debug
 			/// <remarks>
 			/// The strong name signature includes the public key and the signature hash and is a part of an assembly's identity, along with the assembly name, version number, and culture information.
 			/// This flag is set when the strong name signing procedure is applied to the image file.
-			/// No compiler, including ILAsm, can set this flag explicity
+			/// No compiler, including ILAsm, can set this flag explicitly
 			/// </remarks>
 			STRONGNAMESIGNED = 0x00000008,
 			/// <summary>
@@ -1699,8 +1699,8 @@ namespace AlphaOmega.Debug
 			/// The .NET runtime calls this method to begin managed execution in the file
 			/// </summary>
 			/// <remarks>
-			/// If <see cref="COMIMAGE_FLAGS.NATIVE_ENTRYPOINT"/> is not set, EntryPointToken represents a managed entrypoint.
-			/// If <see cref="COMIMAGE_FLAGS.NATIVE_ENTRYPOINT"/> is set, EntryPointRVA represents an RVA to a native entrypoint
+			/// If <see cref="COMIMAGE_FLAGS.NATIVE_ENTRYPOINT"/> is not set, EntryPointToken represents a managed entry point.
+			/// If <see cref="COMIMAGE_FLAGS.NATIVE_ENTRYPOINT"/> is set, EntryPointRVA represents an RVA to a native entry point
 			/// </remarks>
 			[FieldOffset(20)]
 			public UInt32 EntryPointToken;
@@ -1899,7 +1899,7 @@ namespace AlphaOmega.Debug
 
 			/// <summary>The RVA of the first code byte in the file that will be executed</summary>
 			/// <remarks>
-			/// For DLLs, this entrypoint is called during process initialization and shutdown and during thread creations/destructions.
+			/// For DLLs, this entry point is called during process initialization and shutdown and during thread creations/destructions.
 			/// In most executables, this address doesn't directly point to main, WinMain, or DllMain.
 			/// Rather, it points to runtime library code that calls the aforementioned functions.
 			/// This field can be set to 0 in DLLs, and none of the previous notifications will be received.
@@ -3286,7 +3286,7 @@ namespace AlphaOmega.Debug
 			[StructLayout(LayoutKind.Sequential)]
 			public struct CV_HEADER
 			{
-				/// <summary>CodeView sugnature, equal to "NB10"</summary>
+				/// <summary>CodeView signature, equal to "NB10"</summary>
 				public const UInt32 PDB20Signature = 0x3031424e;
 				
 				/// <summary>CodeView signature, equals to "NB10"</summary>
@@ -3338,8 +3338,8 @@ namespace AlphaOmega.Debug
 			/// <summary>Misc debug Info</summary>
 			[StructLayout(LayoutKind.Sequential)]
 			public struct IMAGE_DEBUG_MISC
-			{//TODO: Необходимо прочитать блок Data.
-				
+			{//TODO: The Data block must be read.
+
 				/// <summary>Type of misc data, see defines</summary>
 				public IMAGE_DEBUG_MISC_TYPE DataType;
 				

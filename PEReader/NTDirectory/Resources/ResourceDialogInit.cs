@@ -71,7 +71,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 					yield return new ControlInitData(header, data);
 
 					if(padding + headerDataSize > reader.Length)
-						yield break;//TODO: В заключении, обычно, идут 2 байта. Но проверял пока только на DBaseTool
+						yield break;//TODO: The conclusion usually contains 2 bytes. But I've only tested it with DBaseTool so far.
 				}
 		}
 

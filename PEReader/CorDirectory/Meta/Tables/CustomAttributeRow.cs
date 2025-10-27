@@ -145,7 +145,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			enumTypeName = null;
 
 			if(type.IsArray)
-			{//TODO: We will nedd to parse subsequent bytes with respect of types described int the ELSE block lower
+			{//TODO: We will need to parse subsequent bytes with respect of types described int the ELSE block lower
 				UInt32 NumElem = BitConverter.ToUInt32(value, (Int32)offset);
 				offset += sizeof(UInt32);
 				Object[] values = new Object[NumElem];

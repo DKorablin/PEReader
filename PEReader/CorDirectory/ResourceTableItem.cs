@@ -39,7 +39,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		#endregion Properties
 		/// <summary>Create instance of a resource item</summary>
 		/// <param name="reader">Resource reader</param>
-		/// <param name="name">Reasource name in the .resource item</param>
+		/// <param name="name">Resource name in the .resource item</param>
 		internal ResourceTableItem(ResourceTableReader reader, String name)
 		{
 			this._reader = reader ?? throw new ArgumentNullException(nameof(reader));
@@ -47,7 +47,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		}
 
 		/// <summary>Create instance of streamed resource item</summary>
-		/// <param name="name">Reasource name in the .resource item</param>
+		/// <param name="name">Resource name in the .resource item</param>
 		/// <param name="type">Resource type</param>
 		/// <param name="data">Resource data</param>
 		internal ResourceTableItem(String name, String type, Byte[] data)

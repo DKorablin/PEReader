@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug
 	public struct WinGdi
 	{
 		/// <summary>Bitmap info type</summary>
-		public enum BI : Int32
+		public enum BI
 		{
 			/// <summary>An uncompressed format</summary>
 			RGB = 0,
@@ -274,7 +274,7 @@ namespace AlphaOmega.Debug
 			BOLD = 700,
 			/// <summary>Extra bold</summary>
 			EXTRABOLD = 800,
-			/// <summary>Heawy</summary>
+			/// <summary>Heavy</summary>
 			HEAVY = 900,
 		}
 

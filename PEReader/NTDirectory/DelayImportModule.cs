@@ -77,7 +77,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			UInt32 sizeOfStruct = sizeof(UInt32);
 			do
 			{
-				addrOfImport = this.Directory.Parent.Header.PtrToStructure<UInt32>(padding);//TODO: Необходимо проверить что в 64битной версии адрес занимает 4 байта, а не 8
+				addrOfImport = this.Directory.Parent.Header.PtrToStructure<UInt32>(padding);//TODO: It is necessary to check that in the 64-bit version the address takes up 4 bytes, not 8
 				padding += sizeOfStruct;
 
 				if(addrOfImport > 0)
@@ -97,7 +97,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			{
 				if((addrOfImport & 0x80000000) != 0)
 					yield return new WinNT.IMAGE_IMPORT_BY_NAME()
-					{//TODO: Тут на 64битную ещё проверить надо...
+					{//TODO: We still need to check for 64-bit here...
 						Hint = (UInt16)(addrOfImport & 0x7FFFFFFF),
 						Name = null,
 					};

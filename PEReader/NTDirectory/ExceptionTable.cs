@@ -21,7 +21,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <summary>Get all exception procedure pointers</summary>
 		/// <returns>Entries</returns>
 		public IEnumerator<WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY> GetEnumerator()
-		{//TODO: Не правильно читаются структуры при закгрузке через StreamLoader?
+		{
 			WinNT.IMAGE_RUNTIME_FUNCTION_ENTRY? first = this.FirstEntry;
 			if(first.HasValue)
 			{
@@ -39,7 +39,6 @@ namespace AlphaOmega.Debug.NTDirectory
 						yield return entry;
 					}
 			}
-			yield break;
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

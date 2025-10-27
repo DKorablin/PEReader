@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			}
 		}
 
-		/// <summary>This methid is defined as property</summary>
+		/// <summary>This method is defined as property</summary>
 		public virtual Boolean IsProperty
 		{
 			get
@@ -75,7 +75,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 
 		/// <summary>Create instance of <see cref="MethodReader"/></summary>
 		/// <param name="methodDefRow">Strongly typed metadata <see cref="Cor.MetaTableType.MethodDef"/> row</param>
-		/// <exception cref="ArgumentNullException"><c>methodDefRow</c> is required</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="methodDefRow"/> is required</exception>
 		public MethodReader(MethodDefRow methodDefRow)
 			=> this.MethodDef = methodDefRow ?? throw new ArgumentNullException(nameof(methodDefRow));
 
@@ -101,8 +101,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		public virtual IEnumerable<AttributeReader> GetCustomAttributes()
 		{
 			foreach(CustomAttributeRow row in this.MetaData.CustomAttribute)
-				if(row.Parent.TableType == Cor.MetaTableType.MethodDef)
-					if(row.Parent.TargetRow == this.MethodDef)
+				if(row.Parent.TableType == Cor.MetaTableType.MethodDef
+					&& row.Parent.TargetRow == this.MethodDef)
 						yield return new AttributeReader(row);
 		}
 	}

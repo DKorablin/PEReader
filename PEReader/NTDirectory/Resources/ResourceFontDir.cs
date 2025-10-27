@@ -16,7 +16,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			public UInt16 fontOrdinal;
 		}
 
-		/// <summary>Gets number of fons in directory</summary>
+		/// <summary>Gets number of fonts in directory</summary>
 		public UInt16 NumberOfFonts
 			=> PinnedBufferReader.BytesToStructure<UInt16>(base.Directory.GetData(), 0);
 

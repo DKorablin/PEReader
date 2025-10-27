@@ -45,8 +45,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Gets the table cell by column name</summary>
 		/// <param name="columnName">The column name from current table columns</param>
-		/// <exception cref="ArgumentNullException">A column with the specified name <c>columnname</c> is empty or null</exception>
-		/// <exception cref="ArgumentOutOfRangeException">A column with the specified name <c>columnName</c> was not found</exception>
+		/// <exception cref="ArgumentNullException">A column with the specified name <paramref name="columnName"/> is empty or null</exception>
+		/// <exception cref="ArgumentOutOfRangeException">A column with the specified name <paramref name="columnName"/> was not found</exception>
 		/// <returns>Table cell</returns>
 		public MetaCell this[String columnName]
 		{
@@ -96,7 +96,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="obj">Object to compare with current field</param>
 		/// <returns>Objects are equals</returns>
 		public override Boolean Equals(Object obj)
-			=> Equals(obj as MetaRow);
+			=> this.Equals(obj as MetaRow);
 
 		/// <summary>Compare two rows by table type and index fields</summary>
 		/// <param name="row">Row to compare with current row</param>

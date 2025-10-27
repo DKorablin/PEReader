@@ -10,23 +10,23 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		private Byte[] _file;
 
 		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins</summary>
-		internal UInt32 OffsetI => base.GetValue<UInt32>(0);
+		internal UInt32 OffsetI => this.GetValue<UInt32>(0);
 
 		/// <summary>The Offset specifies the byte offset within the referenced file at which this resource record begins and size of resource file is skipped</summary>
 		public UInt32 Offset => this.OffsetI + sizeof(UInt32);
 
 		/// <summary>Resource flags</summary>
-		public ResourceAttributes Flags => (ResourceAttributes)base.GetValue<UInt32>(1);
+		public ResourceAttributes Flags => (ResourceAttributes)this.GetValue<UInt32>(1);
 
 		/// <summary>Manifest resource name</summary>
-		public String Name => base.GetValue<String>(2);
+		public String Name => this.GetValue<String>(2);
 
 		/// <summary>The Implementation specifies which file holds this resource</summary>
 		/// <remarks>
 		/// An index into a File table, a AssemblyRef table, or null;
 		/// more precisely, an Implementation (§II.24.2.6) coded index.
 		/// </remarks>
-		public MetaCellCodedToken Implementation => base.GetValue<MetaCellCodedToken>(3);
+		public MetaCellCodedToken Implementation => this.GetValue<MetaCellCodedToken>(3);
 
 		/// <summary>Size of file in the resource directory</summary>
 		public UInt32 Size
@@ -53,28 +53,28 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		{
 			get
 			{
-				if(this._file == null)
-					if(this.FileInDirectory)
-					{
-						//if(this.Offset == 0) throw new InvalidOperationException("Offset must points to Resource directory");
+				if(this._file == null && this.FileInDirectory)
+				{
+					//if(this.Offset == 0) throw new InvalidOperationException("Offset must points to Resource directory");
 
-						ResourceTable dir = this.ResourceDirectory;
-						PEHeader header = dir.Parent.Parent.Header;
+					ResourceTable dir = this.ResourceDirectory;
+					PEHeader header = dir.Parent.Parent.Header;
 
-						UInt32 padding = dir.Directory.VirtualAddress + this.Offset;
+					UInt32 padding = dir.Directory.VirtualAddress + this.Offset;
 
-						this._file = header.ReadBytes(padding, this.Size);
-					}
+					this._file = header.ReadBytes(padding, this.Size);
+				}
 				return this._file;
 			}
 		}
+
 		/// <summary>File located in directory with managed resources</summary>
 		internal Boolean FileInDirectory => this.Implementation.TargetRow == null;
 
 		/// <summary>Managed resource directory</summary>
-		private ResourceTable ResourceDirectory => base.Row.Table.Root.Parent.Parent.Resources;
+		private ResourceTable ResourceDirectory => this.Row.Table.Root.Parent.Parent.Resources;
 
-		/// <summary>Create instance of manifest resource row</summary>
+		/// <summary>Create instance of <see cref="ManifestResourceRow"/></summary>
 		public ManifestResourceRow()
 			: base(Cor.MetaTableType.ManifestResource) { }
 

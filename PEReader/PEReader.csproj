@@ -1,24 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>net20;netstandard2.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<RootNamespace>AlphaOmega.Debug</RootNamespace>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Configuration>Debug</Configuration>
 		<Deterministic>false</Deterministic>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>False</GenerateDocumentationFile>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<OutputPath>..\..\bin\</OutputPath>
-		<DocumentationFile>..\..\bin\PEReader.xml</DocumentationFile>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<CopyLocalLockFileAssemblies>True</CopyLocalLockFileAssemblies>
+
+	<!--nuspec-->
+	<PropertyGroup>
+		<PackageId>AlphaOmega.PEReader</PackageId>
+		<Version>$(Version)</Version>
+		<Title>Portable Executable (+), Common Language Infrastructure format reader</Title>
+		<Description></Description>
+		<Authors>Danila Korablin</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>docs\README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/DKorablin/PEReader</RepositoryUrl>
+		<PackageTags></PackageTags>
 	</PropertyGroup>
+
 	<ItemGroup>
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="10.9.0.115408">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<None Include="..\README.md" Pack="true" PackagePath="\docs" />
 	</ItemGroup>
+	
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Optimize>true</Optimize>
+		<PublishSingleFile>true</PublishSingleFile>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Text.Encoding.CodePages" />
+		<AssemblyAttributes Include="AssemblyMetadata">
+			<_Parameter1>ProjectUrl</_Parameter1>
+			<_Parameter2>https://github.com/DKorablin/PEReader</_Parameter2>
+		</AssemblyAttributes>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<Compile Include="..\FileReader.Shared\ImageData\IBaseRow.cs">
 			<Link>CorDirectory\Interface\IBaseRow.cs</Link>

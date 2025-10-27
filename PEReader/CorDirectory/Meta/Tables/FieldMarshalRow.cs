@@ -22,7 +22,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>An index into the Blob heap</summary>
 		public Byte[] Native => base.GetValue<Byte[]>(1);
 
-		/// <summary>Create instance of FieldMarshal row</summary>
+		/// <summary>Create instance of <see cref="FieldMarshalRow"/></summary>
 		public FieldMarshalRow()
 			: base(Cor.MetaTableType.FieldMarshal) { }
 	}

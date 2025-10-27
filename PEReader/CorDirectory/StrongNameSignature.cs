@@ -1,5 +1,4 @@
-﻿using System;
-using AlphaOmega.Debug.NTDirectory;
+﻿using AlphaOmega.Debug.NTDirectory;
 
 namespace AlphaOmega.Debug.CorDirectory
 {

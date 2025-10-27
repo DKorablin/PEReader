@@ -46,7 +46,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		internal MethodLine(Int32 line, OpCode il, MemberArgument paramRow)
 	: this(line, il)
 		{
-			ParamIndexRow = paramRow;
+			this.ParamIndexRow = paramRow;
 		}
 
 		internal MethodLine(Int32 line, OpCode il)

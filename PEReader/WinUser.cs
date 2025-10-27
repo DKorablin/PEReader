@@ -556,7 +556,7 @@ namespace AlphaOmega.Debug
 		/// <summary>The menu item state</summary>
 		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms647578%28v=vs.85%29.aspx</remarks>
 		[Flags]
-		public enum MFS : Int32
+		public enum MFS
 		{
 			/// <summary>Checks the menu item</summary>
 			CHECKED = 0x00000008,
@@ -583,7 +583,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Menu item types</summary>
 		[Flags]
-		public enum MFT : Int32
+		public enum MFT
 		{
 			/// <summary>Displays the menu item using a text string</summary>
 			/// <remarks>

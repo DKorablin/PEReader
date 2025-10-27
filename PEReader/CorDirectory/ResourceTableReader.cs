@@ -74,7 +74,8 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			if(String.IsNullOrEmpty(resourceName))
 				throw new ArgumentNullException(nameof(resourceName));
-			_ = this._reader ?? throw new ArgumentNullException(nameof(_reader));
+
+			_ = this._reader ?? throw new InvalidOperationException($"The {nameof(_reader)} is null");
 
 			this._reader.GetResourceData(resourceName, out resourceType, out resourceData);
 		}
@@ -84,7 +85,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		/// <returns>Resource item</returns>
 		public IEnumerator<ResourceTableItem> GetEnumerator()
 		{
-			if(this.CanRead == false)
+			if(!this.CanRead)
 				throw new InvalidOperationException($"This type of resource {this.Name} cannot be read");
 
 			IDictionaryEnumerator enumerator = this.Reader.GetEnumerator();
@@ -103,8 +104,7 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			ResourceReader reader = this._reader;
 			this._reader = null;
-			if(reader != null)
-				reader.Close();
+			reader?.Close();
 
 			GC.SuppressFinalize(this);
 		}

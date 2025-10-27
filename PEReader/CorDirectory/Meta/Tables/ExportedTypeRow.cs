@@ -4,8 +4,8 @@ using System.Reflection;
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 {
 	/// <summary>
-	/// Exported type descriptors that contain information about public classes exported by the current assembly, whitch are declared in other modules of the assembly.
-	/// Only the prime module of the assembly sould carry this table
+	/// Exported type descriptors that contain information about public classes exported by the current assembly, which are declared in other modules of the assembly.
+	/// Only the prime module of the assembly should carry this table
 	/// </summary>
 	public class ExportedTypeRow : BaseMetaRow
 	{

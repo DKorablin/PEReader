@@ -9,7 +9,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// </summary>
 	public class TypeSpecRow : BaseMetaRow
 	{
-		/// <summary>Type specification singnature</summary>
+		/// <summary>Type specification signature</summary>
 		public Byte[] Signature => base.GetValue<Byte[]>(0);
 
 		/// <summary>Parsed type specification signature</summary>

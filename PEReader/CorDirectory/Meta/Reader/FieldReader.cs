@@ -10,14 +10,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		public FieldRow Field { get; }
 
 		/// <summary>Gets field name</summary>
-		public String Name => Field.Name;
+		public String Name => this.Field.Name;
 
 		/// <summary>Gets field type</summary>
-		public ElementType ReturnType => Field.ReturnType;
+		public ElementType ReturnType => this.Field.ReturnType;
 
 		/// <summary>Create instance if <see cref="FieldReader"/></summary>
 		/// <param name="field">With strongly typed metadata <see cref="FieldRow"/></param>
-		/// <exception cref="ArgumentNullException"><c>field</c> is required</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="field"/> is required</exception>
 		public FieldReader(FieldRow field)
 			=> this.Field = field ?? throw new ArgumentNullException(nameof(field));
 	}

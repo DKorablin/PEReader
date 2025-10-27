@@ -7,7 +7,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	/// Events are treated within metadata much like Properties;
 	/// that is, as a way to associate a collection of methods defined on a given class.
 	/// There are two required methods (add_ and remove_) plus an optional one (raise_);
-	/// additonal methods with other names are also permitted (§18).
+	/// additional methods with other names are also permitted (§18).
 	/// All of the methods gathered together as an Event shall be defined on the class (§I.8.11.4).
 	/// </summary>
 	public class EventRow : BaseMetaRow

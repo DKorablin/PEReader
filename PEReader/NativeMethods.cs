@@ -15,7 +15,7 @@ namespace AlphaOmega.Debug
 		/// <summary>The max number of bits in long</summary>
 		private const Int32 BIT_SIZE_LONG = 64;
 
-		private static DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0);
+		private static readonly DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0);
 
 		/// <summary>Convert an unsigned int to a date by adding seconds to Jan 1, 1970 0:0:0</summary>
 		/// <remarks>http://jasonhaley.com/blog/post/2006/01/07/Get-a-DateTime-from-a-Coff-Headers-TimeDateStamp.aspx</remarks>

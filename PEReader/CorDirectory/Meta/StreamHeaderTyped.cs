@@ -29,7 +29,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Create instance of the typed stream header</summary>
 		/// <param name="loader">MetaData</param>
 		/// <param name="header">Stream header</param>
-		public StreamHeaderTyped(MetaData loader, Cor.STREAM_HEADER header)
+		protected StreamHeaderTyped(MetaData loader, Cor.STREAM_HEADER header)
 			: base(loader, header) { }
 
 		/// <summary>Gets data in the sorted array form</summary>
@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			=> this._data ?? (this._data = this.DataBind());
 
 		/// <summary>
-		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to thestart of a string.
+		/// The .NET specification allows a string reference to point anywhere in the string heap, not just to the start of a string.
 		/// Therefore, it is possible (although probably not very useful) to create an assembly in which some strings overlap with each other.
 		/// </summary>
 		/// <param name="pointer">Pointer in the heap</param>

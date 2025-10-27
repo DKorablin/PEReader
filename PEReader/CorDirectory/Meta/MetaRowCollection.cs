@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private MetaTable Table { get; }
 
 		/// <summary>Create instance of rows collection class</summary>
-		/// <param name="table">Table from whitch taken all rows</param>
+		/// <param name="table">Table from which taken all rows</param>
 		public MetaRowCollection(MetaTable table)
 			=> this.Table = table ?? throw new ArgumentNullException(nameof(table));
 

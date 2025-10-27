@@ -27,7 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		{
 			this.Cell = cell ?? throw new ArgumentNullException(nameof(cell));
 			UInt32 tableId = rawValue & 0x03;
-			this.RowIndex = checked((rawValue >> 2) - 1);//TODO: Почему -1? (Код вылетает в Overflow в таблице TypeRef при обращеии к последнему элементу)
+			this.RowIndex = checked((rawValue >> 2) - 1);//TODO: Why -1? (The code crashes in Overflow in the TypeRef table when accessing the last element)
 			switch(tableId)
 			{
 			case 0://TypeDef
@@ -51,12 +51,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		internal CellPointerBase(MetaCell cell, UInt32 rowIndex, Cor.MetaTableType tableType)
 		{
 			this.Cell = cell ?? throw new ArgumentNullException(nameof(cell));
-			this.RowIndex = rowIndex == 0 ? (UInt32?)null : checked(rowIndex - 1);//TODO: Почему -1? (Код вылетает в Overflow в таблице TypeDef в TypeName=<Module>)
+			this.RowIndex = rowIndex == 0 ? (UInt32?)null : checked(rowIndex - 1);//TODO: Why -1? (The code crashes in Overflow in the TypeDef table at TypeName=<Module>)
 			this.TableType = tableType;
 		}
 
 		/// <summary>Gets row where coded token points to</summary>
-		/// <typeparam name="R">Strongly typed metadata row. This must be equevalent to <see cref="CellPointerBase.TableType" /></typeparam>
+		/// <typeparam name="R">Strongly typed metadata row. This must be equivalent to <see cref="CellPointerBase.TableType" /></typeparam>
 		/// <exception cref="InvalidOperationException">Table {result.TableType} not belongs to table {this.TableType} where pointed</exception>
 		/// <returns>Strongly typed target row</returns>
 		public R GetTargetRowTyped<R>() where R : BaseMetaRow, new()

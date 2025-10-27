@@ -17,7 +17,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Field table row</summary>
 		public FieldRow Field => new FieldRow() { Row = this.FieldI.TargetRow, };
 
-		/// <summary>Create instance of Fieldlayout row</summary>
+		/// <summary>Create instance of <see cref="FieldLayoutRow"/></summary>
 		public FieldLayoutRow()
 			: base(Cor.MetaTableType.FieldLayout) { }
 	}

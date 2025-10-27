@@ -14,7 +14,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		public override Boolean IsEmpty
 			=> base.IsEmpty || this.Header.Value.NumberOfNames == 0;
 
-		/// <summary>Директория экспортируемых функций</summary>
+		/// <summary>Exported functions directory header information</summary>
 		public WinNT.IMAGE_EXPORT_DIRECTORY? Header
 			=> base.IsEmpty
 					? (WinNT.IMAGE_EXPORT_DIRECTORY?)null

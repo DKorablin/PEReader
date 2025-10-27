@@ -28,7 +28,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					foreach(FieldInfo field in typeof(OpCodes).GetFields())
 					{
 						OpCode code = (OpCode)field.GetValue(null);
-						checked { MethodBody._opCodeList.Add((Int16)code.Value, code); }
+						checked { MethodBody._opCodeList.Add(code.Value, code); }
 					}
 				}
 				return MethodBody._opCodeList;

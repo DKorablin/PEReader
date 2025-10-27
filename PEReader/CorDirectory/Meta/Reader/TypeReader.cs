@@ -39,7 +39,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 
 		/// <summary>Create instance of <see cref="TypeReader"/></summary>
 		/// <param name="typeDef">Strongly typed metadata <see cref="Cor.MetaTableType.TypeDef"/> row</param>
-		/// <exception cref="ArgumentNullException"><c>typeDef</c> is required</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="typeDef"/> is required</exception>
 		public TypeReader(TypeDefRow typeDef)
 			=> this.TypeDef = typeDef ?? throw new ArgumentNullException(nameof(typeDef));
 
@@ -55,7 +55,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 				if(getProperty != null)
 				{
 					if(result.IsProperty && getProperty.Name == result.Name)
-					{//TODO: We need to find different approach because we don't see cuastom attribute on generated properties...
+					{//TODO: We need to find different approach because we don't see custom attribute on generated properties...
 						yield return new PropertyReader(this.TypeDef, getProperty.MethodDef, row);
 						result = null;
 					} else
@@ -90,7 +90,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		}
 
 		/// <summary>Gets list of attributes applied to current class</summary>
-		/// <returns>List of <see cref="AttributeReader"/> instances related to curent class</returns>
+		/// <returns>List of <see cref="AttributeReader"/> instances related to current class</returns>
 		public IEnumerable<AttributeReader> GetAttributes()
 		{
 			foreach(CustomAttributeRow row in this.TypeDef.Row.Table.Root.CustomAttribute)
@@ -100,7 +100,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		}
 
 		/// <summary>Gets all the interfaces implemented or inherited by the current type</summary>
-		/// <returns>A list of <see cref="InterfaceImplRow"/> that describres all inherited interfaces for current type</returns>
+		/// <returns>A list of <see cref="InterfaceImplRow"/> that describes all inherited interfaces for current type</returns>
 		public IEnumerable<InterfaceImplRow> GetInterfaces()
 		{
 			foreach(InterfaceImplRow row in this.TypeDef.Row.Table.Root.InterfaceImpl)

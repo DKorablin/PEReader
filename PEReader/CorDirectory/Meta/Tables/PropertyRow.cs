@@ -8,17 +8,17 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class PropertyRow : BaseMetaRow
 	{
 		/// <summary>Flags that can be associated with a property</summary>
-		public PropertyAttributes Flags => (PropertyAttributes)base.GetValue<UInt16>(0);
+		public PropertyAttributes Flags => (PropertyAttributes)this.GetValue<UInt16>(0);
 
 		/// <summary>Property name</summary>
-		public String Name => base.GetValue<String>(1);
+		public String Name => this.GetValue<String>(1);
 
 		/// <summary>Signature</summary>
 		/// <remarks>
 		/// The name of this column is misleading.
 		/// It does not index a TypeDef or TypeRef table - instead it indexes the signature in the Blob heap of the Property.
 		/// </remarks>
-		public Byte[] Type => base.GetValue<Byte[]>(2);
+		public Byte[] Type => this.GetValue<Byte[]>(2);
 
 		/// <summary>First byte of signature</summary>
 		public CorSignature PropertySig => (CorSignature)this.Type[0];

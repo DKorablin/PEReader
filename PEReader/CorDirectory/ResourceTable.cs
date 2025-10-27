@@ -12,10 +12,8 @@ namespace AlphaOmega.Debug.CorDirectory
 	[DefaultProperty(nameof(Header))]
 	public class ResourceTable : CorDirectoryBase, IEnumerable<ResourceTableReader>
 	{
-		#region Fields
 		private Cor.ResourceManagerHeader? _header;
 		private Cor.ResourceSetHeader? _set;
-		#endregion Fields
 
 		/// <summary>Managed resource header</summary>
 		public Cor.ResourceManagerHeader Header
@@ -30,7 +28,7 @@ namespace AlphaOmega.Debug.CorDirectory
 			{
 				if(this._set == null)
 				{
-					if(this.Header.IsValid == false)
+					if(!this.Header.IsValid)
 						throw new InvalidOperationException("Invalid magic");
 
 					UInt32 offset = base.Directory.VirtualAddress + (UInt32)Marshal.SizeOf(typeof(Cor.ResourceManagerHeader))
@@ -59,11 +57,11 @@ namespace AlphaOmega.Debug.CorDirectory
 			=> this.GetEnumerator();
 
 		/// <summary>Decode 7bit encoded Int</summary>
-		/// <param name="offset">Ofsset from resource_manager header</param>
+		/// <param name="offset">Offset from resource_manager header</param>
 		/// <param name="value"></param>
 		/// <param name="size"></param>
 		private void DecodeInt(UInt32 offset, out UInt32 value, out UInt32 size)
-		{//TODO: Остался от неуправляемого метода чтения ресурсов из файла
+		{//TODO: Remaining from unmanaged method of reading resources from file
 			Int32 a=0, b=0;
 			UInt32 x = 0;
 			while(true)

@@ -12,15 +12,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private Cor.STREAM_TABLE_HEADER? _streamTableHeader;
 		private Dictionary<Cor.MetaTableType, MetaTable> _tables;
 
-		/// <summary>Таблица с информацией о типе</summary>
-		/// <param name="tableType">Тип таблицы</param>
-		/// <returns>Данные в таблице</returns>
+		/// <summary>Table with type information</summary>
+		/// <param name="tableType">Table type</param>
+		/// <returns>Data in the table</returns>
 		public MetaTable this[Cor.MetaTableType tableType]
 		{
 			get
 			{
 				if(this._tables == null)
-					DataBind();
+					this.DataBind();
 
 				return this._tables.TryGetValue(tableType, out MetaTable result)
 					? result
@@ -46,15 +46,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		public Tables.BaseMetaTable<Tables.TypeDefRow> TypeDef
 			=> new Tables.BaseMetaTable<Tables.TypeDefRow>(this, Cor.MetaTableType.TypeDef);
 
-		/// <summary>A class-to-fields lookup table, whitch does not exist on optimized metadata (#~ stream)</summary>
+		/// <summary>A class-to-fields lookup table, which does not exist on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.FieldPtrRow> FieldPtr
 			=> new Tables.BaseMetaTable<Tables.FieldPtrRow>(this, Cor.MetaTableType.FieldPtr);
 
-		/// <summary>A field definition descriptos</summary>
+		/// <summary>A field definition descriptors</summary>
 		public Tables.BaseMetaTable<Tables.FieldRow> Field
 			=> new Tables.BaseMetaTable<Tables.FieldRow>(this, Cor.MetaTableType.Field);
 
-		/// <summary>A class-to-methods lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+		/// <summary>A class-to-methods lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.MethodPtrRow> MethodPtr
 			=> new Tables.BaseMetaTable<Tables.MethodPtrRow>(this, Cor.MetaTableType.MethodPtr);
 
@@ -62,7 +62,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		public Tables.BaseMetaTable<Tables.MethodDefRow> MethodDef
 			=> new Tables.BaseMetaTable<Tables.MethodDefRow>(this, Cor.MetaTableType.MethodDef);
 
-		/// <summary>A method-to-parameters lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+		/// <summary>A method-to-parameters lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.ParamPtrRow> ParamPtr
 			=> new Tables.BaseMetaTable<Tables.ParamPtrRow>(this, Cor.MetaTableType.ParamPtr);
 
@@ -98,7 +98,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		public Tables.BaseMetaTable<Tables.ClassLayoutRow> ClassLayout
 			=> new Tables.BaseMetaTable<Tables.ClassLayoutRow>(this, Cor.MetaTableType.ClassLayout);
 
-		/// <summary>Field layout descriptors that specify the offset or ordinal of invidual fields</summary>
+		/// <summary>Field layout descriptors that specify the offset or ordinal of individual fields</summary>
 		public Tables.BaseMetaTable<Tables.FieldLayoutRow> FieldLayout
 			=> new Tables.BaseMetaTable<Tables.FieldLayoutRow>(this, Cor.MetaTableType.FieldLayout);
 
@@ -111,12 +111,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>
 		/// A class-to-events mapping table.
-		/// This is not an intermidate lookup table, and it does not exist in optimized metadata
+		/// This is not an intermediate lookup table, and it does not exist in optimized metadata
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.EventMapRow> EventMap
 			=> new Tables.BaseMetaTable<Tables.EventMapRow>(this, Cor.MetaTableType.EventMap);
 
-		/// <summary>An event map-to-events lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+		/// <summary>An event map-to-events lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.EventPtrRow> EventPtr
 			=> new Tables.BaseMetaTable<Tables.EventPtrRow>(this, Cor.MetaTableType.EventPtr);
 
@@ -126,12 +126,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>
 		/// A class-to-properties mapping table.
-		/// This is not an intermidate lookup table, and it does not exist in optimized metadata
+		/// This is not an intermediate lookup table, and it does not exist in optimized metadata
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.PropertyMapRow> PropertyMap
 			=> new Tables.BaseMetaTable<Tables.PropertyMapRow>(this, Cor.MetaTableType.PropertyMap);
 
-		/// <summary>A property map-to-properties lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+		/// <summary>A property map-to-properties lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 		public Tables.BaseMetaTable<Tables.PropertyPtrRow> PropertyPtr
 			=> new Tables.BaseMetaTable<Tables.PropertyPtrRow>(this, Cor.MetaTableType.PropertyPtr);
 
@@ -139,7 +139,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		public Tables.BaseMetaTable<Tables.PropertyRow> Property
 			=> new Tables.BaseMetaTable<Tables.PropertyRow>(this, Cor.MetaTableType.Property);
 
-		/// <summary>Method semantics descriptors that hold information about whitch method is associated with a specific property or event and in what capacity</summary>
+		/// <summary>Method semantics descriptors that hold information about which method is associated with a specific property or event and in what capacity</summary>
 		public Tables.BaseMetaTable<Tables.MethodSemanticsRow> MethodSemantics
 			=> new Tables.BaseMetaTable<Tables.MethodSemanticsRow>(this, Cor.MetaTableType.MethodSemantics);
 
@@ -185,7 +185,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		public Tables.BaseMetaTable<Tables.ENCMapRow> ENCMap
 			=> new Tables.BaseMetaTable<Tables.ENCMapRow>(this, Cor.MetaTableType.ENCMap);
 
-		/// <summary>The current assembly descriptor, whitch sould appear only in the prime moduel metadata</summary>
+		/// <summary>The current assembly descriptor, which should appear only in the prime model metadata</summary>
 		public Tables.BaseMetaTable<Tables.AssemblyRow> Assembly
 			=> new Tables.BaseMetaTable<Tables.AssemblyRow>(this, Cor.MetaTableType.Assembly);
 
@@ -228,8 +228,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			=> new Tables.BaseMetaTable<Tables.FileRow>(this, Cor.MetaTableType.File);
 
 		/// <summary>
-		/// Exported type descriptors that contain information about public classes exported by the current assembly, whitch are declared in other modules of the assembly.
-		/// Only the prime module of the assembly sould carry this table
+		/// Exported type descriptors that contain information about public classes exported by the current assembly, which are declared in other modules of the assembly.
+		/// Only the prime module of the assembly should carry this table
 		/// </summary>
 		public Tables.BaseMetaTable<Tables.ExportedTypeRow> ExportedType
 			=> new Tables.BaseMetaTable<Tables.ExportedTypeRow>(this, Cor.MetaTableType.ExportedType);
@@ -272,7 +272,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Tables position</summary>
 		public override UInt32 Position => base.Position + StreamTables.SizeOfStreamTable;
 
-		/// <summary>Позиция, с которых начинаются данные в таблицах</summary>
+		/// <summary>The position at which data in tables begins</summary>
 		public UInt32 DataPosition
 			=> this.Position + this.StreamTableHeader.PresentTablesCount * sizeof(UInt32);
 
@@ -286,7 +286,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			if(header.Type != Cor.StreamHeaderType.StreamTable && header.Type != Cor.StreamHeaderType.StreamTableUnoptimized)
 				throw new InvalidOperationException();
 		}
-		/// <summary>Получить данные всех таблиц</summary>
+
+		/// <summary>Get data from all tables</summary>
 		protected virtual void DataBind()
 		{
 			this._tables = new Dictionary<Cor.MetaTableType, MetaTable>();
@@ -341,7 +342,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 
 		/// <summary>Create metadata table</summary>
 		/// <param name="tableType">Type of creating table</param>
-		/// <param name="padding">Offset from the beginging of metadata</param>
+		/// <param name="padding">Offset from the beginning of metadata</param>
 		private void AddTable(Cor.MetaTableType tableType, ref UInt32 padding)
 		{
 			MetaTable table = new MetaTable(this, tableType, padding);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO;
 
 namespace AlphaOmega.Debug.NTDirectory.Resources
@@ -10,7 +9,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	{
 		/// <summary>Bitmap header</summary>
 		public WinGdi.BITMAPINFOHEADER Header
-			=> PinnedBufferReader.BytesToStructure<WinGdi.BITMAPINFOHEADER>(base.Directory.GetData(), 0);
+			=> PinnedBufferReader.BytesToStructure<WinGdi.BITMAPINFOHEADER>(this.Directory.GetData(), 0);
 
 		/// <summary>Create instance of bitmap resource class</summary>
 		/// <param name="directory">Resource directory</param>
@@ -20,6 +19,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Convert DIB to GDI stream</summary>
 		/// <returns>Stream for System.Drawing.Bitmap</returns>
 		public Stream GetBitmapStream()
-			=> new DibStream(base.Directory.GetData());
+			=> new DibStream(this.Directory.GetData());
 	}
 }

@@ -64,7 +64,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			if(header.Is64Bit)
 			{
 				WinNT.IMAGE_THUNK_DATA64 thunk64 = header.PtrToStructure<WinNT.IMAGE_THUNK_DATA64>(offset);
-				forwarderString = thunk64.ForwarderString;//TODO: Вот тут может быть ошибка
+				forwarderString = thunk64.ForwarderString;
 			} else
 			{
 				WinNT.IMAGE_THUNK_DATA32 thunk32 = header.PtrToStructure<WinNT.IMAGE_THUNK_DATA32>(offset);

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AlphaOmega.Debug.NTDirectory
+﻿namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>The RVA of the value to be stored in the global pointer register</summary>
 	public class GlobalPtr : PEDirectoryBase

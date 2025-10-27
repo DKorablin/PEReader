@@ -68,7 +68,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 
 		/// <summary>Create instance of <see cref="AssemblyRefReader"/></summary>
 		/// <param name="assemblyRef">Strongly typed metadata <see cref="Cor.MetaTableType.AssemblyRef"/></param>
-		/// <exception cref="ArgumentNullException"><c>assemblyRef</c> is required</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="assemblyRef"/> is required</exception>
 		public AssemblyRefReader(AssemblyRefRow assemblyRef)
 			=> this.AssemblyRef = assemblyRef ?? throw new ArgumentNullException(nameof(assemblyRef));
 
@@ -98,7 +98,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			GC.SuppressFinalize(this);
 		}
 
-		/// <summary><see cref="IDisposable"/> pattern implemntation</summary>
+		/// <summary><see cref="IDisposable"/> pattern implementation</summary>
 		/// <param name="disposing">Is object disposing or called from destructor</param>
 		protected virtual void Dispose(Boolean disposing)
 			=> this._file?.Dispose();

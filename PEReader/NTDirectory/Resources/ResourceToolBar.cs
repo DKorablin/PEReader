@@ -9,11 +9,11 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	[DefaultProperty(nameof(Header))]
 	public class ResourceToolBar : ResourceBase
 	{
-		private static UInt32 SizeOfStruct = (UInt32)Marshal.SizeOf(typeof(CommCtrl.TOOLBARDATA));
+		private static readonly UInt32 SizeOfStruct = (UInt32)Marshal.SizeOf(typeof(CommCtrl.TOOLBARDATA));
 
 		/// <summary>Toolbar header</summary>
 		public CommCtrl.TOOLBARDATA Header
-			=> PinnedBufferReader.BytesToStructure<CommCtrl.TOOLBARDATA>(base.Directory.GetData(), 0);
+			=> PinnedBufferReader.BytesToStructure<CommCtrl.TOOLBARDATA>(this.Directory.GetData(), 0);
 
 		/// <summary>TooBar header validation</summary>
 		public Boolean IsValid => this.Header.wVersion == 1;
@@ -30,7 +30,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			UInt32 iIconIndex = 0;
 			UInt32 padding = ResourceToolBar.SizeOfStruct;
 
-			using(PinnedBufferReader reader = base.CreateDataReader())
+			using(PinnedBufferReader reader = this.CreateDataReader())
 				for(UInt16 loop = 0; loop < this.Header.wItemsCount; loop++)
 				{
 					UInt16 toolBarItem = reader.BytesToStructure<UInt16>(ref padding);

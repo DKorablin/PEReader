@@ -54,7 +54,7 @@ namespace AlphaOmega.Debug
 			{
 				if(this._headerNT32 == null)
 				{
-					if(this.HeaderDos.IsValid == false)
+					if(!this.HeaderDos.IsValid)
 						throw new InvalidOperationException("Invalid DOS header");
 
 					this._headerNT32 = this.Loader.PtrToStructure<WinNT.IMAGE_NT_HEADERS32>((UInt32)this.HeaderDos.e_lfanew);
@@ -71,7 +71,7 @@ namespace AlphaOmega.Debug
 			{
 				if(this._headerNT64 == null)
 				{
-					if(this.HeaderDos.IsValid == false)
+					if(!this.HeaderDos.IsValid)
 						throw new InvalidOperationException("Invalid DOS header");
 
 					this._headerNT64 = this.Loader.PtrToStructure<WinNT.IMAGE_NT_HEADERS64>((UInt32)this.HeaderDos.e_lfanew);
@@ -151,7 +151,7 @@ namespace AlphaOmega.Debug
 			this.Loader.Endianness = EndianHelper.Endian.Little;
 		}
 
-		/// <summary>Validata PE headers</summary>
+		/// <summary>Validate PE headers</summary>
 		/// <exception cref="InvalidOperationException">PE image is invalid</exception>
 		public virtual void ValidatePeFile()
 		{
@@ -200,7 +200,7 @@ namespace AlphaOmega.Debug
 		/// <summary>Read bytes from image</summary>
 		/// <param name="offset">RVA to start address</param>
 		/// <param name="length">How much to read</param>
-		/// <returns>Readed bytes</returns>
+		/// <returns>Read bytes</returns>
 		public Byte[] ReadBytes(UInt32 offset, UInt32 length)
 		{
 			UInt32 rva = offset;
@@ -212,7 +212,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Get structure from specific RVA</summary>
 		/// <typeparam name="T">Structure to map</typeparam>
-		/// <param name="offset">RVA to the beggining of structure</param>
+		/// <param name="offset">RVA to the beginning of structure</param>
 		/// <returns>Mapped structure</returns>
 		public T PtrToStructure<T>(UInt32 offset) where T : struct
 		{
@@ -224,7 +224,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Get string from specific RVA</summary>
-		/// <param name="offset">RVA to the beggining of string</param>
+		/// <param name="offset">RVA to the beginning of string</param>
 		/// <returns>Mapped string</returns>
 		public String PtrToStringAnsi(UInt32 offset)
 		{

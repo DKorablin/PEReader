@@ -62,7 +62,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		}
 		IRow ITable.this[UInt32 rowIndex] => this[rowIndex];
 
-		/// <summary>Create metatable instance</summary>
+		/// <summary>Create <see cref="MetaTable"/> instance</summary>
 		/// <param name="root">Root stream</param>
 		/// <param name="tableType">Table type</param>
 		/// <param name="padding">Indent from the start of the metadata stream</param>
@@ -126,7 +126,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 					return this.Root.StreamTableHeader.GuidIndexSize;
 				default:
 					if(MetaColumn.IsColumnCellPointer(type))//Pointer to another table
-					return (UInt32)(this.Root.GetRowsCount((Cor.MetaTableType)type) < 65536 ? 2 : 4);
+						return (UInt32)(this.Root.GetRowsCount((Cor.MetaTableType)type) < 65536 ? 2 : 4);
 
 					//CodedToken
 					MetaColumnType[] referredTypes = MetaTable.GetCodedTokenTypes(type);

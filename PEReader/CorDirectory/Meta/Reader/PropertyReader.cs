@@ -14,7 +14,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <summary>The property return type</summary>
 		public override ElementType Return { get => this._getMethodDef.ReturnType; }
 
-		/// <summary>This methid is defined as property</summary>
+		/// <summary>This method is defined as property</summary>
 		public override Boolean IsProperty { get => true; }
 
 		/// <summary>Gets a value indicating whether the property can be read</summary>
@@ -72,8 +72,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		public override IEnumerable<AttributeReader> GetCustomAttributes()
 		{
 			foreach(CustomAttributeRow row in this.MetaData.CustomAttribute)
-				if(row.Parent.TableType == Cor.MetaTableType.Property)
-					if(row.Parent.TargetRow == this.Property)
+				if(row.Parent.TableType == Cor.MetaTableType.Property
+					&& row.Parent.TargetRow == this.Property)
 						yield return new AttributeReader(row);
 		}
 	}

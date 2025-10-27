@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta.Tables

@@ -80,7 +80,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		public DialogItemTemplate(WinUser.DLGITEMTEMPLATE? control, WinUser.DLGITEMTEMPLATEEX? controlEx, ResourceBase.SzInt itemClass, ResourceBase.SzInt itemText, Byte[] extraData)
 		{
 			if(control == null && controlEx == null)
-				throw new ArgumentNullException(nameof(control) + " || " + nameof(controlEx), "control or controlEx must be not null");
+				throw new ArgumentException("control or controlEx must be not null", nameof(control) + " || " + nameof(controlEx));
 
 			if(control != null)
 			{
@@ -123,7 +123,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			this.ExtraData = extraData;
 		}
 
-		/// <summary>Create instance of extended Win32 API tempate control described by itemClass member</summary>
+		/// <summary>Create instance of extended Win32 API template control described by itemClass member</summary>
 		/// <param name="control">Defines the dimensions and style of a control in a dialog box.</param>
 		/// <param name="controlEx">A block of text used by an extended dialog box template to describe the extended dialog box.</param>
 		/// <param name="itemClass">Type of dialog item template (predefined control or COM control)</param>

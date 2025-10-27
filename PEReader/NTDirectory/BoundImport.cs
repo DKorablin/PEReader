@@ -15,7 +15,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					? (WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR?)null
 					: base.Parent.Header.PtrToStructure<WinNT.IMAGE_BOUND_IMPORT_DESCRIPTOR>(base.Directory.VirtualAddress);
 
-		/// <summary>Module name whitch this image is bounded</summary>
+		/// <summary>Module name which this image is bounded</summary>
 		public String ModuleName
 		{
 			get

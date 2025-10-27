@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AlphaOmega.Debug.NTDirectory
+﻿namespace AlphaOmega.Debug.NTDirectory
 {
 	/// <summary>The load configuration table address and size</summary>
 	public class LoadConfig : PEDirectoryBase

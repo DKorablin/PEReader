@@ -26,7 +26,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Assembly flags</summary>
 		/// <remarks>Flags shall have only one bit set, the PublicKey bit (§II.23.1.2). All other bits shall be zero</remarks>
 		public AssemblyNameFlags Flags => (AssemblyNameFlags)base.GetValue<UInt32>(4);
-		//public CorAssemblyFlags Flags => (CorAssemblyFlags)base.GetValue<UInt32>(4);
 
 		/// <summary>an index into the Blob heap, indicating the public key or token that identifies the author of this Assembly</summary>
 		public Byte[] PublicKeyOrToken => base.GetValue<Byte[]>(5);
@@ -58,7 +57,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 						: new CultureInfo(this.Locale),
 				};
 
-				switch(Flags)
+				switch(this.Flags)
 				{
 				case AssemblyNameFlags.PublicKey:
 					result.SetPublicKey(this.PublicKeyOrToken);

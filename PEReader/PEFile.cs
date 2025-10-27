@@ -39,8 +39,8 @@ namespace AlphaOmega.Debug
 		/// <returns>Directory</returns>
 		public WinNT.IMAGE_DATA_DIRECTORY this[WinNT.IMAGE_DIRECTORY_ENTRY entry]
 			=> this.Header.Is64Bit
-					? this.Header.HeaderNT64.OptionalHeader[entry]
-					: this.Header.HeaderNT32.OptionalHeader[entry];
+				? this.Header.HeaderNT64.OptionalHeader[entry]
+				: this.Header.HeaderNT32.OptionalHeader[entry];
 
 		/// <summary>PE file sections</summary>
 		public Sections Sections
@@ -60,7 +60,7 @@ namespace AlphaOmega.Debug
 		public Import Import
 			=> this._import ?? (this._import = new Import(this));
 
-		/// <summary>Get detailed information for debugginig</summary>
+		/// <summary>Get detailed information for debugging</summary>
 		/// <returns>Debugging directory</returns>
 		public NTDirectory.Debug Debug
 			=> this._debug ?? (this._debug = new NTDirectory.Debug(this));
@@ -130,7 +130,7 @@ namespace AlphaOmega.Debug
 			this.Header = new PEHeader(loader);
 		}
 
-		/// <summary>Desctructor for <see cref="Header"/> if user forgets to dispose this object</summary>
+		/// <summary>Destructor for <see cref="Header"/> if user forgets to dispose this object</summary>
 		~PEFile()
 			=> this.Dispose(false);
 

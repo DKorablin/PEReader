@@ -13,16 +13,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		private MethodBody _body;
 
 		/// <summary>Method body address</summary>
-		public UInt32 RVA => base.GetValue<UInt32>(0);
+		public UInt32 RVA => this.GetValue<UInt32>(0);
 
 		/// <summary>Specifies flags for the attributes of a method implementation</summary>
-		public MethodImplAttributes ImplFlags => (MethodImplAttributes)base.GetValue<UInt16>(1);
+		public MethodImplAttributes ImplFlags => (MethodImplAttributes)this.GetValue<UInt16>(1);
 
 		/// <summary>Specifies flags for method attributes. These flags are defined in the corhdr.h file</summary>
-		public MethodAttributes Flags => (MethodAttributes)base.GetValue<UInt16>(2);
+		public MethodAttributes Flags => (MethodAttributes)this.GetValue<UInt16>(2);
 
 		/// <summary>Method name</summary>
-		public String Name => base.GetValue<String>(3);
+		public String Name => this.GetValue<String>(3);
 
 		/// <summary>
 		/// As name implies, this signature stores information related to methods defined in current assembly,
@@ -32,10 +32,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// Is indexed by the MethodDef.Signature column.
 		/// </summary>
 		/// <remarks>If Signature is GENERIC (0x10), the generic arguments are described in the GenericParam table (§II.22.20)</remarks>
-		public Byte[] Signature => base.GetValue<Byte[]>(4);
+		public Byte[] Signature => this.GetValue<Byte[]>(4);
 
 		/// <summary>Strongly typed method signature with return type, calling convention and arguments types</summary>
-		private SignatureParser SignatureI => _signatureI ?? (_signatureI = new SignatureParser(this.Row, Signature));
+		private SignatureParser SignatureI => _signatureI ?? (_signatureI = new SignatureParser(this.Row, this.Signature));
 
 		/// <summary>Calling convention that are made in managed code for current method</summary>
 		public Cor.IMAGE_CEE_CS CorCallingConvention => this.SignatureI.CorCallingConvention;

@@ -17,7 +17,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		/// <exception cref="ArgumentOutOfRangeException">Directory VA out of file size</exception>
 		public WinNT.WIN_CERTIFICATE? Certificate
 			=> this.IsEmpty
-				? (WinNT.WIN_CERTIFICATE?)null//TODO: Читается только из физического файла. Т.к. сертификат находится в файле. И ссылка идёт на VA, а не на RVA.
+				? (WinNT.WIN_CERTIFICATE?)null//TODO: It can only be read from a physical file, since the certificate is located in the file. And the link is to the VA, not the RVA.
 				: base.Parent.Header.Loader.PtrToStructure<WinNT.WIN_CERTIFICATE>(base.Directory.VirtualAddress);
 
 		/// <summary>X.509 certificate</summary>
@@ -28,7 +28,7 @@ namespace AlphaOmega.Debug.NTDirectory
 				var cert = this.Certificate;
 				if(cert.HasValue &&
 					(cert.Value.wCertificateType == WinNT.WIN_CERT_TYPE.X509
-					|| cert.Value.wCertificateType==WinNT.WIN_CERT_TYPE.PKCS_SIGNED_DATA))
+					|| cert.Value.wCertificateType == WinNT.WIN_CERT_TYPE.PKCS_SIGNED_DATA))
 				{
 					UInt32 sizeOfStruct = (UInt32)Marshal.SizeOf(typeof(WinNT.WIN_CERTIFICATE));
 					UInt32 offset = base.Directory.VirtualAddress + sizeOfStruct;

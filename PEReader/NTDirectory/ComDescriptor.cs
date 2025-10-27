@@ -7,7 +7,6 @@ namespace AlphaOmega.Debug.NTDirectory
 	[DefaultProperty(nameof(Cor20Header))]
 	public class ComDescriptor : PEDirectoryBase
 	{
-		#region Fields
 		private WinNT.IMAGE_COR20_HEADER? _cor20Header;
 		private MetaData _metaData;
 		private ResourceTable _resource;
@@ -16,7 +15,6 @@ namespace AlphaOmega.Debug.NTDirectory
 		private CodeManagerTable _codeManagerTable;
 		private Eat _eat;
 		private ManagedNativeHeader _managedNativeHeader;
-		#endregion Fields
 
 		/// <summary>.NET application header</summary>
 		public WinNT.IMAGE_COR20_HEADER Cor20Header
@@ -28,7 +26,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			=> this._metaData ?? (this._metaData = new MetaData(this));
 
 		/// <summary>VTable directory</summary>
-		public VTable VTable//TODO: В начале должен быть заголовок. А в нём должно указываться кол-во и т.п. Пока соотв. файл найти не удалось...
+		public VTable VTable//TODO: There should be a title at the beginning. It should indicate the quantity, etc. So far, I haven't been able to find the corresponding file...
 			=> this._vTable ?? (this._vTable = new VTable(this));
 
 		/// <summary>Strong name signature directory</summary>

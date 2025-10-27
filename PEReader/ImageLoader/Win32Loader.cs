@@ -48,7 +48,7 @@ namespace AlphaOmega.Debug
 				throw new FileNotFoundException("File not found", filePath);
 
 			this.Source = filePath;
-			//TODO: DLL: C:\WINDOWS\System32\Mpegc32f.dll не читаейтся через LoadLibraryEx
+			//TODO: DLL: C:\WINDOWS\System32\Mpegc32f.dll не читается через LoadLibraryEx
 			this._hModule = NativeMethods.LoadLibraryEx(this.Source, IntPtr.Zero, NativeMethods.LoadLibraryFlags.DONT_RESOLVE_DLL_REFERENCES);
 			//this._hModule = NativeMethods.GetModuleHandle(this.Source);
 			if(this._hModule == IntPtr.Zero)
@@ -72,10 +72,10 @@ namespace AlphaOmega.Debug
 				throw new FileNotFoundException(nameof(filePath), filePath);
 
 			IntPtr hModule = NativeMethods.LoadLibraryEx(filePath, IntPtr.Zero, NativeMethods.LoadLibraryFlags.DONT_RESOLVE_DLL_REFERENCES);
-			if(hModule == IntPtr.Zero)
-				throw new Win32Exception();
 
-			return new Win32Loader(hModule, false);
+			return hModule == IntPtr.Zero
+				? throw new Win32Exception()
+				: new Win32Loader(hModule, false);
 		}
 
 		/// <summary>Load image from HModule</summary>
@@ -97,16 +97,16 @@ namespace AlphaOmega.Debug
 
 		/// <summary>Create instance of HMODULE loader class</summary>
 		/// <param name="hModule">HMODULE</param>
-		/// <param name="freeOnClode">Close HMODULE after exit</param>
+		/// <param name="freeOnClose">Close HMODULE after exit</param>
 		/// <exception cref="ArgumentNullException">hModule is empty</exception>
 		/// <exception cref="ArgumentNullException">source is null</exception>
-		public Win32Loader(IntPtr hModule, Boolean freeOnClode)
+		public Win32Loader(IntPtr hModule, Boolean freeOnClose)
 		{
 			if(hModule == IntPtr.Zero)
 				throw new ArgumentNullException(nameof(hModule));
 
 			this._hModule = hModule;
-			this._freeOnClose = freeOnClode;
+			this._freeOnClose = freeOnClose;
 		}
 
 		/// <summary>Gets bytes array from padding</summary>

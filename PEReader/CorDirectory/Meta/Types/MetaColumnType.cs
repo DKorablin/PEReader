@@ -3,7 +3,7 @@
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>MetaData column type</summary>
-	public enum MetaColumnType : Int32
+	public enum MetaColumnType
 	{
 		/// <summary>Module descriptor</summary>
 		Module = 0,
@@ -11,7 +11,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		TypeRef = 1,
 		/// <summary>Class or interface definition descriptors</summary>
 		TypeDef = 2,
-		/// <summary>A field definition descriptos</summary>
+		/// <summary>A field definition descriptors</summary>
 		Field = 4,
 		/// <summary>Method definition descriptors</summary>
 		MethodDef = 6,
@@ -36,15 +36,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		ModuleRef = 26,
 		/// <summary>Type specification descriptors</summary>
 		TypeSpec = 27,
-		/// <summary>The current assembly descriptor, whitch sould appear only in the prime moduel metadata</summary>
+		/// <summary>The current assembly descriptor, which should appear only in the prime model metadata</summary>
 		Assembly = 32,
 		/// <summary>Assembly reference descriptors</summary>
 		AssemblyRef = 35,
 		/// <summary>File descriptors that contain information about other files in the current assembly</summary>
 		File = 38,
 		/// <summary>
-		/// Exported type descriptors that contain information about public classes exported by the current assembly, whitch are declared in other modules of the assembly.
-		/// Only the prime module of the assembly sould carry this table
+		/// Exported type descriptors that contain information about public classes exported by the current assembly, which are declared in other modules of the assembly.
+		/// Only the prime module of the assembly should carry this table
 		/// </summary>
 		ExportedType = 39,
 		/// <summary>Managed resource descriptors</summary>

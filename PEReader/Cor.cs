@@ -572,20 +572,20 @@ namespace AlphaOmega.Debug
 
 			/// <summary>Indicates an argument of type <see cref="System.Type"/></summary>
 			TYPE = 0x50,
-			/// <summary>Used in custom attributes to specify a boxed object (Ecma-335: #II.23.3)</summary>
+			/// <summary>Used in custom attributes to specify a boxed object (ECMA-335: #II.23.3)</summary>
 			BOXED = 0x51,
 			/// <summary>Reserved</summary>
 			RESERVED1 = 0x52,
-			/// <summary>Used in custom attributes to indicate a FIELD(Ecma-335: #II.22.10, II.23.3)</summary>
+			/// <summary>Used in custom attributes to indicate a FIELD(ECMA-335: #II.22.10, II.23.3)</summary>
 			FIELD = 0x53,
-			/// <summary>Used in custom attributes to indicate a PROPERTY (Ecma-335: #II.22.10, II.23.3)</summary>
+			/// <summary>Used in custom attributes to indicate a PROPERTY (ECMA-335: #II.22.10, II.23.3)</summary>
 			PROPERTY = 0x54,
-			/// <summary>Used in custom attributes to specify an enum (Ecma-335: #II.23.3)</summary>
+			/// <summary>Used in custom attributes to specify an enum (ECMA-335: #II.23.3)</summary>
 			ENUM = 0x55,
 		}
 
 		/// <summary>MetaData Table Types</summary>
-		public enum MetaTableType : Int32
+		public enum MetaTableType
 		{
 			/// <summary>The rows in the Module table result from .module directives in the Assembly</summary>
 			Module = 0,
@@ -599,13 +599,13 @@ namespace AlphaOmega.Debug
 			/// GenericParam table.
 			/// </summary>
 			TypeDef = 2,
-			/// <summary>A class-to-fields lookup table, whitch does not exist on optimized metadata (#~ stream)</summary>
+			/// <summary>A class-to-fields lookup table, which does not exist on optimized metadata (#~ stream)</summary>
 			FieldPtr = 3,
 			/// <summary>
 			/// Each row in the Field table results from a top-level .field directive, or a .field directive inside a Type.
 			/// </summary>
 			Field = 4,
-			/// <summary>A class-to-methods lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+			/// <summary>A class-to-methods lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 			MethodPtr = 5,
 			/// <summary>
 			/// Conceptually, every row in the MethodDef table is owned by one, and only one, row in the TypeDef table.
@@ -613,7 +613,7 @@ namespace AlphaOmega.Debug
 			/// the image for the PE file is emitted and points to the COR_ILMETHOD structure for the body of the method.
 			/// </summary>
 			MethodDef = 6,
-			/// <summary>A method-to-parameters lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+			/// <summary>A method-to-parameters lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 			ParamPtr = 7,
 			/// <summary>
 			/// Conceptually, every row in the Param table is owned by one, and only one, row in the MethodDef table.
@@ -668,16 +668,16 @@ namespace AlphaOmega.Debug
 			StandAloneSig = 17,
 			/// <summary>
 			/// A class-to-events mapping table.
-			/// This is not an intermidate lookup table, and it does not exist in optimized metadata.
+			/// This is not an intermediate lookup table, and it does not exist in optimized metadata.
 			/// </summary>
 			EventMap = 18,
-			/// <summary>An event map-to-events lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+			/// <summary>An event map-to-events lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 			EventPtr = 19,
 			/// <summary>The EventMap and Event tables result from putting the .event directive on a class</summary>
 			Event = 20,
 			/// <summary>The PropertyMap and Property tables result from putting the .property directive on a class</summary>
 			PropertyMap = 21,
-			/// <summary>A property map-to-properties lookup table, whitch does not exists on optimized metadata (#~ stream)</summary>
+			/// <summary>A property map-to-properties lookup table, which does not exists on optimized metadata (#~ stream)</summary>
 			PropertyPtr = 22,
 			/// <summary>Does a little more than group together existing rows from other tables</summary>
 			Property = 23,
@@ -727,7 +727,7 @@ namespace AlphaOmega.Debug
 			/// This table does not exist in optimized metadata (#~ stream).
 			/// </summary>
 			ENCMap = 31,
-			/// <summary>The current assembly descriptor, whitch sould appear only in the prime moduel metadata</summary>
+			/// <summary>The current assembly descriptor, which should appear only in the prime module metadata</summary>
 			Assembly = 32,
 			/// <summary>
 			/// These records should not be emitted into any PE file.

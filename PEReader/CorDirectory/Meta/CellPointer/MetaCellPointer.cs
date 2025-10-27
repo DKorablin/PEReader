@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
-	/// <summary>Pointer to anoter table cell</summary>
+	/// <summary>Pointer to another table cell</summary>
 	public class MetaCellPointer : CellPointerBase
 	{
 		/// <summary>Create instance of pointer cell</summary>
@@ -12,9 +12,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		internal MetaCellPointer(MetaCell cell, UInt32 rawValue)
 			: base(cell, rawValue, (Cor.MetaTableType)cell.Column.ColumnType) { }
 
-		/// <summary>Получить в итерации ряды с индекса на который указывает текущий указатель</summary>
-		/// <remarks>Метод специфичен для определённых таблиц. Поэтому переносить в базовый класс - бессмысленно</remarks>
-		/// <returns>Target rows array</returns>
+		/// <summary>Get rows from the index pointed to by the current pointer in iteration.</summary>
+		/// <remarks>This method is specific to certain tables. Therefore, moving it to the base class is pointless.</remarks>
+		/// <returns>Target rows array.</returns>
 		internal IEnumerable<MetaRow> GetTargetRowsIt()
 		{
 			if(base.RowIndex.HasValue)

@@ -5,7 +5,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 	/// <summary>Member property or field with value stored in metadata</summary>
 	public class MemberElement : MemberValueBase
 	{
-		/// <summary>Member elemnt type</summary>
+		/// <summary>Member element type</summary>
 		/// <remarks><see cref="Cor.ELEMENT_TYPE.PROPERTY"/> or <see cref="Cor.ELEMENT_TYPE.FIELD"/></remarks>
 		public Cor.ELEMENT_TYPE ElementType { get; }
 

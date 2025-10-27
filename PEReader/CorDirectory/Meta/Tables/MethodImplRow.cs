@@ -10,13 +10,13 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class MethodImplRow : BaseMetaRow
 	{
 		/// <summary>An index into the TypeDef table</summary>
-		internal MetaCellPointer ClassI	=> base.GetValue<MetaCellPointer>(0);
+		internal MetaCellPointer ClassI	=> this.GetValue<MetaCellPointer>(0);
 
 		/// <summary>An index into the MethodDef or MemberRef table; more precisely, a MethodDefOrRef (§II.24.2.6) coded index</summary>
-		public MetaCellCodedToken MethodBody => base.GetValue<MetaCellCodedToken>(1);
+		public MetaCellCodedToken MethodBody => this.GetValue<MetaCellCodedToken>(1);
 
 		/// <summary>An index into the MethodDef or MemberRef table; more precisely, a MethodDefOrRef (§II.24.2.6) coded index</summary>
-		public MetaCellCodedToken MethodDeclaration => base.GetValue<MetaCellCodedToken>(2);
+		public MetaCellCodedToken MethodDeclaration => this.GetValue<MetaCellCodedToken>(2);
 
 		/// <summary>TypeDef table row</summary>
 		public TypeDefRow Class => new TypeDefRow() { Row = this.ClassI.TargetRow, };

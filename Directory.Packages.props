@@ -1,0 +1,17 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageVersion Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+		<!--Source Link Support-->
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageVersion>
+		<!--Analyzers-->
+		<GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="10.8.0.113526">
+			<PrivateAssets>All</PrivateAssets>
+			<IncludeAssets>Runtime; Build; Native; contentfiles; Analyzers; buildtransitive</IncludeAssets>
+		</GlobalPackageReference>
+	</ItemGroup>
+</Project>

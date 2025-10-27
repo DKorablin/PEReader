@@ -38,7 +38,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			}
 		}
 
-		/// <summary>Create instance of Field row</summary>
+		/// <summary>Create instance of <see cref="FieldRow"/></summary>
 		public FieldRow()
 			: base(Cor.MetaTableType.Field) { }
 	}

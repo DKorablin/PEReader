@@ -12,10 +12,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <summary>Message descriptor</summary>
 		public struct MessageResourceEntry
 		{
-			/// <summary>ID of entry that used by eventlog</summary>
+			/// <summary>ID of entry that used by eventLog</summary>
 			public UInt32 EntryId;
 
-			/// <summary>Message for eventlog</summary>
+			/// <summary>Message for eventLog</summary>
 			public String EntryName;
 		}
 
@@ -37,7 +37,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		private IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks(PinnedBufferReader reader)
 		{
-			UInt32 padding = sizeof(UInt32);//Skippng NumberOfBlocks size
+			UInt32 padding = sizeof(UInt32);//Skipping NumberOfBlocks size
 			for(Int32 loop = 0;loop < this.NumberOfBlocks;loop++)
 				yield return reader.BytesToStructure<WinNT.Resource.MESSAGE_RESOURCE_BLOCK>(ref padding);
 		}

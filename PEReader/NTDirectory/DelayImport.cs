@@ -19,7 +19,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			if(!this.IsEmpty)
 			{
 				UInt32 sizeOfDescr = (UInt32)Marshal.SizeOf(typeof(WinNT.ImgDelayDescr));
-				UInt32 count = (base.Directory.Size / sizeOfDescr) - 1;//Значение чисто абстрактное, т.к. Delphi пишет в последнюю структуру одни нули. А в count указывает левое значение (только Delphi).
+				UInt32 count = (base.Directory.Size / sizeOfDescr) - 1;//The value is purely abstract, since Delphi writes only zeros to the last structure. And in count , it specifies the left value (Delphi only).
 
 				UInt32 position = base.Directory.VirtualAddress;
 				for(UInt32 loop = 0;loop < count;loop++)
@@ -29,7 +29,7 @@ namespace AlphaOmega.Debug.NTDirectory
 					position += sizeOfDescr;
 
 					if(descriptor.IsEmpty)
-						yield break;//Delphi заканчивает блок не кол-вом элементов, а структурой с нулевыми данными
+						yield break;//Delphi ends the block not with the number of elements, but with a structure with zero data
 					yield return new DelayImportModule(this, descriptor);
 				}
 			}

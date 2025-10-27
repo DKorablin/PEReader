@@ -11,8 +11,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		{
 			get
 			{
-				Byte[] bytes = base.Directory.GetData();
-				return System.Text.Encoding.GetEncoding((Int32)base.Directory.DataEntry.Value.CodePage).GetString(bytes);
+				Byte[] bytes = this.Directory.GetData();
+				return System.Text.Encoding.GetEncoding((Int32)this.Directory.DataEntry.Value.CodePage).GetString(bytes);
 			}
 		}
 		/// <summary>Create instance of manifest resource class</summary>
@@ -24,6 +24,6 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <remarks>The received stream must be released after the actions are completed</remarks>
 		/// <returns>Stream to download to DataSet</returns>
 		public Stream GetXmlStream()
-			=> new MemoryStream(base.Directory.GetData());
+			=> new MemoryStream(this.Directory.GetData());
 	}
 }

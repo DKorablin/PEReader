@@ -10,15 +10,15 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 	public class ParamRow : BaseMetaRow
 	{
 		/// <summary>Flags that can be associated with parameter</summary>
-		public virtual ParameterAttributes Flags => (ParameterAttributes)base.GetValue<UInt16>(0);
+		public virtual ParameterAttributes Flags => (ParameterAttributes)this.GetValue<UInt16>(0);
 
 		/// <summary>Parameter index in method definition</summary>
-		public virtual UInt16 Sequence => base.GetValue<UInt16>(1);
+		public virtual UInt16 Sequence => this.GetValue<UInt16>(1);
 
 		/// <summary>Parameter name</summary>
-		public virtual String Name => base.GetValue<String>(2);
+		public virtual String Name => this.GetValue<String>(2);
 
-		/// <summary>Create isntance of Member Param row</summary>
+		/// <summary>Create instance of Member Param row</summary>
 		public ParamRow()
 			: base(Cor.MetaTableType.Param) { }
 	}

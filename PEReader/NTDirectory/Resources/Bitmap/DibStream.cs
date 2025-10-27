@@ -11,7 +11,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		[StructLayout(LayoutKind.Sequential, Size = 14, Pack = 1)]
 		public struct BitmapHeader
 		{
-			/// <summary>File header validataion</summary>
+			/// <summary>File header validation</summary>
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 			public Byte[] magic;
 			/// <summary>Total file size</summary>

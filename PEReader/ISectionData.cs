@@ -2,7 +2,7 @@
 
 namespace AlphaOmega.Debug
 {
-	/// <summary>Data from andy PE section</summary>
+	/// <summary>Data from any PE section</summary>
 	public interface ISectionData
 	{
 		/// <summary>Get all payload from PE section as Byte array</summary>

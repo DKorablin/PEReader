@@ -134,7 +134,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			foreach(var directory in this)
 				if(directory.DirectoryEntry.NameType == directoryType)
-					foreach(var subDir1 in directory)//Идентификаторы
+					foreach(var subDir1 in directory)//Identifiers
 						foreach(var subDir2 in subDir1)
 							yield return subDir2;
 		}
@@ -146,7 +146,7 @@ namespace AlphaOmega.Debug.NTDirectory
 		public ResourceDirectory GetResource(UInt32 directoryAddress)
 		{
 			foreach(var directory in this)
-				foreach(var subDir1 in directory)//Идентификаторы
+				foreach(var subDir1 in directory)//Identifiers
 					foreach(var subDir2 in subDir1)
 						if(subDir2.DirectoryEntry.DirectoryAddress == directoryAddress)
 							return subDir2;
@@ -154,7 +154,7 @@ namespace AlphaOmega.Debug.NTDirectory
 			return null;
 		}
 
-		/// <summary>Get recource directories from image direstory</summary>
+		/// <summary>Get resource directories from image directory</summary>
 		/// <returns>Resource directories</returns>
 		public IEnumerator<ResourceDirectory> GetEnumerator()
 		{

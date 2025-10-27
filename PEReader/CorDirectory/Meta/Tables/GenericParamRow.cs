@@ -27,7 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>This is purely descriptive and is used only by source language compilers and by reflection</remarks>
 		public String Name => base.GetValue<String>(3);
 
-		/// <summary>Create instance of Generic param row</summary>
+		/// <summary>Create instance of <see cref="GenericParamRow"/></summary>
 		public GenericParamRow()
 			: base(Cor.MetaTableType.GenericParam) { }
 

@@ -71,9 +71,10 @@ namespace AlphaOmega.Debug.NTDirectory
 			}
 		}
 
-		/// <summary>Сама директория из которой получаем ресурсы</summary>
+		/// <summary>The directory from which we obtain resources</summary>
 		public ResourceDirectory Directory { get; }
-		/// <summary>Тип директории</summary>
+
+		/// <summary>Directory type</summary>
 		public WinNT.Resource.RESOURCE_DIRECTORY_TYPE Type { get; }
 
 		/// <summary>Create instance of resource directory class</summary>
@@ -105,11 +106,11 @@ namespace AlphaOmega.Debug.NTDirectory
 
 			switch(flag)
 			{
-			case 0x0000://Нет значения
+			case 0x0000://No value
 				padding += sizeof(UInt16);
 				return result;
-			case 0xFFFF://Есть ещё один элемент ссылающийся на индекс в ресурсах
-				padding += sizeof(UInt16);//Сдвиг от первого элемента
+			case 0xFFFF://There is another element that refers to the index in resources
+				padding += sizeof(UInt16);//Offset from the first element
 				result.Index = reader.BytesToStructure<UInt16>(ref padding);
 				return result;
 			default:

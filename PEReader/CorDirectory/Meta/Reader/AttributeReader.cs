@@ -35,7 +35,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 
 		/// <summary>Create instance of <see cref="AttributeReader"/></summary>
 		/// <param name="customAttribute">Strongly typed metadata <see cref="Cor.MetaTableType.CustomAttribute"/> row</param>
-		/// <exception cref="NotImplementedException"><c>customAttribute</c> is required</exception>
+		/// <exception cref="NotImplementedException"><paramref name="customAttribute"/> is required</exception>
 		public AttributeReader(CustomAttributeRow customAttribute)
 			=> this.Attribute = customAttribute ?? throw new NotImplementedException(nameof(customAttribute));
 	}

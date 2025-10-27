@@ -10,7 +10,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	[DefaultProperty(nameof(VersionInfo))]
 	public class ResourceVersion : ResourceBase
 	{
-		/// <summary>Varsion table type</summary>
+		/// <summary>Version table type</summary>
 		public enum VersionTableType
 		{
 			/// <summary>Table with string data</summary>
@@ -46,10 +46,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		{
 			/// <summary>PE structure</summary>
 			public WinNT.Resource.VarFileInfo Info;
+
 			/// <summary>Type of group (Text or Bin)</summary>
 			public VersionTableType szKey;
+
 			/// <summary>Tables</summary>
 			public VersionTable[] Items;
+
 			/// <summary>Type of table</summary>
 			/// <returns>String</returns>
 			public override String ToString()
@@ -61,10 +64,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		{
 			/// <summary>PE structure</summary>
 			public WinNT.Resource.StringTable Table;
+
 			/// <summary>Name of the table</summary>
 			public String szKey;
+
 			/// <summary>Values</summary>
 			public VersionItem[] Items;
+
 			/// <summary>Table name</summary>
 			/// <returns>String</returns>
 			public override String ToString() => this.szKey;
@@ -75,10 +81,13 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		{
 			/// <summary>PE structure</summary>
 			public WinNT.Resource.V_STRING? Item;
+
 			/// <summary>Name of the item</summary>
 			public String szKey;
+
 			/// <summary>Value</summary>
 			public Object Value;
+
 			/// <summary>Convert value to string</summary>
 			/// <exception cref="NotImplementedException">Don't now how to convert version item to string</exception>
 			/// <returns>String</returns>
@@ -86,8 +95,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			{
 				if(this.Value is String)
 					return this.Value.ToString();
-				else if(this.Value is Byte[])
-					return BitConverter.ToString((Byte[])this.Value);
+				else if(this.Value is Byte[] bArr)
+					return BitConverter.ToString(bArr);
 				else if(this.Value != null)
 					return this.Value.ToString();
 				else throw new NotImplementedException();
@@ -119,7 +128,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			get
 			{
 				UInt32 padding = (UInt32)Marshal.SizeOf(typeof(WinNT.Resource.VS_VERSIONINFO)) + this.VersionInfo.wValueLength;
-				return padding = NativeMethods.AlignToInt(padding);
+				return NativeMethods.AlignToInt(padding);
 			}
 		}
 		
@@ -187,7 +196,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		/// <param name="type">Type of version table</param>
 		/// <param name="padding">Base padding</param>
 		/// <exception cref="NotImplementedException">Unknown table row type</exception>
-		/// <returns>Readed version table</returns>
+		/// <returns>Read version table</returns>
 		private VersionTable GetVersionTable(PinnedBufferReader reader, VersionTableType type, ref UInt32 padding)
 		{
 			VersionTable result = new VersionTable();
@@ -204,10 +213,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				switch(type)
 				{
 				case VersionTableType.StringFileInfo:
-					items.Add(this.GetStringVersionItem(reader, ref padding));
+					items.Add(GetStringVersionItem(reader, ref padding));
 					break;
 				case VersionTableType.VarFileInfo:
-					items.Add(this.GetBinaryVersionItem(reader, result, ref padding));
+					items.Add(GetBinaryVersionItem(reader, result, ref padding));
 					break;
 				default: throw new NotImplementedException();
 				}
@@ -217,12 +226,12 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			return result;
 		}
 
-		/// <summary>Получить элемент версии в сохранённый в бинарном виде</summary>
+		/// <summary>Get the version element stored in binary form</summary>
 		/// <param name="reader">Allocated bytes in memory</param>
 		/// <param name="item">Version table</param>
-		/// <param name="padding">Отступ от начала массива</param>
-		/// <returns>Элемент версии</returns>
-		private VersionItem GetBinaryVersionItem(PinnedBufferReader reader, VersionTable item, ref UInt32 padding)
+		/// <param name="padding">Padding from the beginning of the array</param>
+		/// <returns>Version element</returns>
+		private static VersionItem GetBinaryVersionItem(PinnedBufferReader reader, VersionTable item, ref UInt32 padding)
 		{
 			VersionItem result = new VersionItem();
 
@@ -237,7 +246,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			return result;
 		}
 
-		private VersionItem GetStringVersionItem(PinnedBufferReader reader, ref UInt32 padding)
+		private static VersionItem GetStringVersionItem(PinnedBufferReader reader, ref UInt32 padding)
 		{
 			VersionItem result = new VersionItem
 			{

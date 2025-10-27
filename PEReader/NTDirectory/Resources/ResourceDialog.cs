@@ -53,7 +53,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 						FontSize = reader.BytesToStructure<UInt16>(ref padding),
 					};
 					if(template.IsValid)
-					{//Reaing new dialog font
+					{//Reading new dialog font
 						font.FontWeight = reader.BytesToStructure<UInt16>(ref padding);
 
 						font.Italic = reader[padding++];

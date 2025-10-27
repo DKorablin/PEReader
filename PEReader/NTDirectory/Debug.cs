@@ -9,7 +9,7 @@ namespace AlphaOmega.Debug.NTDirectory
 	/// <summary>Debug directory class</summary>
 	[DefaultProperty(nameof(Count))]
 	public class Debug : PEDirectoryBase, IEnumerable<WinNT.IMAGE_DEBUG_DIRECTORY>
-	{//TODO: Необходимо прочитать тип FPO (Если найду такой файл). Спецификация по FPO в 5.1.2. Debug Type (pecoff_v8.docx)
+	{//TODO: I need to read the FPO type (if I can find such a file). FPO specification in 5.1.2. Debug Type (pecoff_v8.docx)
 		private static UInt32 SizeOfDebugDirectory = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_DEBUG_DIRECTORY));
 
 		/// <summary>CodeView PDB v2 Header</summary>
