@@ -15,12 +15,12 @@
 		<PackageId>AlphaOmega.PEReader</PackageId>
 		<Version>$(Version)</Version>
 		<Title>Portable Executable (+), Common Language Infrastructure format reader</Title>
-		<Description></Description>
+		<Description>PEReader is a lightweight, cross-platform library for reading and parsing Portable Executable (PE) and Common Language Infrastructure (CLI) file formats.</Description>
 		<Authors>Danila Korablin</Authors>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>docs\README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/DKorablin/PEReader</RepositoryUrl>
-		<PackageTags></PackageTags>
+		<PackageTags>PE;PortableExecutable;Reader;Metadata;Assembly;Reader;Parser;CLI</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

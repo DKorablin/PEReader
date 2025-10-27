@@ -1,44 +1,98 @@
-﻿## Portable Executable reader
+﻿## Portable Executable (PE/COFF & .NET CLI) reader
 [![Auto build](https://github.com/DKorablin/PEReader/actions/workflows/release.yml/badge.svg)](https://github.com/DKorablin/PEReader/releases/latest)
-[![Nuget](https://img.shields.io/nuget/v/AlphaOmega.PEReader)](https://www.nuget.org/packages/AlphaOmega.PEReader)
+[![NuGet](https://img.shields.io/nuget/v/AlphaOmega.PEReader)](https://www.nuget.org/packages/AlphaOmega.PEReader)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/AlphaOmega.PEReader)](https://www.nuget.org/packages/AlphaOmega.PEReader)
 
-PE/PE+/CLI executable reader assembly. Compatible with .NET Framework 2.0 & .NET Standard 2.0
+PE / PE+ / CLI executable low‑level reader. Targets .NET Framework 2.0 and .NET Standard 2.0 (usable from .NET 6+). No unsafe code; pure managed parsing.
 
-Usage (See Wiki for details):
+---
+### Installation
+NuGet package:
+```
+dotnet add package AlphaOmega.PEReader
+```
+Legacy projects (.NET Framework < 4.0) can reference the assembly directly after build.
 
-    String filePath=@"C:\Windows\System32\kernel32.dll";
-    using(PEFile file = new PEFile(filePath, StreamLoader.FromFile(filePath)))
+### Supported frameworks
+- .NET Framework 2.0+
+- .NET Standard 2.0 (covers .NET Core 2.0+, .NET 5/6/7/8, Mono, etc.)
+
+### Quick start
+```csharp
+string filePath = @"C:\\Windows\\System32\\kernel32.dll";
+using (PEFile file = new PEFile(filePath, StreamLoader.FromFile(filePath)))
+{
+    if (!file.Header.IsValid) return;
+
+    // Exports
+    if (!file.Export.IsEmpty)
     {
-        if(file.Header.IsValid)
+        foreach (var func in file.Export.Functions)
         {
-            if(!file.Resource.IsEmpty)
-            {//IMAGE_RESOURCE_DIRECTORY
-                //...
-            }
-
-            if(!file.Export.IsEmpty)
-            {//IMAGE_EXPORT_DIRECTORY
-                //...
-            }
-
-            if(!file.Import.IsEmpty)
-            {//IMAGE_IMPORT_DESCRIPTOR
-                //...
-            }
-
-            if(!file.Certificate.IsEmpty)
-            {//WIN_CERTIFICATE
-                X509Certificate2 cert = file.Certificate.X509;
-                //...
-            }
-
-            if(file.ComDescriptor != null)
-            {//CLI
-                var metaData = file.ComDescriptor.MetaData;
-                //...
-            }
+            // func.Name / func.Ordinal / func.Address
         }
     }
+
+    // Imports
+    if (!file.Import.IsEmpty)
+    {
+        foreach (var lib in file.Import.Libraries)
+        {
+            // lib.Name; lib.Functions
+        }
+    }
+
+    // Authenticode certificate
+    if (!file.Certificate.IsEmpty)
+    {
+        var cert = file.Certificate.X509;
+        // cert.Subject, cert.NotBefore, cert.NotAfter
+    }
+
+    // .NET metadata (managed assemblies only)
+    if (file.ComDescriptor != null)
+    {
+        var meta = file.ComDescriptor.MetaData;
+        // meta.Tables[TableType.TypeDef] etc.
+    }
+}
+```
+See the Wiki for more advanced samples (resources, relocation, debug info, IL parsing, signatures).
+
+### Core capabilities
+- Full DOS, PE and optional header parsing
+- Section headers & data directory enumeration
+- Import / Export / Delay‑Import tables
+- Resources (multiple Win32 resource types including VERSION, MANIFEST, BITMAP, DIALOG, MENU, STRING, MESSAGE TABLE, ACCELERATOR, HTML, TLS)
+- Relocations, TLS, Load Config, Bound Import, Debug (CodeView PDB 2.0 / 7.0, Misc)
+- Authenticode (WIN_CERTIFICATE + X509 extraction)
+- .NET CLR header & metadata streams (#~, #Strings, #US, #Guid, #Blob)
+- Rich access to MetaData tables (TypeDef, MethodDef, Signatures, CustomAttribute, Assembly*, ManifestResource, Generic*, etc.)
+- IL method body reader + signature decoding
+
+### High level object map
+```
+PEFile
+ ├─ Header (DOS → NT → File/Optional → Sections)
+ ├─ Directories
+ │   ├─ Import / DelayImport / Export
+ │   ├─ Resource
+ │   ├─ Certificate
+ │   ├─ Base Relocation / TLS / Load Config
+ │   ├─ Debug
+ │   └─ CLR (.NET) → MetaData → Tables & Streams
+ └─ Helpers (IL reader, Signatures, Strong Name, Manifest resources)
+```
+
+### Selected supported structures
+(Non‑exhaustive; full list in Wiki) DOS/NT headers, IMAGE_* directories, WIN_CERTIFICATE, ImgDelayDescr, relocation & config directories, Debug (IMAGE_DEBUG_DIRECTORY, CodeView), TLS, CLR (IMAGE_COR20_HEADER, metadata streams & tables), unmanaged resource templates (dialogs, menus, version info, bitmaps, accelerators, message tables, fonts).
+
+### Performance & memory
+Lazily loads sections and directories. Avoids reading large blobs until accessed. Suitable for scanning many binaries (e.g. signature, import/export enumeration) with minimal allocations.
+
+---
+<details>
+<summary>Full structure list</summary>
 
 - DOS header (IMAGE_DOS_HEADER)
   - PE/PE+ header (IMAGE_NT_HEADERS)
@@ -208,3 +262,4 @@ Few supported structures:
     - ResourceSetHeader
     - STREAM_HEADER
     - STREAM_TABLE_HEADER
+</details>
