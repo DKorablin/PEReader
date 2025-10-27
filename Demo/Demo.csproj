@@ -2,15 +2,13 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>Exe</OutputType>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<Deterministic>false</Deterministic>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<CopyLocalLockFileAssemblies>True</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="System.Text.Encoding.CodePages" />
-	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\PEReader\PEReader.csproj" />
 	</ItemGroup>
