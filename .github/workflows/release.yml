@@ -100,6 +100,12 @@ jobs:
       with:
         token: ${{secrets.SUBMODULE_TOKEN}}
         submodules: true
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{env.DotNetVersion}}
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
     - name: Cache NuGet packages
       uses: actions/cache@v4
       with:
@@ -107,10 +113,6 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('/Directory.Packages.props') }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{env.DotNetVersion}}
     - name: Restore
       run: msbuild ${{env.SolutionName}}.sln /t:Restore
     - name: Build multi-target project
