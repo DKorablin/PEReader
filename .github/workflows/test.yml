@@ -63,8 +63,8 @@ jobs:
       run: msbuild ${{env.SolutionName}}.sln /t:Restore
     - name: Building multi-target project
       run: >
-        dotnet build "${{env.SolutionName}}.sln"
-        --configuration Release --no-restore
+        msbuild "${{env.SolutionName}}.sln"
+        /p:Configuration=Release
         /p:ArtifactsDir="${{env.ArtifactsDir}}"
         /p:SignAssembly=false
         /p:GenerateDocumentationFile=true
