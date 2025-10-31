@@ -26,12 +26,6 @@
 				<_Parameter1>Danila Korablin</_Parameter1>
 			</AssemblyAttributes>
 		</ItemGroup>
-		<ItemGroup Condition="'$(TargetFramework)' != 'net20'">
-			<AssemblyAttributes Include="AssemblyMetadata">
-				<_Parameter1>RepositoryUrl</_Parameter1>
-				<_Parameter2>https://github.com/DKorablin/PEReader</_Parameter2>
-			</AssemblyAttributes>
-		</ItemGroup>
 		<MakeDir Directories="$(IntermediateOutputPath)" />
 		<WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)Version.cs" AssemblyAttributes="@(AssemblyAttributes)" />
 		<ItemGroup>
