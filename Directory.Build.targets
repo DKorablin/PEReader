@@ -14,7 +14,7 @@
 				<_Parameter1>$(Configuration)</_Parameter1>
 			</AssemblyAttributes>
 			<AssemblyAttributes Include="AssemblyCopyright">
-				<_Parameter1>Copyright © Danila Korablin 2012-2024</_Parameter1>
+				<_Parameter1>Copyright © Danila Korablin 2012-$([System.DateTime]::Now.Year)</_Parameter1>
 			</AssemblyAttributes>
 			<AssemblyAttributes Include="AssemblyProduct">
 				<_Parameter1>Portable Executable Reader</_Parameter1>
