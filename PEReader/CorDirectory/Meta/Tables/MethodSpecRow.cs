@@ -27,7 +27,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				if(signatureFlags != Cor.IMAGE_CEE_CS.GENERICINST)
 					throw new InvalidOperationException($"Signature starts from {Cor.IMAGE_CEE_CS.GENERICINST} field. Got: 0x{signature[0]:X}");
 
-				UInt32 genArgCount = NativeMethods.GetPackedValue(signature, offset, out Int32 padding);
+				UInt32 genArgCount = NativeMethods.GetPackedUnsignedValue(signature, offset, out Int32 padding);
 				offset += (UInt32)padding;
 				for(Int32 loop = 0; loop < genArgCount; loop++)
 					yield return new ElementType(this.Row.Cells[0], signature, ref offset);

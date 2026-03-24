@@ -37,16 +37,16 @@ namespace AlphaOmega.Debug
 				//String filePath = @"C:\Visual Studio Projects\C#\Shared.Classes\AjaxControlToolkit.dll";
 				//TODO: INVALID. CustomAttribute enum value is stored in a external assebly and we don't know it's size...
 				//String filePath = @"C:\Program Files\IIS Express\Microsoft.VisualStudio.Telemetry.dll";
-				String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Terminal\cs\Microsoft.VisualStudio.Terminal.Implementation.resources.dll";
+				//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Terminal\cs\Microsoft.VisualStudio.Terminal.Implementation.resources.dll";
 
-				//foreach(String filePath in Directory.EnumerateFiles(@"C:\Program Files", "*.*", SearchOption.AllDirectories))
-				//foreach(String filePath in EnumerateFiles(@"C:\Program Files"))
+				foreach(String filePath in EnumerateFiles(@"C:\Visual Studio Projects"))
 					switch(Path.GetExtension(filePath.ToLowerInvariant()))
 					{
 					case ".dll":
 					case ".exe":
 						try
 						{
+							Console.Title = filePath;
 							//reader.ReadObjInfo(obj);
 							reader.ReadPeInfo2(filePath, true);
 

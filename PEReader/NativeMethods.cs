@@ -77,31 +77,38 @@ namespace AlphaOmega.Debug
 		/// <returns></returns>
 		public static UInt32 GetPackedValue(Byte[] bytes, ref UInt32 offset)
 		{
-			UInt32 result = GetPackedValue(bytes, offset, out Int32 padding);
+			UInt32 result = GetPackedUnsignedValue(bytes, offset, out Int32 padding);
 			offset += (UInt32)padding;
 			return result;
 		}
 
-		public static UInt32 GetPackedValue(Byte[] bytes, UInt32 position, out Int32 padding)
-		{//TODO: It's only for unsigned value
-			UInt32 result = bytes[position];
-			if((result & 0x80) == 0)
+		public static UInt32 GetPackedUnsignedValue(Byte[] bytes, UInt32 position, out Int32 padding)
+		{
+			UInt32 firstByte = bytes[position];
+			if((firstByte & 0x80) == 0)
 			{
 				padding = 1;
-				return result;
-			} else if((result & 0xC0) == 0x80)
+				return firstByte;
+			} else if((firstByte & 0xC0) == 0x80)
 			{
 				padding = 2;
-				return ((result & 0x3F) << 8) | bytes[position + 1];
-			} else if((result & 0xE0) == 0xC0)
+				return ((firstByte & 0x3F) << 8) | bytes[position + 1];
+			} else if((firstByte & 0xE0) == 0xC0)
 			{
 				padding = 4;
-				return (((result & 0x3Fu) << 24)
+				return ((firstByte & 0x1F) << 24)
 				| (UInt32)(bytes[position + 1] << 16)
 				| (UInt32)(bytes[position + 2] << 8)
-				| bytes[position + 3]);
+				| bytes[position + 3];
 			}
 			else throw new InvalidOperationException();
+		}
+
+		public static Int32 GetPackedSignedValue(Byte[] bytes, UInt32 position, out Int32 padding)
+		{
+			UInt32 uValue = GetPackedUnsignedValue(bytes, position, out padding);
+
+			return (Int32)(uValue >> 1) ^ -(Int32)(uValue & 1);
 		}
 
 		public static Byte[] SetPackedValue(UInt32 value)
@@ -114,16 +121,16 @@ namespace AlphaOmega.Debug
 					(Byte)((value >> 8) | 0x80),
 					(Byte)(value & 0xff),
 				};
-			else if(value > 0x1FFFFFFF)
-				throw new OverflowException($"Too big value to pack: {value}");
-			else
+			else if(value <= 0x1FFFFFFF)
 				return new Byte[]
 				{
-					(Byte)((value >> 24) | 0xC0),
+					(Byte)(((value >> 24) & 0x1F) | 0xC0),
 					(Byte)((value >> 16) & 0xFF),
 					(Byte)((value >> 8)  & 0xFF),
 					(Byte)(value & 0xFF),
 				};
+			else
+				throw new OverflowException($"Value is too large for ECMA-335 compression: {value}");
 		}
 
 		/// <summary>Makes a 64 bit long from two 32 bit integers</summary>
@@ -144,14 +151,7 @@ namespace AlphaOmega.Debug
 		/// <param name="high">The high order value</param>
 		/// <returns></returns>
 		public static Int32 MakeDword(Int16 low, Int16 high)
-		{
-			return (low + (high << 16));
-			/*if(high == 0)
-				return (Int32)low;
-			Int32 temp = SizeOf(high);
-			temp = high << ((BIT_SIZE_INT) - (temp + 1));
-			return (Int32)(temp | low);*/
-		}
+			=> (low + (high << 16));
 
 		/// <summary>Makes a 16 bit short from two bytes</summary>
 		/// <param name="low">The low order value</param>
@@ -162,7 +162,7 @@ namespace AlphaOmega.Debug
 			if(high == 0)
 				return (Int16)low;
 			Int32 temp = NativeMethods.SizeOf(high);
-			temp = high << ((NativeMethods.BIT_SIZE_SHORT) - (temp + 1));
+			temp = high << (NativeMethods.BIT_SIZE_SHORT - (temp + 1));
 			return (Int16)(low | temp);
 		}
 
@@ -254,21 +254,13 @@ namespace AlphaOmega.Debug
 		/// <param name="padding">Original padding</param>
 		/// <returns>Aligned padding</returns>
 		public static UInt32 AlignToInt(UInt32 padding)
-		{
-			/*UInt32 bytesToRead = padding % 4;
-			if(bytesToRead > 0)
-				padding += 4 - bytesToRead;
-			return padding;*/
-			return (UInt32)((padding + 3) & ~3);
-		}
+			=> (UInt32)((padding + 3) & ~3);
 
 		/// <summary>Align padding to WORD</summary>
 		/// <param name="padding">Original padding</param>
 		/// <returns>Aligned padding</returns>
 		public static UInt32 AlignToShort(UInt32 padding)
-		{
-			return (UInt32)((padding + 1) & ~1);
-		}
+			=> (UInt32)((padding + 1) & ~1);
 
 		/// <summary>Retrieves a string that represents the name of a key</summary>
 		/// <param name="lParam">The second parameter of the keyboard message (such as WM_KEYDOWN) to be processed</param>
@@ -449,19 +441,6 @@ namespace AlphaOmega.Debug
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern IntPtr LoadLibraryEx(String lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
 
-		/// <summary>Loads the specified module into the address space of the calling process. The specified module may cause other modules to be loaded</summary>
-		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms684175%28v=vs.85%29.aspx</remarks>
-		/// <param name="lpFileName">
-		/// The name of the module. This can be either a library module (a .dll file) or an executable module (an .exe file). The name specified is the file name of the module and is not related to the name stored in the library module itself, as specified by the LIBRARY keyword in the module-definition (.def) file.
-		/// If the string specifies a full path, the function searches only that path for the module.
-		/// If the string specifies a relative path or a module name without a path, the function uses a standard search strategy to find the module; for more information, see the Remarks.
-		/// If the function cannot find the module, the function fails. When specifying a path, be sure to use backslashes (\), not forward slashes (/). For more information about paths, see Naming a File or Directory.
-		/// If the string specifies a module name without a path and the file name extension is omitted, the function appends the default library extension .dll to the module name. To prevent the function from appending .dll to the module name, include a trailing point character (.) in the module name string
-		/// </param>
-		/// <returns>If the function succeeds, the return value is a handle to the module</returns>
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static extern IntPtr LoadLibrary(String lpFileName);
-
 		/// <summary>
 		/// Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
 		/// When the reference count reaches zero, the module is unloaded from the address space of the calling process and the handle is no longer valid
@@ -479,84 +458,5 @@ namespace AlphaOmega.Debug
 		[DllImport("kernel32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern Boolean FreeLibrary(IntPtr hModule);
-
-		/// <summary>Locates a relative virtual address (RVA) within the image header of a file that is mapped as a file and returns the virtual address of the corresponding byte in the file</summary>
-		/// <param name="NtHeaders">A pointer to an IMAGE_NT_HEADERS structure. This structure can be obtained by calling the ImageNtHeader function</param>
-		/// <param name="Base">The base address of an image that is mapped into memory through a call to the MapViewOfFile function</param>
-		/// <param name="Rva">The relative virtual address to be located</param>
-		/// <param name="LastRvaSection">
-		/// A pointer to an IMAGE_SECTION_HEADER structure that specifies the last RVA section. This is an optional parameter.
-		/// When specified, it points to a variable that contains the last section value used for the specified image to translate an RVA to a VA
-		/// </param>
-		/// <returns>
-		/// If the function succeeds, the return value is the virtual address in the mapped file.
-		/// If the function fails, the return value is NULL. To retrieve extended error information, call GetLastError
-		/// </returns>
-		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms680218%28v=vs.85%29.aspx</remarks>
-		[SuppressUnmanagedCodeSecurity]
-		[DllImport("DbgHelp.dll", CallingConvention = CallingConvention.StdCall)]
-		public static extern IntPtr ImageRvaToVa(IntPtr NtHeaders, IntPtr Base, UInt32 Rva, IntPtr LastRvaSection);
-
-		/// <summary>Retrieves the address of an exported function or variable from the specified dynamic-link library (DLL)</summary>
-		/// <param name="hModule">
-		/// A handle to the DLL module that contains the function or variable. The LoadLibrary, LoadLibraryEx, LoadPackagedLibrary, or GetModuleHandle function returns this handle.
-		/// The GetProcAddress function does not retrieve addresses from modules that were loaded using the LOAD_LIBRARY_AS_DATAFILE flag. For more information, see LoadLibraryEx
-		/// </param>
-		/// <param name="lpProcName">The function or variable name, or the function's ordinal value. If this parameter is an ordinal value, it must be in the low-order word; the high-order word must be zero</param>
-		/// <returns>
-		/// If the function succeeds, the return value is the address of the exported function or variable.
-		/// If the function fails, the return value is NULL. To get extended error information, call GetLastError
-		/// </returns>
-		[SuppressUnmanagedCodeSecurity]
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, IntPtr lpProcName);
-
-		/// <summary>Retrieves the address of an exported function or variable from the specified dynamic-link library (DLL)</summary>
-		/// <param name="hModule">
-		/// A handle to the DLL module that contains the function or variable. The LoadLibrary, LoadLibraryEx, LoadPackagedLibrary, or GetModuleHandle function returns this handle.
-		/// The GetProcAddress function does not retrieve addresses from modules that were loaded using the LOAD_LIBRARY_AS_DATAFILE flag. For more information, see LoadLibraryEx.
-		/// </param>
-		/// <param name="lpProcName">
-		/// The function or variable name, or the function's ordinal value.
-		/// If this parameter is an ordinal value, it must be in the low-order word; the high-order word must be zero
-		/// </param>
-		/// <returns>
-		/// If the function succeeds, the return value is the address of the exported function or variable.
-		/// If the function fails, the return value is NULL. To get extended error information, call GetLastError
-		/// </returns>
-		[SuppressUnmanagedCodeSecurity]
-		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, String lpProcName);
-
-		/// <summary>
-		/// Reserves or commits a region of pages in the virtual address space of the calling process.
-		/// Memory allocated by this function is automatically initialized to zero, unless MEM_RESET is specified
-		/// </summary>
-		/// <param name="lpStartAddr">
-		/// The starting address of the region to allocate.
-		/// If the memory is being reserved, the specified address is rounded down to the nearest multiple of the allocation granularity.
-		/// If the memory is already reserved and is being committed, the address is rounded down to the next page boundary.
-		/// To determine the size of a page and the allocation granularity on the host computer, use the GetSystemInfo function.
-		/// If this parameter is NULL, the system determines where to allocate the region
-		/// </param>
-		/// <param name="size">
-		/// The size of the region, in bytes.
-		/// If the lpAddress parameter is NULL, this value is rounded up to the next page boundary.
-		/// Otherwise, the allocated pages include all pages containing one or more bytes in the range from lpAddress to lpAddress+dwSize.
-		/// This means that a 2-byte range straddling a page boundary causes both pages to be included in the allocated region
-		/// </param>
-		/// <param name="flAllocationType">The type of memory allocation</param>
-		/// <param name="flProtect">
-		/// The memory protection for the region of pages to be allocated.
-		/// If the pages are being committed, you can specify any one of the memory protection constants
-		/// </param>
-		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/aa366887%28v=vs.85%29.aspx</remarks>
-		/// <returns>
-		/// If the function succeeds, the return value is the base address of the allocated region of pages.
-		/// If the function fails, the return value is NULL. To get extended error information, call GetLastError
-		/// </returns>
-		[SuppressUnmanagedCodeSecurity]
-		[DllImport("kernel32.dll")]
-		public static extern UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect);
 	}
 }

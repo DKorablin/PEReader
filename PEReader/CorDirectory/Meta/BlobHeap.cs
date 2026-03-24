@@ -32,7 +32,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			Byte[] bytes = base.Bytes;
 			for(UInt32 loop = 0;loop < bytes.Length;)
 			{
-				UInt32 length = NativeMethods.GetPackedValue(bytes, loop, out Int32 padding);
+				UInt32 length = NativeMethods.GetPackedUnsignedValue(bytes, loop, out Int32 padding);
 
 				Byte[] b;
 				if(length == 0)

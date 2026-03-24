@@ -45,7 +45,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			this.IsRequiredModifier = this.Type == Cor.ELEMENT_TYPE.CMOD_REQ;
 			if(this.IsRequiredModifier)
 			{
-				UInt32 rawValue1 = NativeMethods.GetPackedValue(signature, offset, out Int32 padding);
+				UInt32 rawValue1 = NativeMethods.GetPackedUnsignedValue(signature, offset, out Int32 padding);
 				this.TypeDefOrRef = new CellPointerBase(cell, rawValue1);
 				this.RawPointer = rawValue1;
 				offset += (UInt32)padding;
@@ -79,14 +79,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			case Cor.ELEMENT_TYPE.CLASS:// Followed by TypeDef or TypeRef token
 			case Cor.ELEMENT_TYPE.VALUETYPE:// Followed by TypeDef or TypeRef token
 			case Cor.ELEMENT_TYPE.CMOD_REQ:// Required modifier : followed by a TypeDef or TypeRef token
-				UInt32 rawValue1 = NativeMethods.GetPackedValue(signature, offset, out Int32 padding);
+				UInt32 rawValue1 = NativeMethods.GetPackedUnsignedValue(signature, offset, out Int32 padding);
 				this.TypeDefOrRef = new CellPointerBase(cell, rawValue1);
 				this.RawPointer = rawValue1;
 				offset += (UInt32)padding;
 				break;
 			case Cor.ELEMENT_TYPE.MVAR:
 			case Cor.ELEMENT_TYPE.VAR:
-				UInt32 genericArgumentIndex = NativeMethods.GetPackedValue(signature, offset, out Int32 padding2);
+				UInt32 genericArgumentIndex = NativeMethods.GetPackedUnsignedValue(signature, offset, out Int32 padding2);
 				this.TypeDefOrRef = null;
 				this.RawPointer = genericArgumentIndex;
 				offset += (UInt32)padding2;
