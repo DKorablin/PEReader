@@ -39,7 +39,7 @@ namespace AlphaOmega.Debug
 				//String filePath = @"C:\Program Files\IIS Express\Microsoft.VisualStudio.Telemetry.dll";
 				//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Terminal\cs\Microsoft.VisualStudio.Terminal.Implementation.resources.dll";
 
-				foreach(String filePath in EnumerateFiles(@"C:\Visual Studio Projects"))
+				foreach(String filePath in EnumerateFiles(@"C:\Program Files"))
 					switch(Path.GetExtension(filePath.ToLowerInvariant()))
 					{
 					case ".dll":
