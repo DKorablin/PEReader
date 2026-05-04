@@ -40,6 +40,9 @@ namespace AlphaOmega.Debug
 				? throw new ObjectDisposedException(nameof(_hModule))
 				: this._hModule.Value.ToInt64();
 
+		/// <summary>It's impossible to determine the length of the module in memory, so this property is not supported and will throw an exception if accessed.</summary>
+		public Int64 Length => throw new NotSupportedException();
+
 		/*public Win32Loader(String filePath)
 		{
 			if(String.IsNullOrEmpty(filePath))
