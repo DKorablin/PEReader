@@ -599,17 +599,23 @@ namespace AlphaOmega.Debug
 					if(!info.Debug.IsEmpty)
 					{//The debug info is available
 						this._console.WriteLine("===Debug info===");
-						foreach(var debug in info.Debug)
-							this._console.ConsoleWriteMembers(debug);
-						var pdb7 = info.Debug.Pdb7CodeView;
-						if(pdb7.HasValue)
-							this._console.ConsoleWriteMembers(pdb7.Value);
-						var pdb2 = info.Debug.Pdb2CodeView;
-						if(pdb2.HasValue)
-							this._console.ConsoleWriteMembers(pdb2.Value);
-						var misc = info.Debug.Misc;
-						if(misc.HasValue)
-							this._console.ConsoleWriteMembers(misc.Value);
+						try
+						{
+							foreach(var debug in info.Debug)
+								this._console.ConsoleWriteMembers(debug);
+							var pdb7 = info.Debug.Pdb7CodeView;
+							if(pdb7.HasValue)
+								this._console.ConsoleWriteMembers(pdb7.Value);
+							var pdb2 = info.Debug.Pdb2CodeView;
+							if(pdb2.HasValue)
+								this._console.ConsoleWriteMembers(pdb2.Value);
+							var misc = info.Debug.Misc;
+							if(misc.HasValue)
+								this._console.ConsoleWriteMembers(misc.Value);
+						} catch(ArgumentOutOfRangeException exc)
+						{
+							this._console.ConsoleWriteError(exc, "Corrupted debug directory", true);
+						}
 						this._console.PauseOnDir();
 					}
 

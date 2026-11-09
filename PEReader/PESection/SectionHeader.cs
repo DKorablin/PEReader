@@ -34,6 +34,8 @@ namespace AlphaOmega.Debug.PESection
 			UInt32 size = this.Header.VirtualSize > this.Header.SizeOfRawData
 				? this.Header.SizeOfRawData
 				: this.Header.VirtualSize;
+			if(size == 0)//Empty section (Ex: .bss). Nothing to translate or read
+				return new Byte[0];
 
 			return this.Parent.Header.ReadBytes(this.Header.VirtualAddress, size);
 		}
