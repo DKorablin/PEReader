@@ -70,7 +70,7 @@ namespace AlphaOmega.Debug
 		/// <summary>Signatures are compressed before being stored into the Blob heap (described below) by compressing the integers embedded in the signature</summary>
 		/// <remarks>
 		/// The maximum encodable unsigned integer is 29 bits long, 0x1FFFFFFF.
-		/// For signed integers, as occur in ArrayShape(§II.23.2.13), the range is -228 (0xF0000000) to 228-1 (0x0FFFFFFF).
+		/// For signed integers, as occur in ArrayShape(§II.23.2.13), the range is -2^28 (0xF0000000) to 2^28-1 (0x0FFFFFFF).
 		/// </remarks>
 		/// <param name="bytes"></param>
 		/// <param name="offset"></param>
@@ -104,11 +104,34 @@ namespace AlphaOmega.Debug
 			else throw new InvalidOperationException();
 		}
 
+		/// <summary>Decode compressed signed integer (ECMA-335 II.23.2)</summary>
+		/// <remarks>
+		/// The value is stored rotated left by 1 bit within a 7, 14 or 29 bit field (for 1, 2 or 4 encoded bytes), with the sign bit moved to the LSB.
+		/// Decoding rotates it back and sign-extends from the field width.
+		/// Examples: 0x06 = 3, 0x7B = -3, 0x8001 = -8192, 0xC0000001 = -268435456.
+		/// </remarks>
+		/// <param name="bytes">Array with compressed value</param>
+		/// <param name="position">Position of the compressed value in the array</param>
+		/// <param name="padding">Number of bytes used by the compressed value</param>
+		/// <exception cref="InvalidOperationException">Invalid compressed value prefix</exception>
+		/// <returns>Decoded signed value</returns>
 		public static Int32 GetPackedSignedValue(Byte[] bytes, UInt32 position, out Int32 padding)
 		{
 			UInt32 uValue = GetPackedUnsignedValue(bytes, position, out padding);
 
-			return (Int32)(uValue >> 1) ^ -(Int32)(uValue & 1);
+			Int32 result = (Int32)(uValue >> 1);
+			if((uValue & 1) == 0)
+				return result;//Positive value
+
+			switch(padding)
+			{//Negative value: sign-extend from the field width (7, 14 or 29 bits)
+			case 1:
+				return result - 0x40;
+			case 2:
+				return result - 0x2000;
+			default:
+				return result - 0x10000000;
+			}
 		}
 
 		public static Byte[] SetPackedValue(UInt32 value)
