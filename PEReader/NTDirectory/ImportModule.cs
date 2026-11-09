@@ -33,19 +33,24 @@ namespace AlphaOmega.Debug.NTDirectory
 		{
 			if(!this.Header.IsEmpty)
 			{
-				UInt32 count = 0;
-				UInt32 sizeOfUInt = sizeof(UInt32);
+				PEHeader header = this.Directory.Parent.Header;
+				Boolean is64Bit = header.Is64Bit;
+				UInt32 sizeOfThunk = is64Bit ? (UInt32)sizeof(UInt64) : sizeof(UInt32);//PE+ thunks (IMAGE_THUNK_DATA64) are 8 bytes wide
+
+				UInt32 position = this.Header.Characteristics == 0
+					? this.Header.FirstThunk
+					: this.Header.Characteristics;
 				while(true)
 				{
-					UInt32 position = this.Header.Characteristics == 0
-						? this.Header.FirstThunk + sizeOfUInt * count++
-						: this.Header.Characteristics + sizeOfUInt * count++;
-					UInt32 thunkRef = this.Directory.Parent.Header.PtrToStructure<UInt32>(position);
+					UInt64 thunkRef = is64Bit
+						? header.PtrToStructure<UInt64>(position)
+						: header.PtrToStructure<UInt32>(position);
 					if(thunkRef == 0)
 						break;
 
 					WinNT.IMAGE_IMPORT_BY_NAME thunkImport = this.GetImageImport(position, true);
 					yield return thunkImport;
+					position += sizeOfThunk;
 				}
 			}
 		}

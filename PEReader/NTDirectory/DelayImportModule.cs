@@ -57,8 +57,9 @@ namespace AlphaOmega.Debug.NTDirectory
 
 		/// <summary>Get a list of addresses where you can get the names of procedures that will be imported from the module</summary>
 		/// <exception cref="NotImplementedException">Unknown address type specified</exception>
+		/// <remarks>Each entry is 4 bytes wide in PE images and 8 bytes wide in PE+ images</remarks>
 		/// <returns>Address array</returns>
-		public IEnumerable<UInt32> GetIntAddress()
+		public IEnumerable<UInt64> GetIntAddress()
 		{
 			UInt64 rvaINT;
 			switch(this.Descriptor.grAttrs)
@@ -72,37 +73,45 @@ namespace AlphaOmega.Debug.NTDirectory
 			default: throw new NotImplementedException();
 			}
 
-			UInt32 addrOfImport = 0;
-			UInt32 padding = (UInt32)rvaINT;
-			UInt32 sizeOfStruct = sizeof(UInt32);
-			do
-			{
-				addrOfImport = this.Directory.Parent.Header.PtrToStructure<UInt32>(padding);//TODO: It is necessary to check that in the 64-bit version the address takes up 4 bytes, not 8
-				padding += sizeOfStruct;
+			PEHeader header = this.Directory.Parent.Header;
+			Boolean is64Bit = header.Is64Bit;
+			UInt32 sizeOfThunk = is64Bit ? (UInt32)sizeof(UInt64) : sizeof(UInt32);//PE+ thunks (IMAGE_THUNK_DATA64) are 8 bytes wide
 
-				if(addrOfImport > 0)
-					yield return addrOfImport;
-			} while(addrOfImport != 0);
+			UInt32 padding = (UInt32)rvaINT;
+			while(true)
+			{
+				UInt64 addrOfImport = is64Bit
+					? header.PtrToStructure<UInt64>(padding)
+					: header.PtrToStructure<UInt32>(padding);
+				if(addrOfImport == 0)
+					yield break;
+
+				yield return addrOfImport;
+				padding += sizeOfThunk;
+			}
 		}
 
 		/// <summary>Get Import Name Table array</summary>
 		/// <returns>Array of Imported Procedures</returns>
 		public IEnumerator<WinNT.IMAGE_IMPORT_BY_NAME> GetEnumerator()
 		{
-			UInt32 imageBase = 0;
-			if(this.Descriptor.grAttrs == WinNT.DLAttr.Va)
-				imageBase = (UInt32)this.ImageBase;
+			UInt64 imageBase = this.Descriptor.grAttrs == WinNT.DLAttr.Va
+				? this.ImageBase
+				: 0;
+			UInt64 ordinalFlag = this.Directory.Parent.Header.Is64Bit
+				? 0x8000000000000000UL//IMAGE_ORDINAL_FLAG64
+				: 0x80000000UL;//IMAGE_ORDINAL_FLAG32
 
-			foreach(UInt32 addrOfImport in this.GetIntAddress())
+			foreach(UInt64 addrOfImport in this.GetIntAddress())
 			{
-				if((addrOfImport & 0x80000000) != 0)
+				if((addrOfImport & ordinalFlag) != 0)
 					yield return new WinNT.IMAGE_IMPORT_BY_NAME()
-					{//TODO: We still need to check for 64-bit here...
-						Hint = (UInt16)(addrOfImport & 0x7FFFFFFF),
+					{
+						Hint = (UInt16)(addrOfImport & 0xFFFF),//Ordinal is stored in the low 16 bits
 						Name = null,
 					};
 				else
-					yield return this.Directory.Parent.Header.PtrToStructure<WinNT.IMAGE_IMPORT_BY_NAME>(addrOfImport - imageBase);
+					yield return this.Directory.Parent.Header.PtrToStructure<WinNT.IMAGE_IMPORT_BY_NAME>((UInt32)(addrOfImport - imageBase));
 			}
 		}
 
