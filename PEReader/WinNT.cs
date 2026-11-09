@@ -1837,18 +1837,28 @@ namespace AlphaOmega.Debug
 			/// <summary>Address of the first instruction in the function. It is the function's entry address</summary>
 			public UInt32 BeginAddress;
 			
-			/// <summary>Address of the last instruction in the function. It is the function's end address</summary>
+			/// <summary>Address just past the last instruction in the function. It is the function's (exclusive) end address</summary>
 			public UInt32 EndAddress;
 
 			/// <summary>
 			/// The UnwindInfoAddress can have two different meanings.
-			/// First, it can be a reference to another runtime function entry in .pdata.
-			/// This is indicated, that the LSB is set to one
+			/// Normally it is the RVA of the UNWIND_INFO structure for this function.
+			/// If the LSB is set to one, it is a reference to another runtime function entry in .pdata (see <see cref="IsIndirect"/> and <see cref="IndirectEntryAddress"/>)
 			/// </summary>
 			public UInt32 UnwindInfoAddress;
-			
+
 			/// <summary>Last row marker</summary>
+			/// <remarks>The exception table has no last row marker. The table length is defined by the size of the exception data directory</remarks>
+			[Obsolete("The exception table has no last row marker. Use the size of the exception data directory to get the number of entries, or IsIndirect to check the meaning of the UnwindInfoAddress")]
 			public Boolean IsLatEntry => (this.UnwindInfoAddress & 0xF) > 0;
+
+			/// <summary>The <see cref="UnwindInfoAddress"/> refers to another runtime function entry in .pdata instead of the UNWIND_INFO structure (RUNTIME_FUNCTION_INDIRECTION)</summary>
+			public Boolean IsIndirect => (this.UnwindInfoAddress & 0x1) != 0;
+
+			/// <summary>RVA of the runtime function entry this entry refers to, or null if the entry is not <see cref="IsIndirect"/></summary>
+			public UInt32? IndirectEntryAddress => this.IsIndirect
+				? this.UnwindInfoAddress & ~0x1u
+				: (UInt32?)null;
 		}
 
 		/// <summary>Represents the data directory</summary>
