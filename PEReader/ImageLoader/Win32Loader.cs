@@ -13,18 +13,20 @@ namespace AlphaOmega.Debug
 	[DebuggerDisplay("BaseAddress={"+nameof(BaseAddress)+"}")]
 	public class Win32Loader : IImageLoader
 	{
-		internal class HModuleHandle : SafeHandleZeroOrMinusOneIsInvalid
+		/// <summary>Owned HMODULE. The runtime frees it from a critical finalizer if the loader is not disposed</summary>
+		internal sealed class HModuleHandle : SafeHandleZeroOrMinusOneIsInvalid
 		{
-			private HModuleHandle()
+			internal HModuleHandle(IntPtr hModule)
 				: base(true)
-			{ }
+				=> base.SetHandle(hModule);
 
 			[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 			protected override Boolean ReleaseHandle()
 				=> NativeMethods.FreeLibrary(base.handle);
 		}
 
-		private readonly Boolean _freeOnClose = false;
+		//Not null only when this loader owns the module (freeOnClose)
+		private HModuleHandle _ownedModule;
 		private IntPtr? _hModule;
 
 		/// <summary>Required endianness</summary>
@@ -109,7 +111,8 @@ namespace AlphaOmega.Debug
 				throw new ArgumentNullException(nameof(hModule));
 
 			this._hModule = hModule;
-			this._freeOnClose = freeOnClose;
+			if(freeOnClose)
+				this._ownedModule = new HModuleHandle(hModule);
 		}
 
 		/// <summary>Gets bytes array from padding</summary>
@@ -141,8 +144,8 @@ namespace AlphaOmega.Debug
 		public String PtrToStringAnsi(UInt32 padding)
 			=> Marshal.PtrToStringAnsi(new IntPtr(this.BaseAddress + padding));
 
-		/// <summary>Free HMODULE</summary>
-		/// <exception cref="Win32Exception">Can't unload library</exception>
+		/// <summary>Free HMODULE if this loader owns it</summary>
+		/// <remarks>Never throws. If the loader is not disposed, an owned HMODULE is released by the <see cref="SafeHandle"/> finalizer</remarks>
 		public void Dispose()
 		{
 			this.Dispose(true);
@@ -153,10 +156,10 @@ namespace AlphaOmega.Debug
 		/// <param name="disposing">Dispose managed objects</param>
 		protected virtual void Dispose(Boolean disposing)
 		{
-			if(disposing && this._hModule != null)
+			if(disposing)
 			{
-				if(this._freeOnClose && !NativeMethods.FreeLibrary(this._hModule.Value))
-					throw new Win32Exception();
+				this._ownedModule?.Dispose();//Calls FreeLibrary
+				this._ownedModule = null;
 				this._hModule = null;
 			}
 		}

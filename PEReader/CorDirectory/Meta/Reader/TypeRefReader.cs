@@ -106,10 +106,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		}
 
 		#region IDisposable
-		/// <summary>Destructor for <see cref="TypeRefReader"/> if user forgets to dispose this object</summary>
-		~TypeRefReader()
-			=> this.Dispose(false);
-
 		/// <summary><see cref="IDisposable"/> pattern implementation to close <see cref="AssemblyRef"/> file</summary>
 		public void Dispose()
 		{
@@ -120,7 +116,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <summary><see cref="IDisposable"/> pattern implementation</summary>
 		/// <param name="disposing">Is object disposing or called from destructor</param>
 		protected virtual void Dispose(Boolean disposing)
-			=> this._assemblyRef?.Dispose();
+		{
+			if(disposing)
+				this._assemblyRef?.Dispose();
+		}
 		#endregion IDisposable
 	}
 }

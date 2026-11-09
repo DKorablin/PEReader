@@ -87,10 +87,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		protected virtual PEFile Open(String filePath)
 			=> new PEFile(filePath, StreamLoader.FromFile(filePath));
 
-		/// <summary>Destructor for <see cref="AssemblyRefReader"/> if user forgets to dispose this object</summary>
-		~AssemblyRefReader()
-			=> this.Dispose(false);
-
 		/// <summary><see cref="IDisposable"/> pattern implementation to close referenced assembly file</summary>
 		public void Dispose()
 		{
@@ -101,6 +97,12 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <summary><see cref="IDisposable"/> pattern implementation</summary>
 		/// <param name="disposing">Is object disposing or called from destructor</param>
 		protected virtual void Dispose(Boolean disposing)
-			=> this._file?.Dispose();
+		{
+			if(disposing)
+			{
+				this._file?.Dispose();
+				this._file = null;
+			}
+		}
 	}
 }

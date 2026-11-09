@@ -130,10 +130,6 @@ namespace AlphaOmega.Debug
 			this.Header = new PEHeader(loader);
 		}
 
-		/// <summary>Destructor for <see cref="Header"/> if user forgets to dispose this object</summary>
-		~PEFile()
-			=> this.Dispose(false);
-
 		/// <summary>Close loader</summary>
 		public void Dispose()
 		{
@@ -148,8 +144,11 @@ namespace AlphaOmega.Debug
 			if(this._disposed)
 				return;
 
-			this.Header?.Dispose();
-			this.Header = null;
+			if(disposing)
+			{//There is no finalizer: loaders protect their own unmanaged resources (file handles, loaded modules) with SafeHandle
+				this.Header?.Dispose();
+				this.Header = null;
+			}
 			this._disposed = true;
 		}
 	}
