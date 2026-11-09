@@ -5,8 +5,12 @@ using System.Text;
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
 	/// <summary>String heap class</summary>
+	/// <remarks>Strings in the #Strings heap are null-terminated UTF-8 (ECMA-335 II.24.2.3)</remarks>
 	public class StringHeap : StreamHeaderTyped<String>
 	{
+		//Raw heap bytes, required to decode strings referenced from the middle of another string
+		private Byte[] _bytes;
+
 		/// <summary>Create instance of String heap class</summary>
 		/// <param name="meta">MetaData directory</param>
 		/// <param name="header">.NET stream header</param>
@@ -26,21 +30,19 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <returns>Data by pointer</returns>
 		protected override String GetDataByPointer(Int32 pointer)
 		{
-			SortedList<Int32, String> data = base.GetData();
-			Int32 key = pointer;
-			String nearestString = null;
+			base.GetData();//Ensure that heap bytes are loaded
+			Byte[] bytes = this._bytes;
 
-			if(pointer > base.Header.Size)
+			if(pointer < 0 || pointer >= bytes.Length)
 				throw new InvalidOperationException($"Pointer: {pointer:X} overflowed header. Size: {base.Header.Size:n0}");
 
-			while(key >= 0 && !data.TryGetValue(key, out nearestString))
-				key--;
-
-			Int32 diff = pointer - key;
+			//The pointer is a byte offset, so the string is decoded from the raw bytes (a char index differs from a byte offset for multi-byte UTF-8 characters)
+			Int32 end = Array.IndexOf(bytes, (Byte)0, pointer);
+			if(end < 0)
+				end = bytes.Length;
 
 			//TODO: Here I can add found string to the SortedList<,>
-			String result = nearestString.Substring(diff, nearestString.Length - diff);
-			return result;
+			return Encoding.UTF8.GetString(bytes, pointer, end - pointer);
 		}
 
 		/// <summary>Binds the data form stream to string array</summary>
@@ -49,13 +51,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			SortedList<Int32, String> result = new SortedList<Int32, String>();
 
 			Byte[] bytes = base.Bytes;
+			this._bytes = bytes;
 			Int32 ptr = 0;
 
 			for(Int32 loop = 0; loop < bytes.Length; loop++)
 			{
 				if(bytes[loop] == 0)
 				{
-					String str = Encoding.ASCII.GetString(bytes, ptr, loop - ptr);
+					String str = Encoding.UTF8.GetString(bytes, ptr, loop - ptr);
 
 					result.Add(ptr, str);
 					ptr = loop + 1;
