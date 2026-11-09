@@ -32,7 +32,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		public IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks()
 		{
 			using(PinnedBufferReader reader = base.CreateDataReader())
-				return this.GetMessageBlocks(reader);
+				foreach(WinNT.Resource.MESSAGE_RESOURCE_BLOCK block in this.GetMessageBlocks(reader))
+            		yield return block;
 		}
 
 		private IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks(PinnedBufferReader reader)

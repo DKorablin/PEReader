@@ -78,7 +78,7 @@ namespace AlphaOmega.Debug
 
 			return hModule == IntPtr.Zero
 				? throw new Win32Exception()
-				: new Win32Loader(hModule, false);
+				: new Win32Loader(hModule, true);
 		}
 
 		/// <summary>Load image from HModule</summary>
