@@ -597,7 +597,7 @@ namespace AlphaOmega.Debug
 					}
 
 					if(!info.Debug.IsEmpty)
-					{//В файле есть инормация для дебага
+					{//The debug info is available
 						this._console.WriteLine("===Debug info===");
 						foreach(var debug in info.Debug)
 							this._console.ConsoleWriteMembers(debug);

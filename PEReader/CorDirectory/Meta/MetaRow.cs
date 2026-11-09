@@ -122,15 +122,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <param name="b">Second row to compare</param>
 		/// <returns>Rows are equals</returns>
 		public static Boolean operator ==(MetaRow a, MetaRow b)
-		{
-			if(ReferenceEquals(a, b))
-				return true;
-			if(ReferenceEquals(a, null))
-				return false;
-			if(ReferenceEquals(b, null))
-				return false;
-			return a.Index == b.Index;
-		}
+			=> ReferenceEquals(a, null)
+				? ReferenceEquals(b, null)
+				: a.Equals(b);
 
 		/// <summary>Compare two rows by table type and index field</summary>
 		/// <param name="a">First row to compare</param>

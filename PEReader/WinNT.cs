@@ -1391,9 +1391,9 @@ namespace AlphaOmega.Debug
 				/// <summary>Message-table entry</summary>
 				RT_MESSAGETABLE = 11,
 				/// <summary>Hardware-independent cursor resource</summary>
-				RT_GROUP_CURSOR2 = 12,
+				RT_GROUP_CURSOR = 12,
 				/// <summary>Hardware-independent cursor resource</summary>
-				RT_GROUP_CURSOR4 = 14,
+				RT_GROUP_ICON = 14,
 				/// <summary>Version resource</summary>
 				RT_VERSION = 16,
 				/// <summary>
