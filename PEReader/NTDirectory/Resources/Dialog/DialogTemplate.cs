@@ -6,7 +6,7 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	public class DialogTemplate
 	{
 		private ResourceBase.SzInt? _menu;
-		private ResourceBase.SzInt? _windowName;
+		private ResourceBase.SzInt? _windowClass;
 
 		/// <summary>Template version</summary>
 		public UInt16? Version;
@@ -46,14 +46,15 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			}
 		}
 
-		/// <summary>WindowName</summary>
-		public ResourceBase.SzInt? WindowName
+		/// <summary>Window class of the dialog box (ordinal of a predefined system class or registered class name)</summary>
+		/// <remarks>When <c>null</c>, the system uses the predefined dialog box class</remarks>
+		public ResourceBase.SzInt? WindowClass
 		{
-			get => this._windowName;
+			get => this._windowClass;
 			set
 			{
 				if(value != null && !value.Value.IsEmpty)
-					this._windowName = value;
+					this._windowClass = value;
 			}
 		}
 		/// <summary>Dialog title</summary>

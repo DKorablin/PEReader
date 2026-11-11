@@ -39,33 +39,25 @@ namespace AlphaOmega.Debug
 		/// <param name="value">The value to be converted</param>
 		/// <returns>The return value is the high-order word of the specified value</returns>
 		public static UInt16 HiWord(UInt32 value)
-		{
-			return (UInt16)((value & 0xFFFF0000) >> 16);
-		}
+			=> (UInt16)((value & 0xFFFF0000) >> 16);
 
 		/// <summary>Retrieves the low-order word from the specified value</summary>
 		/// <param name="value">The value to be converted</param>
 		/// <returns>The return value is the low-order word of the specified value</returns>
 		public static UInt16 LoWord(UInt32 value)
-		{
-			return (UInt16)(value & 0x0000FFFF);
-		}
+			=> (UInt16)(value & 0x0000FFFF);
 
 		/// <summary>The return value is the high-order byte of the specified value</summary>
 		/// <param name="value">The value to be converted</param>
 		/// <returns>The return value is the high-order byte of the specified value</returns>
 		public static Byte HiByte(Int16 value)
-		{
-			return ((Byte) (((Int16) (value) >> 8) & 0xFF));
-		}
+			=> ((Byte) (((Int16) (value) >> 8) & 0xFF));
 
 		/// <summary>The return value is the low-order byte of the specified value</summary>
 		/// <param name="value">The value to be converted</param>
 		/// <returns>The return value is the low-order byte of the specified value</returns>
 		public static Byte LoByte(Int16 value)
-		{
-			return ((Byte)value);
-		}
+			=> ((Byte)value);
 
 		/// <summary>Signatures are compressed before being stored into the Blob heap (described below) by compressing the integers embedded in the signature</summary>
 		/// <remarks>

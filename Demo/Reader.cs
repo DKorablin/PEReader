@@ -150,7 +150,10 @@ namespace AlphaOmega.Debug
 											bytes.AddRange(PinnedBufferReader.StructureToArray<WinGdi.ICONDIRENTRY>(icoEntry));
 											bytes.AddRange(payload);
 											File.WriteAllBytes(@"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\res\RT_ICON.ico", bytes.ToArray());*/
-											this._console.ConsoleWriteMembers(resIcon.Header);
+											if(resIcon.IsPng)
+												this._console.ConsoleWriteMembers("PNG", resIcon.PngHeader.Value);
+											else
+												this._console.ConsoleWriteMembers(resIcon.Header.Value);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT:
 											var dlgInit = new AlphaOmega.Debug.NTDirectory.Resources.ResourceDialogInit(dir2);
