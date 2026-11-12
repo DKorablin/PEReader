@@ -88,13 +88,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				throw new NotSupportedException($"Their number and type is found by examining that constructor‘s row in the MethodDef or MethodDef tables. Real value: {this.Type.TableType}");
 			}
 
+			// FixedArg: Elem | SZARRAY NumElem Elem* (types are taken from the constructor signature)
 			foreach(MemberArgument arg in lArgs)
 			{
-				Object value = this.ParseTypedValue(arg.Type, signature,out String enumType, ref offset);
-				arg.EnumType = enumType;
-				arg.Value = value;
+				arg.Value = this.ReadValue(arg.Type.Type, arg.Type.IsArray, null, signature, ref offset, out String enumTypeName);
+				arg.EnumType = enumTypeName;
 			}
 
+			// NamedArg: (FIELD | PROPERTY) FieldOrPropType FieldOrPropName FixedArg
 			UInt16 numNamed = BitConverter.ToUInt16(signature, (Int32)offset);
 			offset += sizeof(UInt16);
 			for(UInt16 loop = 0; loop < numNamed; loop++)
@@ -104,26 +105,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				{
 				case Cor.ELEMENT_TYPE.PROPERTY:
 				case Cor.ELEMENT_TYPE.FIELD:
-					ElementType element = new ElementType(this.Row.Cells[0], signature, ref offset);
+					ElementType element = this.ReadFieldOrPropType(signature, ref offset, out String declaredEnumTypeName);
+					String elementName = ReadString(signature, ref offset);
+					Object elementValue = this.ReadValue(element.Type, element.IsArray, declaredEnumTypeName, signature, ref offset, out String enumTypeName);
 
-					String enumTypeName;
-					String elementName;
-					Object elementValue;
-					switch(element.Type)
-					{
-					case Cor.ELEMENT_TYPE.ENUM:
-						enumTypeName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
-						elementName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
-						elementValue = ParseTypedValue(this.FindEnumBaseType(enumTypeName), signature, ref offset);
-						break;
-					default:
-						enumTypeName = null;
-						elementName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, signature, ref offset);
-						elementValue = this.ParseTypedValue(element, signature, out enumTypeName, ref offset);
-						break;
-					}
-					
-					lMembers.Add(new MemberElement(type, element, elementName) { EnumType = enumTypeName, Value = elementValue});
+					lMembers.Add(new MemberElement(type, element, elementName) { EnumType = enumTypeName, Value = elementValue });
 					break;
 				default:
 					throw new InvalidOperationException($"Attribute value can contain only {Cor.ELEMENT_TYPE.PROPERTY} or {Cor.ELEMENT_TYPE.FIELD}. Got: {type}");
@@ -140,34 +126,87 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			members = lMembers.ToArray();
 		}
 
-		private Object ParseTypedValue(ElementType type, Byte[] value, out String enumTypeName, ref UInt32 offset)
+		/// <summary>Reads FieldOrPropType (ECMA-335 II.23.3) used by named arguments and boxed values</summary>
+		/// <remarks>FieldOrPropType: BOOLEAN | CHAR | I1 | U1 | I2 | U2 | I4 | U4 | I8 | U8 | R4 | R8 | STRING | TYPE | BOXED | ENUM SerString | SZARRAY FieldOrPropType</remarks>
+		/// <param name="blob">Custom attribute blob</param>
+		/// <param name="offset">Position of the type in the blob</param>
+		/// <param name="enumTypeName">Serialized enum type name if the type (or array element type) is <see cref="Cor.ELEMENT_TYPE.ENUM"/></param>
+		/// <returns>Parsed type description</returns>
+		private ElementType ReadFieldOrPropType(Byte[] blob, ref UInt32 offset, out String enumTypeName)
 		{
-			enumTypeName = null;
+			UInt32 start = offset;
+			ElementType result = new ElementType(this.Row.Cells[0], blob, ref offset);
 
-			if(type.IsArray)
-			{//TODO: We will need to parse subsequent bytes with respect of types described int the ELSE block lower
-				UInt32 NumElem = BitConverter.ToUInt32(value, (Int32)offset);
-				offset += sizeof(UInt32);
-				Object[] values = new Object[NumElem];
-				for(UInt32 loop = 0; loop < NumElem; loop++)
-					values[loop] = ParseTypedValue(type.Type, value, ref offset);
-				return values;
-			} else
+			Boolean isValidModifiers = result.TypeModifiers == null
+				|| (result.TypeModifiers.Length == 1 && result.TypeModifiers[0] == Cor.ELEMENT_TYPE.SZARRAY);
+			Boolean isValidType;
+			switch(result.Type)
 			{
-				switch(type.Type)
-				{
-				case Cor.ELEMENT_TYPE.OBJECT:
-				case Cor.ELEMENT_TYPE.BOXED://Yup. Both OBJECT and BOXED can contains ENUM type
-					ElementType objType = new ElementType(this.Row.Cells[0], value, ref offset);
-					return this.ParseTypedValue(objType, value, out enumTypeName, ref offset);
-				case Cor.ELEMENT_TYPE.ENUM:
-					enumTypeName = (String)ParseTypedValue(Cor.ELEMENT_TYPE.STRING, value, ref offset);
-					return ParseTypedValue(this.FindEnumBaseType(enumTypeName), value, ref offset);
-				default:
-					return ParseTypedValue(type.Type, value, ref offset);
-				}
+			case Cor.ELEMENT_TYPE.STRING:
+			case Cor.ELEMENT_TYPE.TYPE:
+			case Cor.ELEMENT_TYPE.BOXED:
+			case Cor.ELEMENT_TYPE.OBJECT://Not in spec, but kept as an alias of BOXED for compatibility
+			case Cor.ELEMENT_TYPE.ENUM:
+				isValidType = true;
+				break;
+			default:
+				isValidType = result.Type >= Cor.ELEMENT_TYPE.BOOLEAN && result.Type <= Cor.ELEMENT_TYPE.R8;
+				break;
+			}
+
+			if(!isValidModifiers || !isValidType || result.CustomModifiers != null || result.GenericArguments != null)
+				throw new CustomAttributeFormatException($"Invalid FieldOrPropType {result.ToStringOriginal()} at position {start:N0}");
+
+			enumTypeName = result.Type == Cor.ELEMENT_TYPE.ENUM
+				? ReadString(blob, ref offset)
+				: null;
+			return result;
+		}
+
+		/// <summary>Reads FixedArg (ECMA-335 II.23.3): single element or SZARRAY of elements</summary>
+		/// <param name="type">Element type (from the constructor signature or FieldOrPropType)</param>
+		/// <param name="isArray">Value is stored as SZARRAY: NumElem Elem*</param>
+		/// <param name="declaredEnumTypeName">Enum type name if <paramref name="type"/> is <see cref="Cor.ELEMENT_TYPE.ENUM"/></param>
+		/// <param name="blob">Custom attribute blob</param>
+		/// <param name="offset">Position of the value in the blob</param>
+		/// <param name="enumTypeName">Enum type name of the value: declared enum, or enum stored inside a boxed value</param>
+		/// <returns>Parsed value or array of values</returns>
+		private Object ReadValue(Cor.ELEMENT_TYPE type, Boolean isArray, String declaredEnumTypeName, Byte[] blob, ref UInt32 offset, out String enumTypeName)
+		{
+			if(!isArray)
+				return this.ReadElement(type, declaredEnumTypeName, blob, ref offset, out enumTypeName);
+
+			enumTypeName = declaredEnumTypeName;
+			UInt32 numElem = BitConverter.ToUInt32(blob, (Int32)offset);
+			offset += sizeof(UInt32);
+			Object[] values = new Object[numElem];
+			for(UInt32 loop = 0; loop < numElem; loop++)
+				values[loop] = this.ReadElement(type, declaredEnumTypeName, blob, ref offset, out _);
+			return values;
+		}
+
+		/// <summary>Reads single Elem (ECMA-335 II.23.3)</summary>
+		/// <remarks>Elem: primitive value | SerString | boxed value (FieldOrPropType + FixedArg) | enum value</remarks>
+		private Object ReadElement(Cor.ELEMENT_TYPE type, String declaredEnumTypeName, Byte[] blob, ref UInt32 offset, out String enumTypeName)
+		{
+			switch(type)
+			{
+			case Cor.ELEMENT_TYPE.OBJECT:
+			case Cor.ELEMENT_TYPE.BOXED:// Value is prefixed with its own FieldOrPropType (which can be ENUM or SZARRAY)
+				ElementType boxedType = this.ReadFieldOrPropType(blob, ref offset, out String boxedEnumTypeName);
+				return this.ReadValue(boxedType.Type, boxedType.IsArray, boxedEnumTypeName, blob, ref offset, out enumTypeName);
+			case Cor.ELEMENT_TYPE.ENUM:
+				enumTypeName = declaredEnumTypeName;
+				return ReadPrimitive(this.FindEnumBaseType(declaredEnumTypeName), blob, ref offset);
+			default:
+				enumTypeName = null;
+				return ReadPrimitive(type, blob, ref offset);
 			}
 		}
+
+		/// <summary>Reads SerString: PackedLen + UTF8 bytes or 0xFF for null string</summary>
+		private static String ReadString(Byte[] blob, ref UInt32 offset)
+			=> (String)ReadPrimitive(Cor.ELEMENT_TYPE.STRING, blob, ref offset);
 
 		private Cor.ELEMENT_TYPE FindEnumBaseType(String enumTypeName)
 		{
@@ -189,7 +228,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			}
 		}
 
-		private static Object ParseTypedValue(Cor.ELEMENT_TYPE type, Byte[] value, ref UInt32 offset)
+		/// <summary>Reads primitive value, string or serialized <see cref="System.Type"/> name</summary>
+		private static Object ReadPrimitive(Cor.ELEMENT_TYPE type, Byte[] value, ref UInt32 offset)
 		{
 			Object result;
 			switch(type)
@@ -202,9 +242,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				} else
 					goto case Cor.ELEMENT_TYPE.CLASS;
 				break;
-			case Cor.ELEMENT_TYPE.CLASS:
+			case Cor.ELEMENT_TYPE.CLASS:// System.Type in the constructor signature
 			case Cor.ELEMENT_TYPE.TYPE:
-			case Cor.ELEMENT_TYPE.BOXED:
 				UInt32 packedLength1 = NativeMethods.GetPackedValue(value, ref offset);
 				result = Encoding.UTF8.GetString(value, (Int32)offset, (Int32)packedLength1);
 				offset += packedLength1;
@@ -241,11 +280,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				result = BitConverter.ToInt32(value, (Int32)offset);
 				offset += sizeof(Int32);
 				break;
-			case Cor.ELEMENT_TYPE.OBJECT://Firstly we need to get real object type. Parsed in the different method
-				goto default;
-			case Cor.ELEMENT_TYPE.ENUM://Here lies not only value but type of object. Parsed in the different method
-				goto default;
-			default:
+			default://OBJECT, BOXED and ENUM are handled by ReadElement
 				throw new NotImplementedException($"Parse for {type} is not implemented");
 			}
 			return result;
