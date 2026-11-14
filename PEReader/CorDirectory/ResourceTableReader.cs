@@ -23,42 +23,18 @@ namespace AlphaOmega.Debug.CorDirectory
 		{
 			get
 			{
-				Int32 magicNumber;
-				/*if(BitConverter.IsLittleEndian)
-				{
-					Byte[] bytes = new Byte[4];
-					Array.Copy(this._file, bytes, 4);
-					Array.Reverse(bytes);
-					magicNumber = checked((UInt32)BitConverter.ToInt32(bytes, 0));
-				} else*/
-					magicNumber = BitConverter.ToInt32(this._file, 0);
+				if(this._file.Length < 4)
+					return false;
 
-				return (UInt32)magicNumber == Cor.ResourceManagerHeader.MagicNumberConst;
+				UInt32 magic = (UInt32)(_file[0] | _file[1] << 8 | _file[2] << 16 | _file[3] << 24);
+				return magic == Cor.ResourceManagerHeader.MagicNumberConst;
+
 			}
 		}
 
 		/// <summary>Enumerates .resources files and streams, reading sequential resource name and value pairs</summary>
-		public IResourceReader Reader
-		{
-			get
-			{
-				if(this._reader == null && this.CanRead)
-					lock(_readerLock)
-						if(this._reader == null)
-						{
-							MemoryStream stream = new MemoryStream(this._file);
-							try
-							{
-								this._reader = new ResourceReader(stream);
-							} catch
-							{
-								stream.Dispose();
-								throw;
-							}
-						}
-				return this._reader;
-			}
-		}
+		/// <remarks>Returns <c>null</c> if <see cref="CanRead"/> is <c>false</c>. Reopened on demand after <see cref="Dispose"/></remarks>
+		public IResourceReader Reader => this.GetReader();
 
 		#endregion Properties
 		internal ResourceTableReader(String name, Byte[] file)
@@ -75,9 +51,36 @@ namespace AlphaOmega.Debug.CorDirectory
 			if(String.IsNullOrEmpty(resourceName))
 				throw new ArgumentNullException(nameof(resourceName));
 
-			_ = this._reader ?? throw new InvalidOperationException($"The {nameof(_reader)} is null");
+			ResourceReader reader = this.GetReader()
+				?? throw new InvalidOperationException($"This type of resource {this.Name} cannot be read");
 
-			this._reader.GetResourceData(resourceName, out resourceType, out resourceData);
+			reader.GetResourceData(resourceName, out resourceType, out resourceData);
+		}
+
+		/// <summary>Get or lazily create the underlying <see cref="ResourceReader"/></summary>
+		/// <returns>Resource reader or <c>null</c> if <see cref="CanRead"/> is <c>false</c></returns>
+		private ResourceReader GetReader()
+		{
+			ResourceReader reader = this._reader;
+			if(reader != null || !this.CanRead)
+				return reader;
+
+			lock(this._readerLock)
+			{
+				if(this._reader == null)
+				{
+					MemoryStream stream = new MemoryStream(this._file);
+					try
+					{
+						this._reader = new ResourceReader(stream);
+					} catch
+					{
+						stream.Dispose();
+						throw;
+					}
+				}
+				return this._reader;
+			}
 		}
 
 		/// <summary>Reads all elements from .resource item</summary>
