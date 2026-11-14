@@ -190,6 +190,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			enumTypeName = declaredEnumTypeName;
 			UInt32 numElem = BitConverter.ToUInt32(blob, (Int32)offset);
 			offset += sizeof(UInt32);
+			if(numElem == UInt32.MaxValue)// NumElem 0xFFFFFFFF stands for a null array (ECMA-335 II.23.3)
+				return null;
+
 			Object[] values = new Object[numElem];
 			for(UInt32 loop = 0; loop < numElem; loop++)
 				values[loop] = this.ReadElement(type, declaredEnumTypeName, blob, ref offset, out _);
@@ -226,18 +229,18 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			switch(type)
 			{
 			case Cor.ELEMENT_TYPE.STRING:
-				if(value[offset] == 0xff)
+			case Cor.ELEMENT_TYPE.CLASS:// System.Type in the constructor signature
+			case Cor.ELEMENT_TYPE.TYPE:// SerString: PackedLen + UTF8 bytes or single 0xFF byte for null string/type (ECMA-335 II.23.3)
+				if(value[offset] == 0xFF)
 				{
 					result = null;
-					offset += 1;
+					offset += sizeof(Byte);
 				} else
-					goto case Cor.ELEMENT_TYPE.CLASS;
-				break;
-			case Cor.ELEMENT_TYPE.CLASS:// System.Type in the constructor signature
-			case Cor.ELEMENT_TYPE.TYPE:
-				UInt32 packedLength1 = NativeMethods.GetPackedValue(value, ref offset);
-				result = Encoding.UTF8.GetString(value, (Int32)offset, (Int32)packedLength1);
-				offset += packedLength1;
+				{
+					UInt32 packedLength = NativeMethods.GetPackedValue(value, ref offset);
+					result = Encoding.UTF8.GetString(value, (Int32)offset, (Int32)packedLength);
+					offset += packedLength;
+				}
 				break;
 			case Cor.ELEMENT_TYPE.BOOLEAN:
 				result = BitConverter.ToBoolean(value, (Int32)offset);
