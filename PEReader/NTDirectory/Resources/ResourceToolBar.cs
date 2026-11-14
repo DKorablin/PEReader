@@ -30,8 +30,9 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			UInt32 iIconIndex = 0;
 			UInt32 padding = ResourceToolBar.SizeOfStruct;
 
+			CommCtrl.TOOLBARDATA header = this.Header; 
 			using(PinnedBufferReader reader = this.CreateDataReader())
-				for(UInt16 loop = 0; loop < this.Header.wItemsCount; loop++)
+				for(UInt16 loop = 0; loop < header.wItemsCount; loop++)
 				{
 					UInt16 toolBarItem = reader.BytesToStructure<UInt16>(ref padding);
 

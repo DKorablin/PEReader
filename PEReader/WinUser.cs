@@ -85,7 +85,35 @@ namespace AlphaOmega.Debug
 			public Boolean IsFinal => (this.bResInfo & MFe.END) == MFe.END;
 		}
 
-		/// <summary>Defines a menu item in a menu template</summary>
+		/// <summary>Defines a menu item in a standard (version 0) menu template</summary>
+		/// <remarks>
+		/// In the resource the item is stored as <c>WORD mtOption</c>, followed by <c>WORD mtID</c> only when the item does not open a submenu,
+		/// followed by a null-terminated Unicode string with the item text.
+		/// For an item that opens a submenu <see cref="mtID"/> is not present in the resource and is always 0 here.
+		/// https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-menuitemtemplate
+		/// </remarks>
+		[StructLayout(LayoutKind.Sequential, Pack = 2)]
+		public struct MENUITEMTEMPLATE
+		{
+			/// <summary>The type of menu item</summary>
+			public MF mtOption;
+
+			/// <summary>Menu item ID. Always 0 for an item that opens a submenu</summary>
+			public UInt16 mtID;
+
+			/// <summary>
+			/// The structure defines a item that opens a drop-down menu or submenu.
+			/// Subsequent structures define menu items in the corresponding drop-down menu or submenu
+			/// </summary>
+			public Boolean IsPopUp => (this.mtOption & MF.POPUP) == MF.POPUP;
+
+			/// <summary>The structure defines the last menu item in the menu bar, drop-down menu, submenu, or shortcut menu</summary>
+			public Boolean IsFinal => (this.mtOption & MF.END) == MF.END;
+		}
+
+		/// <summary>Header of a standard menu item that does not open a submenu (contains the item ID)</summary>
+		/// <remarks>Despite the name, this is the layout of a command item, not of a pop-up item</remarks>
+		[Obsolete("The name is misleading: this is the header of a command item. Use " + nameof(MENUITEMTEMPLATE) + " instead")]
 		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct MENUITEMPOPUP
 		{
@@ -105,8 +133,9 @@ namespace AlphaOmega.Debug
 			public Boolean IsFinal => (this.mtOption & MF.END) == MF.END;
 		}
 
-		/// <summary>Contains information about each item in a menu resource that does not open a menu or a submenu</summary>
-		/// <remarks>http://msdn.microsoft.com/en-us/library/windows/desktop/ms648024%28v=vs.85%29.aspx</remarks>
+		/// <summary>Header of a standard menu item that opens a submenu (has no item ID)</summary>
+		/// <remarks>Despite the name, this is the layout of a pop-up item, not of a command item</remarks>
+		[Obsolete("The name is misleading: this is the header of a pop-up item. Use " + nameof(MENUITEMTEMPLATE) + " instead")]
 		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct MENUITEM
 		{
@@ -533,6 +562,10 @@ namespace AlphaOmega.Debug
 		{
 			/// <summary>Indicates that the menu item is initially inactive and drawn with a gray effect</summary>
 			GRAYED = 0x00000001,
+			/// <summary>Indicates that the menu item is inactive, but not drawn grayed</summary>
+			DISABLED = 0x00000002,
+			/// <summary>Indicates that the menu item is drawn using a bitmap</summary>
+			BITMAP = 0x00000004,
 			/// <summary>Indicates that the menu item has a check mark next to it</summary>
 			CHECKED = 0x00000008,
 			/// <summary>The menu item opens a menu or a submenu; the flag is used internally by the system</summary>
@@ -549,6 +582,8 @@ namespace AlphaOmega.Debug
 			/// </summary>
 			/// <remarks>This option is not valid for an item in a menu bar</remarks>
 			OWNERDRAW = 0x00000100,
+			/// <summary>Indicates that the menu item is a separator (horizontal dividing line)</summary>
+			SEPARATOR = 0x00000800,
 			/// <summary>Indicates that the menu item has a vertical separator to its left</summary>
 			HELP = 0x00004000,
 		}
