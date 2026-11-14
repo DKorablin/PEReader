@@ -243,6 +243,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				result = BitConverter.ToBoolean(value, (Int32)offset);
 				offset += sizeof(Boolean);
 				break;
+			case Cor.ELEMENT_TYPE.CHAR:// UTF-16 code unit
+				result = BitConverter.ToChar(value, (Int32)offset);
+				offset += sizeof(Char);
+				break;
+			case Cor.ELEMENT_TYPE.I1:
+				result = unchecked((SByte)value[offset]);
+				offset += sizeof(SByte);
+				break;
 			case Cor.ELEMENT_TYPE.U1:
 				result = value[offset];
 				offset += sizeof(Byte);
@@ -251,19 +259,31 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				result = BitConverter.ToInt16(value, (Int32)offset);
 				offset += sizeof(Int16);
 				break;
+			case Cor.ELEMENT_TYPE.U2:
+				result = BitConverter.ToUInt16(value, (Int32)offset);
+				offset += sizeof(UInt16);
+				break;
 			case Cor.ELEMENT_TYPE.I4:
 				result = BitConverter.ToInt32(value, (Int32)offset);
 				offset += sizeof(Int32);
+				break;
+			case Cor.ELEMENT_TYPE.U4:
+				result = BitConverter.ToUInt32(value, (Int32)offset);
+				offset += sizeof(UInt32);
 				break;
 			case Cor.ELEMENT_TYPE.I8:
 				result = BitConverter.ToInt64(value, (Int32)offset);
 				offset += sizeof(Int64);
 				break;
+			case Cor.ELEMENT_TYPE.U8:
+				result = BitConverter.ToUInt64(value, (Int32)offset);
+				offset += sizeof(UInt64);
+				break;
 			case Cor.ELEMENT_TYPE.R4:
 				result = BitConverter.ToSingle(value, (Int32)offset);
 				offset += sizeof(Single);
 				break;
-				case Cor.ELEMENT_TYPE.R8:
+			case Cor.ELEMENT_TYPE.R8:
 				result = BitConverter.ToDouble(value, (Int32)offset);
 				offset += sizeof(Double);
 				break;
