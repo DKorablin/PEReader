@@ -65,8 +65,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 				while(padding < reader.Length)
 				{
 					MfcCtrlData header = reader.BytesToStructure<MfcCtrlData>(ref padding);
-					Byte[] data = reader.GetBytes(padding, (UInt32)header.DataLength);
-					padding += (UInt32)header.DataLength;
+					Byte[] data = reader.GetBytes(padding, header.DataLength);
+					padding += header.DataLength;
 
 					yield return new ControlInitData(header, data);
 

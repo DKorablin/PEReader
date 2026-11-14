@@ -319,15 +319,25 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Describes the data in an individual accelerator table resource</summary>
-		/// <remarks>The structure definition provided here is for explanation only; it is not present in any standard header file</remarks>
+		/// <remarks>
+		/// The structure definition provided here is for explanation only; it is not present in any standard header file.
+		/// https://learn.microsoft.com/en-us/windows/win32/menurc/acceltableentry
+		/// </remarks>
 		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct ACCELTABLEENTRY
 		{
+			/// <summary>Maximum key name length (in characters, including the terminating NUL) requested from <c>GetKeyNameText</c></summary>
+			private const Int32 KeyNameBufferLength = 64;
+
 			/// <summary>Describes keyboard accelerator characteristics</summary>
-			/// <remarks>This member can have one or more of the following values from Winuser.h</remarks>
+			/// <remarks>This member can have one or more of the <see cref="AccelFlags"/> values from Winuser.h</remarks>
 			public AccelFlags fFlags;
 
 			/// <summary>An ANSI character value or a virtual-key code that identifies the accelerator key</summary>
+			/// <remarks>
+			/// If <see cref="fFlags"/> contains <see cref="AccelFlags.FVIRTKEY"/>, this member is a virtual-key code (VK_*).
+			/// Otherwise it is a character code; control characters 0x01-0x1A are produced by the "^A"-"^Z" notation in the resource script.
+			/// </remarks>
 			public UInt16 wAnsi;
 
 			/// <summary>An identifier for the keyboard accelerator</summary>
@@ -335,28 +345,114 @@ namespace AlphaOmega.Debug
 			public UInt16 wId;
 
 			/// <summary>The number of bytes inserted to ensure that the structure is aligned on a DWORD boundary</summary>
+			/// <remarks>The value of this member is not used and is usually 0</remarks>
 			public UInt16 padding;
 
-			/// <summary>Get string representation of wAnsi parameter</summary>
-			/// <remarks>Win32 calls are used to get string representation</remarks>
-			/// <exception cref="Win32Exception">Can't convert Key code to text key name</exception>
-			/// <returns>String representation of the parameter</returns>
+			/// <summary>Get human-readable representation of the accelerator key combination</summary>
+			/// <remarks>
+			/// The result includes the modifier keys, e.g. "Ctrl+Shift+F5", "Alt+Enter" or "Ctrl+C".
+			/// Character accelerators (without <see cref="AccelFlags.FVIRTKEY"/>) are formatted without any Win32 calls:
+			/// control characters 0x01-0x1A are shown as "Ctrl+A"-"Ctrl+Z", a space as "Space" and other characters as is.
+			/// For virtual-key accelerators the key name is obtained with the Win32 <c>MapVirtualKey</c> and <c>GetKeyNameText</c> functions, so:
+			/// <list type="bullet">
+			/// <item><description>The result depends on the keyboard layout of the calling thread and on the OS UI language, so the same file can produce different names on different machines.</description></item>
+			/// <item><description>The Windows user32.dll library is required. On other platforms the call fails with <see cref="DllNotFoundException"/> or <see cref="EntryPointNotFoundException"/>.</description></item>
+			/// </list>
+			/// </remarks>
+			/// <exception cref="Win32Exception">The virtual-key code can't be converted to a key name on the current keyboard layout</exception>
+			/// <returns>String representation of the accelerator key combination</returns>
 			public String StringKey
 			{
 				get
 				{
-					StringBuilder result = new StringBuilder(10);
-					UInt32 key = NativeMethods.MapVirtualKey((UInt32)this.wAnsi, NativeMethods.MAPVK.VK_TO_VSC);
-					if(key == 0 || NativeMethods.GetKeyNameText(key << 16, result, 10) == 0)
-						throw new Win32Exception();
+					StringBuilder result = new StringBuilder();
+					if((this.fFlags & AccelFlags.FCONTROL) == AccelFlags.FCONTROL)
+						result.Append("Ctrl+");
+					if((this.fFlags & AccelFlags.FALT) == AccelFlags.FALT)
+						result.Append("Alt+");
+					if((this.fFlags & AccelFlags.FSHIFT) == AccelFlags.FSHIFT)
+						result.Append("Shift+");
+
+					if((this.fFlags & AccelFlags.FVIRTKEY) == AccelFlags.FVIRTKEY)
+						result.Append(ACCELTABLEENTRY.GetVirtualKeyName(this.wAnsi));
+					else
+						result.Append(ACCELTABLEENTRY.GetCharacterKeyName(this.wAnsi));
+
 					return result.ToString();
+				}
+			}
+
+			/// <summary>Get the display name of a character accelerator key</summary>
+			/// <param name="character">Character code from the <see cref="wAnsi"/> member</param>
+			/// <returns>Character key name</returns>
+			private static String GetCharacterKeyName(UInt16 character)
+			{
+				if(character >= 0x01 && character <= 0x1A)//"^A"-"^Z" in the resource script
+					return "Ctrl+" + (Char)('A' + character - 1);
+				else if(character == 0x20)
+					return "Space";
+				else if(character < 0x20 || character == 0x7F)//Other non-printable characters
+					return "0x" + character.ToString("X2");
+				else
+					return ((Char)character).ToString();
+			}
+
+			/// <summary>Get the display name of a virtual-key code using the keyboard layout of the calling thread</summary>
+			/// <param name="virtualKey">Virtual-key code from the <see cref="wAnsi"/> member</param>
+			/// <exception cref="Win32Exception">The virtual-key code can't be converted to a key name</exception>
+			/// <returns>Virtual key name</returns>
+			private static String GetVirtualKeyName(UInt16 virtualKey)
+			{
+				UInt32 scanCode = NativeMethods.MapVirtualKey(virtualKey, NativeMethods.MAPVK.VK_TO_VSC);
+				if(scanCode == 0)
+					throw new Win32Exception();
+
+				UInt32 lParam = scanCode << 16;
+				if(ACCELTABLEENTRY.IsExtendedKey(virtualKey))
+					lParam |= 1 << 24;//Without the extended-key flag GetKeyNameText returns numeric keypad names ("Num 4" instead of "Left")
+
+				StringBuilder result = new StringBuilder(KeyNameBufferLength);
+				if(NativeMethods.GetKeyNameText(lParam, result, KeyNameBufferLength) == 0)
+					throw new Win32Exception();
+
+				return result.ToString();
+			}
+
+			/// <summary>Checks whether the virtual key is located on the extended part of the keyboard (its scan code is prefixed with 0xE0)</summary>
+			/// <param name="virtualKey">Virtual-key code</param>
+			/// <returns>The key is an extended key</returns>
+			private static Boolean IsExtendedKey(UInt16 virtualKey)
+			{
+				switch(virtualKey)
+				{
+				case 0x03://VK_CANCEL (Break)
+				case 0x21://VK_PRIOR (Page Up)
+				case 0x22://VK_NEXT (Page Down)
+				case 0x23://VK_END
+				case 0x24://VK_HOME
+				case 0x25://VK_LEFT
+				case 0x26://VK_UP
+				case 0x27://VK_RIGHT
+				case 0x28://VK_DOWN
+				case 0x2D://VK_INSERT
+				case 0x2E://VK_DELETE
+				case 0x5B://VK_LWIN
+				case 0x5C://VK_RWIN
+				case 0x5D://VK_APPS
+				case 0x6F://VK_DIVIDE
+				case 0x90://VK_NUMLOCK
+				case 0xA3://VK_RCONTROL
+				case 0xA5://VK_RMENU
+					return true;
+				default://VK_BROWSER_BACK - VK_LAUNCH_APP2
+					return virtualKey >= 0xA6 && virtualKey <= 0xB7;
 				}
 			}
 		}
 
 		/// <summary>Describes keyboard accelerator characteristics</summary>
 		[Flags]
-		public enum AccelFlags : Int16
+		public enum AccelFlags : UInt16
 		{
 			/// <summary>The accelerator key is a virtual-key code</summary>
 			/// <remarks>If this flag is not specified, the accelerator key is assumed to specify an ASCII character code</remarks>
@@ -374,6 +470,7 @@ namespace AlphaOmega.Debug
 			/// <remarks>This flag applies only to virtual keys</remarks>
 			FALT = 0x10,
 			/// <summary>The entry is last in an accelerator table</summary>
+			/// <remarks>This flag is set by the resource compiler and is not available in the resource script</remarks>
 			Last = 0x80,
 		}
 
