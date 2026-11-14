@@ -28,6 +28,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>All binary values are stored in little-endian format (except for PackedLen items, which are used only as a count for the number of bytes to follow in a UTF8 string)</remarks>
 		public Byte[] Value => base.GetValue<Byte[]>(2);
 
+		private EnumTypeResolver EnumTypeResolver => this.Row.Table.Root.EnumTypeResolver;
+
 		/// <summary>Description of the fixed arguments for the constructor method</summary>
 		/// <remarks>
 		/// Their number and type is found by examining that constructor‘s row in the MethodDef table;
@@ -91,7 +93,16 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 			// FixedArg: Elem | SZARRAY NumElem Elem* (types are taken from the constructor signature)
 			foreach(MemberArgument arg in lArgs)
 			{
-				arg.Value = this.ReadValue(arg.Type.Type, arg.Type.IsArray, null, signature, ref offset, out String enumTypeName);
+				Cor.ELEMENT_TYPE argType = arg.Type.Type;
+				String declaredEnumTypeName = null;
+				if(argType == Cor.ELEMENT_TYPE.VALUETYPE)
+				{// Enum is the only value type allowed in the custom attribute constructor
+					declaredEnumTypeName = this.EnumTypeResolver.GetSerializedName(arg.Type.TypeDefOrRef);
+					if(declaredEnumTypeName != null)
+						argType = Cor.ELEMENT_TYPE.ENUM;
+				}
+
+				arg.Value = this.ReadValue(argType, arg.Type.IsArray, declaredEnumTypeName, signature, ref offset, out String enumTypeName);
 				arg.EnumType = enumTypeName;
 			}
 
@@ -197,7 +208,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				return this.ReadValue(boxedType.Type, boxedType.IsArray, boxedEnumTypeName, blob, ref offset, out enumTypeName);
 			case Cor.ELEMENT_TYPE.ENUM:
 				enumTypeName = declaredEnumTypeName;
-				return ReadPrimitive(this.FindEnumBaseType(declaredEnumTypeName), blob, ref offset);
+				return ReadPrimitive(this.EnumTypeResolver.GetUnderlyingType(declaredEnumTypeName), blob, ref offset);
 			default:
 				enumTypeName = null;
 				return ReadPrimitive(type, blob, ref offset);
@@ -207,26 +218,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <summary>Reads SerString: PackedLen + UTF8 bytes or 0xFF for null string</summary>
 		private static String ReadString(Byte[] blob, ref UInt32 offset)
 			=> (String)ReadPrimitive(Cor.ELEMENT_TYPE.STRING, blob, ref offset);
-
-		private Cor.ELEMENT_TYPE FindEnumBaseType(String enumTypeName)
-		{
-			if(enumTypeName.IndexOf(',') > -1)
-			{
-				//Enum stored as: {.NET Type} + {Property/Field name} + {EnumValue (Int32)} - We can get size of enum only from TypeDef otherwise we have to load external assembly...
-				//BUG: We can't read size of VALUETYPE if ENUM defined in external assembly
-				return Cor.ELEMENT_TYPE.I4;
-			} else
-			{
-				foreach(TypeDefRow typeDef in this.Row.Table.Root.TypeDef)
-					if(new TypeReader(typeDef).FullName == enumTypeName)
-					{
-						foreach(FieldRow field in typeDef.FieldList)
-							if(field.Name == "value__" && field.ReturnType.Type != Cor.ELEMENT_TYPE.VALUETYPE)
-								return field.ReturnType.Type;//TODO: We need to check field type related to the official docs
-					}
-				throw new NotSupportedException($"Valuetype for enum {enumTypeName} is required to read value for attribute argument value but it's not found");
-			}
-		}
 
 		/// <summary>Reads primitive value, string or serialized <see cref="System.Type"/> name</summary>
 		private static Object ReadPrimitive(Cor.ELEMENT_TYPE type, Byte[] value, ref UInt32 offset)

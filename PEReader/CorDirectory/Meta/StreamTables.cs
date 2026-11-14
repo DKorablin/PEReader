@@ -11,6 +11,11 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		private UInt32[] _totalRowsCount;
 		private Cor.STREAM_TABLE_HEADER? _streamTableHeader;
 		private Dictionary<Cor.MetaTableType, MetaTable> _tables;
+		private Reader.EnumTypeResolver _enumTypeResolver;
+
+		/// <summary>Resolver of enum underlying types used to read custom attribute values</summary>
+		internal Reader.EnumTypeResolver EnumTypeResolver
+			=> this._enumTypeResolver ?? (this._enumTypeResolver = new Reader.EnumTypeResolver(this));
 
 		/// <summary>Table with type information</summary>
 		/// <param name="tableType">Table type</param>
