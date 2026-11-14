@@ -1656,12 +1656,14 @@ namespace AlphaOmega.Debug
 			}
 
 			/// <summary>Type of resource encoding</summary>
-			public enum ResourceEncodingType : Int16
+			public enum ResourceEncodingType : UInt16
 			{
 				/// <summary>ANSI encoding</summary>
 				Ansi = 0,
 				/// <summary>Unicode encoding</summary>
 				Unicode = 1,
+				/// <summary>UTF-8 encoding (MESSAGE_RESOURCE_UTF8)</summary>
+				Utf8 = 2,
 			}
 		}
 
