@@ -9,6 +9,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	[DefaultProperty(nameof(NumberOfBlocks))]
 	public class ResourceMessageTable : ResourceBase, IEnumerable<ResourceMessageTable.MessageResourceEntry>
 	{
+		private UInt32? _numberOfBlocks;
+
 		/// <summary>Message descriptor</summary>
 		public struct MessageResourceEntry
 		{
@@ -20,7 +22,10 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		}
 
 		/// <summary>Each block contains array of messages</summary>
-		public UInt32 NumberOfBlocks => PinnedBufferReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0);
+		public UInt32 NumberOfBlocks
+		{
+			get => this._numberOfBlocks ?? (this._numberOfBlocks = PinnedBufferReader.BytesToStructure<UInt32>(base.Directory.GetData(), 0)).Value;
+		}
 
 		/// <summary>Create instance of message table resource class</summary>
 		/// <param name="directory">Resource directory</param>
@@ -38,10 +43,8 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 
 		private IEnumerable<WinNT.Resource.MESSAGE_RESOURCE_BLOCK> GetMessageBlocks(PinnedBufferReader reader)
 		{
-			UInt32 numberOfBlocks = this.NumberOfBlocks;
-
 			UInt32 padding = sizeof(UInt32);//Skipping NumberOfBlocks size
-			for(Int32 loop = 0; loop < numberOfBlocks; loop++)
+			for(Int32 loop = 0; loop < this.NumberOfBlocks; loop++)
 				yield return reader.BytesToStructure<WinNT.Resource.MESSAGE_RESOURCE_BLOCK>(ref padding);
 		}
 
@@ -108,19 +111,9 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 		private System.Text.Encoding GetAnsiEncoding()
 		{
 			UInt32 codePage = base.Directory.DataEntry.Value.CodePage;
-			if(codePage == 0)
-				return System.Text.Encoding.Default;
-
-			try
-			{
-				return System.Text.Encoding.GetEncoding((Int32)codePage);
-			} catch(ArgumentException)
-			{//Invalid code page
-				return System.Text.Encoding.Default;
-			} catch(NotSupportedException)
-			{//TODO: Code page is not installed
-				return System.Text.Encoding.Default;
-			}
+			return codePage == 0
+				? System.Text.Encoding.Default
+				: System.Text.Encoding.GetEncoding((Int32)codePage);
 		}
 
 		/// <summary>Get all messages from resource directory</summary>
