@@ -681,13 +681,18 @@ namespace AlphaOmega.Debug
 					this._console.ConsoleWriteMembers(info.FileHeader);
 
 					foreach(var section in info.Sections)
-						this._console.ConsoleWriteMembers(section);
-
-					foreach(var symbol in info.Symbols)
 					{
+						Console.WriteLine("Section: " + info.GetSectionName(section));
+						this._console.ConsoleWriteMembers(section);
+					}
+
+					var symbols = info.Symbols;
+					for(Int32 loop = 0; loop < symbols.Length; loop++)
+					{
+						var symbol = symbols[loop];
+						Console.WriteLine("Symbol: " + info.GetSymbolName(symbol));
 						this._console.ConsoleWriteMembers(symbol);
-						/*if(symbol.Name.Short == 0 && symbol.Name.Long != 0)
-							Console.WriteLine(info.StringTable[symbol.Name.Long]);*/
+						loop += symbol.NumberOfAuxSymbols;// Skip auxiliary records
 					}
 
 					foreach(var str in info.StringTable)

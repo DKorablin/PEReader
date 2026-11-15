@@ -861,63 +861,60 @@ namespace AlphaOmega.Debug
 			public Boolean IsValid => Enum.IsDefined(typeof(IMAGE_FILE_MACHINE), this.Machine);
 		}
 
-		/// <summary>obj symbol table structure</summary>
+		/// <summary>COFF symbol table record (IMAGE_SYMBOL)</summary>
+		/// <remarks>Each record is 18 bytes. A record may be followed by <see cref="NumberOfAuxSymbols"/> auxiliary records of the same size</remarks>
 		[StructLayout(LayoutKind.Explicit, Size = 18, Pack = 1)]
 		[DebuggerDisplay("ShortName={SymbolTabeShortName}")]
 		public struct IMAGE_COFF_SYMBOL
 		{//http://research.microsoft.com/en-us/um/redmond/projects/invisible/include/loaders/pe_image.h.htm
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Symbol name represented as two 32-bit values</summary>
 			[StructLayout(LayoutKind.Explicit)]
 			public struct NameStruct
 			{
-				/// <summary>banana banana banana</summary>
+				/// <summary>Zero if the name is longer than 8 bytes and stored in the string table; otherwise the first 4 bytes of the short name</summary>
 				[FieldOffset(0)]
 				public UInt32 Short;
 
-				/// <summary>banana banana banana</summary>
+				/// <summary>Byte offset into the string table (counted from the start of the table, including its 4-byte size field) if <see cref="Short"/> is zero</summary>
 				[FieldOffset(4)]
 				public UInt32 Long;
 			}
 
-			/*/// <summary>Short name</summary>
-			[FieldOffset(0)]
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-			public Char[] ShortName;*/
-
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 1 of the short name</summary>
 			[FieldOffset(0)]
 			public Byte SN1;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 2 of the short name</summary>
 			[FieldOffset(1)]
 			public Byte SN2;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 3 of the short name</summary>
 			[FieldOffset(2)]
 			public Byte SN3;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 4 of the short name</summary>
 			[FieldOffset(3)]
 			public Byte SN4;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 5 of the short name</summary>
 			[FieldOffset(4)]
 			public Byte SN5;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 6 of the short name</summary>
 			[FieldOffset(5)]
 			public Byte SN6;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 7 of the short name</summary>
 			[FieldOffset(6)]
 			public Byte SN7;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Byte 8 of the short name</summary>
 			[FieldOffset(7)]
 			public Byte SN8;
 
-			/// <summary>banana banana banana</summary>
+			/// <summary>Symbol name as a short/long name union</summary>
+			/// <remarks>If <see cref="NameStruct.Short"/> is zero the name is stored in the string table at <see cref="NameStruct.Long"/></remarks>
 			[FieldOffset(0)]
 			public NameStruct Name;
 
@@ -930,15 +927,15 @@ namespace AlphaOmega.Debug
 				PUINT8  LongName[2];
 			} N;*/
 
-			/// <summary>value</summary>
+			/// <summary>Value associated with the symbol. Its meaning depends on <see cref="SectionNumber"/> and <see cref="StorageClass"/>; typically it is the relocatable address</summary>
 			[FieldOffset(8)]
 			public UInt32 Value;
 
-			/// <summary>Section number</summary>
+			/// <summary>One-based index into the section table, or one of the special <see cref="IMAGE_SYM"/> values</summary>
 			[FieldOffset(12)]
 			public IMAGE_SYM SectionNumber;
 
-			/// <summary>Type</summary>
+			/// <summary>Symbol type</summary>
 			[FieldOffset(14)]
 			public IMAGE_SYM_TYPE Type;
 
@@ -946,29 +943,32 @@ namespace AlphaOmega.Debug
 			[FieldOffset(16)]
 			public IMAGE_SYM_CLASS StorageClass;
 
-			/// <summary>Number of aux symbols</summary>
+			/// <summary>Number of auxiliary symbol table records that follow this record</summary>
 			[FieldOffset(17)]
 			public Byte NumberOfAuxSymbols;
 
-			/// <summary>
-			/// The ASCII name of the section.
-			/// A section name is not guaranteed to be null-terminated.
-			/// If you specify a section name longer than eight characters, the linker truncates it to eight characters in the executable.
-			/// A mechanism exists for allowing longer section names in OBJ files.
-			/// Section names often start with a period, but this is not a requirement.
-			/// Section names with a $ in the name get special treatment from the linker.
-			/// Sections with identical names prior to the $ character are merged.
-			/// The characters following the $ provide an alphabetic ordering for how the merged sections appear in the final section.
-			/// There's quite a bit more to the subject of sections with $ in the name and how they're combined, but the details are outside the scope of this article.
-			/// </summary>
-			public String SymbolTabeShortName => Encoding.ASCII.GetString(new Byte[] { this.SN1, this.SN2, this.SN3, this.SN4, this.SN5, this.SN6, this.SN7, this.SN8 });
+			/// <summary>Short symbol name (up to 8 bytes) without trailing null padding</summary>
+			/// <remarks>
+			/// Returns an empty string if the name is stored in the string table (<see cref="NameStruct.Short"/> is zero).
+			/// Use <see cref="ObjFile.GetSymbolName"/> to resolve both short and long names.
+			/// </remarks>
+			public String SymbolTabeShortName
+			{
+				get
+				{
+					Byte[] name = new Byte[] { this.SN1, this.SN2, this.SN3, this.SN4, this.SN5, this.SN6, this.SN7, this.SN8 };
+					Int32 length = Array.IndexOf<Byte>(name, 0);
+					return Encoding.UTF8.GetString(name, 0, length < 0 ? name.Length : length);
+				}
+			}
 		}
 
-		/// <summary>Banana banana banana</summary>
+		/// <summary>Legacy auxiliary symbol record (IMAGE_AUX_SYMBOL.Sym)</summary>
+		/// <remarks>The layout of an auxiliary record depends on the storage class and type of the symbol it follows. This structure describes the generic symbol/function format</remarks>
 		[StructLayout(LayoutKind.Explicit, Pack = 1)]
 		public struct IMAGE_AUX_SYMBOL
 		{
-			/// <summary>Banana banana banana</summary>
+			/// <summary>Symbol table index of the corresponding struct tag (or .bf record for a function definition)</summary>
 			[FieldOffset(0)]
 			public UInt32 TagIndex;
 			/*union {
@@ -979,7 +979,7 @@ namespace AlphaOmega.Debug
 			UINT32    TotalSize;
 			} Misc;*/
 			
-			/// <summary>Banana banana banana</summary>
+			/// <summary>Total size of the function or object, or declaration line number (low word) and struct/union/enum size (high word)</summary>
 			[FieldOffset(4)]
 			public UInt32 TotalSize;
 			/*union {
@@ -992,12 +992,12 @@ namespace AlphaOmega.Debug
 				} Array;
 			} FcnAry;*/
 
-			/// <summary>Banana banana banana</summary>
+			/// <summary>Up to 4 array dimensions, or PointerToLinenumber (words 0-1) and PointerToNextFunction (words 2-3) for a function definition</summary>
 			[FieldOffset(8)]
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 			public UInt16[] Dimention;
 
-			/// <summary>Banana banana banana</summary>
+			/// <summary>Transfer vector index</summary>
 			[FieldOffset(16)]
 			public UInt16 TvIndex;
 		}
