@@ -18,6 +18,22 @@ namespace AlphaOmega.Debug
 		public Reader(ConsoleWriter console)
 			=> this._console = console;
 
+		private static String FormatResourceValue(Object value)
+		{
+			switch(value)
+			{
+			case null:
+				return "null";
+			case Byte[] bytes:
+				return $"Byte[{bytes.Length}]";
+			case String str:
+				str = str.Replace("\r", "\\r").Replace("\n", "\\n");
+				return str.Length > 80 ? $"\"{str.Substring(0, 80)}...\"" : $"\"{str}\"";
+			default:
+				return value.ToString();
+			}
+		}
+
 		public void ReadPeInfo2(String dll, Boolean showDllName)
 		{
 			if(showDllName)
@@ -190,22 +206,23 @@ namespace AlphaOmega.Debug
 					if(info.ComDescriptor != null)
 					{//.NET Framework & .NET
 						if(info.ComDescriptor.Resources != null)
-						{
-							if(info.ComDescriptor.Resources.Header.IsValid)
-							{
-								foreach(var item in info.ComDescriptor.Resources)
+							foreach(var resource in info.ComDescriptor.Resources)
+								try
 								{
-									this._console.WriteLine($"Resource Item: {item.Name}");
-									if(item.CanRead)
-										foreach(var row in item)
-											this._console.WriteLine($"\tResource row: {row.Name} {row.Type}");
-									else
+									this._console.WriteLine($"Resource Item: {resource.Name} ({resource.Flags}) Size: {resource.Data.Length}");
+									if(resource.CanRead)
+									{
+										this._console.WriteLine($"\tReader: {resource.ReaderType ?? "<none>"} Version: {resource.RuntimeHeader.Version}");
+										foreach(var row in resource)
+											this._console.WriteLine(row.IsPrimitive
+												? $"\tResource row: {row.Name} {row.Type} = {FormatResourceValue(row.Value)}"
+												: $"\tResource row: {row.Name} {row.Type} ({row.Data.Length} bytes serialized)");
+									} else
 										this._console.WriteLine("\t---Some object---");
+								} catch(System.IO.InvalidDataException exc)
+								{
+									this._console.ConsoleWriteError(exc, $"Corrupt managed resource {resource.Name}", true);
 								}
-							} else//TODO: AjaxControlToolkit.dll
-								this._console.ConsoleWriteError(true,
-									$"INVALID. MetaData Address: 0x{info.ComDescriptor.MetaData.Directory.VirtualAddress:X} Resources Address: 0x{info.ComDescriptor.Resources.Directory.VirtualAddress:X}");
-						}
 
 						var meta = info.ComDescriptor.MetaData;
 						this._console.ConsoleWriteMembers("MetaData", meta.Header.Value);

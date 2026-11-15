@@ -157,13 +157,15 @@ if(com != null)
         }
     }
 
-    // Embedded managed resources (.resources)
-    if(com.Resources != null && com.Resources.Header.IsValid)
+    // Embedded managed resources. Any file can be embedded; .resources files can be enumerated.
+    // Values are decoded without deserialization (System.Resources.Extensions files are supported as well)
+    if(com.Resources != null)
         foreach(var resource in com.Resources)
-            using(resource)
-                if(resource.CanRead)
-                    foreach(var item in resource)
-                        Console.WriteLine($"{resource.Name}: {item.Name} ({item.Type})");
+            if(resource.CanRead)
+                foreach(var item in resource)
+                    Console.WriteLine($"{resource.Name}: {item.Name} ({item.Type}) = {(item.IsPrimitive ? item.Value : "<serialized>")}");
+            else
+                Console.WriteLine($"{resource.Name}: {resource.Data.Length} bytes");
 }
 ```
 Heaps are available via `MetaData.StringHeap`, `USHeap`, `GuidHeap` and `BlobHeap`; any table can also be accessed by type with `StreamTables[Cor.MetaTableType.XXX]`.

@@ -94,38 +94,85 @@ namespace AlphaOmega.Debug
 			public COR_VTABLE Type;
 		}
 
-		/// <summary>Managed resources header</summary>
+		/// <summary>Resource manager header at the beginning of each .resources file</summary>
+		/// <remarks>
+		/// For <see cref="HeaderVersionNumber"/> == 1 the header is followed by two length-prefixed UTF-8 strings:
+		/// the reader type and the resource set type.
+		/// </remarks>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ResourceManagerHeader
 		{
 			/// <summary>Constant magic number value</summary>
 			public const UInt32 MagicNumberConst = 0xBEEFCACE;
-			/// <summary>Unknown</summary>
-			public UInt32 Unknown;
 			/// <summary>Magic Number (0xBEEFCACE)</summary>
 			public UInt32 MagicNumber;
 			/// <summary>Resource Manager header version</summary>
 			public UInt32 HeaderVersionNumber;
-			/// <summary>Num bytes to skip from here to get past this header</summary>
+			/// <summary>Number of bytes to skip from here to get past the reader type and resource set type strings</summary>
 			public UInt32 SizeOfReaderType;
-			//[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
-			//public String ReaderType;
 			/// <summary>Header is valid</summary>
-			public Boolean IsValid { get { return this.MagicNumber == ResourceManagerHeader.MagicNumberConst; } }
-			/// <summary>Magin number as string</summary>
-			public String MagicNumberStr { get { return BitConverter.ToString(BitConverter.GetBytes(this.MagicNumber)); } }
+			public Boolean IsValid => this.MagicNumber == ResourceManagerHeader.MagicNumberConst;
+			/// <summary>Magic number as string</summary>
+			public String MagicNumberStr => BitConverter.ToString(BitConverter.GetBytes(this.MagicNumber));
 		}
 
-		/// <summary>Managed resources header</summary>
+		/// <summary>Runtime resource set header that follows the <see cref="ResourceManagerHeader"/> and reader type strings</summary>
 		[StructLayout(LayoutKind.Sequential)]
 		public struct ResourceSetHeader
 		{
-			/// <summary>Resource set header version</summary>
+			/// <summary>Resource set header version (1 or 2)</summary>
 			public UInt32 Version;
 			/// <summary>Number of Resources</summary>
 			public UInt32 NumberOfResources;
 			/// <summary>Number of types</summary>
 			public UInt32 NumberOfTypes;
+		}
+
+		/// <summary>Type code of the resource value stored in .resources file (Resource set version 2)</summary>
+		public enum ResourceTypeCode
+		{
+			/// <summary>Null reference</summary>
+			Null = 0x00,
+			/// <summary><see cref="System.String"/></summary>
+			String = 0x01,
+			/// <summary><see cref="System.Boolean"/></summary>
+			Boolean = 0x02,
+			/// <summary><see cref="System.Char"/></summary>
+			Char = 0x03,
+			/// <summary><see cref="System.Byte"/></summary>
+			Byte = 0x04,
+			/// <summary><see cref="System.SByte"/></summary>
+			SByte = 0x05,
+			/// <summary><see cref="System.Int16"/></summary>
+			Int16 = 0x06,
+			/// <summary><see cref="System.UInt16"/></summary>
+			UInt16 = 0x07,
+			/// <summary><see cref="System.Int32"/></summary>
+			Int32 = 0x08,
+			/// <summary><see cref="System.UInt32"/></summary>
+			UInt32 = 0x09,
+			/// <summary><see cref="System.Int64"/></summary>
+			Int64 = 0x0A,
+			/// <summary><see cref="System.UInt64"/></summary>
+			UInt64 = 0x0B,
+			/// <summary><see cref="System.Single"/></summary>
+			Single = 0x0C,
+			/// <summary><see cref="System.Double"/></summary>
+			Double = 0x0D,
+			/// <summary><see cref="System.Decimal"/></summary>
+			Decimal = 0x0E,
+			/// <summary><see cref="System.DateTime"/></summary>
+			DateTime = 0x0F,
+			/// <summary><see cref="System.TimeSpan"/></summary>
+			TimeSpan = 0x10,
+			/// <summary>Last primitive type code</summary>
+			LastPrimitive = TimeSpan,
+			/// <summary>Array of bytes</summary>
+			ByteArray = 0x20,
+			/// <summary>Stream (<see cref="System.IO.MemoryStream"/> or <see cref="System.IO.UnmanagedMemoryStream"/>)</summary>
+			Stream = 0x21,
+			/// <summary>Start of user types. (TypeCode - StartOfUserTypes) is an index in the type table</summary>
+			StartOfUserTypes = 0x40,
 		}
 
 		/// <summary>Type of the entries</summary>
