@@ -170,6 +170,33 @@ if(com != null)
 ```
 Heaps are available via `MetaData.StringHeap`, `USHeap`, `GuidHeap` and `BlobHeap`; any table can also be accessed by type with `StreamTables[Cor.MetaTableType.XXX]`.
 
+### Resolving referenced assemblies
+Some metadata can only be read correctly with the help of another assembly. For example, the size of an enum value in a custom attribute is defined by the assembly that declares the enum (`[SecurityRules(SecurityRuleSet.Level1)]` stores one byte, because `SecurityRuleSet` is a `byte` enum declared in `System.Private.CoreLib`).
+Resolution is **off by default**: no other files are opened, and enums declared in other assemblies are read as `Int32`. Turn it on with `PEReaderOptions`:
+
+```csharp
+using AlphaOmega.Debug.CorDirectory.Meta.Reader;
+
+// Built-in resolver, owned and disposed by the PEFile
+var options = new PEReaderOptions { ResolveAssemblies = true };
+using(var file = new PEFile(path, StreamLoader.FromFile(path), options))
+    foreach(var attribute in file.ComDescriptor.MetaData.StreamTables.CustomAttribute)
+        foreach(var arg in attribute.FixedArgs)
+            Console.WriteLine($"{arg.EnumType ?? arg.Type.ToString()} = {arg.Value}");
+
+// Shared resolver: caches referenced assemblies across many files. Owned and disposed by the caller
+using(var resolver = new AssemblyResolver())
+{
+    var shared = new PEReaderOptions { ResolveAssemblies = true, AssemblyResolver = resolver };
+    foreach(var p in files)
+        using(var file = new PEFile(p, StreamLoader.FromFile(p), shared)) { /* … */ }
+}
+```
+- The built-in `AssemblyResolver` probes the folder of the requesting file, then installed .NET shared frameworks (`dotnet/shared/<framework>/<version>`, newest first). It matches name, culture and public key token, accepts the same or a newer version, and follows type forwarders (`System.Runtime` → `System.Private.CoreLib`).
+- Custom lookup (GAC, package cache, in-memory images): implement `IAssemblyResolver`, or derive from `AssemblyResolver` and override `GetProbingPaths`, `IsMatch` or `Open`, then pass it in `PEReaderOptions.AssemblyResolver`.
+- `ResolveAssemblies = false` turns resolution off even when a resolver is set.
+- `TypeRefReader.TypeDef` and `AssemblyRefReader.File` use the same resolver.
+
 ### Reading COFF object files (.obj)
 ```csharp
 using(ObjFile obj = new ObjFile(StreamLoader.FromFile(@"C:\build\module.obj")))

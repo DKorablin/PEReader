@@ -1,4 +1,5 @@
 ﻿using System;
+using AlphaOmega.Debug.CorDirectory.Meta.Reader;
 using AlphaOmega.Debug.NTDirectory;
 using AlphaOmega.Debug.PESection;
 
@@ -26,6 +27,10 @@ namespace AlphaOmega.Debug
 		private ExceptionTable _exceptionTable;
 		private Iat _iat;
 		private Tls _tls;
+
+		private readonly Boolean _resolveAssemblies;
+		private readonly IAssemblyResolver _customResolver;
+		private AssemblyResolver _ownedResolver;
 		#endregion Fields
 		#region Properties
 		/// <summary>File source</summary>
@@ -119,15 +124,40 @@ namespace AlphaOmega.Debug
 		/// <summary>Thread local storage directory</summary>
 		public Tls Tls
 			=> this._tls ?? (this._tls = new Tls(this));
+
+		/// <summary>Resolver used to read metadata of referenced assemblies</summary>
+		/// <remarks>
+		/// <c>null</c> when <see cref="PEReaderOptions.ResolveAssemblies"/> is disabled.
+		/// Otherwise the custom <see cref="PEReaderOptions.AssemblyResolver"/> or the built-in <see cref="CorDirectory.Meta.Reader.AssemblyResolver"/> owned by this file.
+		/// </remarks>
+		public IAssemblyResolver AssemblyResolver
+		{
+			get
+			{
+				if(!this._resolveAssemblies || this._disposed)
+					return null;
+
+				return this._customResolver
+					?? this._ownedResolver
+					?? (this._ownedResolver = new AssemblyResolver());
+			}
+		}
 		#endregion Properties
 
 		/// <summary>Create instance and specify image loader instance</summary>
 		/// <param name="source">Source of the module</param>
 		/// <param name="loader">PE file loader</param>
-		public PEFile(String source, IImageLoader loader)
+		/// <param name="options">Reading options. Referenced assemblies are not resolved if options are not specified</param>
+		public PEFile(String source, IImageLoader loader, PEReaderOptions options = null)
 		{
 			this.Source = source ?? throw new ArgumentNullException(nameof(source));
 			this.Header = new PEHeader(loader);
+
+			if(options != null)
+			{
+				this._resolveAssemblies = options.ResolveAssemblies;
+				this._customResolver = options.AssemblyResolver;
+			}
 		}
 
 		/// <summary>Close loader</summary>
@@ -148,6 +178,9 @@ namespace AlphaOmega.Debug
 			{//There is no finalizer: loaders protect their own unmanaged resources (file handles, loaded modules) with SafeHandle
 				this.Header?.Dispose();
 				this.Header = null;
+
+				this._ownedResolver?.Dispose();//Custom resolver is owned by the caller
+				this._ownedResolver = null;
 			}
 			this._disposed = true;
 		}

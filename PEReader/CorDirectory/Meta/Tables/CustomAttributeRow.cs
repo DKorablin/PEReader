@@ -28,7 +28,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 		/// <remarks>All binary values are stored in little-endian format (except for PackedLen items, which are used only as a count for the number of bytes to follow in a UTF8 string)</remarks>
 		public Byte[] Value => base.GetValue<Byte[]>(2);
 
-		private EnumTypeResolver EnumTypeResolver => this.Row.Table.Root.EnumTypeResolver;
+		private TypeResolver TypeResolver => this.Row.Table.Root.TypeResolver;
 
 		/// <summary>Description of the fixed arguments for the constructor method</summary>
 		/// <remarks>
@@ -97,7 +97,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				String declaredEnumTypeName = null;
 				if(argType == Cor.ELEMENT_TYPE.VALUETYPE)
 				{// Enum is the only value type allowed in the custom attribute constructor
-					declaredEnumTypeName = this.EnumTypeResolver.GetSerializedName(arg.Type.TypeDefOrRef);
+					declaredEnumTypeName = this.TypeResolver.GetSerializedName(arg.Type.TypeDefOrRef);
 					if(declaredEnumTypeName != null)
 						argType = Cor.ELEMENT_TYPE.ENUM;
 				}
@@ -211,7 +211,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 				return this.ReadValue(boxedType.Type, boxedType.IsArray, boxedEnumTypeName, blob, ref offset, out enumTypeName);
 			case Cor.ELEMENT_TYPE.ENUM:
 				enumTypeName = declaredEnumTypeName;
-				return ReadPrimitive(this.EnumTypeResolver.GetUnderlyingType(declaredEnumTypeName), blob, ref offset);
+				return ReadPrimitive(this.TypeResolver.GetEnumUnderlyingType(declaredEnumTypeName), blob, ref offset);
 			default:
 				enumTypeName = null;
 				return ReadPrimitive(type, blob, ref offset);

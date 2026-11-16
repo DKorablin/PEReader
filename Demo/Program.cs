@@ -5,6 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
+using AlphaOmega.Debug.CorDirectory.Meta.Reader;
 
 namespace AlphaOmega.Debug
 {
@@ -17,49 +18,54 @@ namespace AlphaOmega.Debug
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
 			ConsoleWriter writer = new ConsoleWriter(false);
-			Reader reader = new Reader(writer);
+			//One shared resolver caches referenced assemblies across all scanned files
+			AssemblyResolver resolver = new AssemblyResolver();
+			Reader reader = new Reader(writer, new PEReaderOptions() { ResolveAssemblies = true, AssemblyResolver = resolver, });
 			writer.StartThreadAsync(() =>
 			{
-				//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\symsrv.yes";
-				//String filePath = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
-				//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.exe";
-				//String filePath = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
-				//String filePath = @"C:\Windows\SysWOW64\jscript.dll";
-				//String filePath = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
-				//String filePath = @"C:\Visual Studio Projects\C++\SeQueL Explorer\bin\ManagedFlatbed.dll";
-				//TODO: Не правильно читается MSDOS файл. (Вылетает с ошибкой при поптыке чтения по адресу e_lfanew)
-				//String filePath = @"C:\Program Files\HOMM_3.5\Data\zvs\h3blade.exe";
-				//String filePath = @"C:\WINDOWS\WinSxS\x86_Microsoft.Tools.VisualCPlusPlus.Runtime-Libraries_6595b64144ccf1df_6.0.9792.0_x-ww_08a6620a\atl.dll";
-				//String filePath = @"C:\Visual Studio Projects\Tests\ConsoleApp2\bin\Debug\net7.0\ConsoleApp2.dll";
-				//String filePath = @"C:\Visual Studio Projects\Tests\EnumTestApp\EnumTestApp\bin\Debug\net7.0\ConsoleApp.bat.exe";
+				using(resolver)
+				{
+					//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\symsrv.yes";
+					//String filePath = @"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\Debug\TabPageSSL.obj";
+					//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.exe";
+					//String filePath = @"C:\Windows\Microsoft.NET\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll";
+					//String filePath = @"C:\Windows\SysWOW64\jscript.dll";
+					//String filePath = @"C:\WINDOWS\System32\Mpegc32f.dll";//TODO: Не получается прочитать PE файл через стандартный WinApi
+					//String filePath = @"C:\Visual Studio Projects\C++\SeQueL Explorer\bin\ManagedFlatbed.dll";
+					//TODO: Не правильно читается MSDOS файл. (Вылетает с ошибкой при поптыке чтения по адресу e_lfanew)
+					//String filePath = @"C:\Program Files\HOMM_3.5\Data\zvs\h3blade.exe";
+					//String filePath = @"C:\WINDOWS\WinSxS\x86_Microsoft.Tools.VisualCPlusPlus.Runtime-Libraries_6595b64144ccf1df_6.0.9792.0_x-ww_08a6620a\atl.dll";
+					//String filePath = @"C:\Visual Studio Projects\Tests\ConsoleApp2\bin\Debug\net7.0\ConsoleApp2.dll";
+					//String filePath = @"C:\Visual Studio Projects\Tests\EnumTestApp\EnumTestApp\bin\Debug\net7.0\ConsoleApp.bat.exe";
 
-				//TODO: INVALID. MetaData Address: 0x52463C Resources Address: 0x20780
-				//String filePath = @"C:\Visual Studio Projects\C#\Shared.Classes\AjaxControlToolkit.dll";
-				//TODO: INVALID. CustomAttribute enum value is stored in a external assebly and we don't know it's size...
-				//String filePath = @"C:\Program Files\IIS Express\Microsoft.VisualStudio.Telemetry.dll";
-				//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Terminal\cs\Microsoft.VisualStudio.Terminal.Implementation.resources.dll";
+					//TODO: INVALID. MetaData Address: 0x52463C Resources Address: 0x20780
+					//String filePath = @"C:\Visual Studio Projects\C#\Shared.Classes\AjaxControlToolkit.dll";
+					//TODO: INVALID. CustomAttribute enum value is stored in a external assebly and we don't know it's size...
+					//String filePath = @"C:\Program Files\IIS Express\Microsoft.VisualStudio.Telemetry.dll";
+					//String filePath = @"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\CommonExtensions\Microsoft\Terminal\cs\Microsoft.VisualStudio.Terminal.Implementation.resources.dll";
 
-				foreach(String filePath in EnumerateFiles(@"C:\Program Files"))
-					switch(Path.GetExtension(filePath.ToLowerInvariant()))
-					{
-					case ".dll":
-					case ".exe":
-						try
+					foreach(String filePath in EnumerateFiles(@"C:\Program Files"))
+						switch(Path.GetExtension(filePath.ToLowerInvariant()))
 						{
-							Console.Title = filePath;
-							//reader.ReadObjInfo(obj);
-							reader.ReadPeInfo2(filePath, true);
+						case ".dll":
+						case ".exe":
+							try
+							{
+								Console.Title = filePath;
+								//reader.ReadObjInfo(obj);
+								reader.ReadPeInfo2(filePath, true);
 
-						} catch(Win32Exception exc)
-						{
-							writer.ConsoleWriteError(exc, $"EXCEPTION IN FILE ({filePath})", true);
-						} catch(Exception exc)
-						{
-							exc.Data.Add(nameof(filePath), filePath);
-							throw;
+							} catch(Win32Exception exc)
+							{
+								writer.ConsoleWriteError(exc,filePath, $"EXCEPTION IN FILE", true);
+							} catch(Exception exc)
+							{
+								exc.Data.Add(nameof(filePath), filePath);
+								throw;
+							}
+							break;
 						}
-						break;
-					}
+				}
 
 				String[] EnumerateFiles(String path)
 				{

@@ -8,7 +8,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 {
 	/// <summary>Class reader based on strongly typed metadata <see cref="Cor.MetaTableType.TypeRef"/> table</summary>
 	[DebuggerDisplay(nameof(FullName) + " = {" + nameof(FullName) + "}")]
-	public class TypeRefReader : IDisposable
+	public class TypeRefReader
 	{
 		private TypeReader _typeDef;
 		private AssemblyRefReader _assemblyRef;
@@ -17,6 +17,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		public TypeRefRow TypeRef { get; }
 
 		/// <summary>Class from referenced assembly</summary>
+		/// <remarks>Requires <see cref="PEReaderOptions.ResolveAssemblies"/> for types declared in other assemblies. Type forwarders are followed.</remarks>
 		public TypeReader TypeDef
 		{
 			get => this._typeDef ?? (this._typeDef = new TypeReader(this.ReadDefRow()));
@@ -89,37 +90,27 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 					yield return row;
 		}
 
-		/// <summary>Reads <see cref="TypeDefRow"/> from referenced assembly</summary>
-		/// <exception cref="InvalidOperationException">Assembly reference not found</exception>
-		/// <exception cref="ArgumentException">Row not found</exception>
-		/// <exception cref="FileNotFoundException">Can't find assembly in the current path</exception>
-		/// <returns>Pointer to definition row from referenced assembly</returns>
+		/// <summary>Reads <see cref="TypeDefRow"/> from the current or referenced assembly</summary>
+		/// <exception cref="InvalidOperationException">Assembly resolution is disabled or the type is not found</exception>
+		/// <exception cref="FileNotFoundException">Can't find referenced assembly</exception>
+		/// <returns>Definition row from the current or referenced assembly</returns>
 		private TypeDefRow ReadDefRow()
 		{
-			_ = this.AssemblyRef ?? throw new InvalidOperationException($"{nameof(this.AssemblyRef)} not found for {this.FullName} type");
+			TypeResolver resolver = this.TypeRef.Row.Table.Root.TypeResolver;
+			String serializedName = resolver.GetSerializedName(this.TypeRef);
+			TypeDefRow result = resolver.ResolveTypeDef(serializedName);
+			if(result != null)
+				return result;
 
-			PEFile file = this.AssemblyRef.File
-				?? throw new FileNotFoundException($"Referenced assembly file not found. {nameof(this.AssemblyRef.SourceAssemblyPath)}:{this.AssemblyRef.SourceAssemblyPath}", this.AssemblyRef.AssemblyRef.AssemblyName.Name);
-			
-			var typeRefRow = this.TypeRef;
-			return file.ComDescriptor.MetaData.StreamTables.TypeDef.Single(p => p.TypeNamespace == typeRefRow.TypeNamespace && p.TypeName == typeRefRow.TypeName);
-		}
+			PEFile owner = resolver.Owner;
+			if(owner.AssemblyResolver == null)
+				throw new InvalidOperationException($"Type {serializedName} is declared in another assembly. Set {nameof(PEReaderOptions)}.{nameof(PEReaderOptions.ResolveAssemblies)} to resolve referenced assemblies");
 
-		#region IDisposable
-		/// <summary><see cref="IDisposable"/> pattern implementation to close <see cref="AssemblyRef"/> file</summary>
-		public void Dispose()
-		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+			AssemblyRefReader assemblyRef = this.AssemblyRef;
+			if(assemblyRef != null && assemblyRef.File == null)
+				throw new FileNotFoundException($"Referenced assembly file not found. {nameof(assemblyRef.SourceAssemblyPath)}:{assemblyRef.SourceAssemblyPath}", assemblyRef.AssemblyRef.Name);
 
-		/// <summary><see cref="IDisposable"/> pattern implementation</summary>
-		/// <param name="disposing">Is object disposing or called from destructor</param>
-		protected virtual void Dispose(Boolean disposing)
-		{
-			if(disposing)
-				this._assemblyRef?.Dispose();
+			throw new InvalidOperationException($"Type {serializedName} not found");
 		}
-		#endregion IDisposable
 	}
 }
