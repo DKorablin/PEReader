@@ -142,15 +142,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 
 		private PEFile GetOrOpen(String filePath)
 		{
-			String fullPath;
-			try
-			{
-				fullPath = Path.GetFullPath(filePath);
-			} catch(Exception)
-			{// Invalid path
-				return null;
-			}
-
+			String fullPath = Path.GetFullPath(filePath);
 			if(this._openedFiles.TryGetValue(fullPath, out PEFile result))
 				return result;
 			if(!File.Exists(fullPath))
@@ -170,7 +162,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			} catch(Exception)
 			{// Unreadable or broken file is skipped as not found
 				result?.Dispose();
-				result = null;
+				throw;
 			}
 
 			this._openedFiles[fullPath] = result;
@@ -183,33 +175,19 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			List<KeyValuePair<Version, String>> folders = new List<KeyValuePair<Version, String>>();
 			foreach(String root in this.GetDotNetRoots())
 			{
-				String sharedPath;
-				try
-				{
-					sharedPath = Path.GetFullPath(Path.Combine(root, "shared"));
-				} catch(Exception)
-				{
-					continue;
-				}
+				String sharedPath = Path.GetFullPath(Path.Combine(root, "shared"));
 
 				if(roots.Exists(r => String.Equals(r, sharedPath, StringComparison.OrdinalIgnoreCase)) || !Directory.Exists(sharedPath))
 					continue;
 				roots.Add(sharedPath);
 
-				try
-				{
-					foreach(String frameworkPath in Directory.GetDirectories(sharedPath))
-						foreach(String versionPath in Directory.GetDirectories(frameworkPath))
-						{
-							Version version = ParseFrameworkVersion(Path.GetFileName(versionPath));
-							if(version != null)
-								folders.Add(new KeyValuePair<Version, String>(version, versionPath));
-						}
-				} catch(UnauthorizedAccessException)
-				{
-				} catch(IOException)
-				{
-				}
+				foreach(String frameworkPath in Directory.GetDirectories(sharedPath))
+					foreach(String versionPath in Directory.GetDirectories(frameworkPath))
+					{
+						Version version = ParseFrameworkVersion(Path.GetFileName(versionPath));
+						if(version != null)
+							folders.Add(new KeyValuePair<Version, String>(version, versionPath));
+					}
 			}
 
 			folders.Sort((a, b) =>
@@ -231,13 +209,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			if(index >= 0)
 				folderName = folderName.Substring(0, index);
 
-			try
-			{
-				return new Version(folderName);
-			} catch(Exception)
-			{// Not a version folder
-				return null;
-			}
+			return new Version(folderName);
 		}
 
 		private static String GetDirectory(PEFile file)
@@ -246,16 +218,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			if(String.IsNullOrEmpty(source))
 				return null;
 
-			try
-			{
-				String result = Path.GetDirectoryName(Path.GetFullPath(source));
-				return String.IsNullOrEmpty(result) || !Directory.Exists(result)
-					? null
-					: result;
-			} catch(Exception)
-			{// Source is not a file path (memory image, etc.)
-				return null;
-			}
+			String result = Path.GetDirectoryName(Path.GetFullPath(source));
+			return String.IsNullOrEmpty(result) || !Directory.Exists(result)
+				? null
+				: result;
 		}
 
 		private static Byte[] GetPublicKeyToken(AssemblyName name)
@@ -275,20 +241,14 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			if(AreEqual(publicKey, EcmaPublicKey))
 				return EcmaPublicKeyToken;
 
-			try
-			{
-				Byte[] hash;
-				using(SHA1 sha1 = SHA1.Create())
-					hash = sha1.ComputeHash(publicKey);
+			Byte[] hash;
+			using(SHA1 sha1 = SHA1.Create())
+				hash = sha1.ComputeHash(publicKey);
 
-				Byte[] result = new Byte[8];
-				for(Int32 loop = 0; loop < result.Length; loop++)
-					result[loop] = hash[hash.Length - 1 - loop];
-				return result;
-			} catch(Exception)
-			{// SHA-1 is not available (FIPS policy, etc.)
-				return null;
-			}
+			Byte[] result = new Byte[8];
+			for(Int32 loop = 0; loop < result.Length; loop++)
+				result[loop] = hash[hash.Length - 1 - loop];
+			return result;
 		}
 
 		private static Boolean AreEqual(Byte[] a, Byte[] b)

@@ -171,7 +171,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 				return this.ResolveExternal(typeName, this.GetCoreLibraryReference(), 0);
 			}
 
-			return this.ResolveExternal(typeName, ParseAssemblyName(assemblyName), 0);
+			return this.ResolveExternal(typeName, new AssemblyName(assemblyName), 0);
 		}
 
 		/// <summary>Gets underlying type of the enum</summary>
@@ -345,19 +345,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <summary>Gets full assembly name of the reference or simple name if the reference is malformed</summary>
 		private static String GetAssemblyFullName(AssemblyRefRow assemblyRef)
 			=> GetAssemblyName(assemblyRef)?.FullName ?? assemblyRef.Name;
-
-		/// <summary>Parses assembly name from the serialized type name</summary>
-		/// <returns>Assembly name or null if the name is malformed</returns>
-		private static AssemblyName ParseAssemblyName(String assemblyName)
-		{
-			try
-			{
-				return new AssemblyName(assemblyName);
-			} catch(Exception)
-			{// ArgumentException, FileLoadException for malformed names
-				return null;
-			}
-		}
 
 		/// <summary>Splits serialized type name to type name and assembly name</summary>
 		/// <param name="serializedName">Serialized type name: <c>Namespace.Type[, AssemblyName[, Version=...]]</c></param>

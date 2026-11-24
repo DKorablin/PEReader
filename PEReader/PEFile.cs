@@ -147,8 +147,17 @@ namespace AlphaOmega.Debug
 		/// <summary>Create instance and specify image loader instance</summary>
 		/// <param name="source">Source of the module</param>
 		/// <param name="loader">PE file loader</param>
+		[Obsolete("This constructor is obsolete, please use .ctor(String, IIMageLoader, PEReaderOptions) instead", false)]
+		public PEFile(String source, IImageLoader loader)
+			: this(source, loader, null)
+		{
+		}
+
+		/// <summary>Create instance and specify image loader instance</summary>
+		/// <param name="source">Source of the module</param>
+		/// <param name="loader">PE file loader</param>
 		/// <param name="options">Reading options. Referenced assemblies are not resolved if options are not specified</param>
-		public PEFile(String source, IImageLoader loader, PEReaderOptions options = null)
+		public PEFile(String source, IImageLoader loader, PEReaderOptions options)
 		{
 			this.Source = source ?? throw new ArgumentNullException(nameof(source));
 			this.Header = new PEHeader(loader);
