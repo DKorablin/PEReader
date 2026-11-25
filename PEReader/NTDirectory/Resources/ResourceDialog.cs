@@ -1,110 +1,105 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace AlphaOmega.Debug.NTDirectory.Resources
 {
 	/// <summary>Dialog resource class</summary>
 	public class ResourceDialog : ResourceBase
 	{
+		/// <summary>Point size value that tells the system to use the message box font (NONCLIENTMETRICS.lfMessageFont) instead of the font described in the template</summary>
+		/// <remarks>When this value is set, the weight, italic, charset and typeface members are not present in the template</remarks>
+		private const UInt16 MessageBoxFontPointSize = 0x7FFF;
+
 		/// <summary>Create instance of dialog resource class</summary>
 		/// <param name="directory">Resource directory</param>
 		public ResourceDialog(ResourceDirectory directory)
 			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DIALOG) { }
 
 		/// <summary>Get dialog template in resource directory</summary>
-		/// <exception cref="NotImplementedException">Class type not implemented</exception>
 		/// <returns>Dialog template from directory</returns>
 		public DialogTemplate GetDialogTemplate()
 		{
-			UInt32 padding = 0;
-
-			DialogTemplate result;
 			using(PinnedBufferReader reader = base.CreateDataReader())
 			{
-				WinUser.DLGTEMPLATEEX template = reader.BytesToStructure<WinUser.DLGTEMPLATEEX>(0);
-				WinUser.DLGTEMPLATE templateOld;
-				if(template.IsValid)
-				{//Reading new window template
-					templateOld = new WinUser.DLGTEMPLATE();
-					padding = (UInt32)Marshal.SizeOf(typeof(WinUser.DLGTEMPLATEEX));
+				UInt32 padding = 0;
 
+				//DLGTEMPLATEEX starts with WORD dlgVer (1) followed by WORD signature (0xFFFF).
+				//In DLGTEMPLATE the same 4 bytes are the style DWORD. Checking only these 2 WORDs prevents reading
+				//the bigger DLGTEMPLATEEX header past the end of a small DLGTEMPLATE.
+				Boolean isExtended = reader.BytesToStructure<UInt16>(0) == 1
+					&& reader.BytesToStructure<UInt16>(sizeof(UInt16)) == 0xFFFF;
+
+				DialogTemplate result;
+				Boolean containsFont;
+				if(isExtended)
+				{//Reading extended dialog template
+					WinUser.DLGTEMPLATEEX template = reader.BytesToStructure<WinUser.DLGTEMPLATEEX>(ref padding);
+					containsFont = template.ContainsFont;
 					result = new DialogTemplate(template);
 				} else
-				{//Reading old window template
-					templateOld = reader.BytesToStructure<WinUser.DLGTEMPLATE>(ref padding);
-
-					result = new DialogTemplate(templateOld);
+				{//Reading standard dialog template
+					WinUser.DLGTEMPLATE template = reader.BytesToStructure<WinUser.DLGTEMPLATE>(ref padding);
+					containsFont = template.ContainsFont;
+					result = new DialogTemplate(template);
 				}
 
 				result.Menu = ResourceBase.GetSzOrInt(reader, ref padding);//Resource identifier or menu name
-				result.WindowName = ResourceBase.GetSzOrInt(reader, ref padding);//Window identifier or window class name
+				result.WindowClass = ResourceBase.GetSzOrInt(reader, ref padding);//Window class ordinal or window class name
 
 				if(reader.BytesToStructure<UInt16>(padding) == 0x0000)
 					padding += sizeof(UInt16);
-				else//Reading window header
+				else//Reading window title
 					result.Title = reader.BytesToStringUni(ref padding);
 
-				//Reading font information
-				if((template.IsValid && template.ContainsFont)
-					|| templateOld.ContainsFont)
+				//Reading font information (begins on the WORD boundary following the title, which Unicode strings always end on)
+				if(containsFont)
 				{
 					DialogFont font = new DialogFont()
 					{
 						FontSize = reader.BytesToStructure<UInt16>(ref padding),
 					};
-					if(template.IsValid)
-					{//Reading new dialog font
-						font.FontWeight = reader.BytesToStructure<UInt16>(ref padding);
 
-						font.Italic = reader[padding++];
-						font.CharSet = reader[padding++];
+					if(font.FontSize != MessageBoxFontPointSize)
+					{
+						if(isExtended)
+						{//Reading extended dialog font
+							font.FontWeight = reader.BytesToStructure<UInt16>(ref padding);
+
+							font.Italic = reader[padding++];
+							font.CharSet = reader[padding++];
+						}
+						font.TypeFace = reader.BytesToStringUni(ref padding);
 					}
-					font.TypeFace = reader.BytesToStringUni(ref padding);
 					result.Font = font;
-
-					//padding += (padding % 4 == 0) ? 4 - (padding % 4) : 0;//Align to DWORD
-					//padding += padding % sizeof(UInt32);//Align to DWORD
 				}
 
-				//Reading control elements following window handle
-				for(Int32 loop = 0;loop < result.Controls.Length;loop++)
+				//Reading control elements following the dialog header
+				for(Int32 loop = 0; loop < result.Controls.Length; loop++)
 				{
-					padding = NativeMethods.AlignToInt(padding);
-
-					UInt32 startTemplate = padding;
+					padding = NativeMethods.AlignToInt(padding);//Each DLGITEMTEMPLATE(EX) starts on a DWORD boundary
 
 					WinUser.DLGITEMTEMPLATEEX? controlEx = null;
 					WinUser.DLGITEMTEMPLATE? control = null;
 
-					if(template.IsValid)
+					if(isExtended)
 						controlEx = reader.BytesToStructure<WinUser.DLGITEMTEMPLATEEX>(ref padding);
 					else
 						control = reader.BytesToStructure<WinUser.DLGITEMTEMPLATE>(ref padding);
 
 					SzInt itemClass = ResourceBase.GetSzOrInt(reader, ref padding);
-
 					SzInt itemText = ResourceBase.GetSzOrInt(reader, ref padding);
 
-					Byte[] extraData;
-					UInt16 extraCount = reader.BytesToStructure<UInt16>(padding);
-					if(extraCount > 0)
-					{//TODO: Missing: +sizeof(UInt16)???
-						extraData = reader.GetBytes(padding, extraCount);
-						padding += extraCount;//Including size of extraCount
-					} else
-					{
-						extraData = new Byte[] { };
-						padding += sizeof(UInt16);
-					}
+					//Creation data: WORD size followed by that many bytes of data. The size does not include the size WORD itself
+					UInt16 extraCount = reader.BytesToStructure<UInt16>(ref padding);
+					Byte[] extraData = extraCount > 0
+						? reader.GetBytes(padding, extraCount)
+						: new Byte[] { };
+					padding += extraCount;
 
 					result.Controls[loop] = DialogItemTemplate.CreateDialogItem(control, controlEx, itemClass, itemText, extraData);
-
-					/*UInt32 align = (padding - startTemplate) % sizeof(UInt32);
-					if(align > 0)
-						padding += sizeof(UInt32) - align;//Align to 4 bytes. At the same time even if there is no alignment then 4 bytes still need to be added*/
 				}
+
+				return result;
 			}
-			return result;
 		}
 	}
 }

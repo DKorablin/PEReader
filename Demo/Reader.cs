@@ -14,16 +14,36 @@ namespace AlphaOmega.Debug
 	internal class Reader
 	{
 		private readonly ConsoleWriter _console;
+		private readonly PEReaderOptions _options;
 
-		public Reader(ConsoleWriter console)
-			=> this._console = console;
+		public Reader(ConsoleWriter console, PEReaderOptions options = null)
+		{
+			this._console = console;
+			this._options = options;
+		}
+
+		private static String FormatResourceValue(Object value)
+		{
+			switch(value)
+			{
+			case null:
+				return "null";
+			case Byte[] bytes:
+				return $"Byte[{bytes.Length}]";
+			case String str:
+				str = str.Replace("\r", "\\r").Replace("\n", "\\n");
+				return str.Length > 80 ? $"\"{str.Substring(0, 80)}...\"" : $"\"{str}\"";
+			default:
+				return value.ToString();
+			}
+		}
 
 		public void ReadPeInfo2(String dll, Boolean showDllName)
 		{
 			if(showDllName)
 				this._console.WriteLine($"Reading file: {dll}");
 
-			using(PEFile info = new PEFile(dll, StreamLoader.FromFile(dll)))
+			using(PEFile info = new PEFile(dll, StreamLoader.FromFile(dll), this._options))
 			{
 				if(info.Header.IsValid)//Проверка на валидность загруженного файла
 				{
@@ -125,7 +145,7 @@ namespace AlphaOmega.Debug
 												this._console.ConsoleWriteMembers(resBitmap.Header);
 											} catch(ArgumentOutOfRangeException exc)
 											{
-												this._console.ConsoleWriteError(exc, "ArgumentOutOfRangeException (Corrupt bitmap)", true);
+												this._console.ConsoleWriteError(exc, dll, "ArgumentOutOfRangeException (Corrupt bitmap)", true);
 											}
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_ICON:
@@ -150,7 +170,10 @@ namespace AlphaOmega.Debug
 											bytes.AddRange(PinnedBufferReader.StructureToArray<WinGdi.ICONDIRENTRY>(icoEntry));
 											bytes.AddRange(payload);
 											File.WriteAllBytes(@"C:\Visual Studio Projects\C++\DBaseTool\DBaseTool_src\res\RT_ICON.ico", bytes.ToArray());*/
-											this._console.ConsoleWriteMembers(resIcon.Header);
+											if(resIcon.IsPng)
+												this._console.ConsoleWriteMembers("PNG", resIcon.PngHeader.Value);
+											else
+												this._console.ConsoleWriteMembers(resIcon.Header.Value);
 											break;
 										case WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_DLGINIT:
 											var dlgInit = new AlphaOmega.Debug.NTDirectory.Resources.ResourceDialogInit(dir2);
@@ -164,15 +187,15 @@ namespace AlphaOmega.Debug
 												var template = dialog.GetDialogTemplate();
 												foreach(var ctrl in template.Controls)
 													if(ctrl.CX < 0 || ctrl.CY < 0 || ctrl.X < 0 || ctrl.Y < 0)
-														this._console.ConsoleWriteError(true, $"???Invalid position? ({template.Title}) CX: {ctrl.CX} CY: {ctrl.CY} X: {ctrl.X} Y: {ctrl.Y}");
+														this._console.ConsoleWriteError(true,"File Path: " + dll, $"???Invalid position? ({template.Title}) CX: {ctrl.CX} CY: {ctrl.CY} X: {ctrl.X} Y: {ctrl.Y}");
 													else
 														this._console.ConsoleWriteMembers(ctrl);
 											} catch(IndexOutOfRangeException exc)
 											{
-												this._console.ConsoleWriteError(exc, "IndexOutOfRangeException (Corrupt dialog)", true);
+												this._console.ConsoleWriteError(exc, dll, "IndexOutOfRangeException (Corrupt dialog)", true);
 											} catch(ArgumentException exc)
 											{
-												this._console.ConsoleWriteError(exc, "ArgumentException (Corrupt dialog)", true);
+												this._console.ConsoleWriteError(exc, dll, "ArgumentException (Corrupt dialog)", true);
 											}
 											break;
 										}
@@ -187,22 +210,23 @@ namespace AlphaOmega.Debug
 					if(info.ComDescriptor != null)
 					{//.NET Framework & .NET
 						if(info.ComDescriptor.Resources != null)
-						{
-							if(info.ComDescriptor.Resources.Header.IsValid)
-							{
-								foreach(var item in info.ComDescriptor.Resources)
+							foreach(var resource in info.ComDescriptor.Resources)
+								try
 								{
-									this._console.WriteLine($"Resource Item: {item.Name}");
-									if(item.CanRead)
-										foreach(var row in item)
-											this._console.WriteLine($"\tResource row: {row.Name} {row.Type}");
-									else
+									this._console.WriteLine($"Resource Item: {resource.Name} ({resource.Flags}) Size: {resource.Data.Length}");
+									if(resource.CanRead)
+									{
+										this._console.WriteLine($"\tReader: {resource.ReaderType ?? "<none>"} Version: {resource.RuntimeHeader.Version}");
+										foreach(var row in resource)
+											this._console.WriteLine(row.IsPrimitive
+												? $"\tResource row: {row.Name} {row.Type} = {FormatResourceValue(row.Value)}"
+												: $"\tResource row: {row.Name} {row.Type} ({row.Data.Length} bytes serialized)");
+									} else
 										this._console.WriteLine("\t---Some object---");
+								} catch(System.IO.InvalidDataException exc)
+								{
+									this._console.ConsoleWriteError(exc, dll, $"Corrupt managed resource {resource.Name}", true);
 								}
-							} else//TODO: AjaxControlToolkit.dll
-								this._console.ConsoleWriteError(true,
-									$"INVALID. MetaData Address: 0x{info.ComDescriptor.MetaData.Directory.VirtualAddress:X} Resources Address: 0x{info.ComDescriptor.Resources.Directory.VirtualAddress:X}");
-						}
 
 						var meta = info.ComDescriptor.MetaData;
 						this._console.ConsoleWriteMembers("MetaData", meta.Header.Value);
@@ -243,7 +267,7 @@ namespace AlphaOmega.Debug
 														this._console.WriteLine("{\r\n" + String.Join(Environment.NewLine, arguments.ToArray()) + "\r\n}");
 												} catch(InvalidOperationException exc)
 												{
-													this._console.ConsoleWriteError(exc, "Due to the enum type stored in the shared assembly", true);
+													this._console.ConsoleWriteError(exc, dll, "Due to the enum type stored in the shared assembly", true);
 												}
 												break;
 											}
@@ -481,7 +505,7 @@ namespace AlphaOmega.Debug
 													}
 												} catch(Exception exc)
 												{
-													this._console.ConsoleWriteError(exc, "Error reading method body");
+													this._console.ConsoleWriteError(exc, dll, "Error reading method body");
 												}
 												break;
 											}
@@ -536,7 +560,7 @@ namespace AlphaOmega.Debug
 								this._console.ConsoleWriteMembers(entry);
 						} catch(ArgumentOutOfRangeException exc)
 						{
-							this._console.ConsoleWriteError(exc, "Exception", true);
+							this._console.ConsoleWriteError(exc, dll, "Exception", true);
 						}
 						this._console.PauseOnDir();
 					}
@@ -564,7 +588,7 @@ namespace AlphaOmega.Debug
 							this._console.WriteLine($"Certificate: {(x509 == null ? "NULL" : x509.ToString())}");
 						} catch(ArgumentOutOfRangeException exc)
 						{
-							this._console.ConsoleWriteError(exc, "OverflowException (Corrupted section)", true);
+							this._console.ConsoleWriteError(exc, dll, "OverflowException (Corrupted section)", true);
 						}
 						this._console.PauseOnDir();
 					}
@@ -597,19 +621,25 @@ namespace AlphaOmega.Debug
 					}
 
 					if(!info.Debug.IsEmpty)
-					{//В файле есть инормация для дебага
+					{//The debug info is available
 						this._console.WriteLine("===Debug info===");
-						foreach(var debug in info.Debug)
-							this._console.ConsoleWriteMembers(debug);
-						var pdb7 = info.Debug.Pdb7CodeView;
-						if(pdb7.HasValue)
-							this._console.ConsoleWriteMembers(pdb7.Value);
-						var pdb2 = info.Debug.Pdb2CodeView;
-						if(pdb2.HasValue)
-							this._console.ConsoleWriteMembers(pdb2.Value);
-						var misc = info.Debug.Misc;
-						if(misc.HasValue)
-							this._console.ConsoleWriteMembers(misc.Value);
+						try
+						{
+							foreach(var debug in info.Debug)
+								this._console.ConsoleWriteMembers(debug);
+							var pdb7 = info.Debug.Pdb7CodeView;
+							if(pdb7.HasValue)
+								this._console.ConsoleWriteMembers(pdb7.Value);
+							var pdb2 = info.Debug.Pdb2CodeView;
+							if(pdb2.HasValue)
+								this._console.ConsoleWriteMembers(pdb2.Value);
+							var misc = info.Debug.Misc;
+							if(misc.HasValue)
+								this._console.ConsoleWriteMembers(misc.Value);
+						} catch(ArgumentOutOfRangeException exc)
+						{
+							this._console.ConsoleWriteError(exc, dll, "Corrupted debug directory", true);
+						}
 						this._console.PauseOnDir();
 					}
 
@@ -672,13 +702,18 @@ namespace AlphaOmega.Debug
 					this._console.ConsoleWriteMembers(info.FileHeader);
 
 					foreach(var section in info.Sections)
-						this._console.ConsoleWriteMembers(section);
-
-					foreach(var symbol in info.Symbols)
 					{
+						Console.WriteLine("Section: " + info.GetSectionName(section));
+						this._console.ConsoleWriteMembers(section);
+					}
+
+					var symbols = info.Symbols;
+					for(Int32 loop = 0; loop < symbols.Length; loop++)
+					{
+						var symbol = symbols[loop];
+						Console.WriteLine("Symbol: " + info.GetSymbolName(symbol));
 						this._console.ConsoleWriteMembers(symbol);
-						/*if(symbol.Name.Short == 0 && symbol.Name.Long != 0)
-							Console.WriteLine(info.StringTable[symbol.Name.Long]);*/
+						loop += symbol.NumberOfAuxSymbols;// Skip auxiliary records
 					}
 
 					foreach(var str in info.StringTable)

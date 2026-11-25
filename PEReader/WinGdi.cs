@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace AlphaOmega.Debug
@@ -110,17 +111,11 @@ namespace AlphaOmega.Debug
 
 			/// <summary>Xor Image Size</summary>
 			public Int32 XorImageSize
-			{
-				get
-				{
-					return (Int32)(this.biHeight / 2 *
-					BITMAPINFOHEADER.GetDibRowWidth(this.biWidth * this.biBitCount * this.biPlanes));
-				}
-			}
+				=> (this.biHeight / 2 * BITMAPINFOHEADER.GetDibRowWidth(this.biWidth * this.biBitCount * this.biPlanes));
 
 			/// <summary>Size of the image mask</summary>
 			public Int32 MaskImageSize
-				=> (Int32)(this.biHeight / 2 * BITMAPINFOHEADER.GetDibRowWidth(this.biWidth));
+				=> (this.biHeight / 2 * BITMAPINFOHEADER.GetDibRowWidth(this.biWidth));
 
 			/// <summary>
 			/// Returns the width of a row in a DIB Bitmap given the number of bits.
@@ -129,7 +124,112 @@ namespace AlphaOmega.Debug
 			/// <param name="width">Number of bits</param>
 			/// <returns>Width of a row in bytes</returns>
 			public static Int32 GetDibRowWidth(Int32 width)
-				=> (Int32)((width + 31) / 32) * 4;
+				=> ((width + 31) / 32) * 4;
+		}
+
+		/// <summary>PNG image header (IHDR chunk with chunk length and type)</summary>
+		/// <remarks>
+		/// Since Windows Vista icon images (usually 256x256) can be stored as PNG files instead of DIB.
+		/// The IHDR chunk shall be the first chunk in the PNG datastream, right after the PNG signature.
+		/// All PNG values are stored in big-endian byte order.
+		/// https://www.w3.org/TR/png/#11IHDR
+		/// </remarks>
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct PNGIMAGEHEADER
+		{
+			/// <summary>PNG color type</summary>
+			public enum PNG_COLOR_TYPE : Byte
+			{
+				/// <summary>Each pixel is a grayscale sample</summary>
+				Greyscale = 0,
+				/// <summary>Each pixel is an R,G,B triple</summary>
+				Truecolor = 2,
+				/// <summary>Each pixel is a palette index; a PLTE chunk shall appear</summary>
+				IndexedColor = 3,
+				/// <summary>Each pixel is a grayscale sample followed by an alpha sample</summary>
+				GreyscaleWithAlpha = 4,
+				/// <summary>Each pixel is an R,G,B triple followed by an alpha sample</summary>
+				TruecolorWithAlpha = 6,
+			}
+
+			/// <summary>PNG file signature</summary>
+			private static readonly Byte[] Signature = new Byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, };
+
+			/// <summary>Size of the IHDR chunk data</summary>
+			private const UInt32 IHDR_LENGTH = 13;
+
+			/// <summary>IHDR chunk type ("IHDR" in big-endian)</summary>
+			private const UInt32 IHDR_TYPE = 0x49484452;
+
+			/// <summary>Length of the chunk data. Must be 13 for IHDR chunk</summary>
+			public UInt32 Length;
+
+			/// <summary>Chunk type. Must be "IHDR" (0x49484452)</summary>
+			public UInt32 ChunkType;
+
+			/// <summary>Image width in pixels</summary>
+			public UInt32 Width;
+
+			/// <summary>Image height in pixels</summary>
+			public UInt32 Height;
+
+			/// <summary>Number of bits per sample or per palette index (not per pixel)</summary>
+			public Byte BitDepth;
+
+			/// <summary>PNG image type</summary>
+			public PNG_COLOR_TYPE ColorType;
+
+			/// <summary>Compression method. Only 0 (deflate) is defined</summary>
+			public Byte CompressionMethod;
+
+			/// <summary>Filter method. Only 0 (adaptive filtering) is defined</summary>
+			public Byte FilterMethod;
+
+			/// <summary>Interlace method. 0 - no interlace, 1 - Adam7 interlace</summary>
+			public Byte InterlaceMethod;
+
+			/// <summary>The first chunk is a valid IHDR chunk</summary>
+			public Boolean IsValid => this.Length == IHDR_LENGTH && this.ChunkType == IHDR_TYPE;
+
+			/// <summary>Checks that the data starts with the PNG file signature</summary>
+			/// <param name="data">Data to check</param>
+			/// <returns>Data is a PNG image</returns>
+			public static Boolean IsPng(Byte[] data)
+			{
+				if(data == null || data.Length < Signature.Length)
+					return false;
+
+				for(Int32 loop = 0; loop < Signature.Length; loop++)
+					if(data[loop] != Signature[loop])
+						return false;
+				return true;
+			}
+
+			/// <summary>Reads the PNG image header (IHDR chunk) from PNG image</summary>
+			/// <param name="data">PNG image data</param>
+			/// <returns>PNG image header</returns>
+			/// <exception cref="ArgumentException">Data is not a PNG image</exception>
+			/// <exception cref="InvalidDataException">PNG image is corrupted. The first chunk is not a valid IHDR chunk</exception>
+			public static WinGdi.PNGIMAGEHEADER FromBytes(Byte[] data)
+			{
+				if(!IsPng(data))
+					throw new ArgumentException("Data is not a PNG image", nameof(data));
+
+				Int32 size = Marshal.SizeOf(typeof(WinGdi.PNGIMAGEHEADER));
+				if(data.Length < Signature.Length + size)
+					throw new InvalidDataException("PNG image is corrupted. The IHDR chunk is truncated");
+
+				//Endianness is adjusted in place, so the source array is copied to keep the caller's data intact
+				Byte[] buffer = new Byte[size];
+				Array.Copy(data, Signature.Length, buffer, 0, size);
+				EndianHelper.AdjustEndianness(typeof(WinGdi.PNGIMAGEHEADER), buffer, EndianHelper.Endian.Big);
+
+				WinGdi.PNGIMAGEHEADER result = PinnedBufferReader.BytesToStructure<WinGdi.PNGIMAGEHEADER>(buffer, 0);
+
+				return result.IsValid
+					? result
+					: throw new InvalidDataException("PNG image is corrupted. The IHDR chunk is not found");
+			}
 		}
 
 		/// <summary>Contains information about an individual font in a font resource group</summary>
@@ -325,7 +425,7 @@ namespace AlphaOmega.Debug
 		}
 
 		/// <summary>Test data (not used)</summary>
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct GRPICONDIR
 		{
 			/// <summary>Reserved (must be 0)</summary>
@@ -340,7 +440,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>There exists one GRPICONDIRENTRY for each icon image in the resource, providing details about its size and color depth</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/ms997538.aspx</remarks>
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct GRPICONDIRENTRY
 		{
 			/// <summary>Width, in pixels, of the image</summary>
@@ -375,7 +475,7 @@ namespace AlphaOmega.Debug
 
 		/// <summary>There exists one ICONDIRENTRY for each icon image in the file, providing details about its location in the file, size and color depth</summary>
 		/// <remarks>https://msdn.microsoft.com/en-us/library/ms997538.aspx</remarks>
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = 2)]
 		public struct ICONDIRENTRY
 		{
 			/// <summary>Width, in pixels, of the image</summary>

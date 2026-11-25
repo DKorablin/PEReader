@@ -1,15 +1,26 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace AlphaOmega.Debug
 {
 	/// <summary>OBJ/COFF file reader</summary>
+	/// <remarks>OBJ files are never mapped into memory and have no RVAs, so every offset used by this class is a raw file offset</remarks>
 	public class ObjFile : IDisposable
 	{
+		private static readonly UInt32 SizeOfFileHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_FILE_HEADER));
+		private static readonly UInt32 SizeOfSectionHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_SECTION_HEADER));
+		/// <summary>Size of a symbol table record. Auxiliary records have the same size as standard records</summary>
+		private static readonly UInt32 SizeOfSymbol = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_COFF_SYMBOL));
+
+		/// <summary>Base64 alphabet used for "//nnnnnn" long section names</summary>
+		private const String SectionNameBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
 		private WinNT.IMAGE_FILE_HEADER? _fileHeader;
 		private WinNT.IMAGE_SECTION_HEADER[] _sections;
 		private WinNT.IMAGE_COFF_SYMBOL[] _symbols;
+		private Byte[] _stringTableData;
 		private String[] _stringTable;
 
 		private IImageLoader Loader { get; set; }
@@ -19,164 +30,239 @@ namespace AlphaOmega.Debug
 			=> this._fileHeader ?? (this._fileHeader = this.Loader.PtrToStructure<WinNT.IMAGE_FILE_HEADER>(0)).Value;
 
 		/// <summary>Checking if OBJ file is valid</summary>
-		public Boolean IsValid => this.FileHeader.IsValid;
-
-		/*/// <summary>Represents the COFF symbols header</summary>
-		public WinNT.IMAGE_COFF_SYMBOLS_HEADER? SymbolTable
+		/// <remarks>
+		/// Rejects unknown machine types, anonymous object headers (/bigobj, /GL) and short import objects (Machine=0, NumberOfSections=0xFFFF),
+		/// and files whose section or symbol table does not fit inside the file.
+		/// </remarks>
+		public Boolean IsValid
 		{
 			get
 			{
-				if(this.FileHeader.ContainsSymbolTable)
-					return this.Loader.PtrToStructure<WinNT.IMAGE_COFF_SYMBOLS_HEADER>(this.FileHeader.PointerToSymbolTable);
-				else
-					return null;
+				WinNT.IMAGE_FILE_HEADER header = this.FileHeader;
+				if(!header.IsValid)
+					return false;
+
+				// ANON_OBJECT_HEADER / IMPORT_OBJECT_HEADER: Sig1 = IMAGE_FILE_MACHINE_UNKNOWN, Sig2 = 0xFFFF
+				if(header.Machine == WinNT.IMAGE_FILE_MACHINE.UNKNOWN && header.NumberOfSections == 0xFFFF)
+					return false;
+
+				Int64 length = this.GetImageLength();
+				Int64 endOfSections = SizeOfFileHeader + (Int64)header.SizeOfOptionalHeader + (Int64)header.NumberOfSections * SizeOfSectionHeader;
+				if(endOfSections > length)
+					return false;
+
+				if(header.ContainsSymbolTable)
+				{
+					Int64 endOfSymbols = header.PointerToSymbolTable + (Int64)header.NumberOfSymbols * SizeOfSymbol;
+					if(endOfSymbols > length)
+						return false;
+				}
+
+				return true;
 			}
-		}*/
+		}
 
 		/// <summary>OBJ symbol table structure</summary>
+		/// <remarks>
+		/// The array is indexed by raw symbol table index, the same index used by relocations and auxiliary records.
+		/// Slots occupied by auxiliary records are left as <c>default</c>; use <see cref="WinNT.IMAGE_COFF_SYMBOL.NumberOfAuxSymbols"/> of the preceding symbol to skip them.
+		/// Returns an empty array if the file has no symbol table.
+		/// </remarks>
 		public WinNT.IMAGE_COFF_SYMBOL[] Symbols
 		{
 			get
 			{
-				if(this.FileHeader.ContainsSymbolTable)
+				if(this._symbols == null)
 				{
-					this._symbols = new WinNT.IMAGE_COFF_SYMBOL[this.FileHeader.NumberOfSymbols];
-					UInt32 sizeOfSymbols = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_COFF_SYMBOL));
-					UInt32 sizeOfAux = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_AUX_SYMBOL));
-					UInt32 offset = this.FileHeader.PointerToSymbolTable;
-					for(Int32 loop = 0; loop < this._symbols.Length; loop++)
-					{
-						WinNT.IMAGE_COFF_SYMBOL symbol;
-						this._symbols[loop] = symbol = this.Loader.PtrToStructure<WinNT.IMAGE_COFF_SYMBOL>(offset);
-						offset += sizeOfSymbols;
-
-						for(Byte innerLoop = 0; innerLoop < symbol.NumberOfAuxSymbols; innerLoop++)
-						{
-							WinNT.IMAGE_AUX_SYMBOL auxSymbol = this.Loader.PtrToStructure<WinNT.IMAGE_AUX_SYMBOL>(offset);
-							offset += sizeOfAux;
-							loop++;
-						}
+					WinNT.IMAGE_FILE_HEADER header = this.FileHeader;
+					UInt32 count = 0;
+					if(header.ContainsSymbolTable)
+					{// Do not trust NumberOfSymbols beyond what physically fits in the file
+						Int64 available = (this.GetImageLength() - header.PointerToSymbolTable) / SizeOfSymbol;
+						count = available < header.NumberOfSymbols
+							? (UInt32)Math.Max(0, available)
+							: header.NumberOfSymbols;
 					}
+
+					WinNT.IMAGE_COFF_SYMBOL[] symbols = new WinNT.IMAGE_COFF_SYMBOL[count];
+					UInt32 offset = header.PointerToSymbolTable;
+					for(Int32 loop = 0; loop < symbols.Length; loop++)
+					{
+						WinNT.IMAGE_COFF_SYMBOL symbol = this.Loader.PtrToStructure<WinNT.IMAGE_COFF_SYMBOL>(offset);
+						symbols[loop] = symbol;
+
+						// Skip auxiliary records, but never past the end of the table
+						Int32 auxCount = Math.Min(symbol.NumberOfAuxSymbols, symbols.Length - loop - 1);
+						loop += auxCount;
+						offset += SizeOfSymbol * (UInt32)(1 + auxCount);
+					}
+
+					this._symbols = symbols;
 				}
 				return this._symbols;
 			}
 		}
 
-		/// <summary>PE sections</summary>
+		/// <summary>COFF sections</summary>
 		public WinNT.IMAGE_SECTION_HEADER[] Sections
 		{
 			get
 			{
 				if(this._sections == null)
 				{
-					this._sections = new WinNT.IMAGE_SECTION_HEADER[this.FileHeader.NumberOfSections];
-					UInt16 sizeOfOptionalHeader = this.FileHeader.SizeOfOptionalHeader;
+					WinNT.IMAGE_FILE_HEADER header = this.FileHeader;
+					WinNT.IMAGE_SECTION_HEADER[] sections = new WinNT.IMAGE_SECTION_HEADER[header.NumberOfSections];
 
-					UInt32 sizeHeader = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_SECTION_HEADER));
-					UInt32 offset = (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_FILE_HEADER)) + sizeOfOptionalHeader;
-					for(Int32 loop = 0; loop < this._sections.Length; loop++)
+					UInt32 offset = SizeOfFileHeader + header.SizeOfOptionalHeader;
+					for(Int32 loop = 0; loop < sections.Length; loop++)
 					{
-						this._sections[loop] = this.Loader.PtrToStructure<WinNT.IMAGE_SECTION_HEADER>(offset);
-						offset += sizeHeader;
+						sections[loop] = this.Loader.PtrToStructure<WinNT.IMAGE_SECTION_HEADER>(offset);
+						offset += SizeOfSectionHeader;
 					}
+
+					this._sections = sections;
 				}
 				return this._sections;
 			}
 		}
 
-		/// <summary>Constant strings</summary>
+		/// <summary>All strings stored in the COFF string table, in file order</summary>
+		/// <remarks>
+		/// Symbols and sections reference the string table by byte offset, not by index in this array.
+		/// Use <see cref="GetString"/>, <see cref="GetSymbolName"/> or <see cref="GetSectionName"/> to resolve those references.
+		/// </remarks>
 		public String[] StringTable
 		{
 			get
 			{
 				if(this._stringTable == null)
 				{
-					// TODO: Need to find offset to the string table
-					UInt32 startOffset = this.FileHeader.PointerToSymbolTable + this.FileHeader.NumberOfSymbols * (UInt32)Marshal.SizeOf(typeof(WinNT.IMAGE_COFF_SYMBOL));
-					UInt32 sizeOfTable = this.PtrToStructure<UInt32>(startOffset);
-					UInt32 offset = startOffset + sizeof(UInt32);
+					Byte[] data = this.StringTableData;
+					List<String> result = new List<String>();
 
-					List<String> stringTable = new List<String>();
-
-					while(offset < startOffset + sizeOfTable)
+					Int32 offset = sizeof(UInt32);
+					while(offset < data.Length)
 					{
-						String data = this.PtrToStringAnsi(offset);
-						stringTable.Add(data);
-
-						offset += (UInt32)data.Length + 1;/*+ 0x00*/
+						result.Add(ReadString(data, offset, out Int32 end));
+						offset = end + 1;/*+ 0x00*/
 					}
 
-					this._stringTable = stringTable.ToArray();
+					this._stringTable = result.ToArray();
 				}
 
 				return this._stringTable;
 			}
 		}
 
+		/// <summary>Raw string table bytes, including the leading 4-byte size field, so that string table offsets can be used as indexes</summary>
+		private Byte[] StringTableData
+		{
+			get
+			{
+				if(this._stringTableData == null)
+				{
+					Byte[] data = new Byte[0];
+					WinNT.IMAGE_FILE_HEADER header = this.FileHeader;
+					if(header.ContainsSymbolTable)
+					{// The string table immediately follows the symbol table
+						Int64 length = this.GetImageLength();
+						Int64 start = header.PointerToSymbolTable + (Int64)header.NumberOfSymbols * SizeOfSymbol;
+						if(start + sizeof(UInt32) <= length && start + sizeof(UInt32) <= UInt32.MaxValue)
+						{
+							UInt32 size = this.Loader.PtrToStructure<UInt32>((UInt32)start);
+							if(start + size > length)
+								size = (UInt32)(length - start);// Truncated file
+							if(size > sizeof(UInt32))
+								data = this.Loader.ReadBytes((UInt32)start, size);
+						}
+					}
+
+					this._stringTableData = data;
+				}
+				return this._stringTableData;
+			}
+		}
+
 		/// <summary>Create instance of OBJ file reader</summary>
 		/// <param name="loader">Image loader</param>
 		public ObjFile(IImageLoader loader)
-			=> this.Loader = loader ?? throw new ArgumentNullException(nameof(loader));
-
-		/// <summary>Convert relative address to virtual address</summary>
-		/// <param name="offset">RVA in PE image</param>
-		/// <returns>VA in image</returns>
-		public UInt32 OffsetToRva(UInt32 offset)
 		{
-			for(Int32 loop = 0; loop < this.Sections.Length; loop++)
-			{
-				var section = this.Sections[loop];
-				UInt32 size = section.VirtualSize;
-				if(size == 0)
-					size = section.SizeOfRawData;
+			this.Loader = loader ?? throw new ArgumentNullException(nameof(loader));
+			this.Loader.Endianness = EndianHelper.Endian.Little;// COFF is always little-endian
+		}
 
-				if(offset >= section.VirtualAddress
-					&& offset < section.VirtualAddress + size)
-					return offset - (section.VirtualAddress - section.PointerToRawData);
-				/*if(offset >= this.Sections[loop].PointerToRawData
-					&& offset < this.Sections[loop].PointerToRawData + this.Sections[loop].SizeOfRawData)
-					return offset + this.Sections[loop].VirtualAddress - this.Sections[loop].PointerToRawData;*/
-			}
-			return offset;
+		/// <summary>Get string from the COFF string table</summary>
+		/// <param name="offset">Byte offset from the beginning of the string table (the 4-byte size field is included, so the first string is at offset 4)</param>
+		/// <returns>String at the specified offset or null if offset is out of the string table bounds</returns>
+		public String GetString(UInt32 offset)
+		{
+			Byte[] data = this.StringTableData;
+			return offset < sizeof(UInt32) || offset >= data.Length
+				? null
+				: ReadString(data, (Int32)offset, out _);
+		}
+
+		/// <summary>Get full name of the symbol</summary>
+		/// <param name="symbol">Symbol from <see cref="Symbols"/></param>
+		/// <returns>Short name stored inside the symbol or long name from the string table</returns>
+		public String GetSymbolName(WinNT.IMAGE_COFF_SYMBOL symbol)
+			=> symbol.Name.Short == 0
+				? this.GetString(symbol.Name.Long)
+				: symbol.SymbolTabeShortName;
+
+		/// <summary>Get full name of the section</summary>
+		/// <param name="section">Section from <see cref="Sections"/></param>
+		/// <returns>Section name, with "/nnn" (decimal) and "//nnnnnn" (base64) long names resolved from the string table</returns>
+		public String GetSectionName(WinNT.IMAGE_SECTION_HEADER section)
+		{
+			String name = section.Section;
+			UInt64 offset = 0;
+
+			if(name.StartsWith("//", StringComparison.Ordinal) && name.Length > 2)
+			{
+				for(Int32 loop = 2; loop < name.Length; loop++)
+				{
+					Int32 digit = SectionNameBase64.IndexOf(name[loop]);
+					if(digit < 0)
+						return name;
+					offset = offset * 64 + (UInt32)digit;
+				}
+			} else if(name.StartsWith("/", StringComparison.Ordinal) && name.Length > 1)
+			{
+				for(Int32 loop = 1; loop < name.Length; loop++)
+				{
+					Char c = name[loop];
+					if(c < '0' || c > '9')
+						return name;
+					offset = offset * 10 + (UInt32)(c - '0');
+				}
+			} else
+				return name;
+
+			return offset <= UInt32.MaxValue
+				? this.GetString((UInt32)offset) ?? name
+				: name;
 		}
 
 		/// <summary>Read bytes from image</summary>
-		/// <param name="offset">RVA to start address</param>
+		/// <param name="offset">File offset to start reading from</param>
 		/// <param name="length">How much to read</param>
 		/// <returns>Read bytes</returns>
 		public Byte[] ReadBytes(UInt32 offset, UInt32 length)
-		{
-			UInt32 rva = offset;
-			if(!this.Loader.IsModuleMapped)
-				rva = this.OffsetToRva(offset);
+			=> this.Loader.ReadBytes(offset, length);
 
-			return this.Loader.ReadBytes(rva, length);
-		}
-
-		/// <summary>Get structure from specific RVA</summary>
+		/// <summary>Get structure from specific file offset</summary>
 		/// <typeparam name="T">Structure to map</typeparam>
-		/// <param name="offset">RVA to the beginning of structure</param>
+		/// <param name="offset">File offset to the beginning of structure</param>
 		/// <returns>Mapped structure</returns>
 		public T PtrToStructure<T>(UInt32 offset) where T : struct
-		{
-			UInt32 rva = offset;
-			if(!this.Loader.IsModuleMapped)
-				rva = this.OffsetToRva(offset);
+			=> this.Loader.PtrToStructure<T>(offset);
 
-			return this.Loader.PtrToStructure<T>(rva);
-		}
-
-		/// <summary>Get string from specific RVA</summary>
-		/// <param name="offset">RVA to the beginning of string</param>
+		/// <summary>Get string from specific file offset</summary>
+		/// <param name="offset">File offset to the beginning of string</param>
 		/// <returns>Mapped string</returns>
 		public String PtrToStringAnsi(UInt32 offset)
-		{
-			UInt32 rva = offset;
-			if(!this.Loader.IsModuleMapped)
-				rva = this.OffsetToRva(offset);
-
-			return this.Loader.PtrToStringAnsi(rva);
-		}
+			=> this.Loader.PtrToStringAnsi(offset);
 
 		/// <summary>Close loader</summary>
 		public void Dispose()
@@ -194,6 +280,31 @@ namespace AlphaOmega.Debug
 				this.Loader.Dispose();
 				this.Loader = null;
 			}
+		}
+
+		/// <summary>Gets image length or <see cref="Int64.MaxValue"/> if the loader can't report it</summary>
+		private Int64 GetImageLength()
+		{
+			try
+			{
+				return this.Loader.Length;
+			} catch(NotSupportedException)
+			{
+				return Int64.MaxValue;
+			}
+		}
+
+		/// <summary>Decode null-terminated string by scanning bytes, so multi-byte characters can't break alignment of the following strings</summary>
+		/// <param name="data">Source buffer</param>
+		/// <param name="offset">Start of the string</param>
+		/// <param name="end">Index of the terminating null byte (or buffer length if the string is not terminated)</param>
+		/// <returns>Decoded string</returns>
+		private static String ReadString(Byte[] data, Int32 offset, out Int32 end)
+		{
+			end = Array.IndexOf<Byte>(data, 0, offset);
+			if(end < 0)
+				end = data.Length;
+			return Encoding.UTF8.GetString(data, offset, end - offset);
 		}
 	}
 }

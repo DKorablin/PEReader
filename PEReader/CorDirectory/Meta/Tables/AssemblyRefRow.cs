@@ -57,15 +57,10 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Tables
 						: new CultureInfo(this.Locale),
 				};
 
-				switch(this.Flags)
-				{
-				case AssemblyNameFlags.PublicKey:
+				if((this.Flags & AssemblyNameFlags.PublicKey) != 0)
 					result.SetPublicKey(this.PublicKeyOrToken);
-					break;
-				default:
+				else
 					result.SetPublicKeyToken(this.PublicKeyOrToken);
-					break;
-				}
 				
 				return result;
 			}

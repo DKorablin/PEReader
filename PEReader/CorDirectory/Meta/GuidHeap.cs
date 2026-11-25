@@ -37,7 +37,6 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		/// <summary>Binds the data form stream to guid array</summary>
 		protected override SortedList<Int32, Guid> DataBind()
 		{
-			Int32 ptr = 0;
 			Byte[] bytes = base.Bytes;
 
 			UInt32 sizeOfGuid = GuidHeap.SizeOfGuid;
@@ -49,8 +48,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				Byte[] bTemp = new Byte[sizeOfGuid];
 				Array.Copy(bytes, loop * sizeOfGuid, bTemp, 0, sizeOfGuid);
 
-				result.Add(ptr, new Guid(bTemp));
-				ptr = loop;
+				result.Add(loop, new Guid(bTemp));//Zero-based position. The 1-based #GUID heap index is converted in the indexer
 			}
 
 			return result;

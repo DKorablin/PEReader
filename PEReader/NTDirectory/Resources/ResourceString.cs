@@ -8,13 +8,20 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 	/// <summary><see cref="WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING"/> resource reader class</summary>
 	public class ResourceString : ResourceBase, IEnumerable<ResourceString.StringItem>
 	{
+		/// <summary>Each RT_STRING block always contains exactly 16 length-prefixed strings</summary>
+		private const Int32 StringsPerBlock = 16;
+
 		/// <summary>Starting directory string ID</summary>
+		/// <exception cref="InvalidOperationException">Block directory is named or has zero ID</exception>
 		public UInt32 Id
 		{
 			get
 			{
-				UInt32 directoryName = base.Directory.Parent.DirectoryEntry.NameAddress;
-				return (directoryName - 1) * 16;//Starting directory ID
+				WinNT.Resource.IMAGE_RESOURCE_DIRECTORY_ENTRY entry = base.Directory.Parent.DirectoryEntry;
+				if(entry.IsNameString || entry.NameAddress == 0)
+					throw new InvalidOperationException("RT_STRING block must have a non-zero integer ID");
+
+				return (entry.NameAddress - 1) * StringsPerBlock;//Starting directory ID
 			}
 		}
 
@@ -34,24 +41,23 @@ namespace AlphaOmega.Debug.NTDirectory.Resources
 			: base(directory, WinNT.Resource.RESOURCE_DIRECTORY_TYPE.RT_STRING) { }
 
 		/// <summary>Get all strings from resource directory</summary>
+		/// <remarks>Returns all 16 slots of the block. Undefined string IDs are returned with an empty <see cref="StringItem.Value"/>. Trailing alignment padding after the 16th slot is ignored.</remarks>
 		/// <returns>Strings from resource</returns>
 		public IEnumerator<ResourceString.StringItem> GetEnumerator()
 		{
-			UInt32 name = base.Directory.Parent.DirectoryEntry.NameAddress;
 			UInt32 id = this.Id;
 			UInt32 padding = 0;
 			using(PinnedBufferReader reader = base.CreateDataReader())
-				while(padding < reader.Length)
+				for(Int32 i = 0; i < StringsPerBlock && padding + sizeof(UInt16) <= reader.Length; i++, id++)
 				{
-					UInt16 length = reader.BytesToStructure<UInt16>(ref padding);
-					length *= 2;
+					UInt32 length = reader.BytesToStructure<UInt16>(ref padding) * 2u;//Length in WCHARs → bytes
 
-					String value = Encoding.Unicode.GetString(reader.GetBytes(padding, length));
-					//if(value.Length > 0)
-					yield return new StringItem() { ID = id, Value = value, };
-
-					id++;
+					String value = length == 0
+						? String.Empty
+						: Encoding.Unicode.GetString(reader.GetBytes(padding, length));
 					padding += length;
+
+					yield return new StringItem() { ID = id, Value = value, };
 				}
 		}
 

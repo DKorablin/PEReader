@@ -159,9 +159,10 @@ namespace AlphaOmega.Debug
 				throw new InvalidOperationException("Invalid PE File");
 		}
 
-		/// <summary>Convert relative address to virtual address</summary>
+		/// <summary>Convert relative virtual address (RVA) to the file offset</summary>
 		/// <param name="offset">RVA in PE image</param>
-		/// <returns>VA in image</returns>
+		/// <returns>File offset in the image</returns>
+		/// <exception cref="ArgumentOutOfRangeException">RVA is not mapped to the PE headers or to any section (PE file is corrupted)</exception>
 		public UInt32 OffsetToRva(UInt32 offset)
 		{
 			for(Int32 loop = 0; loop < this.Sections.Length; loop++)
@@ -171,14 +172,19 @@ namespace AlphaOmega.Debug
 				if(size == 0)
 					size = section.SizeOfRawData;
 
+				//64-bit arithmetic: VirtualAddress + size can wrap around in a corrupted section header
 				if(offset >= section.VirtualAddress
-					&& offset < section.VirtualAddress + size)
+					&& offset < (UInt64)section.VirtualAddress + size)
 					return offset - (section.VirtualAddress - section.PointerToRawData);
-				/*if(offset >= this.Sections[loop].PointerToRawData
-					&& offset < this.Sections[loop].PointerToRawData + this.Sections[loop].SizeOfRawData)
-					return offset + this.Sections[loop].VirtualAddress - this.Sections[loop].PointerToRawData;*/
 			}
-			return offset;
+
+			UInt32 sizeOfHeaders = this.Is64Bit
+				? this.HeaderNT64.OptionalHeader.SizeOfHeaders
+				: this.HeaderNT32.OptionalHeader.SizeOfHeaders;
+			if(offset < sizeOfHeaders)
+				return offset;//PE headers are mapped 1:1 (RVA == file offset). Ex: Bound Import directory is stored right after the section table
+
+			throw new ArgumentOutOfRangeException(nameof(offset), offset, $"RVA 0x{offset:X} is not mapped to the PE headers or to any section. The PE file is corrupted.");
 		}
 
 		/*public UInt32 RvaToOffset(UInt32 rva)

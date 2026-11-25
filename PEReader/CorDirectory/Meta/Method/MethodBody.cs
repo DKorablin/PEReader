@@ -25,9 +25,9 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 				if(MethodBody._opCodeList == null)
 				{
 					MethodBody._opCodeList = new Dictionary<Int16, OpCode>();
-					foreach(FieldInfo field in typeof(OpCodes).GetFields())
+					foreach(FieldInfo item in typeof(OpCodes).GetFields())
 					{
-						OpCode code = (OpCode)field.GetValue(null);
+						OpCode code = (OpCode)item.GetValue(null);
 						checked { MethodBody._opCodeList.Add(code.Value, code); }
 					}
 				}

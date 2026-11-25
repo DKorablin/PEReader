@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AlphaOmega.Debug.CorDirectory.Meta
 {
@@ -22,7 +21,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 			{
 				SortedList<Int32, Byte[]> source = base.GetData();
 				Byte[] payload = source[index];
-				return Encoding.Unicode.GetString(payload);
+				return USHeap.DecodeUserString(payload);
 			}
 		}
 
@@ -31,7 +30,24 @@ namespace AlphaOmega.Debug.CorDirectory.Meta
 		{
 			SortedList<Int32, Byte[]> source = base.GetData();
 			foreach(KeyValuePair<Int32, Byte[]> item in source)
-				yield return new KeyValuePair<Int32, String>(item.Key, Encoding.Unicode.GetString(item.Value));
+				yield return new KeyValuePair<Int32, String>(item.Key, USHeap.DecodeUserString(item.Value));
+		}
+
+		/// <summary>Decode user string blob to string</summary>
+		/// <remarks>
+		/// Each #US blob contains UTF-16 characters followed by one terminal byte (ECMA-335 II.24.2.4).
+		/// The terminal byte is a flag, not a part of the string, so only an even number of bytes is decoded.
+		/// String literals may contain unpaired surrogates (e.g. "\uD800"), so the code units are copied as is
+		/// instead of using <see cref="System.Text.Encoding.Unicode"/>, which would replace them with U+FFFD.
+		/// </remarks>
+		/// <param name="payload">User string blob</param>
+		/// <returns>Decoded string</returns>
+		private static String DecodeUserString(Byte[] payload)
+		{
+			Char[] result = new Char[payload.Length / 2];
+			for(Int32 loop = 0; loop < result.Length; loop++)
+				result[loop] = (Char)(payload[loop * 2] | (payload[(loop * 2) + 1] << 8));//UTF-16LE code unit
+			return new String(result);
 		}
 	}
 }

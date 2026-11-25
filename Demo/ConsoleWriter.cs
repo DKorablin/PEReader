@@ -41,7 +41,7 @@ namespace AlphaOmega.Debug
 				this.Stop();
 			} catch(Exception exc)
 			{
-				this.ConsoleWriteError(exc, exc.GetType().Name, true);
+				this.ConsoleWriteError(exc, null, exc.GetType().Name, true);
 				this.Stop();
 				throw;
 			}
@@ -80,9 +80,10 @@ namespace AlphaOmega.Debug
 			Console.Write(message);
 		}
 
-		public void ConsoleWriteError(Exception exc, String title, Boolean waitForInput = false)
+		public void ConsoleWriteError(Exception exc, String filePath, String title, Boolean waitForInput = false)
 			=> this.ConsoleWriteError(waitForInput,
 				title + ": " + exc.Message,
+				"Path: "+ filePath +
 				"========================",
 				exc.Data == null ? String.Empty : String.Join(Environment.NewLine, exc.Data.Keys.Cast<Object>().Select(k => k.ToString() + ": " + exc.Data[k].ToString()).ToArray()),
 				exc.StackTrace);
