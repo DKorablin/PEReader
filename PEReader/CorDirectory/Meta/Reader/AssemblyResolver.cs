@@ -9,8 +9,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 {
 	/// <summary>Default assembly resolver</summary>
 	/// <remarks>
-	/// Probes the folder of the requesting file (top level only) and then installed .NET shared frameworks (newest version first).
-	/// All opened files are cached and owned by the resolver until it is disposed.
+	/// Probes the folder of the requesting file, then its subfolders (recursively, <c>.dll</c> only), and then installed .NET shared frameworks (newest version first).
+	/// All opened files are cached and owned by the resolver until it is reset (<see cref="Reset"/>) or disposed.
 	/// </remarks>
 	public class AssemblyResolver : IAssemblyResolver, IDisposable
 	{
@@ -22,6 +22,8 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		private readonly Dictionary<String, PEFile> _openedFiles = new Dictionary<String, PEFile>(StringComparer.OrdinalIgnoreCase);
 		/// <summary>Resolution results by reference name and probing folder (null for not resolved references)</summary>
 		private readonly Dictionary<String, PEFile> _resolved = new Dictionary<String, PEFile>(StringComparer.OrdinalIgnoreCase);
+		/// <summary>.dll files found in subfolders of a probing folder: folder → file name → full paths. Each folder is scanned once</summary>
+		private readonly Dictionary<String, Dictionary<String, List<String>>> _subfolderIndex = new Dictionary<String, Dictionary<String, List<String>>>(StringComparer.OrdinalIgnoreCase);
 		private String[] _sharedFrameworkFolders;
 		private Boolean _disposed;
 
@@ -60,23 +62,140 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 		/// <summary>Gets list of files where the referenced assembly can be found</summary>
 		/// <param name="reference">Name of the referenced assembly</param>
 		/// <param name="requestingFile">File that references the assembly</param>
-		/// <returns>Candidate file paths in the probing order. Paths can point to missing files.</returns>
+		/// <returns>Candidate file paths in the probing order: <see cref="GetLocalProbingPaths"/>, then <see cref="GetSharedFrameworkProbingPaths"/>. Paths can point to missing files.</returns>
+		/// <remarks>Override to add a lookup location between the local and the shared framework paths, or to change the order</remarks>
 		protected virtual IEnumerable<String> GetProbingPaths(AssemblyName reference, PEFile requestingFile)
 		{
+			foreach(String filePath in this.GetLocalProbingPaths(reference, requestingFile))
+				yield return filePath;
+			foreach(String filePath in this.GetSharedFrameworkProbingPaths(reference))
+				yield return filePath;
+		}
+
+		/// <summary>Gets candidate files near the requesting file: its folder (<c>Name.dll</c>, <c>Name.exe</c>) and then its subfolders recursively (<c>Name.dll</c>)</summary>
+		/// <param name="reference">Name of the referenced assembly</param>
+		/// <param name="requestingFile">File that references the assembly</param>
+		/// <returns>Candidate file paths or nothing if the requesting file is not stored on the file system</returns>
+		protected virtual IEnumerable<String> GetLocalProbingPaths(AssemblyName reference, PEFile requestingFile)
+		{
 			String name = reference.Name;
-			if(name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+			if(!IsValidFileName(name))
 				yield break;
 
 			String directory = GetDirectory(requestingFile);
 			if(directory != null)
 			{
-				yield return Path.Combine(directory, name + ".dll");
+				String fileName = name + ".dll";
+				yield return Path.Combine(directory, fileName);
 				yield return Path.Combine(directory, name + ".exe");
+
+				if(this.GetSubfolderIndex(directory).TryGetValue(fileName, out List<String> subfolderFiles))
+					foreach(String filePath in subfolderFiles)
+						yield return filePath;
 			}
+		}
+
+		/// <summary>Gets candidate files in installed .NET shared frameworks (<see cref="SharedFrameworkFolders"/>, newest version first)</summary>
+		/// <param name="reference">Name of the referenced assembly</param>
+		/// <returns>Candidate file paths</returns>
+		protected virtual IEnumerable<String> GetSharedFrameworkProbingPaths(AssemblyName reference)
+		{
+			String name = reference.Name;
+			if(!IsValidFileName(name))
+				yield break;
 
 			foreach(String folder in this.SharedFrameworkFolders)
 				yield return Path.Combine(folder, name + ".dll");
 		}
+
+		/// <summary>Assembly name can be used as a file name</summary>
+		private static Boolean IsValidFileName(String name)
+			=> name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+
+		/// <summary>Gets .dll files from all subfolders of the specified folder (the folder's own files are not included)</summary>
+		/// <param name="directory">Root folder to scan</param>
+		/// <returns>File name → full paths in the scan order (parent folders before nested ones)</returns>
+		private Dictionary<String, List<String>> GetSubfolderIndex(String directory)
+		{
+			if(this._subfolderIndex.TryGetValue(directory, out Dictionary<String, List<String>> result))
+				return result;
+
+			result = new Dictionary<String, List<String>>(StringComparer.OrdinalIgnoreCase);
+			Queue<String> folders = new Queue<String>(GetSubfolders(directory));
+			while(folders.Count > 0)
+			{
+				String folder = folders.Dequeue();
+				foreach(String filePath in GetFiles(folder))
+				{
+					String fileName = Path.GetFileName(filePath);
+					if(!result.TryGetValue(fileName, out List<String> paths))
+					{
+						paths = new List<String>();
+						result.Add(fileName, paths);
+					}
+					paths.Add(filePath);
+				}
+
+				foreach(String subfolder in GetSubfolders(folder))
+					folders.Enqueue(subfolder);
+			}
+
+			this._subfolderIndex.Add(directory, result);
+			return result;
+		}
+
+		/// <summary>Gets direct subfolders of the folder skipping reparse points (junctions and symbolic links can create loops)</summary>
+		/// <param name="folder">Folder to get subfolders from</param>
+		/// <returns>Subfolders or an empty array if the folder can't be read</returns>
+		private static String[] GetSubfolders(String folder)
+		{
+			String[] subfolders;
+			try
+			{
+				subfolders = Directory.GetDirectories(folder);
+			} catch(Exception exc) when(IsAccessError(exc))
+			{
+				return new String[] { };
+			}
+
+			List<String> result = new List<String>(subfolders.Length);
+			foreach(String subfolder in subfolders)
+				if(!IsReparsePoint(subfolder))
+					result.Add(subfolder);
+			return result.ToArray();
+		}
+
+		/// <summary>Gets .dll files from the folder (not recursive)</summary>
+		/// <param name="folder">Folder to get files from</param>
+		/// <returns>Files or an empty array if the folder can't be read (the rest of the tree is still scanned)</returns>
+		private static String[] GetFiles(String folder)
+		{
+			try
+			{
+				return Directory.GetFiles(folder, "*.dll");
+			} catch(Exception exc) when(IsAccessError(exc))
+			{
+				return new String[] { };
+			}
+		}
+
+		/// <summary>Checks that the folder is a junction or a symbolic link</summary>
+		/// <param name="folder">Folder to check</param>
+		/// <returns>The folder is a reparse point or its attributes can't be read (such folder is skipped)</returns>
+		private static Boolean IsReparsePoint(String folder)
+		{
+			try
+			{
+				return (File.GetAttributes(folder) & FileAttributes.ReparsePoint) != 0;
+			} catch(Exception exc) when(IsAccessError(exc))
+			{
+				return true;
+			}
+		}
+
+		/// <summary>File system errors that make a folder unreadable but must not stop the probing</summary>
+		private static Boolean IsAccessError(Exception exc)
+			=> exc is UnauthorizedAccessException || exc is IOException;
 
 		/// <summary>Checks that the found assembly satisfies the reference</summary>
 		/// <param name="reference">Name of the referenced assembly</param>
@@ -261,6 +380,26 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 			return true;
 		}
 
+		/// <summary>Closes all opened files and clears resolution caches. Unlike <see cref="Dispose()"/> the resolver stays usable</summary>
+		/// <remarks>Files returned earlier by <see cref="Resolve"/> are disposed and must not be used after this call</remarks>
+		/// <exception cref="ObjectDisposedException">Resolver is already disposed</exception>
+		public void Reset()
+		{
+			if(this._disposed)
+				throw new ObjectDisposedException(nameof(AssemblyResolver));
+
+			this.CloseFiles();
+		}
+
+		private void CloseFiles()
+		{
+			foreach(PEFile file in this._openedFiles.Values)
+				file?.Dispose();
+			this._openedFiles.Clear();
+			this._resolved.Clear();
+			this._subfolderIndex.Clear();
+		}
+
 		/// <summary>Closes all opened files</summary>
 		public void Dispose()
 		{
@@ -276,12 +415,7 @@ namespace AlphaOmega.Debug.CorDirectory.Meta.Reader
 				return;
 
 			if(disposing)
-			{
-				foreach(PEFile file in this._openedFiles.Values)
-					file?.Dispose();
-				this._openedFiles.Clear();
-				this._resolved.Clear();
-			}
+				this.CloseFiles();
 			this._disposed = true;
 		}
 	}

@@ -192,8 +192,26 @@ using(var resolver = new AssemblyResolver())
         using(var file = new PEFile(p, StreamLoader.FromFile(p), shared)) { /* … */ }
 }
 ```
-- The built-in `AssemblyResolver` probes the folder of the requesting file, then installed .NET shared frameworks (`dotnet/shared/<framework>/<version>`, newest first). It matches name, culture and public key token, accepts the same or a newer version, and follows type forwarders (`System.Runtime` → `System.Private.CoreLib`).
-- Custom lookup (GAC, package cache, in-memory images): implement `IAssemblyResolver`, or derive from `AssemblyResolver` and override `GetProbingPaths`, `IsMatch` or `Open`, then pass it in `PEReaderOptions.AssemblyResolver`.
+- The built-in `AssemblyResolver` probes the folder of the requesting file (`Name.dll`, `Name.exe`), then its subfolders recursively (`Name.dll`; each folder tree is scanned once, reparse points are skipped), then installed .NET shared frameworks (`dotnet/shared/<framework>/<version>`, newest first). It matches name, culture and public key token, accepts the same or a newer version, and follows type forwarders (`System.Runtime` → `System.Private.CoreLib`).
+- Resolved files stay open until the resolver is disposed. `Reset()` closes them and clears the caches but keeps the resolver usable, which is handy for a long-lived resolver between batches of work. Files returned before `Reset()` must not be used afterwards.
+- Custom lookup (GAC, package cache, in-memory images): implement `IAssemblyResolver`, or derive from `AssemblyResolver` and override `GetProbingPaths`, `IsMatch` or `Open`, then pass it in `PEReaderOptions.AssemblyResolver`. `GetProbingPaths` combines `GetLocalProbingPaths` (folder and subfolders) and `GetSharedFrameworkProbingPaths`, so a custom location can be placed between them. For example, probe the GAC before shared frameworks, because `dotnet/shared` contains facades with the same identity as .NET Framework assemblies (`mscorlib`, `System` 4.0.0.0):
+```csharp
+class ExactResolver : AssemblyResolver
+{
+    // Require the exact referenced version instead of the same or newer one
+    protected override Boolean IsMatch(AssemblyName reference, AssemblyRow definition)
+        => base.IsMatch(reference, definition)
+            && (reference.Version == null || definition.Version == reference.Version);
+
+    // Probe one more location after the built-in ones
+    protected override IEnumerable<String> GetProbingPaths(AssemblyName reference, PEFile requestingFile)
+    {
+        foreach(String path in base.GetProbingPaths(reference, requestingFile))
+            yield return path;
+        yield return Path.Combine(@"C:\Packages", reference.Name + ".dll");
+    }
+}
+```
 - `ResolveAssemblies = false` turns resolution off even when a resolver is set.
 - `TypeRefReader.TypeDef` and `AssemblyRefReader.File` use the same resolver.
 
